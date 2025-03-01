@@ -1,0 +1,328 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm606</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm605.htm">[前]</A> <A HREF="arm607.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>6.6 <A NAME="anchor1485111"></A>レジスタのロードおよびストア命令</H3>
+
+<BLOCKQUOTE>
+  <P>Thumbは、8種類のレジスタのロードおよびストア命令をサポートしています。以下の2つの基本アドレッシング・モードが使用できます。</P>
+  <UL>
+    <LI>レジスタ＋レジスタ
+    <LI>レジスタ＋5ビット・イミディエイト
+  </UL>
+  <P>イミディエイト・オフセットを使用する場合、ワード・アクセスでは4、ハーフワード・アクセスでは2でスケールされます。また、1Kバイトの（ワードに整列した）イミディエイト・オフセット付きのPCをベースとして使用するロード、スタック・ポインタ（R13）をベースとして使用し、1Kバイトの（ワードに整列した）イミディエイト・オフセットが可能なロード／ストア命令があります。</P>
+</BLOCKQUOTE>
+
+<H4>6.6.1フォーマット</H4>
+
+<BLOCKQUOTE>
+  <P>ロードおよびストア命令は、汎用プロセッサ・レジスタでオペレーションを実行します。ロードおよびストア命令には、以下のフォーマットがあります。</P>
+  <P><B>フォーマット1</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode1&gt; Rd, [Rn, #&lt;5_bit_offset&gt;]
+&lt;opcode1&gt; := LDR|LDRH|LDRB|STR|STRH|STRB</PRE>
+  </BLOCKQUOTE>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873709"></A><B>15</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873711"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873713"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873715"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873717"></A><B>11</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873719"></A><B>10</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873721"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873723"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873725"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873727"></A><B>6</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873729"></A><B>5</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873731"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873733"></A><B>3</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873735"></A><B>2</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873737"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873739"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+      <A NAME="873741"></A><BR>
+      opcode1</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+      <A NAME="873751"></A><BR>
+      5_bit_offset</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873761"></A><BR>
+      Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873767"></A><BR>
+      Rd</TD>
+       
+    </TR>
+  </TABLE></P>
+  <P><B>フォーマット2</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode2&gt; Rd, [Rn, Rm]
+&lt;opcode2&gt; := LDR|LDRH|LDRSH|LDRB|LDRSB|STR|STRH|STRB</PRE>
+  </BLOCKQUOTE>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873773"></A><B>15</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873775"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873777"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873779"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873781"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873783"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873785"></A><B>9</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873787"></A><B>8</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873789"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873791"></A><B>6</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873793"></A><B>5</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873795"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873797"></A><B>3</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873799"></A><B>2</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873801"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873803"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="7">
+      <A NAME="873805"></A><BR>
+      opcode2</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873819"></A><BR>
+      Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873825"></A><BR>
+      Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873831"></A><BR>
+      Rd</TD>
+       
+    </TR>
+  </TABLE></P>
+  <P><B>フォーマット3</B></P>
+  <BLOCKQUOTE>
+    <PRE>LDR Rd, [PC, #&lt;8_bit_offset&gt;]</PRE>
+  </BLOCKQUOTE>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873837"></A><B>15</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873839"></A><B>14</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873841"></A><B>13</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873843"></A><B>12</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873845"></A><B>11</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873847"></A><B>10</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873849"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873851"></A><B>8</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873853"></A><B>7</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873855"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873857"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873859"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873861"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873863"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873865"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873867"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873869"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873871"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873873"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873875"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873877"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873879"></A><BR>
+      Rd</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="876805"></A><BR>
+      8_bit_immediate</TD>
+       
+    </TR>
+  </TABLE></P>
+  <P><BR>
+  <B>フォーマット4</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode3&gt; Rd, [SP, #&lt;8_bit_offset&gt;]
+&lt;opcode3&gt; := LDR | STR</PRE>
+  </BLOCKQUOTE>
+  <P><BR>
+  <TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873901"></A><B>15</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873903"></A><B>14</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873905"></A><B>13</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873907"></A><B>12</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873909"></A><B>11</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873911"></A><B>10</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873913"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873915"></A><B>8</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873917"></A><B>7</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873919"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873921"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873923"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873925"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873927"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873929"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873931"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873933"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873935"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873937"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873939"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="873941"></A><BR>
+      L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="873943"></A><BR>
+      Rd</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="873949"></A><BR>
+      8_bit_immediate</TD>
+       
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<H4>6.6.2 <A NAME="anchor1488858"></A>例</H4>
+
+<BLOCKQUOTE>
+  <PRE>LDR	 R4, [R2, #4]		 ; Load word into R4 from address R2 + 4
+LDR	 R4, [R2, R1]		 ; Load word into R4 from address R2 + R1
+STR	 R0, [R7, #0x7c]	 ; Store word from R0 to address R7 + 124
+STRB	 R1, [R5, #31]		 ; Store byte from R1 to address R5 + 31
+STRH	 R4, [R2, R3]		 ; Store halfword from R4 to R2 + R3
+LDRH	 R3, [R6, R5]		 ; Load word into R3 from R6 + R5
+LDRB	 R2, [R1, #5]		 ; Load byte into R2 from R1 + 5
+LDR	 R6, [PC, #0x3fc]	 ; Load R6 from PC + 0x3fc
+LDR	 R5, [SP, #64]		 ; Load R5 from SP + 64
+STR	 R4, [SP, #0x260]	 ; Load R5 from SP + 0x260</PRE>
+</BLOCKQUOTE>
+
+<H4>6.6.3 <A NAME="anchor1453672"></A>レジスタのロードおよびストア命令のリスト</H4>
+
+<BLOCKQUOTE>
+  <P>以下の命令は、上記のフォーマットに従います。</P>
+  <P><A HREF="t_ldr1.htm"><B>LDR</B></A> ワードのロード（イミディエート・オフセット）<BR>
+  <B><A HREF="t_ldr2.htm">LDR</A></B> ワードのロード（レジスタ・オフセット）<BR>
+  <B><A HREF="t_ldr3.htm">LDR</A></B> ワードのロード（ＰＣ相対）<BR>
+  <B><A HREF="t_ldr4.htm">LDR</A></B> ワードのロード（ＳＰ相対）<BR>
+  <B><A HREF="t_ldrb1.htm">LDRB</A></B> 符号無しバイトのロード（イミディエート・オフセット）<BR>
+  <B><A HREF="t_ldrb2.htm">LDRB</A></B> 符号無しバイトのロード（レジスタ・オフセット）<BR>
+  <B><A HREF="t_ldrh1.htm">LDRH</A></B> 符号無しハーフワードのロード（イミディエート・オフセット）<BR>
+  <B><A HREF="t_ldrh2.htm">LDRH</A></B> 符号無しハーフワードのロード（レジスタ・オフセット）<BR>
+  <B><A HREF="t_ldrsb.htm">LDRSB</A></B> 符号付バイトのロード（レジスタ・オフセット）<BR>
+  <B><A HREF="t_ldrsh.htm">LDRSH</A></B> 符号付ハーフワードのロード（レジスタ・オフセット）<BR>
+  <B><A HREF="t_str1.htm">STR</A></B> ワードのクリア（イミディエート・オフセット）<BR>
+  <B><A HREF="t_str2.htm">STR</A></B> ワードのクリア（レジスタ・オフセット）<BR>
+  <B><A HREF="t_str3.htm">STR</A></B> ロードのクリア（ＳＰ相対）<BR>
+  <B><A HREF="t_strb1.htm">STRB</A></B> バイトのクリア（イミディエート・オフセット）<BR>
+  <B><A HREF="t_strb2.htm">STRB</A></B> バイトのクリア（レジスタ・オフセット）<BR>
+  <B><A HREF="t_strh1.htm">STRH</A></B> ハーフワードのクリア（イミディエート・オフセット）<BR>
+  <B><A HREF="t_strh2.htm">STRH</A></B> ハーフワードのクリア（レジスタ・オフセット）</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm605.htm">[前]</A> <A HREF="arm607.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

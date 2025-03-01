@@ -1,0 +1,591 @@
+<HTML>
+<HEAD>
+<TITLE> VU0行列演算ライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libvu0.htm" SELECTED> VU0ライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+VU0行列演算ライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 引数のハンドリング<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 各関数が使用するレジスタ<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    libvu0は、VU0マクロ命令を用いてベクトル演算・マトリックス演算を行うライブラリです。<BR>
+    floatの4次元ベクトルを扱う関数として、加減算、スカラー乗除算、正規化、内挿、外積、内積、また複写や固定小数4次元ベクトルとの相互変換などが用意されています。また、floatの４×４行列を扱う関数として、積、ベクトル積、転置行列、逆行列、平行移動、回転などの一般的な行列演算に加えて、クリッピング、透視変換、また、ワールドビュー行列／ノーマルライト行列／ライトカラー行列／スクリーンビュー行列／ドロップシャドウ行列を得るなど、3Dグラフィクス処理に特有の処理が用意されています。<BR>
+    このほか、VU0 / VIF0を初期化する関数があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>引数のハンドリング</B>
+</A>
+</H3>
+<blockquote>
+    libvu0の各関数は、引数の個数や型はそれぞれ処理内容に応じて異なりますが、関数の型はvoidで演算結果は第１引数（ベクトルまたはマトリックス）に返すように、一部の例外を除いてほぼ統一されています。<BR>
+    VU0は基本的に128bit（float×4）を単位として演算を行いますので、各関数の引数も基本的に128bit単位となっています。引数のベクトルやマトリックスは128bitアライメントに合せた状態にして呼び出す必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>各関数が使用するレジスタ</B>
+</A>
+</H3>
+<blockquote>
+    libvu0（Release 1.2以降）の各関数がVU0のVFレジスタのうちどれを使用するか、以下にまとめて示します。次の表で○印のレジスタは、該当する関数を呼び出すことによって内容が破壊されますので、必要ならば呼び出しプログラム側で退避してください。－印のレジスタは使用されないので、退避の必要はありません。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF04</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF05</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF06</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF07</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF08</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF09</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF10</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF11</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>VF12</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">AddVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">SubVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">MulVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ScaleVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ScaleVectorXYZ</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">DivVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">DivVectorXYZ</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">Normalize</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">InterVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">InterVectorXYZ</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">OuterProduct</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">InnerProduct</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">CopyVector</TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">CopyVectorXYZ</TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ClampVector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">FTOI4Vector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">FTOI0Vector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ITOF4Vector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ITOF0Vector</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ApplyMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">MulMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">TransposeMatrix</TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">InversMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">TransMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">CopyMatrix</TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">UnitMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotMatrixZ</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotMatrixY</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotMatrixX</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotTransPers</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">RotTransPersN</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">CameraMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">NormalLightMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">LightColorMatrix</TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ViewScreenMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">DropShadowMatrix</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ClipScreen</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ClipScreen3</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+<TD valign="TOP"><DIV align=center>－</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ClipAll</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+</TABLE>
+<BR>
+    ※関数名の先頭に付く「sceVu0」は省略してあります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

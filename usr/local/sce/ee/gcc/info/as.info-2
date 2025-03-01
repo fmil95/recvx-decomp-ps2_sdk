@@ -7,8 +7,8 @@ END-INFO-DIR-ENTRY
 
    This file documents the GNU Assembler "as".
 
-   Copyright (C) 1991, 92, 93, 94, 95, 96, 97, 98, 99, 2000 Free
-Software Foundation, Inc.
+   Copyright (C) 1991, 92, 93, 94, 95, 96, 97, 1998 Free Software
+Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -22,73 +22,6 @@ permission notice identical to this one.
    Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
 versions.
-
-
-File: as.info,  Node: Flonums,  Prev: Bignums,  Up: Numbers
-
-Flonums
-.......
-
-   A "flonum" represents a floating point number.  The translation is
-indirect: a decimal floating point number from the text is converted by
-`as' to a generic binary floating point number of more than sufficient
-precision.  This generic floating point number is converted to a
-particular computer's floating point format (or formats) by a portion
-of `as' specialized to that computer.
-
-   A flonum is written by writing (in order)
-   * The digit `0'.  (`0' is optional on the HPPA.)
-
-   * A letter, to tell `as' the rest of the number is a flonum.  `e' is
-     recommended.  Case is not important.
-
-     On the H8/300, H8/500, Hitachi SH, and AMD 29K architectures, the
-     letter must be one of the letters `DFPRSX' (in upper or lower
-     case).
-
-     On the ARC, the letter must be one of the letters `DFRS' (in upper
-     or lower case).
-
-     On the Intel 960 architecture, the letter must be one of the
-     letters `DFT' (in upper or lower case).
-
-     On the HPPA architecture, the letter must be `E' (upper case only).
-
-   * An optional sign: either `+' or `-'.
-
-   * An optional "integer part": zero or more decimal digits.
-
-   * An optional "fractional part": `.' followed by zero or more
-     decimal digits.
-
-   * An optional exponent, consisting of:
-
-        * An `E' or `e'.
-
-        * Optional sign: either `+' or `-'.
-
-        * One or more decimal digits.
-
-   At least one of the integer part or the fractional part must be
-present.  The floating point number has the usual base-10 value.
-
-   `as' does all processing using integers.  Flonums are computed
-independently of any floating point hardware in the computer running
-`as'.
-
-
-File: as.info,  Node: Sections,  Next: Symbols,  Prev: Syntax,  Up: Top
-
-Sections and Relocation
-***********************
-
-* Menu:
-
-* Secs Background::             Background
-* Ld Sections::                 Linker Sections
-* As Sections::                 Assembler Internal Sections
-* Sub-Sections::                Sub-Sections
-* bss::                         bss Section
 
 
 File: as.info,  Node: Secs Background,  Next: Ld Sections,  Up: Sections
@@ -820,7 +753,6 @@ Dependencies::.
 * Double::                      `.double FLONUMS'
 * Eject::                       `.eject'
 * Else::                        `.else'
-* Elseif::                      `.elseif'
 * End::				`.end'
 
 * Endef::                       `.endef'
@@ -840,17 +772,11 @@ Dependencies::.
 * Float::                       `.float FLONUMS'
 * Func::                        `.func'
 * Global::                      `.global SYMBOL', `.globl SYMBOL'
-
-* Hidden::                      `.hidden NAMES'
-
 * hword::                       `.hword EXPRESSIONS'
 * Ident::                       `.ident'
 * If::                          `.if ABSOLUTE EXPRESSION'
 * Include::                     `.include "FILE"'
 * Int::                         `.int EXPRESSIONS'
-
-* Internal::                    `.internal NAMES'
-
 * Irp::				`.irp SYMBOL,VALUES'...
 * Irpc::			`.irpc SYMBOL,VALUES'...
 * Lcomm::                       `.lcomm SYMBOL , LENGTH'
@@ -865,23 +791,14 @@ Dependencies::.
 
 * Macro::			`.macro NAME ARGS'...
 * MRI::				`.mri VAL'
+
 * Nolist::                      `.nolist'
 * Octa::                        `.octa BIGNUMS'
 * Org::                         `.org NEW-LC , FILL'
 * P2align::                     `.p2align ABS-EXPR , ABS-EXPR'
-
-* PopSection::                  `.popsection'
-* Previous::                    `.previous'
-
 * Print::			`.print STRING'
-
-* Protected::                   `.protected NAMES'
-
 * Psize::                       `.psize LINES, COLUMNS'
 * Purgem::			`.purgem NAME'
-
-* PushSection::                 `.pushsection NAME'
-
 * Quad::                        `.quad BIGNUMS'
 * Rept::			`.rept COUNT'
 * Sbttl::                       `.sbttl "SUBHEADING"'
@@ -892,7 +809,9 @@ Dependencies::.
 * Set::                         `.set SYMBOL, EXPRESSION'
 * Short::                       `.short EXPRESSIONS'
 * Single::                      `.single FLONUMS'
-* Size::                        `.size [NAME , EXPRESSION]'
+
+* Size::                        `.size'
+
 * Skip::                        `.skip SIZE , FILL'
 * Sleb128::			`.sleb128 EXPRESSIONS'
 * Space::                       `.space SIZE , FILL'
@@ -902,25 +821,17 @@ Dependencies::.
 * String::                      `.string "STR"'
 * Struct::			`.struct EXPRESSION'
 
-* SubSection::                  `.subsection'
 * Symver::                      `.symver NAME,NAME2@NODENAME'
-
 
 * Tag::                         `.tag STRUCTNAME'
 
 * Text::                        `.text SUBSECTION'
 * Title::                       `.title "HEADING"'
-* Type::                        `.type <INT | NAME , TYPE DESCRIPTION>'
-* Uleb128::                     `.uleb128 EXPRESSIONS'
 
+* Type::                        `.type INT'
 * Val::                         `.val ADDR'
 
-
-* Version::                     `.version "STRING"'
-* VTableEntry::                 `.vtable_entry TABLE, OFFSET'
-* VTableInherit::               `.vtable_inherit CHILD, PARENT'
-* Weak::                        `.weak NAMES'
-
+* Uleb128::                     `.uleb128 EXPRESSIONS'
 * Word::                        `.word EXPRESSIONS'
 * Deprecated::                  Deprecated Directives
 
@@ -980,11 +891,11 @@ request in bytes.  For example `.align 8' advances the location counter
 until it is a multiple of 8.  If the location counter is already a
 multiple of 8, no change is needed.
 
-   For other systems, including the i386 using a.out format, and the
-arm and strongarm, it is the number of low-order zero bits the location
-counter must have after advancement.  For example `.align 3' advances
-the location counter until it a multiple of 8.  If the location counter
-is already a multiple of 8, no change is needed.
+   For other systems, including the i386 using a.out format, it is the
+number of low-order zero bits the location counter must have after
+advancement.  For example `.align 3' advances the location counter
+until it a multiple of 8.  If the location counter is already a
+multiple of 8, no change is needed.
 
    This inconsistency is due to the different behaviors of the various
 native assemblers for these systems which GAS must emulate.  GAS also
@@ -1154,7 +1065,7 @@ File: as.info,  Node: Eject,  Next: Else,  Prev: Double,  Up: Pseudo Ops
    Force a page break at this point, when generating assembly listings.
 
 
-File: as.info,  Node: Else,  Next: Elseif,  Prev: Eject,  Up: Pseudo Ops
+File: as.info,  Node: Else,  Next: End,  Prev: Eject,  Up: Pseudo Ops
 
 `.else'
 =======
@@ -1164,17 +1075,7 @@ File: as.info,  Node: Else,  Next: Elseif,  Prev: Eject,  Up: Pseudo Ops
 assembled if the condition for the preceding `.if' was false.
 
 
-File: as.info,  Node: Elseif,  Next: End,  Prev: Else,  Up: Pseudo Ops
-
-`.elseif'
-=========
-
-   `.elseif' is part of the `as' support for conditional assembly;
-*note `.if': If..  It is shorthand for beginning a new `.if' block that
-would otherwise fill the entire `.else' section.
-
-
-File: as.info,  Node: End,  Next: Endef,  Prev: Elseif,  Up: Pseudo Ops
+File: as.info,  Node: End,  Next: Endef,  Prev: Else,  Up: Pseudo Ops
 
 `.end'
 ======
@@ -1342,7 +1243,7 @@ functions are currently defined to have `void' return type.  The
 function must be terminated with `.endfunc'.
 
 
-File: as.info,  Node: Global,  Next: Hidden,  Prev: Func,  Up: Pseudo Ops
+File: as.info,  Node: Global,  Next: hword,  Prev: Func,  Up: Pseudo Ops
 
 `.global SYMBOL', `.globl SYMBOL'
 =================================
@@ -1361,22 +1262,7 @@ other partial programs.  You may need the HPPA-only `.EXPORT' directive
 as well.  *Note HPPA Assembler Directives: HPPA Directives.
 
 
-File: as.info,  Node: Hidden,  Next: hword,  Prev: Global,  Up: Pseudo Ops
-
-`.hidden NAMES'
-===============
-
-   This one of the ELF visibility directives.  The other two are *note
-`.internal': Internal. and *note `.protected': Protected.
-
-   This directive overrides the named symbols default visibility (which
-is set by their binding: local, global or weak).  The directive sets
-the visibility to `hidden' which means that the symbols are not visible
-to other components.  Such symbols are always considered to be
-`protected' as well.
-
-
-File: as.info,  Node: hword,  Next: Ident,  Prev: Hidden,  Up: Pseudo Ops
+File: as.info,  Node: hword,  Next: Ident,  Prev: Global,  Up: Pseudo Ops
 
 `.hword EXPRESSIONS'
 ====================
@@ -1396,4 +1282,96 @@ File: as.info,  Node: Ident,  Next: If,  Prev: hword,  Up: Pseudo Ops
    This directive is used by some assemblers to place tags in object
 files.  `as' simply accepts the directive for source-file compatibility
 with such assemblers, but does not actually emit anything for it.
+
+
+File: as.info,  Node: If,  Next: Include,  Prev: Ident,  Up: Pseudo Ops
+
+`.if ABSOLUTE EXPRESSION'
+=========================
+
+   `.if' marks the beginning of a section of code which is only
+considered part of the source program being assembled if the argument
+(which must be an ABSOLUTE EXPRESSION) is non-zero.  The end of the
+conditional section of code must be marked by `.endif' (*note `.endif':
+Endif.); optionally, you may include code for the alternative
+condition, flagged by `.else' (*note `.else': Else.).
+
+   The following variants of `.if' are also supported:
+`.ifdef SYMBOL'
+     Assembles the following section of code if the specified SYMBOL
+     has been defined.
+
+`.ifc STRING1,STRING2'
+     Assembles the following section of code if the two strings are the
+     same.  The strings may be optionally quoted with single quotes.
+     If they are not quoted, the first string stops at the first comma,
+     and the second string stops at the end of the line.  Strings which
+     contain whitespace should be quoted.  The string comparison is
+     case sensitive.
+
+`.ifeq ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is zero.
+
+`.ifeqs STRING1,STRING2'
+     Another form of `.ifc'.  The strings must be quoted using double
+     quotes.
+
+`.ifge ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is greater
+     than or equal to zero.
+
+`.ifgt ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is greater
+     than zero.
+
+`.ifle ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is less
+     than or equal to zero.
+
+`.iflt ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is less
+     than zero.
+
+`.ifnc STRING1,STRING2.'
+     Like `.ifc', but the sense of the test is reversed: this assembles
+     the following section of code if the two strings are not the same.
+
+`.ifndef SYMBOL'
+`.ifnotdef SYMBOL'
+     Assembles the following section of code if the specified SYMBOL
+     has not been defined.  Both spelling variants are equivalent.
+
+`.ifne ABSOLUTE EXPRESSION'
+     Assembles the following section of code if the argument is not
+     equal to zero (in other words, this is equivalent to `.if').
+
+`.ifnes STRING1,STRING2'
+     Like `.ifeqs', but the sense of the test is reversed: this
+     assembles the following section of code if the two strings are not
+     the same.
+
+
+File: as.info,  Node: Include,  Next: Int,  Prev: If,  Up: Pseudo Ops
+
+`.include "FILE"'
+=================
+
+   This directive provides a way to include supporting files at
+specified points in your source program.  The code from FILE is
+assembled as if it followed the point of the `.include'; when the end
+of the included file is reached, assembly of the original file
+continues.  You can control the search paths used with the `-I'
+command-line option (*note Command-Line Options: Invoking.).  Quotation
+marks are required around FILE.
+
+
+File: as.info,  Node: Int,  Next: Irp,  Prev: Include,  Up: Pseudo Ops
+
+`.int EXPRESSIONS'
+==================
+
+   Expect zero or more EXPRESSIONS, of any section, separated by commas.
+For each expression, emit a number that, at run time, is the value of
+that expression.  The byte order and bit size of the number depends on
+what kind of target the assembly is for.
 

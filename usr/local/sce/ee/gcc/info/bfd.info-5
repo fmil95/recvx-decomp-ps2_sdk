@@ -24,135 +24,6 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: bfd.info,  Node: Linker Functions,  Next: Hash Tables,  Prev: File Caching,  Up: BFD front end
-
-Linker Functions
-================
-
-   The linker uses three special entry points in the BFD target vector.
-It is not necessary to write special routines for these entry points
-when creating a new BFD back end, since generic versions are provided.
-However, writing them can speed up linking and make it use
-significantly less runtime memory.
-
-   The first routine creates a hash table used by the other routines.
-The second routine adds the symbols from an object file to the hash
-table.  The third routine takes all the object files and links them
-together to create the output file.  These routines are designed so
-that the linker proper does not need to know anything about the symbols
-in the object files that it is linking.  The linker merely arranges the
-sections as directed by the linker script and lets BFD handle the
-details of symbols and relocs.
-
-   The second routine and third routines are passed a pointer to a
-`struct bfd_link_info' structure (defined in `bfdlink.h') which holds
-information relevant to the link, including the linker hash table
-(which was created by the first routine) and a set of callback
-functions to the linker proper.
-
-   The generic linker routines are in `linker.c', and use the header
-file `genlink.h'.  As of this writing, the only back ends which have
-implemented versions of these routines are a.out (in `aoutx.h') and
-ECOFF (in `ecoff.c').  The a.out routines are used as examples
-throughout this section.
-
-* Menu:
-
-* Creating a Linker Hash Table::
-* Adding Symbols to the Hash Table::
-* Performing the Final Link::
-
-
-File: bfd.info,  Node: Creating a Linker Hash Table,  Next: Adding Symbols to the Hash Table,  Prev: Linker Functions,  Up: Linker Functions
-
-Creating a linker hash table
-----------------------------
-
-   The linker routines must create a hash table, which must be derived
-from `struct bfd_link_hash_table' described in `bfdlink.c'.  *Note Hash
-Tables::, for information on how to create a derived hash table.  This
-entry point is called using the target vector of the linker output file.
-
-   The `_bfd_link_hash_table_create' entry point must allocate and
-initialize an instance of the desired hash table.  If the back end does
-not require any additional information to be stored with the entries in
-the hash table, the entry point may simply create a `struct
-bfd_link_hash_table'.  Most likely, however, some additional
-information will be needed.
-
-   For example, with each entry in the hash table the a.out linker
-keeps the index the symbol has in the final output file (this index
-number is used so that when doing a relocateable link the symbol index
-used in the output file can be quickly filled in when copying over a
-reloc).  The a.out linker code defines the required structures and
-functions for a hash table derived from `struct bfd_link_hash_table'.
-The a.out linker hash table is created by the function
-`NAME(aout,link_hash_table_create)'; it simply allocates space for the
-hash table, initializes it, and returns a pointer to it.
-
-   When writing the linker routines for a new back end, you will
-generally not know exactly which fields will be required until you have
-finished.  You should simply create a new hash table which defines no
-additional fields, and then simply add fields as they become necessary.
-
-
-File: bfd.info,  Node: Adding Symbols to the Hash Table,  Next: Performing the Final Link,  Prev: Creating a Linker Hash Table,  Up: Linker Functions
-
-Adding symbols to the hash table
---------------------------------
-
-   The linker proper will call the `_bfd_link_add_symbols' entry point
-for each object file or archive which is to be linked (typically these
-are the files named on the command line, but some may also come from
-the linker script).  The entry point is responsible for examining the
-file.  For an object file, BFD must add any relevant symbol information
-to the hash table.  For an archive, BFD must determine which elements
-of the archive should be used and adding them to the link.
-
-   The a.out version of this entry point is
-`NAME(aout,link_add_symbols)'.
-
-* Menu:
-
-* Differing file formats::
-* Adding symbols from an object file::
-* Adding symbols from an archive::
-
-
-File: bfd.info,  Node: Differing file formats,  Next: Adding symbols from an object file,  Prev: Adding Symbols to the Hash Table,  Up: Adding Symbols to the Hash Table
-
-Differing file formats
-......................
-
-   Normally all the files involved in a link will be of the same
-format, but it is also possible to link together different format
-object files, and the back end must support that.  The
-`_bfd_link_add_symbols' entry point is called via the target vector of
-the file to be added.  This has an important consequence: the function
-may not assume that the hash table is the type created by the
-corresponding `_bfd_link_hash_table_create' vector.  All the
-`_bfd_link_add_symbols' function can assume about the hash table is
-that it is derived from `struct bfd_link_hash_table'.
-
-   Sometimes the `_bfd_link_add_symbols' function must store some
-information in the hash table entry to be used by the `_bfd_final_link'
-function.  In such a case the `creator' field of the hash table must be
-checked to make sure that the hash table was created by an object file
-of the same format.
-
-   The `_bfd_final_link' routine must be prepared to handle a hash
-entry without any extra information added by the
-`_bfd_link_add_symbols' function.  A hash entry without extra
-information will also occur when the linker script directs the linker
-to create a symbol.  Note that, regardless of how a hash table entry is
-added, all the fields will be initialized to some sort of null value by
-the hash table entry initialization function.
-
-   See `ecoff_link_add_externals' for an example of how to check the
-`creator' field before saving information (in this case, the ECOFF
-external symbol debugging information) in a hash table entry.
-
-
 File: bfd.info,  Node: Adding symbols from an object file,  Next: Adding symbols from an archive,  Prev: Differing file formats,  Up: Adding Symbols to the Hash Table
 
 Adding symbols from an object file
@@ -423,8 +294,8 @@ you know approximately how many entries you will need, the function
 
    The function `bfd_hash_table_init' take as an argument a function to
 use to create new entries.  For a basic hash table, use the function
-`bfd_hash_newfunc'.  *Note Deriving a New Hash Table Type::, for why
-you would want to use a different value for this argument.
+`bfd_hash_newfunc'.  *Note Deriving a New Hash Table Type:: for why you
+would want to use a different value for this argument.
 
    `bfd_hash_table_init' will create an objalloc which will be used to
 allocate new entries.  You may allocate memory on this objalloc using

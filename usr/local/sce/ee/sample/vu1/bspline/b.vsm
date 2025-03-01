@@ -1,0 +1,334 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - bspline -
+ *
+ *                         Version 0.3.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *          Name : b.vsm
+ *          Description : vu1 micro code to draw b-spline surface. 
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.3.0          Jun,1,1999     munekis     first version
+ */
+
+; -------------------------------------------------------------------
+;
+;
+;	VF01 - VF16 : Control points
+;	VF17 - VF19 : Blending Coeff.
+; 	VF20 - VF27 : tmp
+;	VF28 - VF31 : perspective matrix
+;
+;	VI01, VI02 : counter for U, V
+;	VI03 : div U, V (same number)
+;       VI04 : RGBAQ store pointer
+;	VI09 : ST store pointer
+;       VI05 : XYZF store pointer
+;	VI06 : source color pointer
+;	VI10 : load pointer for control points set
+;	VI11 : counter (number of 4x4 control points sets)
+;
+;	vumem mapping
+; 	0 : giftag
+;       1 - 16 : control point
+;       17 - 20 : blending coeff(0.0, 0.333, 0.666, 1.00).
+;       21 - 24 : perspective matrix
+;	25 : source color
+;	100 : XGKICK area
+;
+;
+;
+; -------------------------------------------------------------------
+
+.vu
+	;--- load perspective matrix ---
+	NOP     IADDIU VI02, VI00, 0
+	NOP	LQI VF28, (VI02++)
+	NOP	LQI VF29, (VI02++)
+	NOP	LQI VF30, (VI02++)
+	NOP	LQI VF31, (VI02++)
+	NOP[E]	NOP
+	NOP 	NOP
+START0:
+	;--- load control points ---
+	NOP	XTOP VI07 
+	NOP     IADDIU VI06, VI07, 0
+
+	NOP	LQ VF17, 0(VI06) 	; load gif tag
+
+	NOP	ILWR.x VI11, (VI06)x	;  
+	NOP	IADDIU VI10, VI00, 0x7fff
+	NOP	IAND VI10, VI10, VI11	; nloop
+	NOP	IADDIU VI11, VI00, 0	;
+NLOOP:
+	NOP	ISUBIU VI10, VI10, 24
+	NOP	IADDIU VI11, VI11, 1
+	NOP	IBNE VI10, VI00, NLOOP
+	NOP	NOP
+
+	; --- load 1st control points set ---
+	NOP     IADDIU VI10, VI07, 1 ; -- pointer to base ST & load control point --
+	NOP	LQI VF27, (VI10++)   ; -- base ST --
+	NOP	LQI VF05, (VI10++)   ; -- control point --
+	NOP	LQI VF06, (VI10++)
+	NOP	LQI VF07, (VI10++)
+	NOP	LQI VF08, (VI10++)
+	NOP	LQI VF09, (VI10++)
+	NOP	LQI VF10, (VI10++)
+	NOP	LQI VF11, (VI10++)
+	NOP	LQI VF12, (VI10++)
+	NOP	LQI VF13, (VI10++)
+	NOP	LQI VF14, (VI10++)
+	NOP	LQI VF15, (VI10++)
+	NOP	LQI VF16, (VI10++)
+
+	; --- store gif tag ---
+	NOP     IADDIU VI06, VI07, 35
+	NOP	SQ VF17, 0(VI06) 
+
+	;--- set pointer to store RGBA/ST/XYZF
+	NOP	IADDIU VI04, VI07, 36
+	NOP	IADDIU VI09, VI07, 37
+	NOP	IADDIU VI05, VI07, 38
+	NOP     IADDIU VI02, VI11, 0
+
+LOOP02:
+	ADDx.xyzw VF01, VF05, VF00x	IADDIU VI01, VI00, 0
+	ADDx.xyzw VF02, VF06, VF00x	IADDIU VI03, VI00, 24
+	ADDx.xyzw VF03, VF07, VF00x	IADDIU VI08, VI00, 10
+	ADDx.xyzw VF04, VF08, VF00x	NOP
+
+	ADDx.xyzw VF05, VF09, VF00x	NOP
+	ADDx.xyzw VF06, VF10, VF00x	NOP
+	ADDx.xyzw VF07, VF11, VF00x	NOP
+	ADDx.xyzw VF08, VF12, VF00x	NOP
+
+	ADDx.xyzw VF09, VF13, VF00x	NOP
+	ADDx.xyzw VF10, VF14, VF00x	NOP
+	ADDx.xyzw VF11, VF15, VF00x	NOP
+	ADDx.xyzw VF12, VF16, VF00x	NOP
+
+	NOP	LQI VF13, (VI10++)
+	NOP	LQI VF14, (VI10++)
+	NOP	LQI VF15, (VI10++)
+	NOP	LQI VF16, (VI10++)
+
+
+;----------------------------------------------
+LOOP01:
+	; --- load blending coeff ---
+	NOP				LQ VF17, 0(VI08)
+	NOP				LQ VF18, 3(VI08)
+	NOP NOP
+	NOP NOP
+
+	; --- calc vector1 ---
+	MULAx.xyzw  ACC,  VF01, VF17x	NOP
+	MADDAy.xyzw ACC,  VF02, VF17y   NOP
+	MADDAz.xyzw ACC,  VF03, VF17z   NOP
+	MADDw.xyzw  VF21, VF04, VF17w   NOP
+	
+	MULAx.xyzw  ACC,  VF05, VF17x	NOP 
+	MADDAy.xyzw ACC,  VF06, VF17y   NOP
+	MADDAz.xyzw ACC,  VF07, VF17z   NOP
+	MADDw.xyzw  VF22, VF08, VF17w   NOP
+
+	MULAx.xyzw  ACC,  VF09, VF17x	NOP 
+	MADDAy.xyzw ACC,  VF10, VF17y   NOP
+	MADDAz.xyzw ACC,  VF11, VF17z   NOP
+	MADDw.xyzw  VF23, VF12, VF17w   NOP
+
+	MULAx.xyzw  ACC,  VF13, VF17x	NOP 
+	MADDAy.xyzw ACC,  VF14, VF17y   NOP
+	MADDAz.xyzw ACC,  VF15, VF17z   NOP
+	MADDw.xyzw  VF24, VF16, VF17w   NOP
+
+	MULAx.xyzw  ACC,  VF21, VF18x	NOP 
+	MADDAy.xyzw ACC,  VF22, VF18y   NOP
+	MADDAz.xyzw ACC,  VF23, VF18z   NOP
+	MADDw.xyzw  VF25, VF24, VF18w   NOP
+	ADDx.xyzw VF19, VF17, VF00x 	NOP
+	NOP NOP
+	NOP NOP
+
+	; --- store B, load B' and another B ---
+	NOP				LQ VF18, 2(VI08)
+	NOP				LQ VF17, 1(VI08)
+	NOP				IADDIU VI08, VI08, 4 
+	NOP NOP
+	NOP NOP
+	 ; --- calc vector2 ---
+        MULAx.xyzw  ACC,  VF01, VF17x   NOP
+        MADDAy.xyzw ACC,  VF02, VF17y   NOP
+        MADDAz.xyzw ACC,  VF03, VF17z   NOP
+        MADDw.xyzw  VF21, VF04, VF17w   NOP
+
+        MULAx.xyzw  ACC,  VF05, VF17x   NOP
+        MADDAy.xyzw ACC,  VF06, VF17y   NOP
+        MADDAz.xyzw ACC,  VF07, VF17z   NOP
+        MADDw.xyzw  VF22, VF08, VF17w   NOP
+
+        MULAx.xyzw  ACC,  VF09, VF17x   NOP
+        MADDAy.xyzw ACC,  VF10, VF17y   NOP
+        MADDAz.xyzw ACC,  VF11, VF17z   NOP
+        MADDw.xyzw  VF23, VF12, VF17w   NOP
+
+        MULAx.xyzw  ACC,  VF13, VF17x   NOP
+        MADDAy.xyzw ACC,  VF14, VF17y   NOP
+        MADDAz.xyzw ACC,  VF15, VF17z   NOP
+        MADDw.xyzw  VF24, VF16, VF17w   NOP
+
+        MULAx.xyzw  ACC,  VF21, VF18x   NOP
+        MADDAy.xyzw ACC,  VF22, VF18y   NOP
+        MADDAz.xyzw ACC,  VF23, VF18z   NOP
+        MADDw.xyzw  VF26, VF24, VF18w   NOP
+        NOP NOP
+        NOP NOP
+        NOP NOP
+	; --- outer product ---
+	OPMULA.xyz ACCxyz, VF25xyz, VF26xyz	IADDIU VI06, VI00, 4	
+	OPMSUB.xyz VF20xyz, VF26xyz, VF25xyz	LQI VF21, (VI06++)	
+        NOP 					LQI VF22, (VI06++)
+        NOP  					LQI VF23, (VI06++)
+        NOP 					LQI VF24, (VI06++)
+	; --- normalize ---
+	NOP				ERSADD P, VF20
+	NOP				WAITP
+	NOP				MFP.x VF25x, P
+	NOP NOP
+	NOP NOP
+	NOP NOP
+	NOP				ESQRT P, VF25x
+	NOP				WAITP
+	NOP NOP
+	NOP NOP
+	NOP NOP
+	NOP				MFP.x VF25x, P
+	NOP NOP
+	NOP NOP
+	NOP NOP
+	MULx.xyz VF26xyz, VF20xyz, VF25x NOP
+
+	; --- calc dot products ---
+	NOP NOP
+	NOP NOP
+	NOP NOP
+	MULAx.xyz ACC, VF22, VF26x	NOP
+	MADDAy.xyz ACC, VF23, VF26y	NOP
+	MADDz.xyz VF25, VF24, VF26z	NOP
+	NOP NOP
+	NOP NOP
+	NOP					LQI VF23, (VI06++) ; load MIN
+	MULAx.xyz ACC, VF21xyz, VF25x		LQI VF24, (VI06++) ; load MAX
+	MADDAy.xyz ACC, VF21xyz, VF25y		MOVE VF17, VF19 ; restore B
+	MADDz.xyz VF22xyz, VF21xyz, VF25z	LQI VF26, (VI08++)
+	MULAx.xyzw  ACC,  VF01, VF17x		NOP
+	MADDAy.xyzw ACC,  VF02, VF17y		NOP
+	MADDAz.xyzw ACC,  VF03, VF17z		NOP
+	MAX.xyzw VF22, VF22, VF23		NOP 
+	MADDw.xyzw  VF21, VF04, VF17w		NOP
+	MULAx.xyzw  ACC,  VF13, VF17x		NOP
+	MADDAy.xyzw ACC,  VF14, VF17y		NOP
+	MINI.xyzw VF22, VF22, VF24		NOP
+	NOP NOP
+	NOP NOP
+	MADDAz.xyzw ACC,  VF15, VF17z		NOP
+	MADDw.xyzw  VF24, VF16, VF17w		NOP
+	NOP NOP
+	FTOI0 VF23, VF22		NOP
+
+	; ----------- calculate physical vertex ---------
+        MULAx.xyzw  ACC,  VF05, VF17x   NOP
+        MADDAy.xyzw ACC,  VF06, VF17y   NOP
+        MADDAz.xyzw ACC,  VF07, VF17z   NOP
+        MADDw.xyzw  VF22, VF08, VF17w   SQ VF23, 0(VI04)
+
+        MULAx.xyzw  ACC,  VF09, VF17x   IADDIU VI04, VI04, 3
+        MADDAy.xyzw ACC,  VF10, VF17y   NOP
+        MADDAz.xyzw ACC,  VF11, VF17z   NOP
+        MADDw.xyzw  VF23, VF12, VF17w   NOP
+
+        MULAx.xyzw  ACC,  VF21, VF18x   NOP
+        MADDAy.xyzw ACC,  VF22, VF18y   NOP
+        MADDAz.xyzw ACC,  VF23, VF18z   NOP
+        MADDw.xyzw  VF25, VF24, VF18w   NOP
+	
+	; --- ST ---
+	MULAz.x ACC, VF26x, VF27z	NOP
+	MULAw.y ACC, VF26y, VF27w	NOP
+	MADDw.xy VF26xy, VF27xy, VF00w	NOP 
+	MULAx.xyzw  ACC,  VF28, VF25x 	NOP
+	MADDAy.xyzw ACC,  VF29, VF25y 	NOP
+	MADDAz.xyzw ACC,  VF30, VF25z 	NOP
+        MADDw.xyzw  VF21, VF31, VF25w 	SQ VF26, 0(VI09)
+        NOP				IADDIU VI09, VI09, 3 
+        NOP NOP	
+
+	; ----------- perspective transform ------------
+	NOP NOP
+	NOP 				DIV Q, VF00w, VF21w
+	NOP 				WAITQ
+	MULq VF22, VF21, Q 		NOP
+	NOP NOP
+	NOP NOP
+	NOP NOP
+	FTOI4 VF23, VF22		NOP
+	NOP NOP
+	NOP NOP
+	NOP NOP
+
+	; --- store it ---
+	NOP	SQ.xyzw VF23, 0(VI05) 
+	NOP	IADDIU VI05, VI05, 3
+	NOP	IADDIU VI01, VI01, 1
+	NOP 	NOP
+	NOP	IBNE VI01, VI03, LOOP01
+	NOP 	NOP
+
+	;------------------------------------------------------------
+	NOP	ISUBIU VI02, VI02, 1
+	ADDz.x VF27x, VF27x, VF27z	NOP
+	NOP	IBGTZ VI02, LOOP02
+	NOP 	NOP
+	
+	;--- z = -z  ---
+	NOP				IADDIU VI06, VI07, 38 ; --- set first XYZ ---
+	NOP				IADDIU VI02, VI11, 0
+	NOP				IADDIU VI03, VI00, 0x7fff ; can not add 0x8000 since imm is only 15 bits
+	NOP				IADDIU VI03, VI03, 1  ; to create 0x8000(this is neccesary). 
+LOOP3:
+	NOP				ISW.w VI03,  0(VI06)
+	NOP				ISW.w VI03,  3(VI06)
+	NOP				ISW.w VI03, 24(VI06)
+	NOP				ISW.w VI03, 27(VI06)
+	NOP				ISW.w VI03, 48(VI06)
+	NOP				ISW.w VI03, 51(VI06)
+	NOP	IADDIU VI06, VI06, 72
+	NOP	ISUBIU VI02, VI02, 1
+	NOP 	NOP
+	NOP	IBGTZ VI02, LOOP3
+	NOP NOP
+	;------------------------------------------------------------
+	NOP	IADDIU VI06, VI07, 35 ; --- set XGKICK point ---
+	NOP     NOP
+        NOP     NOP
+        NOP     NOP
+        NOP     XGKICK VI06
+        NOP[E]  NOP
+        NOP     NOP
+        NOP     B START0
+        NOP     NOP
+        NOP     NOP
+	
+
+
+

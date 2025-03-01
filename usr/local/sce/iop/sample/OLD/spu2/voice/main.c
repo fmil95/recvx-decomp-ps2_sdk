@@ -30,7 +30,7 @@
 
 #define PRINTF(x) printf x
 
-#define VAG_FILENAME	"host1:/usr/local/sce/data/sound/wave/piano.vag"
+#define VAG_FILENAME	"host1:piano.vag"
 #define VAG_ADDR	0x5010
 #define	REVERB_DEPTH 	0x1fff
 

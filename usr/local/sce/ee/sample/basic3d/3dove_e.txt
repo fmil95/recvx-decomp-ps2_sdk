@@ -1,0 +1,225 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+                  Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                   All Rights Reserved
+
+Basic Sample basic3d
+=======================
+
+Purpose of basic3d
+--------------------------------------------------------------------------
+This sample has been programmed with a main objective of giving the user 
+hints on understanding the basic procedure for displaying 3D objects on 
+the "PlayStation2" machine.  Besides, this sample is divided into 
+the categories of the Core, VU0 and VU1 versions so that the user can 
+understand what transition the program follows in the tuning process after 
+the prototype is made. 
+
+   	- basic3d/ ------- core/  	Described only with the EE Core
+		    |			instructions.  
+		    |			For understanding the algorithm.
+		    |----- vu0/		Main processing is replaced with  
+		    |			the VU0 macroinstructions based  
+		    |			on the Core version. 
+		    |----- vu1/		The processing of the Core/VU0 
+                                        version is achieved further by 
+					the VU1 microinstructions. 
+
+This document provides the following descriptions.
+
+	- Sample specification
+	- Program flow
+	- Coordinate system 
+	- View volume
+	- Data format
+
+For detailed description of each sample, refer to the document in each 
+sample directory.  Note that the converter to the data format described 
+later in this document is not provided this time. 
+
+
+Sample Specification
+--------------------------------------------------------------------------
+Displays the TriangleStrip cube with texture. 
+Displays the Triangle torus with texture. 
+
+	24-bit Z buffer
+	3 light sources
+	32-bit texture 
+
+
+Program Flow
+--------------------------------------------------------------------------
+The procedure for displaying a 3D object on the screen is as follows. 
+
+
+   Initialization:
+		Initialization of device
+			|
+		Setting of drawing environment
+			|
+		Transfer of image for texture
+			|
+		Generation and transfer of packet for 
+                environment setting for texture
+			|
+		Initialization of controller
+			|
+			V
+   Main loop:	
+			+<------------------------------+
+			|				|
+		Acquisition of information on controller|
+			|				|
+		Double buffer switching 		|
+			|				|
+		Generation of View-Screen matrix	|
+			|				|
+		Generation of Local-World matrix	|
+			|				|
+		Generation of World-View matrix		|
+			|				|
+		Generation of Local-Screen matrix	|
+			|				|
+		Generation of local light matrix	|
+			|				|
+		Generation of light color matrix	|
+			|				|
+   Packet generation:	|				|
+			|				|
+		Generation of DmaTag and GifTag		|
+			|				|
+			|  Loops for number of vertexes	|
+			+<----------------------+	|
+			|			|	|
+		Coordinate conversion of 	|	|
+		vertex 				|	|
+			|			|	|
+		Transparency perspective 	|	|
+		conversion of vertex (XYZ)	|       |
+			|			|	|
+		Lighting effect			|	|
+			|			|	|
+		Lighting effect color		|	|
+			|			|	|
+		Vertex color on screen (RGBA)	|	|
+			|			|	|
+		st->ST conversion (ST)		|	|
+			|			|	|
+		Stores STQ, RGBA and XYZ values	|	|
+			|			|	|
+			+-----------------------+	|
+			|				|
+			V				|
+		Transfers to a packet to GS 		|
+			|				|
+		Drawing environment setting		|
+		Waiting for V-Blank			|
+			|				|
+			+-------------------------------+
+			|
+			V
+
+
+Description of coordinate system
+--------------------------------------------------------------------------
+   Local coordinate system	  Coordinate system to describe 
+				  the object (model)
+   World coordinate system    	  World coordinate system (which is 
+				  usually restrained to the ground)  
+   View coordinate system	  Coordinate system of camera (viewpoint)
+   Screen coordinate system   	  Coordinate system fixed to GS
+   GdPrimitive coordinate system  Coordinate system after 
+				  transparency perspective conversion
+
+
+The View coordinate system defines the viewpoint (eye) as the origin 
+point (0,0,0), the eye direction as Z+, the rightward direction as X+ 
+and the downward direction as Y+.
+
+
+                           Z+
+                          /
+                         /
+                        +------X+
+                       /|
+                      / |
+                     /  Y+
+                   eye
+
+
+Data Format
+--------------------------------------------------------------------------
+In the basic3d sample, the following data format is adopted. 
+
+---------------------------------------------------------------------
+Binary format for basic3d sample program
+On memory format
+
+  Data is composed of the data header and two or more blocks. 
+  In the data header, total number of data (number of vertexes), 
+  types of data (PRIM), and number of blocks are stored. 
+  Each block is composed of the block header and data.  In the block 
+  header, the number of vertexes of data within the block is stored. 
+  The data is stored in the order of vertex, normal, texture and color. 
+  When the original data does not have all the data items above, 
+  the missing items should be padded. 
+  
+    127           95            63          31           0
+     +------------+------+-----+------------+------------+
+     |   data num |block |PRIM |  reserved  |   Magic    |   data header
+     +============+======+=====+============+============+
+     |            |            |            | vertex num |   block header
+     +------------+------------+------------+------------+
+     |    1.0     |    VZ0     |    VY0     |    VX0     |
+     +------------+------------+------------+------------+
+                              ...                            vertex
+     +------------+------------+------------+------------+
+     |    1.0     |    VZn     |    VYn     |    VXn     |
+     +------------+------------+------------+------------+
+     |    0.0     |    NZ0     |    NY0     |    NX0     |
+     +------------+------------+------------+------------+
+                              ...                            normal
+     +------------+------------+------------+------------+
+     |    0.0     |    NZn     |    NYn     |    NXn     |
+     +------------+------------+------------+------------+
+     |    0.0     |    1.0     |     T0     |     S0     |
+     +------------+------------+------------+------------+
+                              ...                            texture
+     +------------+------------+------------+------------+
+     |    0.0     |    1.0     |     Tn     |     Sn     |
+     +------------+------------+------------+------------+
+     |    A0      |     B0     |     G0     |     R0     |
+     +------------+------------+------------+------------+
+                              ...                            color
+     +------------+------------+------------+------------+
+     |    AN      |     Bn     |     Gn     |     Rn     |
+     +============+======+=====+============+============+
+     |            |            |            | vertex num |   block header
+     +------------+------------+------------+------------+
+     |    1.0     |    VZ0     |    VY0     |    VX0     |
+     +------------+------------+------------+------------+
+                              ...                            vertex
+     +------------+------------+------------+------------+
+     |    1.0     |    VZn     |    VYn     |    VXn     |
+     +------------+------------+------------+------------+
+     |    0.0     |    NZ0     |    NY0     |    NX0     |
+     +------------+------------+------------+------------+
+                              ...                            normal
+     +------------+------------+------------+------------+
+     |    0.0     |    NZn     |    NYn     |    NXn     |
+     +------------+------------+------------+------------+
+     |    0.0     |    1.0     |     T0     |     S0     |
+     +------------+------------+------------+------------+
+                              ...                            texture
+     +------------+------------+------------+------------+
+     |    0.0     |    1.0     |     Tn     |     Sn     |
+     +------------+------------+------------+------------+
+     |    A0      |     B0     |     G0     |     R0     |
+     +------------+------------+------------+------------+
+                              ...                            color
+     +------------+------------+------------+------------+
+     |    AN      |     Bn     |     Gn     |     Rn     |
+     +============+======+=====+============+============+
+
+---------------------------------------------------------------------

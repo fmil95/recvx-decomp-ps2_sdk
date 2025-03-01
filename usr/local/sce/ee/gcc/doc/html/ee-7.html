@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Installing on UNIX</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Installing on UNIX</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-8.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-489158"></A><A NAME="23971"></A>Installing on UNIX</H2>
+<OL>
+<LI>
+<A NAME="pgfId-460542"></A>Mount the CD.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-487701"></A>The device used will depend on your system configuration (defaults where appropriate are used in the examples). In addition, consult your system administrator if you need assistance.</P>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-487822"></A>In the following installation examples, substitute <TT CLASS="Code">
+/mnt</TT>
+ with the directory where the CD-ROM is mounted, or where the installation files are located.</P>
+<OL>
+<LI>
+<A NAME="pgfId-460546"></A>Install the tools in a directory that has writable access permissions.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-461026"></A>Make sure you can write in <TT CLASS="Code">
+/usr/cygnus</TT>
+ using the following input:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-461025"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+su root</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-461030"></A>Enter the root password.</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-461029"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+mkdir /usr/cygnus</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-461036"></A>If a <TT CLASS="Code">
+File exists </TT>
+error appears, ignore it.</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-461033"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+chmod 777 /usr/cygnus</TT>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-487557"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+exit</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-488148"></A>Run the <TT CLASS="Code">
+Install</TT>
+ script to set up a target machine.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-491100"></A>Using the following command:  </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491092"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+/mnt/ee/Install &#92;</TT>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491099"></A><TT CLASS="Code">
+--file=/mnt/ee/ee.tar.Z </TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-487815"></A>Install displays messages about its activity, ending with the following output: </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-487814"></A><STRONG CLASS="CodeOutput">
+Done.</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-487816"></A>Install the source code.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-460739"></A>Use the following commands to install the source code:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-460862"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ cd /usr/cygnus/ee-<VAR CLASS="CodeVariant">
+&lt;yymmdd&gt;</VAR>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-478592"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ uncompress &lt; /mnt/src.tar.Z | tar xpf -</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-460758"></A>Install the HTML documentation.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-460759"></A>Use the following commands to install the HTML documentation:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-460867"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ cd /usr/cygnus/ee-<VAR CLASS="CodeVariant">
+&lt;yymmdd&gt;</VAR>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-478545"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ uncompress &lt; /mnt/doc.tar.Z | tar xpf -</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-491138"></A>Build symbolic links to make executable paths easy to negotiate.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-491139"></A>You may need root access to put the link in <TT CLASS="Code">
+/usr</TT>
+ directory. The <VAR CLASS="CodeVariant">
+&lt;host&gt;</VAR>
+ in the instruction on the fourth line stands for the host machine you're using (for example, <TT CLASS="Code">
+sparc-sun-solaris2.5.1</TT>
+).</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491142"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ cd /usr/cygnus</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491149"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ ln -s ee-<VAR CLASS="CodeVariant">
+&lt;yymmdd&gt;</VAR>
+ ee</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491150"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ su root </P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491157"></A><STRONG CLASS="CodeOutput">
+#</STRONG>
+ ln -s /usr/cygnus/ee/H-<VAR CLASS="CodeVariant">
+&lt;host&gt; </VAR>
+/usr/ee</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-491158"></A><STRONG CLASS="CodeOutput">
+#</STRONG>
+ exit</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-460804"></A>Enable the problem reporting utility.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-460805"></A>Using your Cygnus customer ID (see cover letter), enable the electronic mail tool for reporting problems. With the following command, enable the send-pr problem reporting database tool:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-460883"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ /usr/ee/bin/install-sid <VAR CLASS="CodeVariant">
+&lt;customer-ID&gt;</VAR>
+</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-460820"></A>Remove public write access restrictions from <TT CLASS="Code">
+/usr/cygnus</TT>
+.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-460821"></A>See your system administrator for the correct permissions at your site. </P>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-487657"></A>You are done. With <TT CLASS="Code">
+/usr/ee/bin </TT>
+in your <TT CLASS="Code">
+PATH,</TT>
+ you can use the GNUPro Toolkit.</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Installing on UNIX</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-8.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

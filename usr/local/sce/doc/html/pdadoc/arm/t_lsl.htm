@@ -1,0 +1,281 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>t_lsl</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]
+</A><A HREF="t_ldrsh.htm">[前]</A> <A HREF="t_lsl2.htm">[次]</A>
+<A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">LSL（1）</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>Logical shift left, immediate</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">LSL Rd, Rm, #&lt;shift_imm&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>この形式のLSL（Logical Shift Left）命令は、レジスタの値を直接（LSL #0）、またはレジスタの値に2の累乗定数を乗算した値を提供するのに使用します。</P>
+  <P>この場合、LSLはレジスタRmの値を、0～31の範囲のイミディエイト値によって論理左シフトし、結果をデスティネーション・レジスタRdにストアします。空きビット位置にはゼロが挿入されます。（結果に基づいて）コンディション・コード・フラグが更新されます。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972438"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972440"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972442"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972444"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972446"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972448"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972450"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972452"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972454"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972456"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972458"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972460"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972462"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972464"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972466"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972468"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972470"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972472"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972474"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972476"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972478"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+    <A NAME="972480"></A><BR>
+    shift_imm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="972490"></A><BR>
+    Rm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="972496"></A><BR>
+    Rd</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if &lt;shift_imm&gt; == 0
+	C Flag = unaffected
+	Rd = unaffected
+else /* &lt;shift_imm&gt; &gt; 0 */
+	C Flag = Rm[32 - &lt;shift_imm&gt;]
+	Rd = Rm Logical_Shift_Left &lt;shift_imm&gt;
+N Flag = Rd[31]
+Z Flag = if Rd == 0 then 1 else 0
+V Flag = unaffected</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>同等なARM構文とエンコーディング</H4>
+
+<BLOCKQUOTE>
+  <H3><FONT COLOR="#009999">MOVS Rd, Rm, LSL #&lt;shift_imm&gt;</FONT></H3>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972511"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972513"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972515"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972517"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972519"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972521"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972523"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972525"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972527"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972529"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972531"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972533"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972535"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972537"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972539"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972541"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972543"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972545"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972547"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972549"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972551"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972553"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972555"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972557"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972559"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972561"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972563"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972565"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972567"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972569"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972571"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972573"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972575"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972577"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972579"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972581"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972583"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972585"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972587"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972589"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972591"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972593"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972595"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972597"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="972599"></A><BR>
+    SBZ</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="972607"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+    <A NAME="972615"></A><BR>
+    shift_imm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972625"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972627"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="972629"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="972631"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE><BR>
+</P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次] </A><A
+HREF="t_ldrsh.htm">[前]</A> <A HREF="t_lsl2.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

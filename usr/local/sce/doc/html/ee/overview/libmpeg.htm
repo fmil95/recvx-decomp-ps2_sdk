@@ -1,0 +1,377 @@
+<HTML>
+<HEAD>
+<TITLE> MPEGライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libmpeg.htm" SELECTED> MPEGライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+MPEGライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 使用リソース<BR></A><BR>
+    <A HREF="#Heading4_1_4"> サンプルプログラム<BR></A><BR>
+    <A HREF="#Heading4_1_5"> 制限および注意事項<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 機能の特徴<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> ストリームの非多重化<BR></A><BR>
+    <A HREF="#Heading4_2_2"> コールバックメカニズム<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libmpegはMPEG2 / MPEG1画像のデコードを行うライブラリです。対応するMPEG2(MPEG1)ストリームは以下のとおりです。<BR>
+      <BLOCKQUOTE>
+      Main Profile at Main Level(MP@ML)<BR>
+      Simple Profile at Main Level(SP@ML)<BR>
+      サイズ :	最小32x32、最大720x480　高さおよび幅（ピクセル数）は16の倍数<BR>
+      ピクチャ構造 :	フレーム構造（プログレッシブフレームが望ましい）<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libmpegを利用する際に必要なファイルは次のとおりです。libmpegは内部でlibipuを使用しますので、libipuのライブラリファイルも必要となります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libmpeg.a<BR>libipu.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libmpeg.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>使用リソース</B>
+</A>
+</H3>
+<blockquote>
+    libmpegはデコード処理に際して、メインメモリ以外に次のハードウェアリソースを使用します。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>リソース</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>使用期間</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">DMA ch4</TD>
+<TD valign="TOP">全体を通じて</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMA ch3</TD>
+<TD valign="TOP">sceMpegInit(),<BR>sceMpegGetPicture(),<BR>sceMpegGetPictureRAW8()の中でのみ</TD>
+</TR>
+<TR>
+<TD valign="TOP">ScratchPad RAM</TD>
+<TD valign="TOP">sceMpegGetPicture(),<BR>sceMpegGetPictureRAW8()の中でのみ</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    libmpegが使用する期間、これらのリソースが他で使われないように注意してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libmpegを利用したサンプルには以下のものがあります。<BR>
+    <OL>
+         <LI VALUE= 1> sce/ee/sample/mpeg/ezmpeg<BR>メインメモリ上のMPEG2 ビデオエレメンタリストリーム(m2v)を再生します。<BR>
+         <LI VALUE= 2> sce/ee/sample/mpeg/mpegstr<BR>CD/DVD/ホスト上のハードディスクにある MPEG2 ストリーム(PSS)を再生します。<BR>色変換にはIPUを使用します。<BR>
+         <LI VALUE= 3> sce/ee/sample/mpeg/mpegvu1<BR>CD/DVD/ホスト上のハードディスクにある MPEG2 ストリーム(PSS)を再生します。<BR>色変換にはVU1を使用します。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>制限および注意事項</B>
+</A>
+</H3>
+<blockquote>
+<UL>
+         <LI> sceMpeg構造体はプログラム全体でひとつしか生成できません。複数生成した場合の動作は保証されません。<BR>
+         <LI> 現在のバージョンでは、タイムスタンプPTS / DTSの参照する時計（STC）機能はサポートされていません。PSSに記録された PTS / DTSを取得することだけが可能です。<BR>
+</UL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>機能の特徴</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>ストリームの非多重化</B>
+</A>
+</H3>
+<blockquote>
+    libmpegには、多重化されたMPEG2 Program Streamを非多重化して、映像・音声・その他のデータといった要素ストリーム（elementary stream）を取り出す機能があります。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/mpegn1.gif">
+<P>
+    <BR>
+    ストリームの構造は次のようになっています。<BR>
+
+     <H4><B>多重化ストリーム</B></H4>
+
+      <BLOCKQUOTE>
+      PSS（PlayStation Stream）：PlayStation用音声/データ付MPEG2 Program Stream<BR>
+      PSS：（MPEG2 video）+（ADS）+（DATA）<BR>
+      PSS中の各ストリームはストリームタイプとストリーム番号で特定される。<BR>
+      音声/データはMPEG2プライベートストリームとして記録される。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>要素ストリーム</B></H4>
+
+      <BLOCKQUOTE>
+      映像：MPEG2 video　拡張子m2v等、標準のMPEG2 video stream<BR>
+      音声：ADS（Audio Data Stream）　PS2用のストリーミング音声<BR>
+      	(a) PCM形式	ストレートPCM 16bit 48KHz 2ch<BR>
+      	(b) ADPCM形式	SPU2用ADPCM（VAGと同じ）<BR>
+      データ：任意データ<BR>
+      </BLOCKQUOTE>
+    <BR>
+    PSS との比較のために、DVDのストリーム構造を次に示します。<BR>
+
+     <H4><B>多重化ストリーム</B></H4>
+
+      <BLOCKQUOTE>
+      DVDストリーム(vob)：DVD用音声/サブピクチャ付MPEG2 Program Stream<BR>
+      DVDストリーム(vob)：（MPEG2 video）+（DVD用音声）+（サブピクチャ）……<BR>
+      （MPEG2 audio以外の）音声 / サブピクチャは、MPEG2プライベートストリームとして記録される。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>要素ストリーム</B></H4>
+
+      <BLOCKQUOTE>
+      映像：MPEG2 video<BR>
+      音声：MPEG2 audio / Dolby AC3 / PCM / DTS / SDDS<BR>
+      サブピクチャ：データ（字幕等）<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>コールバックメカニズム</B>
+</A>
+</H3>
+<blockquote>
+    libmpegは、連続的なデータのデコード処理（ストリーミング）を実現します。"PlayStation 2"でこのような処理を行うときIOP / EE上のさまざまな段階でバッファリングが必要になります。バッファリングの実装方式はさまざまに考えられるため、libmpegでは特定のバッファリング方式を想定しません。バッファリングの方式は、アプリケーション側が自由に設定することができます。バッファを管理するアプリケーション側とlibmegの処理とを協調動作させるために、libmpegはコールバックのメカニズムを持ちます。<BR>
+    コールバックは、libmpeg側の処理において特定の事象が起こったときに、前もって登録されたアプリケーション側の関数（コールバック関数）が呼び出されるしくみです。libmpegがサポートしているコールバックタイプと要因は次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コールバックタイプ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>要因</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbError</TD>
+<TD valign="TOP">デコードエラーが発生した</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbNodata</TD>
+<TD valign="TOP">入力データがなくなった</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbStopDMA</TD>
+<TD valign="TOP">IPUへのDMA転送をアプリケーションが中断する<BR>必要がある</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbRestartDMA</TD>
+<TD valign="TOP">IPUへのDMA転送をアプリケーションが再開する<BR>必要がある</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbBackground</TD>
+<TD valign="TOP">IPUでCSC処理が開始された</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbTimeStamp</TD>
+<TD valign="TOP">デコード中のデータに対応するtime stampが必要</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceMpegCbStr</TD>
+<TD valign="TOP">目的のストリームデータを見つけた</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    コールバック関数に渡される引数やコールバック関数の戻り値は、コールバックタイプによってそれぞれ異なります。詳細はリファレンスドキュメントで、各コールバックに対して定義されている構造体の解説を参照してください。<BR>
+    以下、各コールバックタイプについて説明します。<BR>
+
+     <H4><B>sceMpegCbError</B></H4>
+
+      <BLOCKQUOTE>
+      デコード処理でエラーが発生したときに発生するコールバックです。コールバック関数が登録されていなければ、エラーメッセージが端末に出力されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbNodata</B></H4>
+
+      <BLOCKQUOTE>
+      デコード中に入力データがなくなった場合に発生するコールバックです。アプリケーション側はこれを受けて、DMA ch4でIPUへ新たなデータを送る必要があります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbStopDMA</B></H4>
+
+      <BLOCKQUOTE>
+      CSC処理のためにDMA ch4を中断する必要があるとき発生するコールバックです。<BR>
+      MPEG2 Streamのデコードを行う場合、ビットストリームのデコードとCSC（色変換）を別に行うため、1枚のピクチャに対してIPUを2回使用します。ビットストリームデコードのためのDMA転送はアプリケーション側が管理しますが、CSCのためのDMA転送はデコーダ側（libmpeg内部）で管理されて自動的に行われるようになっています。このため、デコーダがCSCを行う際にはこのコールバックを発生することによって、アプリケーション側にDMA ch4をいったん中断するように要求します。アプリケーション側はこれを受けてDMA ch4をいったん中止し、そのときのデコード位置を保存しておく必要があります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbRestartDMA</B></H4>
+
+      <BLOCKQUOTE>
+      デコーダがCSC処理を終え、次のビットストリーム入力を待つ際に発生するコールバックです。アプリケーション側はこれを受けてDMA ch4を再開し、sceMpegCbStopDMAの際に保存しておいたデコード位置以降のデータをIPUに送る必要があります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbBackground</B></H4>
+
+      <BLOCKQUOTE>
+      デコーダがCSC処理を開始したときに発生するコールバックです。CSC処理中はデコード処理の負荷がEE coreにかからなくなりますので、これを受けてアプリケーション側は適当なバックグラウンド処理を実行することができます。このバックグラウンド処理でIPUおよびDMA ch3,4を使うことはできませんので注意してください。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbTimeStamp</B></H4>
+
+      <BLOCKQUOTE>
+      デコーダがピクチャの先頭を見つけたときに発生するコールバックです。これを受けてアプリケーションは、D4_MADR, IPU_CTRL, IPU_BPを調べてデコード位置を特定し、それに関連するPTS / DTSをデコーダに提供する必要があります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sceMpegCbStr</B></H4>
+
+      <BLOCKQUOTE>
+      PSSの非多重化処理に際して、デコーダが特定の要素ストリームデータを見つけたときに発生するコールバックです。これを受けてアプリケーション側では、見つかった要素ストリームに応じた適切な処理を行います。<BR>
+      他のコールバックタイプではコールバック関数はそれぞれひとつだけしか登録できませんが、sceMpegCbStrでは要素ストリームごとにひとつずつのコールバック関数を登録することができます。要素ストリームは、ストリームタイプとストリーム番号によって区別します。ストリームタイプとストリーム番号の有効範囲を次に示します。<BR>
+      <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>要素ストリーム</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ストリームタイプ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ストリーム番号</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">MPEG2 video stream</TD>
+<TD valign="TOP">sceMpegStrM2V</TD>
+<TD valign="TOP">0-15</TD>
+</TR>
+<TR>
+<TD valign="TOP">IPU stream</TD>
+<TD valign="TOP">sceMpegStrIPU</TD>
+<TD valign="TOP">0-65535</TD>
+</TR>
+<TR>
+<TD valign="TOP">PCM stream</TD>
+<TD valign="TOP">sceMpegStrPCM</TD>
+<TD valign="TOP">0-65535</TD>
+</TR>
+<TR>
+<TD valign="TOP">ADPCM stream</TD>
+<TD valign="TOP">sceMpegStrADPCM</TD>
+<TD valign="TOP">0-65535</TD>
+</TR>
+<TR>
+<TD valign="TOP">DATA stream</TD>
+<TD valign="TOP">sceMpegStrDATA</TD>
+<TD valign="TOP">0-65535</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+      <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

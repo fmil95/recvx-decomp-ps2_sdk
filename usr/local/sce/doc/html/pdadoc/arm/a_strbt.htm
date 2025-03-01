@@ -1,0 +1,194 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_strbt</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_strb.htm">[前]</A> <A HREF="a_strh.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">STRBT</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>ロード／ストア</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <B><FONT COLOR="#999999">アドレッシングモード</FONT></B></TD> 
+      <TD WIDTH="50%">
+      <B>アドレッシングモード2</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">STR{&lt;cond&gt;}BT Rd, &lt;post_indexed_addressing_mode&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>STRBT (Store Register Byte with Translation) 命令は、通常ユーザ・モードで実行されるメモリ・アクセス命令をエミュレートしている（特権付き）例外ハンドラが使用できます。アクセスはユーザ・モード特権のように制限されます。</P>
+  <P>STRBTは、レジスタRdの最下位バイトから&lt;post_indexed_addressing_mode&gt;で計算されるメモリのアドレスに1バイトをストアします。プロセッサが特権モードにあるときにこの命令が実行されると、メモリ・システムにこのアクセスをプロセッサがユーザ・モードにあるときと同様に処理するよう通知されます。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致した場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399451"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399453"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399455"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399457"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399459"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399461"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399463"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399465"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399467"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399469"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399471"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399473"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399475"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399477"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399479"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399481"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399483"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399485"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399487"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399489"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399491"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399493"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399495"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399497"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399499"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399501"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399503"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399505"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399507"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399509"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399511"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399513"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1399515"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399523"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399525"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399527"></A><BR>
+    I</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399529"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399531"></A><BR>
+    U</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399533"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399535"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1399537"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1399539"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1399547"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="12">
+    <A NAME="1399555"></A><BR>
+    addressing mode specific</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        Memory[&lt;address&gt;,1] = Rd[7:0]</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>データ・アボート</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>アドレッシング・モード：</B>I、P、およびUビットは、&lt;addressing_mode&gt;のタイプを指定します(セクション3.17の「アドレッシング・モード2」を参照)。</P>
+  <P><B>レジスタRn：</B>&lt;post_indexed_addressing_mode&gt;で使用するベース・レジスタを指定します。</P>
+  <P><B>ユーザ・モード：</B>この命令がユーザ・モードで実行される場合、通常のユーザ・モードのアクセスが実行されます。</P>
+  <P><B>R15の使用：</B>Rdにレジスタ15を指定した場合、結果は予測できません。</P>
+  <P><B>オペランド制限：</B>RdおよびRnを同じレジスタに指定した場合、結果は予測できません。</P>
+  <P><B>データ・アボート：</B>データ・アボートが通知された場合、Rnに残る値はインプリメンテーションで定義されますが、元のベース・レジスタの値または更新されたベース・レジスタの値のいずれかになります（RdとRnに同じレジスタを指定した場合でも）。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_strb.htm">[前]</A> <A HREF="a_strh.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

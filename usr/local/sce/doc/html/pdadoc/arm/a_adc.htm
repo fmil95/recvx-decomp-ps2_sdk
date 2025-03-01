@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_adc</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm315.htm">[前]</A> <A HREF="a_add.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">ADC</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>データ処理</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アドレッシングモード</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アドレッシング・モード１</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">ADC{&lt;cond&gt;}{S} Rd, RN,&lt;shifter_operands&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>ADC（Add with Carry）命令は、&lt;shifter_operand&gt;の値とキャリ・フラグの値をレジスタRnの値に加算し、結果をデスティネーション・レジスタRdにストアします。オプションにより、（結果に基づいて）コンディション・コード・フラグが更新されます。</P>
+  <P>ADCは複数ワードの加算を合成するのに使用します。レジスタ・ペアR0、R1およびR2、R3が64ビット値<A NAME="anchor1593817"></A>を保持している（R0とR2は最下位ワードを保持）場合、以下の命令によってR4、R5に64ビットの和が格納されます。</P>
+  <PRE>ADDS	R4,R0,R2
+ADC	R5,R1,R3</PRE>
+  <P>また、以下の命令、</P>
+  <PRE>ADCS R0,R0,R0</PRE>
+  <P>は、R0に対して1ビットの<A NAME="anchor2064472"></A>Rotate Left with
+  Extendオペレーション（キャリ・フラグを含む33ビット・ローテート）を実行します。詳細については、アドレッシングモード１&quot;Rm,
+  RRXを参照してください。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致した場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1437051"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437053"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437055"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437057"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437059"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437061"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437063"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437065"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437067"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437069"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437071"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437073"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437075"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437077"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437079"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437081"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437083"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437085"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437087"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437089"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437091"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437093"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437095"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437097"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437099"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437101"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437103"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437105"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437107"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437109"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437111"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437113"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <A NAME="1437115"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP">
+    <A NAME="1437123"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437125"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437127"></A><BR>
+    I</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437129"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437131"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437133"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437135"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1437137"></A><BR>
+    S</TD> 
+    <TD VALIGN="TOP" COLSPAN="4">
+    <A NAME="1437139"></A><BR>
+    Rn</TD>
+     
+    <TD VALIGN="TOP" COLSPAN="4">
+    <A NAME="1437147"></A><BR>
+    Rd</TD>
+     
+    <TD VALIGN="TOP" COLSPAN="12">
+    <A NAME="1437155"></A><BR>
+    shifter_operand</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        Rd = Rn + &lt;shifter_operand&gt; + C Flag
+        if S == 1 and Rd == R15 then
+ CPSR = SPSR
+        else if S == 1 then
+                N Flag = Rd[31]
+                Z Flag = if Rd == 0 then 1 else 0
+                C Flag = CarryFrom(Rn + &lt;shifter_operand&gt; + C Flag)
+                V Flag = OverflowFrom(Rn + &lt;shifter_operand&gt; + C Flag)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード<BR>
+  Sはコンディション・コード・フラグN、Z、C、Vを更新します。</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>シフタ・オペランド</B>：この命令のシフタ・オペランドは、セクション3.16以降の「アドレッシング・モード1」で説明しています。</P>
+  <P><B>Iビット</B>：ビット25を使用して、&lt;shifter_operand&gt;のイミディエイト形式とレジスタ形式を区別することができます。</P>
+  <P><B>R15への書き込み：</B>RdがR15で、命令のSフラグがセットされていない場合、オペレーションの結果はPCに置かれます。RdがR15で、Sフラグがセットされている場合、オペレーションの結果はPCに置かれ、現在のモードに対応するSPSRがCPSRに転送されます。これによって、PCとCPSRの両方をアトミックにリストアする状態変化を実現できます。この形式の命令は、ユーザ・モードおよびシステム・モードでは予測不能です。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm315.htm">[前]</A> <A HREF="a_add.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,581 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+                                                               Aug. 2000
+
+                          Library Changes, New Additions, and Known Bugs
+========================================================================
+Library/Module changes, new additions, and known bugs are described based 
+on the following categories:
+   - Known bugs
+   - Caution and Restrictions
+   - Library/Module changes and new additions since release 1.6.6
+   - Library/Module changes from release 1.6 to 1.6.6
+
+========================================================================
+Known bugs
+========================================================================
+< Low level sound library >
+- During a USB isochronous transmission, if the data is transferred in
+  the direction from the SPU2 local memory to the IOP memory, a timeout 
+  occurs in the USB side.  This problem will be fixed in the future 
+  release.
+
+< MPEG library >
+- With the MPEG library, the MPEG1 encoding or the stream playback 
+  cannot be performed.  This problem will be fixed in the future release.
+
+========================================================================
+Caution and Restrictions
+========================================================================
+- Make sure to use the flash t10000-rel20.bin for developing the program 
+  with the libraries of release 2.0.
+    OR
+  Replace IOP default modules using ioprp20.img.
+
+  Image files have cdvdman.irx, cdvdfsv.irx, sifcmd.irx, fileio.irx,
+  and loadfile.irx built into them as replacement modules.
+  For module replacement, refer to the SIF system (sif.doc) document
+  and the "Technical Information" area of the SCE-NET Web Site.
+
+- From this release, a new feature has been added to check whether
+  if the IOP default module replacement is performed properly.
+
+  Using this feature, version numbers of the following functions, that
+  are most likely to be used in the EE, are compared with loadfile.irx 
+  of the ioprp*.img file.  If there is a version mismatch, -SCE_EVERIONMISS 
+  is returned.  When flash is used (while the DTL-T10000 is running),  the
+  function is compared with the version number of loadfile.irx in the flash.
+
+  < Functions in EE >
+  sceOpen()
+  sceSifLoadModule()
+  sceSifLoadElf()
+  sceSifLoadElfPart()
+
+  If an error is returned, the following are possible causes.
+  - The inappropriate version of flash was used.
+  - The inappropriate version of ioprp*.img was used.
+  - The IOP default module replacement failed due to some reason 
+    such as the file name of ioprp*.img was incorrect.
+
+- With the following libraries, the initialization function checks
+  whether the compatible versions are used in both EE libraries and
+  IOP modules.  If there is a version mismatch between EE libraries and
+  IOP modules (such as the latest EE libraries and the previous IOP 
+  modules), an error is returned.
+
+  < Applicable libraries >
+    libmc 
+    libmcx
+    libmtap
+    libpad
+
+  This feature will be added to the libraries and modules that are
+  used in both the EE and the IOP as a pair.
+
+- A feature to change the thread priority has been added to IOP modules. 
+  When changing the thread priority, consider about the priority of other
+  modules.
+
+  < Specifying the thread priority at booting >
+   The priority can be specified by passing a parameter when loading
+   a module with the sceSifLoadModule() function.  
+   This feature is not incorporated in cdvdfsv.irx.
+
+   In the case of padman.irx:
+     char* mes = "thpri=32,34"; <- Specify the value you want to change 
+     sceSifLoadModule( "host0:/usr/local/sce/iop/modules/padman.irx", 
+						  strlen(mes)+1, mes );
+
+  < Changing the thread priority during operation >
+  The scexxxChangeThreadPriority() function can be used to change 
+  threads in each module.  Replace xxx with the applicable module name.  
+  This feature is not incorporated in sio2man.irx and padman.irx. 
+
+  For details, refer to the SIF system (sif.doc) document and/or the 
+  applicable library reference.
+
+
+Library/Module changes and new additions since release 1.6.6
+========================================================================
+Additions
+========================================================================
+- The PDA library module (libmcx) has been added.
+  Thread priorities of the IOP are as follows.
+	mcxman	42
+	mcxserv	104
+
+  For details, refer to the System Overview Document (sysov.doc).
+
+- The system configuration library (libscf) has been added.
+
+========================================================================
+Changes 
+------------------------------------------------------------------------
+dsnet
+------------------------------------------------------------------------
+- In dsedb and dsidb, when "help bp" was used, the comment was 
+  displayed as "help ub".  This error has been corrected.
+
+  The rpm package (dsnet-0.1.72-1.i386.rpm) has been updated.
+
+------------------------------------------------------------------------
+deci2
+------------------------------------------------------------------------
+- A change has been made to a TTY feature as follows.
+	The input and output operations from more than one thread
+	to a single TTY can be done concurrently.
+
+- Changes have been made to the TTY and FILE feature of the IOP and 
+  the IOP-EE relay feature as follows.
+	The below bits have been added to the reset parameter of the
+	IOP to switch on/off each function.
+
+ 		bit 4	Sets off the TTY feature of the IOP
+		bit 5	Sets off the FILE feature 
+			(a "hostx:" file becomes inaccessible)
+		bit 6	Sets off the IOP-EE relay feature 
+			The DECI2 feature of the EE becomes disabled
+
+------------------------------------------------------------------------
+ioplibgen Utility  
+------------------------------------------------------------------------
+- A change has been made to abort the operation if the number of the
+  Entry declaration in the input file is less than four.
+
+------------------------------------------------------------------------
+IOP Replacement Module
+------------------------------------------------------------------------
+- loadfile.irx has been added.  From this release, cdvdman.irx, 
+  cdvdfsv.irx, sifcmd.irx, fileio.irx and loadfile.irx have been 
+  included in the image file as replacement modules.  
+
+
+------------------------------------------------------------------------
+EE Kernel Library 
+------------------------------------------------------------------------
+- The following function has been added.
+
+	ExpandScratchPad()	pseudo-extension of a scratchpad 
+        InitThread()		Initialization of threads 
+
+- With the iWakeupThread() and iRotateThreadReadyQueue() functions, the
+  scheduling may not be performed correctly, therefore, restrictions
+  have been placed as follows:
+
+	- Before calling iWakeupThread() or iRotateThreadReadyQueue(),
+	  InitThread() is called.
+	- All the thread priorities are set within a range of 1 to 127.
+	  There is no need for calling InitThread() in the program that
+	  does not use these functions.
+
+- The SetDebugHandler() function has been modified to return the 
+  previously registered handler address in the case of a normal
+  termination.
+
+- The error message of a DMA BUS ERROR has been corrected as follows.
+	(incorrect)	# DMAC(15) Handler does not exist.
+	(correct)	# DMAC: Bus error interrupt.
+
+- Corrections have been made to names of register macros and values such
+  as field value in eestruct.h and eeregs.h.   Note that if these registers 
+  are used in the release 1.6.6 or earlier environment, a hang-up may occur.
+
+< eestruct.h changes >
+- Register names appeared in the "System Manual" have been incorporated 
+  in the eestruct.h file to maintain the consistency.
+
+- Corrections have been made to the following registers.
+
+	GS_TEX0_1/TEX0_2
+	GS_TEX1_1/TEX1_2
+	GS_TEXCLUT
+	GS_FRAME_1/FRAME_2
+
+- In conjunction with deletion of the sceGsInterMode function that uses 
+  global variables, it has been changed so that interlace or non-interlace
+  can be specified to SCE_GS_SET_DISPLAY in a NTSC mode setting.
+	(e.g.)
+	SCE_GS_SET_DISPLAY_INTERLACE
+	SCE_GS_SET_DISPLAY_NOINTERLACE
+
+For a PAL mode, remove the #define GS_PAL_MODE comment.
+
+
+< eeregs.h changes >
+- Register names appeared in the "System Manual" have been incorporated 
+  in the eeregs.h file to maintain the consistency.
+ 
+- Additions have been made to the description of the register macro IPU_TOP.
+
+- Corrections have been made to the following register macros.
+
+	IPU_BP
+	GIF_TAG1
+	VIF0_STAT
+	VIF1_NUM
+	Dn_MADR,Dn_TADR,Dn_ASRO,Dn_ASR1,Dn_SADR
+	D_RBSR,D_RBOR,D_STADR,
+	GS_DISPFB1,GS_DISPLAY1,GS_DISPFB2,GS_DISPLAY2
+	GS_EXTBUF,GS_EXDATA,GS_IMR
+
+- The following register macros have been deleted.
+
+	GS_SIGID
+	GS_LABELID
+
+------------------------------------------------------------------------
+I/O Service  
+------------------------------------------------------------------------
+- The sceOpen() function has been modified in accordance with the
+  addition of the version check feature.  When there is a version 
+  mismatch, -SCE_EVERSIONMISS is returned.
+
+------------------------------------------------------------------------
+Standard IOP Service 
+------------------------------------------------------------------------
+- The following functions have been modified in accordance with the
+  addition of the version check feature.  When there is a version 
+  mismatch, -SCE_EVERSIONMISS is returned.
+
+	sceSifLoadModule()
+	sceSifLoadElf()
+	sceSifLoadElfPart()
+
+------------------------------------------------------------------------
+SIF RPC
+------------------------------------------------------------------------
+- When the sceSifCallRpc() function was executed from the IOP, RPC was 
+  turned into a NO-WAIT state.  This problem has been fixed.
+
+------------------------------------------------------------------------
+CD(DVD)-ROM Library/Module 
+------------------------------------------------------------------------
+- The sceCdChangeThreadPriority() function has been added to change
+  the thread priority of IOP modules during the operation.
+  The thread priority cannot be specified at the boot.
+
+- The processing speed of the sceCdStStop() function has been improved. 
+
+- With the sceCdInit() function, the return value has been added in the 
+  case of detecting the default module in the IOP.
+
+- With the sceCdStResume() and sceCdStStart() functions, it has been
+  modified to return the correct value when a command issue fails.
+
+------------------------------------------------------------------------
+Memory Card Library/Module
+------------------------------------------------------------------------
+- The sceMcGetSlotMax() function to find the number of slots.
+
+- The following features have been added to change the thread priority 
+  of IOP modules.
+
+	* Specifying the thread priority when booting.
+	* Changing the thread priority during the operation with
+	  the sceMcChangeThreadPriority() function.
+
+- The following problems occurred when a file was opened in CREATE mode
+  and the file pointer was moved to the position of 1024 bytes or greater
+  then the write operation was performed.  These problems have been fixed.
+	* The used cluster that can be no longer referred was generated.
+	* The indefinite area data in the memory card was sometimes 
+	  destroyed.
+
+- While the sceMcFormat() function is in execution, if the memory
+  card was removed and the sceMcGetDir() function was executed,
+  a malfunction was experienced.  This problem has been fixed.
+
+- A feature has been added to the sceMcInit() function to make 
+  version comparisons with the libmc library and both mcman.irx and
+  mcserv.  If there is a version mismatch, an error is returned.
+
+------------------------------------------------------------------------
+Controller Library/Module 
+------------------------------------------------------------------------
+- A feature has been added to specify the thread priority of the IOP
+  module at booting.  There is no plan to provide a feature for 
+  changing the thread priority while the operation is running.
+
+- A feature has been added to the scePadInit() function to make 
+  version comparisons between the libpad library and padman.irx.
+  If there is a version mismatch, the value other than 1 is returned.
+
+- Functions to obtain the controller information such as scePadInfoMode()
+  and scePadInfoAct(), the function returns the abnormal value in rare
+  cases.
+
+Caution:
+  With the padman.irx, the following messages may be displayed.
+  For details, refer to the overview of libpad (libpad.doc).
+
+    "padman: DMA Busy"
+        1. SIFDMA (or entire DMAC) did not respond.
+        2. EE was being suspended.
+    "PADMAN: *** VBLANK OVERLAP ***"
+        This message is displayed when the task, that should be processed 
+	in a frame, was not performed due to overlaps of threads and the
+	the padman thread is continued to be unexecutable.
+
+------------------------------------------------------------------------
+Multitap Library/Module
+------------------------------------------------------------------------
+- The following features have been added to change the thread priority 
+  of IOP modules.
+
+	* Specifying the thread priority when booting.
+	* Changing the thread priority during the operation with
+	  the sceMtapChangeThreadPriority() function.
+
+- A feature has been added to the sceMtapInit() function to make 
+  version comparisons between the libmtap library and mtapman.irx.
+  If there is a version mismatch, the value other than 1 is returned.
+
+------------------------------------------------------------------------
+GS Basic Library 
+------------------------------------------------------------------------
+< libgraph.h changes >
+- The SCE_GS_NEAREST_MIPMAP_LINEAR macro has been added.
+
+------------------------------------------------------------------------
+Performance Counter Library 
+------------------------------------------------------------------------
+- With the scePcStart() function, if an interrupt occurred while the 
+  function was in execution, the operation was suspended.  This problem 
+  has been fixed.
+
+------------------------------------------------------------------------
+CSL Software Synthesizer (libssyn)
+------------------------------------------------------------------------
+- The sceSSyn_SetTvaEnvMode() function has been added to set the 
+  operation mode of a TVA envelope (release).
+
+------------------------------------------------------------------------
+Low Level Sound Library Operating on the EE
+------------------------------------------------------------------------
+- The rSdChangeThreadPriority command has been added to the 
+  sceSdRemote() function to change the priority of the main thread and/
+  or callback thread of the IOP.  For details, refer to the low level
+  sound library (libsdr) document.
+
+------------------------------------------------------------------------
+Low Level Sound Library Operating on the IOP
+------------------------------------------------------------------------
+- With the sceSdGetAddr() function, an incorrect address was read 
+  when specifying SD_VA_NAX.  This problem has been fixed.
+
+- In effect mode, if ECHO or DELAY was used and at the same time 0 was
+  specified to the delay time, the effect operation was not performed
+  properly.  This problem has been fixed.
+
+- With the sceSdSetTransIntrHandler() function, settings were not 
+  performed correctly only by changing the third argument, that was
+  the data address to be passed to the interrupt handler.
+  This problem has been fixed.
+
+- If the data was transferred to/from the SPU2 local memory during
+  the USB isochronous transfer, the USB operation was suspended due to
+  a timeout.  In this release, this problem has been fixed only in a
+  direction that is from the IOP memory to the SPU local memory.
+
+------------------------------------------------------------------------
+Low Level Sound Driver Module (sdrdrv)
+------------------------------------------------------------------------
+- The following features have been added to change the thread priority 
+  of IOP modules.
+
+	* Specifying the thread priority when booting.
+	* Changing the thread priority during the operation with
+	  the sceSdrChangeThreadPriority() function. (This is 
+	  controllable only in the EE low level sound library (libsdr)).
+
+  For details, refer to the low level sound library (libsdr) document.
+
+------------------------------------------------------------------------
+sio2man
+------------------------------------------------------------------------
+- A new feature has been added so that the thread priority of IOP 
+  modules can be specified at boot time.
+
+------------------------------------------------------------------------
+CSL Hardware Synthesizer (modhsyn)
+------------------------------------------------------------------------
+- The voice panpot setting was sometimes not performed correctly.  
+  This problem has been fixed.
+
+- The previous bank specification range was 0 to 7.  This has been
+  extended to 15.  In accordance with this change, the size of sceHSynEnv 
+  has been changed, therefore, files included modhsyn.h should be 
+  recompiled.
+
+------------------------------------------------------------------------
+USB Driver Library 
+------------------------------------------------------------------------
+- The following features have been added to change the thread priority 
+  of IOP modules.
+
+	* Specifying the thread priority when booting.
+	* Changing the thread priority during the operation with
+	  the sceUsbdChangeThreadPriority() function. 
+
+- With the sceUsbdUnresisterLdd() function, the specification has been
+  changed to delete the LDD registration while a USB device is inserted. 
+
+------------------------------------------------------------------------
+Socket Library 
+------------------------------------------------------------------------
+- With the sceILsockSend() and sceILsockSendTo() functions, when 
+  ack_data_error or ack_busy is received, the retry operation is
+  performed up to 32 times.
+
+------------------------------------------------------------------------
+i.LINK Driver Library 
+------------------------------------------------------------------------
+- The following features have been added to change the thread priority 
+  of IOP modules.
+
+	* Specifying the thread priority when booting.
+	* Changing the thread priority during the operation with
+	  the sce1394ChangeThreadPriority() function. 
+
+- The following function has been added.
+	sce1394CrInvalidate()	Rereads a config-ROM 
+
+- The chattering, that occurred when inserting and/or removing a socket,
+  was recognized as series of bus resets and the following errors were
+  experienced.  These problems have been fixed.
+
+ 	* The old value was used for the node on the bus.
+	* The maximum number of node ID was not detected.
+
+- The following errors in the exclusive control among threads have been
+  fixed.
+	* A lock became not functional.
+	* A memory leak occurred.
+	* In the case of 3 or more nodes, the incorrect message was
+	  displayed as follows then the communication became
+	  unrecoverable.
+	
+	line: 367 in socketee.c, sceSifCheckStatRpc() == 1 in
+	sceILsockSendNoWait(sock=1)
+
+========================================================================
+Changes since release 1.6 
+========================================================================
+DECI2 Manager
+------------------------------------------------------------------------
+- If printf was executed when frequent file access had been made, the 
+  operation stalled by the file access.  This problem has been fixed.
+
+------------------------------------------------------------------------
+IOP Replacement Module
+------------------------------------------------------------------------
+- With fileio.irx, it has been modified to call AllocSysMemory() and
+  FreeSysMemory() in the interrupt disabled area.
+
+------------------------------------------------------------------------
+CD(DVD)-ROM Library/Module
+------------------------------------------------------------------------
+- The specification of the data read from a CD/DVD-ROM has been changed.
+  For details, see the following changes.  Note that if the data read 
+  method of the release 1.6.4 or earlier is taken in the release 1.6.5
+  library, a hang-up will occur.
+
+- The sceCdMmode() function which places restrictions on read media has 
+  been added for improving security.  When reading the data, make sure to 
+  specify a type of media (CD or DVD) using sceCdMmode().  
+  See the document file (cdvd_rf.doc) for details.
+  
+Example:    
+       /* When reading the data from a CD */
+       sceCdInit(SCECdINIT);
+       sceCdMmode(SCECdCD)
+       /* Other process */
+
+       /* When reading the data from a DVD */
+       sceCdInit(SCECdINIT);
+       sceCdMmode(SCECdDVD);
+       /* Other process */
+   
+- The IOP was occupied with the process for sceCdSync() when 
+  sceCdSync() was called with the argument 0 in IOP.  
+  This problem has been fixed.
+
+- A process which detects the completion of a command process from 
+  the EE has been added to the sceCdSync() function of the IOP.
+
+------------------------------------------------------------------------
+Memory Card Library/Module 
+------------------------------------------------------------------------
+- After execution of sceMcWrite(), -8 was sometimes returned if a memory 
+  card was removed before the completion of an asynchronous function, 
+  sceMcSync(). This problem has been fixed.  
+  Corrections have been made to sceMcClose() and sceMcFlush() with which
+  the same problem was experienced.
+
+  Note: The return value -8 indicates that the write operation ended
+	unsuccessfully even after multiple tries of writing to the 
+	alternative area.
+
+- After execution of sceMcRename(), -8 was sometimes returned if a memory 
+  card was removed before the completion of an asynchronous function, 
+  sceMcSync(). This problem has been fixed. 
+
+- With the following functions, which are associated with the write 
+  operation, although an error message was returned, the process was 
+  completed or the sceMcFileAttrClosed flag was on when a file had 
+  been detected.
+     sceMcClose(),sceMcFlush(),sceMcMkdir(),sceMcRename()
+     sceMcSetFileInfo(),sceMcWrite()
+  
+- With files on the PocketStation, read/write such as the date of 
+  file creation/update and file size in units of byte was enabled, 
+  however, this feature has been disabled to maintain consistency 
+  with the specification of the PlayStation.
+  
+- If a memory card was removed while formatting or writing the data
+  of 32 KB or greater was being processed, the other MEMORY CARD slot
+  became unrecognizable unless the sceMcGetInfo() function was executed.
+  This problem has been fixed.
+
+------------------------------------------------------------------------
+Controller Library/Module 
+------------------------------------------------------------------------
+- After execution of asynchronous functions such as scePadSetActAlign() or
+  scePadSetMainMode(), the status transition was partly incorrect.
+  This problem has been fixed.  
+  The following are the actual transition flow:
+
+		Asynchronous function execution
+				|
+Release1.6.0  STABLE -> EXECCMD -> STABLE  -> EXECCMD -> STABLE
+                                   ~~~~~~
+Release1.6.3  STABLE -> EXECCMD -> EXECCMD -> EXECCMD -> STABLE
+
+With 1.6.0, after the asynchronous function execution, the stable
+state happens to be in a subsequent frame for an instant.
+
+------------------------------------------------------------------------
+CSL Hardware Synthesizer 
+------------------------------------------------------------------------
+- With the control change,  #01 (Pitch Modulation Depth) and #02 (Amp 
+  Modulation Depth) were in reverse for the PlayStation 2 console and 
+  debugging station (for PlayStation 2).
+  This problem has been fixed.
+
+- When the maximum voice count was specified to the attribute of 
+  an input port, the voice was allocated ignoring the priority of
+  the input port and waveform data.  This problem has been fixed.
+
+- Even if the voice was produced with the enabled amp modulation or
+  the input port volume control was adjusted to 0, the volume of an amp
+  modulation did not become 0.  This problem has been fixed.
+
+------------------------------------------------------------------------
+USB Driver Library
+------------------------------------------------------------------------
+- If connection and disconnection of the USB device were repeated, the USB
+  driver (USBD) or the entire IOP came to a halt. This problem has been 
+  fixed.

@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -58,9 +58,9 @@ extern "C" {
 #define SIF_SMFLG	0x4
 
 /* for ELF loader */
-extern void sceSifAcceptData(void); /* EE only : System use*/
+extern void sceSifAcceptData(void); /* EE only */
 
-extern void sceSifInit(void); /* System use */
+extern void sceSifInit(void);
 
 extern void sceSifSetDChain(void);
 extern void isceSifSetDChain(void);

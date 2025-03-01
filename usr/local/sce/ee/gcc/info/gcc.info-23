@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1175 +36,957 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Insn Canonicalizations,  Next: Expander Definitions,  Prev: Jump Patterns,  Up: Machine Desc
-
-Canonicalization of Instructions
-================================
-
-   There are often cases where multiple RTL expressions could represent
-an operation performed by a single machine instruction.  This situation
-is most commonly encountered with logical, branch, and
-multiply-accumulate instructions.  In such cases, the compiler attempts
-to convert these multiple RTL expressions into a single canonical form
-to reduce the number of insn patterns required.
-
-   In addition to algebraic simplifications, following canonicalizations
-are performed:
-
-   * For commutative and comparison operators, a constant is always
-     made the second operand.  If a machine only supports a constant as
-     the second operand, only patterns that match a constant in the
-     second operand need be supplied.
-
-     For these operators, if only one operand is a `neg', `not',
-     `mult', `plus', or `minus' expression, it will be the first
-     operand.
-
-   * For the `compare' operator, a constant is always the second operand
-     on machines where `cc0' is used (*note Jump Patterns::.).  On other
-     machines, there are rare cases where the compiler might want to
-     construct a `compare' with a constant as the first operand.
-     However, these cases are not common enough for it to be worthwhile
-     to provide a pattern matching a constant as the first operand
-     unless the machine actually has such an instruction.
-
-     An operand of `neg', `not', `mult', `plus', or `minus' is made the
-     first operand under the same conditions as above.
-
-   * `(minus X (const_int N))' is converted to `(plus X (const_int
-     -N))'.
-
-   * Within address computations (i.e., inside `mem'), a left shift is
-     converted into the appropriate multiplication by a power of two.
-
-   * De`Morgan's Law is used to move bitwise negation inside a bitwise
-     logical-and or logical-or operation.  If this results in only one
-     operand being a `not' expression, it will be the first one.
-
-     A machine that has an instruction that performs a bitwise
-     logical-and of one operand with the bitwise negation of the other
-     should specify the pattern for that instruction as
-
-          (define_insn ""
-            [(set (match_operand:M 0 ...)
-                  (and:M (not:M (match_operand:M 1 ...))
-                               (match_operand:M 2 ...)))]
-            "..."
-            "...")
-
-     Similarly, a pattern for a "NAND" instruction should be written
-
-          (define_insn ""
-            [(set (match_operand:M 0 ...)
-                  (ior:M (not:M (match_operand:M 1 ...))
-                               (not:M (match_operand:M 2 ...))))]
-            "..."
-            "...")
-
-     In both cases, it is not necessary to include patterns for the many
-     logically equivalent RTL expressions.
-
-   * The only possible RTL expressions involving both bitwise
-     exclusive-or and bitwise negation are `(xor:M X Y)' and `(not:M
-     (xor:M X Y))'.
-
-   * The sum of three items, one of which is a constant, will only
-     appear in the form
-
-          (plus:M (plus:M X Y) CONSTANT)
-
-   * On machines that do not use `cc0', `(compare X (const_int 0))'
-     will be converted to X.
-
-   * Equality comparisons of a group of bits (usually a single bit)
-     with zero will be written using `zero_extract' rather than the
-     equivalent `and' or `sign_extract' operations.
-
-
-File: gcc.info,  Node: Expander Definitions,  Next: Insn Splitting,  Prev: Insn Canonicalizations,  Up: Machine Desc
-
-Defining RTL Sequences for Code Generation
-==========================================
-
-   On some target machines, some standard pattern names for RTL
-generation cannot be handled with single insn, but a sequence of RTL
-insns can represent them.  For these target machines, you can write a
-`define_expand' to specify how to generate the sequence of RTL.
-
-   A `define_expand' is an RTL expression that looks almost like a
-`define_insn'; but, unlike the latter, a `define_expand' is used only
-for RTL generation and it can produce more than one RTL insn.
-
-   A `define_expand' RTX has four operands:
-
-   * The name.  Each `define_expand' must have a name, since the only
-     use for it is to refer to it by name.
-
-   * The RTL template.  This is a vector of RTL expressions representing
-     a sequence of separate instructions.  Unlike `define_insn', there
-     is no implicit surrounding `PARALLEL'.
-
-   * The condition, a string containing a C expression.  This
-     expression is used to express how the availability of this pattern
-     depends on subclasses of target machine, selected by command-line
-     options when GNU CC is run.  This is just like the condition of a
-     `define_insn' that has a standard name.  Therefore, the condition
-     (if present) may not depend on the data in the insn being matched,
-     but only the target-machine-type flags.  The compiler needs to
-     test these conditions during initialization in order to learn
-     exactly which named instructions are available in a particular run.
-
-   * The preparation statements, a string containing zero or more C
-     statements which are to be executed before RTL code is generated
-     from the RTL template.
-
-     Usually these statements prepare temporary registers for use as
-     internal operands in the RTL template, but they can also generate
-     RTL insns directly by calling routines such as `emit_insn', etc.
-     Any such insns precede the ones that come from the RTL template.
-
-   Every RTL insn emitted by a `define_expand' must match some
-`define_insn' in the machine description.  Otherwise, the compiler will
-crash when trying to generate code for the insn or trying to optimize
-it.
-
-   The RTL template, in addition to controlling generation of RTL insns,
-also describes the operands that need to be specified when this pattern
-is used.  In particular, it gives a predicate for each operand.
-
-   A true operand, which needs to be specified in order to generate RTL
-from the pattern, should be described with a `match_operand' in its
-first occurrence in the RTL template.  This enters information on the
-operand's predicate into the tables that record such things.  GNU CC
-uses the information to preload the operand into a register if that is
-required for valid RTL code.  If the operand is referred to more than
-once, subsequent references should use `match_dup'.
-
-   The RTL template may also refer to internal "operands" which are
-temporary registers or labels used only within the sequence made by the
-`define_expand'.  Internal operands are substituted into the RTL
-template with `match_dup', never with `match_operand'.  The values of
-the internal operands are not passed in as arguments by the compiler
-when it requests use of this pattern.  Instead, they are computed
-within the pattern, in the preparation statements.  These statements
-compute the values and store them into the appropriate elements of
-`operands' so that `match_dup' can find them.
-
-   There are two special macros defined for use in the preparation
-statements: `DONE' and `FAIL'.  Use them with a following semicolon, as
-a statement.
-
-`DONE'
-     Use the `DONE' macro to end RTL generation for the pattern.  The
-     only RTL insns resulting from the pattern on this occasion will be
-     those already emitted by explicit calls to `emit_insn' within the
-     preparation statements; the RTL template will not be generated.
-
-`FAIL'
-     Make the pattern fail on this occasion.  When a pattern fails, it
-     means that the pattern was not truly available.  The calling
-     routines in the compiler will try other strategies for code
-     generation using other patterns.
-
-     Failure is currently supported only for binary (addition,
-     multiplication, shifting, etc.) and bitfield (`extv', `extzv', and
-     `insv') operations.
-
-   Here is an example, the definition of left-shift for the SPUR chip:
-
-     (define_expand "ashlsi3"
-       [(set (match_operand:SI 0 "register_operand" "")
-             (ashift:SI
-
-     (match_operand:SI 1 "register_operand" "")
-               (match_operand:SI 2 "nonmemory_operand" "")))]
-       ""
-       "
-
-     {
-       if (GET_CODE (operands[2]) != CONST_INT
-           || (unsigned) INTVAL (operands[2]) > 3)
-         FAIL;
-     }")
-
-This example uses `define_expand' so that it can generate an RTL insn
-for shifting when the shift-count is in the supported range of 0 to 3
-but fail in other cases where machine insns aren't available.  When it
-fails, the compiler tries another strategy using different patterns
-(such as, a library call).
-
-   If the compiler were able to handle nontrivial condition-strings in
-patterns with names, then it would be possible to use a `define_insn'
-in that case.  Here is another case (zero-extension on the 68000) which
-makes more use of the power of `define_expand':
-
-     (define_expand "zero_extendhisi2"
-       [(set (match_operand:SI 0 "general_operand" "")
-             (const_int 0))
-        (set (strict_low_part
-               (subreg:HI
-                 (match_dup 0)
-                 0))
-             (match_operand:HI 1 "general_operand" ""))]
-       ""
-       "operands[1] = make_safe_from (operands[1], operands[0]);")
-
-Here two RTL insns are generated, one to clear the entire output operand
-and the other to copy the input operand into its low half.  This
-sequence is incorrect if the input operand refers to [the old value of]
-the output operand, so the preparation statement makes sure this isn't
-so.  The function `make_safe_from' copies the `operands[1]' into a
-temporary register if it refers to `operands[0]'.  It does this by
-emitting another RTL insn.
-
-   Finally, a third example shows the use of an internal operand.
-Zero-extension on the SPUR chip is done by `and'-ing the result against
-a halfword mask.  But this mask cannot be represented by a `const_int'
-because the constant value is too large to be legitimate on this
-machine.  So it must be copied into a register with `force_reg' and
-then the register used in the `and'.
-
-     (define_expand "zero_extendhisi2"
-       [(set (match_operand:SI 0 "register_operand" "")
-             (and:SI (subreg:SI
-                       (match_operand:HI 1 "register_operand" "")
-                       0)
-                     (match_dup 2)))]
-       ""
-       "operands[2]
-          = force_reg (SImode, GEN_INT (65535)); ")
-
-   *Note:* If the `define_expand' is used to serve a standard binary or
-unary arithmetic operation or a bitfield operation, then the last insn
-it generates must not be a `code_label', `barrier' or `note'.  It must
-be an `insn', `jump_insn' or `call_insn'.  If you don't need a real insn
-at the end, emit an insn to copy the result of the operation into
-itself.  Such an insn will generate no code, but it can avoid problems
-in the compiler.
-
-
-File: gcc.info,  Node: Insn Splitting,  Next: Peephole Definitions,  Prev: Expander Definitions,  Up: Machine Desc
-
-Defining How to Split Instructions
-==================================
-
-   There are two cases where you should specify how to split a pattern
-into multiple insns.  On machines that have instructions requiring delay
-slots (*note Delay Slots::.) or that have instructions whose output is
-not available for multiple cycles (*note Function Units::.), the
-compiler phases that optimize these cases need to be able to move insns
-into one-instruction delay slots.  However, some insns may generate
-more than one machine instruction.  These insns cannot be placed into a
-delay slot.
-
-   Often you can rewrite the single insn as a list of individual insns,
-each corresponding to one machine instruction.  The disadvantage of
-doing so is that it will cause the compilation to be slower and require
-more space.  If the resulting insns are too complex, it may also
-suppress some optimizations.  The compiler splits the insn if there is a
-reason to believe that it might improve instruction or delay slot
-scheduling.
-
-   The insn combiner phase also splits putative insns.  If three insns
-are merged into one insn with a complex expression that cannot be
-matched by some `define_insn' pattern, the combiner phase attempts to
-split the complex pattern into two insns that are recognized.  Usually
-it can break the complex pattern into two patterns by splitting out some
-subexpression.  However, in some other cases, such as performing an
-addition of a large constant in two insns on a RISC machine, the way to
-split the addition into two insns is machine-dependent.
-
-   The `define_split' definition tells the compiler how to split a
-complex insn into several simpler insns.  It looks like this:
-
-     (define_split
-       [INSN-PATTERN]
-       "CONDITION"
-       [NEW-INSN-PATTERN-1
-        NEW-INSN-PATTERN-2
-        ...]
-       "PREPARATION STATEMENTS")
-
-   INSN-PATTERN is a pattern that needs to be split and CONDITION is
-the final condition to be tested, as in a `define_insn'.  When an insn
-matching INSN-PATTERN and satisfying CONDITION is found, it is replaced
-in the insn list with the insns given by NEW-INSN-PATTERN-1,
-NEW-INSN-PATTERN-2, etc.
-
-   The PREPARATION STATEMENTS are similar to those statements that are
-specified for `define_expand' (*note Expander Definitions::.)  and are
-executed before the new RTL is generated to prepare for the generated
-code or emit some insns whose pattern is not fixed.  Unlike those in
-`define_expand', however, these statements must not generate any new
-pseudo-registers.  Once reload has completed, they also must not
-allocate any space in the stack frame.
-
-   Patterns are matched against INSN-PATTERN in two different
-circumstances.  If an insn needs to be split for delay slot scheduling
-or insn scheduling, the insn is already known to be valid, which means
-that it must have been matched by some `define_insn' and, if
-`reload_completed' is non-zero, is known to satisfy the constraints of
-that `define_insn'.  In that case, the new insn patterns must also be
-insns that are matched by some `define_insn' and, if `reload_completed'
-is non-zero, must also satisfy the constraints of those definitions.
-
-   As an example of this usage of `define_split', consider the following
-example from `a29k.md', which splits a `sign_extend' from `HImode' to
-`SImode' into a pair of shift insns:
-
-     (define_split
-       [(set (match_operand:SI 0 "gen_reg_operand" "")
-             (sign_extend:SI (match_operand:HI 1 "gen_reg_operand" "")))]
-       ""
-       [(set (match_dup 0)
-             (ashift:SI (match_dup 1)
-                        (const_int 16)))
-        (set (match_dup 0)
-             (ashiftrt:SI (match_dup 0)
-                          (const_int 16)))]
-       "
-     { operands[1] = gen_lowpart (SImode, operands[1]); }")
-
-   When the combiner phase tries to split an insn pattern, it is always
-the case that the pattern is *not* matched by any `define_insn'.  The
-combiner pass first tries to split a single `set' expression and then
-the same `set' expression inside a `parallel', but followed by a
-`clobber' of a pseudo-reg to use as a scratch register.  In these
-cases, the combiner expects exactly two new insn patterns to be
-generated.  It will verify that these patterns match some `define_insn'
-definitions, so you need not do this test in the `define_split' (of
-course, there is no point in writing a `define_split' that will never
-produce insns that match).
-
-   Here is an example of this use of `define_split', taken from
-`rs6000.md':
-
-     (define_split
-       [(set (match_operand:SI 0 "gen_reg_operand" "")
-             (plus:SI (match_operand:SI 1 "gen_reg_operand" "")
-                      (match_operand:SI 2 "non_add_cint_operand" "")))]
-       ""
-       [(set (match_dup 0) (plus:SI (match_dup 1) (match_dup 3)))
-        (set (match_dup 0) (plus:SI (match_dup 0) (match_dup 4)))]
-     "
-     {
-       int low = INTVAL (operands[2]) & 0xffff;
-       int high = (unsigned) INTVAL (operands[2]) >> 16;
-     
-       if (low & 0x8000)
-         high++, low |= 0xffff0000;
-     
-       operands[3] = GEN_INT (high << 16);
-       operands[4] = GEN_INT (low);
-     }")
-
-   Here the predicate `non_add_cint_operand' matches any `const_int'
-that is *not* a valid operand of a single add insn.  The add with the
-smaller displacement is written so that it can be substituted into the
-address of a subsequent operation.
-
-   An example that uses a scratch register, from the same file,
-generates an equality comparison of a register and a large constant:
-
-     (define_split
-       [(set (match_operand:CC 0 "cc_reg_operand" "")
-             (compare:CC (match_operand:SI 1 "gen_reg_operand" "")
-                         (match_operand:SI 2 "non_short_cint_operand" "")))
-        (clobber (match_operand:SI 3 "gen_reg_operand" ""))]
-       "find_single_use (operands[0], insn, 0)
-        && (GET_CODE (*find_single_use (operands[0], insn, 0)) == EQ
-            || GET_CODE (*find_single_use (operands[0], insn, 0)) == NE)"
-       [(set (match_dup 3) (xor:SI (match_dup 1) (match_dup 4)))
-        (set (match_dup 0) (compare:CC (match_dup 3) (match_dup 5)))]
-       "
-     {
-       /* Get the constant we are comparing against, C, and see what it
-          looks like sign-extended to 16 bits.  Then see what constant
-          could be XOR'ed with C to get the sign-extended value.  */
-     
-       int c = INTVAL (operands[2]);
-       int sextc = (c << 16) >> 16;
-       int xorv = c ^ sextc;
-     
-       operands[4] = GEN_INT (xorv);
-       operands[5] = GEN_INT (sextc);
-     }")
-
-   To avoid confusion, don't write a single `define_split' that accepts
-some insns that match some `define_insn' as well as some insns that
-don't.  Instead, write two separate `define_split' definitions, one for
-the insns that are valid and one for the insns that are not valid.
-
-   For the common case where the pattern of a define_split exactly
-matches the pattern of a define_insn, use `define_insn_and_split'.  It
-looks like this:
-
-     (define_insn_and_split
-       [INSN-PATTERN]
-       "CONDITION"
-       "OUTPUT-TEMPLATE"
-       "SPLIT-CONDITION"
-       [NEW-INSN-PATTERN-1
-        NEW-INSN-PATTERN-2
-        ...]
-       "PREPARATION STATEMENTS"
-       [INSN-ATTRIBUTES])
-
-   INSN-PATTERN, CONDITION, OUTPUT-TEMPLATE, and INSN-ATTRIBUTES are
-used as in `define_insn'.  The NEW-INSN-PATTERN vector and the
-PREPARATION-STATEMENTS are used as in a `define_split'.  The
-SPLIT-CONDITION is also used as in `define_split', with the additional
-behavior that if the condition starts with `&&', the condition used for
-the split will be the constructed as a logical "and" of the split
-condition with the insn condition.  For example, from i386.md:
-
-     (define_insn_and_split "zero_extendhisi2_and"
-       [(set (match_operand:SI 0 "register_operand" "=r")
-          (zero_extend:SI (match_operand:HI 1 "register_operand" "0")))
-        (clobber (reg:CC 17))]
-       "TARGET_ZERO_EXTEND_WITH_AND && !optimize_size"
-       "#"
-       "&& reload_completed"
-       [(parallel [(set (match_dup 0) (and:SI (match_dup 0) (const_int 65535)))
-     	      (clobber (reg:CC 17))])]
-       ""
-       [(set_attr "type" "alu1")])
-
-   In this case, the actual split condition will be
-"TARGET_ZERO_EXTEND_WITH_AND && !optimize_size && reload_completed."
-
-   The `define_insn_and_split' construction provides exactly the same
-functionality as two separate `define_insn' and `define_split'
-patterns.  It exists for compactness, and as a maintenance tool to
-prevent having to ensure the two patterns' templates match.
-
-
-File: gcc.info,  Node: Peephole Definitions,  Next: Insn Attributes,  Prev: Insn Splitting,  Up: Machine Desc
-
-Machine-Specific Peephole Optimizers
-====================================
-
-   In addition to instruction patterns the `md' file may contain
-definitions of machine-specific peephole optimizations.
-
-   The combiner does not notice certain peephole optimizations when the
-data flow in the program does not suggest that it should try them.  For
-example, sometimes two consecutive insns related in purpose can be
-combined even though the second one does not appear to use a register
-computed in the first one.  A machine-specific peephole optimizer can
-detect such opportunities.
-
-   There are two forms of peephole definitions that may be used.  The
-original `define_peephole' is run at assembly output time to match
-insns and substitute assembly text.  Use of `define_peephole' is
-deprecated.
-
-   A newer `define_peephole2' matches insns and substitutes new insns.
-The `peephole2' pass is run after register allocation but before
-scheduling, which may result in much better code for targets that do
-scheduling.
-
-* Menu:
-
-* define_peephole::     RTL to Text Peephole Optimizers
-* define_peephole2::    RTL to RTL Peephole Optimizers
-
-
-File: gcc.info,  Node: define_peephole,  Next: define_peephole2,  Up: Peephole Definitions
-
-RTL to Text Peephole Optimizers
--------------------------------
-
-   A definition looks like this:
-
-     (define_peephole
-       [INSN-PATTERN-1
-        INSN-PATTERN-2
-        ...]
-       "CONDITION"
-       "TEMPLATE"
-       "OPTIONAL INSN-ATTRIBUTES")
-
-The last string operand may be omitted if you are not using any
-machine-specific information in this machine description.  If present,
-it must obey the same rules as in a `define_insn'.
-
-   In this skeleton, INSN-PATTERN-1 and so on are patterns to match
-consecutive insns.  The optimization applies to a sequence of insns when
-INSN-PATTERN-1 matches the first one, INSN-PATTERN-2 matches the next,
-and so on.
-
-   Each of the insns matched by a peephole must also match a
-`define_insn'.  Peepholes are checked only at the last stage just
-before code generation, and only optionally.  Therefore, any insn which
-would match a peephole but no `define_insn' will cause a crash in code
-generation in an unoptimized compilation, or at various optimization
-stages.
-
-   The operands of the insns are matched with `match_operands',
-`match_operator', and `match_dup', as usual.  What is not usual is that
-the operand numbers apply to all the insn patterns in the definition.
-So, you can check for identical operands in two insns by using
-`match_operand' in one insn and `match_dup' in the other.
-
-   The operand constraints used in `match_operand' patterns do not have
-any direct effect on the applicability of the peephole, but they will
-be validated afterward, so make sure your constraints are general enough
-to apply whenever the peephole matches.  If the peephole matches but
-the constraints are not satisfied, the compiler will crash.
-
-   It is safe to omit constraints in all the operands of the peephole;
-or you can write constraints which serve as a double-check on the
-criteria previously tested.
-
-   Once a sequence of insns matches the patterns, the CONDITION is
-checked.  This is a C expression which makes the final decision whether
-to perform the optimization (we do so if the expression is nonzero).  If
-CONDITION is omitted (in other words, the string is empty) then the
-optimization is applied to every sequence of insns that matches the
+File: gcc.info,  Node: Register Classes,  Next: Stack and Calling,  Prev: Registers,  Up: Target Macros
+
+Register Classes
+================
+
+   On many machines, the numbered registers are not all equivalent.
+For example, certain registers may not be allowed for indexed
+addressing; certain registers may not be allowed in some instructions.
+These machine restrictions are described to the compiler using
+"register classes".
+
+   You define a number of register classes, giving each one a name and
+saying which of the registers belong to it.  Then you can specify
+register classes that are allowed as operands to particular instruction
 patterns.
 
-   The defined peephole optimizations are applied after register
-allocation is complete.  Therefore, the peephole definition can check
-which operands have ended up in which kinds of registers, just by
-looking at the operands.
+   In general, each register will belong to several classes.  In fact,
+one class must be named `ALL_REGS' and contain all the registers.
+Another class must be named `NO_REGS' and contain no registers.  Often
+the union of two classes will be another class; however, this is not
+required.
 
-   The way to refer to the operands in CONDITION is to write
-`operands[I]' for operand number I (as matched by `(match_operand I
-...)').  Use the variable `insn' to refer to the last of the insns
-being matched; use `prev_active_insn' to find the preceding insns.
+   One of the classes must be named `GENERAL_REGS'.  There is nothing
+terribly special about the name, but the operand constraint letters `r'
+and `g' specify this class.  If `GENERAL_REGS' is the same as
+`ALL_REGS', just define it as a macro which expands to `ALL_REGS'.
 
-   When optimizing computations with intermediate results, you can use
-CONDITION to match only when the intermediate results are not used
-elsewhere.  Use the C expression `dead_or_set_p (INSN, OP)', where INSN
-is the insn in which you expect the value to be used for the last time
-(from the value of `insn', together with use of `prev_nonnote_insn'),
-and OP is the intermediate value (from `operands[I]').
+   Order the classes so that if class X is contained in class Y then X
+has a lower class number than Y.
 
-   Applying the optimization means replacing the sequence of insns with
-one new insn.  The TEMPLATE controls ultimate output of assembler code
-for this combined insn.  It works exactly like the template of a
-`define_insn'.  Operand numbers in this template are the same ones used
-in matching the original sequence of insns.
+   The way classes other than `GENERAL_REGS' are specified in operand
+constraints is through machine-dependent operand constraint letters.
+You can define such letters to correspond to various classes, then use
+them in operand constraints.
 
-   The result of a defined peephole optimizer does not need to match
-any of the insn patterns in the machine description; it does not even
-have an opportunity to match them.  The peephole optimizer definition
-itself serves as the insn pattern to control how the insn is output.
+   You should define a class for the union of two classes whenever some
+instruction allows both classes.  For example, if an instruction allows
+either a floating point (coprocessor) register or a general register
+for a certain operand, you should define a class `FLOAT_OR_GENERAL_REGS'
+which includes both of them.  Otherwise you will get suboptimal code.
 
-   Defined peephole optimizers are run as assembler code is being
-output, so the insns they produce are never combined or rearranged in
-any way.
+   You must also specify certain redundant information about the
+register classes: for each class, which classes contain it and which
+ones are contained in it; for each pair of classes, the largest class
+contained in their union.
 
-   Here is an example, taken from the 68000 machine description:
+   When a value occupying several consecutive registers is expected in a
+certain class, all the registers used must belong to that class.
+Therefore, register classes cannot be used to enforce a requirement for
+a register pair to start with an even-numbered register.  The way to
+specify this requirement is with `HARD_REGNO_MODE_OK'.
 
-     (define_peephole
-       [(set (reg:SI 15) (plus:SI (reg:SI 15) (const_int 4)))
-        (set (match_operand:DF 0 "register_operand" "=f")
-             (match_operand:DF 1 "register_operand" "ad"))]
-       "FP_REG_P (operands[0]) && ! FP_REG_P (operands[1])"
-       "*
-     {
-       rtx xoperands[2];
-       xoperands[1] = gen_rtx (REG, SImode, REGNO (operands[1]) + 1);
-     #ifdef MOTOROLA
-       output_asm_insn (\"move.l %1,(sp)\", xoperands);
-       output_asm_insn (\"move.l %1,-(sp)\", operands);
-       return \"fmove.d (sp)+,%0\";
-     #else
-       output_asm_insn (\"movel %1,sp@\", xoperands);
-       output_asm_insn (\"movel %1,sp@-\", operands);
-       return \"fmoved sp@+,%0\";
-     #endif
-     }
-     ")
+   Register classes used for input-operands of bitwise-and or shift
+instructions have a special requirement: each such class must have, for
+each fixed-point machine mode, a subclass whose registers can transfer
+that mode to or from memory.  For example, on some machines, the
+operations for single-byte values (`QImode') are limited to certain
+registers.  When this is so, each register class that is used in a
+bitwise-and or shift instruction must have a subclass consisting of
+registers from which single-byte values can be loaded or stored.  This
+is so that `PREFERRED_RELOAD_CLASS' can always have a possible value to
+return.
 
-   The effect of this optimization is to change
+`enum reg_class'
+     An enumeral type that must be defined with all the register class
+     names as enumeral values.  `NO_REGS' must be first.  `ALL_REGS'
+     must be the last register class, followed by one more enumeral
+     value, `LIM_REG_CLASSES', which is not a register class but rather
+     tells how many classes there are.
 
-     jbsr _foobar
-     addql #4,sp
-     movel d1,sp@-
-     movel d0,sp@-
-     fmoved sp@+,fp0
+     Each register class has a number, which is the value of casting
+     the class name to type `int'.  The number serves as an index in
+     many of the tables described below.
 
-into
+`N_REG_CLASSES'
+     The number of distinct register classes, defined as follows:
 
-     jbsr _foobar
-     movel d1,sp@
-     movel d0,sp@-
-     fmoved sp@+,fp0
+          #define N_REG_CLASSES (int) LIM_REG_CLASSES
 
-   INSN-PATTERN-1 and so on look *almost* like the second operand of
-`define_insn'.  There is one important difference: the second operand
-of `define_insn' consists of one or more RTX's enclosed in square
-brackets.  Usually, there is only one: then the same action can be
-written as an element of a `define_peephole'.  But when there are
-multiple actions in a `define_insn', they are implicitly enclosed in a
-`parallel'.  Then you must explicitly write the `parallel', and the
-square brackets within it, in the `define_peephole'.  Thus, if an insn
-pattern looks like this,
+`REG_CLASS_NAMES'
+     An initializer containing the names of the register classes as C
+     string constants.  These names are used in writing some of the
+     debugging dumps.
 
-     (define_insn "divmodsi4"
-       [(set (match_operand:SI 0 "general_operand" "=d")
-             (div:SI (match_operand:SI 1 "general_operand" "0")
-                     (match_operand:SI 2 "general_operand" "dmsK")))
-        (set (match_operand:SI 3 "general_operand" "=d")
-             (mod:SI (match_dup 1) (match_dup 2)))]
-       "TARGET_68020"
-       "divsl%.l %2,%3:%0")
+`REG_CLASS_CONTENTS'
+     An initializer containing the contents of the register classes, as
+     integers which are bit masks.  The Nth integer specifies the
+     contents of class N.  The way the integer MASK is interpreted is
+     that register R is in the class if `MASK & (1 << R)' is 1.
 
-then the way to mention this insn in a peephole is as follows:
+     When the machine has more than 32 registers, an integer does not
+     suffice.  Then the integers are replaced by sub-initializers,
+     braced groupings containing several integers.  Each
+     sub-initializer must be suitable as an initializer for the type
+     `HARD_REG_SET' which is defined in `hard-reg-set.h'.
 
-     (define_peephole
-       [...
-        (parallel
-         [(set (match_operand:SI 0 "general_operand" "=d")
-               (div:SI (match_operand:SI 1 "general_operand" "0")
-                       (match_operand:SI 2 "general_operand" "dmsK")))
-          (set (match_operand:SI 3 "general_operand" "=d")
-               (mod:SI (match_dup 1) (match_dup 2)))])
-        ...]
-       ...)
+`REGNO_REG_CLASS (REGNO)'
+     A C expression whose value is a register class containing hard
+     register REGNO.  In general there is more than one such class;
+     choose a class which is "minimal", meaning that no smaller class
+     also contains the register.
+
+`BASE_REG_CLASS'
+     A macro whose definition is the name of the class to which a valid
+     base register must belong.  A base register is one used in an
+     address which is the register value plus a displacement.
+
+`INDEX_REG_CLASS'
+     A macro whose definition is the name of the class to which a valid
+     index register must belong.  An index register is one used in an
+     address where its value is either multiplied by a scale factor or
+     added to another register (as well as added to a displacement).
+
+`REG_CLASS_FROM_LETTER (CHAR)'
+     A C expression which defines the machine-dependent operand
+     constraint letters for register classes.  If CHAR is such a
+     letter, the value should be the register class corresponding to
+     it.  Otherwise, the value should be `NO_REGS'.  The register
+     letter `r', corresponding to class `GENERAL_REGS', will not be
+     passed to this macro; you do not need to handle it.
+
+`REGNO_OK_FOR_BASE_P (NUM)'
+     A C expression which is nonzero if register number NUM is suitable
+     for use as a base register in operand addresses.  It may be either
+     a suitable hard register or a pseudo register that has been
+     allocated such a hard register.
+
+`REGNO_MODE_OK_FOR_BASE_P (NUM, MODE)'
+     A C expression that is just like `REGNO_OK_FOR_BASE_P', except that
+     that expression may examine the mode of the memory reference in
+     MODE.  You should define this macro if the mode of the memory
+     reference affects whether a register may be used as a base
+     register.  If you define this macro, the compiler will use it
+     instead of `REGNO_OK_FOR_BASE_P'.
+
+`REGNO_OK_FOR_INDEX_P (NUM)'
+     A C expression which is nonzero if register number NUM is suitable
+     for use as an index register in operand addresses.  It may be
+     either a suitable hard register or a pseudo register that has been
+     allocated such a hard register.
+
+     The difference between an index register and a base register is
+     that the index register may be scaled.  If an address involves the
+     sum of two registers, neither one of them scaled, then either one
+     may be labeled the "base" and the other the "index"; but whichever
+     labeling is used must fit the machine's constraints of which
+     registers may serve in each capacity.  The compiler will try both
+     labelings, looking for one that is valid, and will reload one or
+     both registers only if neither labeling works.
+
+`PREFERRED_RELOAD_CLASS (X, CLASS)'
+     A C expression that places additional restrictions on the register
+     class to use when it is necessary to copy value X into a register
+     in class CLASS.  The value is a register class; perhaps CLASS, or
+     perhaps another, smaller class.  On many machines, the following
+     definition is safe:
+
+          #define PREFERRED_RELOAD_CLASS(X,CLASS) CLASS
+
+     Sometimes returning a more restrictive class makes better code.
+     For example, on the 68000, when X is an integer constant that is
+     in range for a `moveq' instruction, the value of this macro is
+     always `DATA_REGS' as long as CLASS includes the data registers.
+     Requiring a data register guarantees that a `moveq' will be used.
+
+     If X is a `const_double', by returning `NO_REGS' you can force X
+     into a memory constant.  This is useful on certain machines where
+     immediate floating values cannot be loaded into certain kinds of
+     registers.
+
+`PREFERRED_OUTPUT_RELOAD_CLASS (X, CLASS)'
+     Like `PREFERRED_RELOAD_CLASS', but for output reloads instead of
+     input reloads.  If you don't define this macro, the default is to
+     use CLASS, unchanged.
+
+`LIMIT_RELOAD_CLASS (MODE, CLASS)'
+     A C expression that places additional restrictions on the register
+     class to use when it is necessary to be able to hold a value of
+     mode MODE in a reload register for which class CLASS would
+     ordinarily be used.
+
+     Unlike `PREFERRED_RELOAD_CLASS', this macro should be used when
+     there are certain modes that simply can't go in certain reload
+     classes.
+
+     The value is a register class; perhaps CLASS, or perhaps another,
+     smaller class.
+
+     Don't define this macro unless the target machine has limitations
+     which require the macro to do something nontrivial.
+
+`SECONDARY_RELOAD_CLASS (CLASS, MODE, X)'
+`SECONDARY_INPUT_RELOAD_CLASS (CLASS, MODE, X)'
+`SECONDARY_OUTPUT_RELOAD_CLASS (CLASS, MODE, X)'
+     Many machines have some registers that cannot be copied directly
+     to or from memory or even from other types of registers.  An
+     example is the `MQ' register, which on most machines, can only be
+     copied to or from general registers, but not memory.  Some
+     machines allow copying all registers to and from memory, but
+     require a scratch register for stores to some memory locations
+     (e.g., those with symbolic address on the RT, and those with
+     certain symbolic address on the Sparc when compiling PIC).  In
+     some cases, both an intermediate and a scratch register are
+     required.
+
+     You should define these macros to indicate to the reload phase
+     that it may need to allocate at least one register for a reload in
+     addition to the register to contain the data.  Specifically, if
+     copying X to a register CLASS in MODE requires an intermediate
+     register, you should define `SECONDARY_INPUT_RELOAD_CLASS' to
+     return the largest register class all of whose registers can be
+     used as intermediate registers or scratch registers.
+
+     If copying a register CLASS in MODE to X requires an intermediate
+     or scratch register, `SECONDARY_OUTPUT_RELOAD_CLASS' should be
+     defined to return the largest register class required.  If the
+     requirements for input and output reloads are the same, the macro
+     `SECONDARY_RELOAD_CLASS' should be used instead of defining both
+     macros identically.
+
+     The values returned by these macros are often `GENERAL_REGS'.
+     Return `NO_REGS' if no spare register is needed; i.e., if X can be
+     directly copied to or from a register of CLASS in MODE without
+     requiring a scratch register.  Do not define this macro if it
+     would always return `NO_REGS'.
+
+     If a scratch register is required (either with or without an
+     intermediate register), you should define patterns for
+     `reload_inM' or `reload_outM', as required (*note Standard
+     Names::..  These patterns, which will normally be implemented with
+     a `define_expand', should be similar to the `movM' patterns,
+     except that operand 2 is the scratch register.
+
+     Define constraints for the reload register and scratch register
+     that contain a single register class.  If the original reload
+     register (whose class is CLASS) can meet the constraint given in
+     the pattern, the value returned by these macros is used for the
+     class of the scratch register.  Otherwise, two additional reload
+     registers are required.  Their classes are obtained from the
+     constraints in the insn pattern.
+
+     X might be a pseudo-register or a `subreg' of a pseudo-register,
+     which could either be in a hard register or in memory.  Use
+     `true_regnum' to find out; it will return -1 if the pseudo is in
+     memory and the hard register number if it is in a register.
+
+     These macros should not be used in the case where a particular
+     class of registers can only be copied to memory and not to another
+     class of registers.  In that case, secondary reload registers are
+     not needed and would not be helpful.  Instead, a stack location
+     must be used to perform the copy and the `movM' pattern should use
+     memory as a intermediate storage.  This case often occurs between
+     floating-point and general registers.
+
+`SECONDARY_MEMORY_NEEDED (CLASS1, CLASS2, M)'
+     Certain machines have the property that some registers cannot be
+     copied to some other registers without using memory.  Define this
+     macro on those machines to be a C expression that is non-zero if
+     objects of mode M in registers of CLASS1 can only be copied to
+     registers of class CLASS2 by storing a register of CLASS1 into
+     memory and loading that memory location into a register of CLASS2.
+
+     Do not define this macro if its value would always be zero.
+
+`SECONDARY_MEMORY_NEEDED_RTX (MODE)'
+     Normally when `SECONDARY_MEMORY_NEEDED' is defined, the compiler
+     allocates a stack slot for a memory location needed for register
+     copies.  If this macro is defined, the compiler instead uses the
+     memory location defined by this macro.
+
+     Do not define this macro if you do not define
+     `SECONDARY_MEMORY_NEEDED'.
+
+`SECONDARY_MEMORY_NEEDED_MODE (MODE)'
+     When the compiler needs a secondary memory location to copy
+     between two registers of mode MODE, it normally allocates
+     sufficient memory to hold a quantity of `BITS_PER_WORD' bits and
+     performs the store and load operations in a mode that many bits
+     wide and whose class is the same as that of MODE.
+
+     This is right thing to do on most machines because it ensures that
+     all bits of the register are copied and prevents accesses to the
+     registers in a narrower mode, which some machines prohibit for
+     floating-point registers.
+
+     However, this default behavior is not correct on some machines,
+     such as the DEC Alpha, that store short integers in floating-point
+     registers differently than in integer registers.  On those
+     machines, the default widening will not work correctly and you
+     must define this macro to suppress that widening in some cases.
+     See the file `alpha.h' for details.
+
+     Do not define this macro if you do not define
+     `SECONDARY_MEMORY_NEEDED' or if widening MODE to a mode that is
+     `BITS_PER_WORD' bits wide is correct for your machine.
+
+`SMALL_REGISTER_CLASSES'
+     On some machines, it is risky to let hard registers live across
+     arbitrary insns.  Typically, these machines have instructions that
+     require values to be in specific registers (like an accumulator),
+     and reload will fail if the required hard register is used for
+     another purpose across such an insn.
+
+     Define `SMALL_REGISTER_CLASSES' to be an expression with a non-zero
+     value on these machines.  When this macro has a non-zero value, the
+     compiler will try to minimize the lifetime of hard registers.
+
+     It is always safe to define this macro with a non-zero value, but
+     if you unnecessarily define it, you will reduce the amount of
+     optimizations that can be performed in some cases.  If you do not
+     define this macro with a non-zero value when it is required, the
+     compiler will run out of spill registers and print a fatal error
+     message.  For most machines, you should not define this macro at
+     all.
+
+`CLASS_LIKELY_SPILLED_P (CLASS)'
+     A C expression whose value is nonzero if pseudos that have been
+     assigned to registers of class CLASS would likely be spilled
+     because registers of CLASS are needed for spill registers.
+
+     The default value of this macro returns 1 if CLASS has exactly one
+     register and zero otherwise.  On most machines, this default
+     should be used.  Only define this macro to some other expression
+     if pseudos allocated by `local-alloc.c' end up in memory because
+     their hard registers were needed for spill registers.  If this
+     macro returns nonzero for those classes, those pseudos will only
+     be allocated by `global.c', which knows how to reallocate the
+     pseudo to another register.  If there would not be another
+     register available for reallocation, you should not change the
+     definition of this macro since the only effect of such a
+     definition would be to slow down register allocation.
+
+`CLASS_MAX_NREGS (CLASS, MODE)'
+     A C expression for the maximum number of consecutive registers of
+     class CLASS needed to hold a value of mode MODE.
+
+     This is closely related to the macro `HARD_REGNO_NREGS'.  In fact,
+     the value of the macro `CLASS_MAX_NREGS (CLASS, MODE)' should be
+     the maximum value of `HARD_REGNO_NREGS (REGNO, MODE)' for all
+     REGNO values in the class CLASS.
+
+     This macro helps control the handling of multiple-word values in
+     the reload pass.
+
+`CLASS_CANNOT_CHANGE_SIZE'
+     If defined, a C expression for a class that contains registers
+     which the compiler must always access in a mode that is the same
+     size as the mode in which it loaded the register.
+
+     For the example, loading 32-bit integer or floating-point objects
+     into floating-point registers on the Alpha extends them to 64-bits.
+     Therefore loading a 64-bit object and then storing it as a 32-bit
+     object does not store the low-order 32-bits, as would be the case
+     for a normal register.  Therefore, `alpha.h' defines this macro as
+     `FLOAT_REGS'.
+
+   Three other special macros describe which operands fit which
+constraint letters.
+
+`CONST_OK_FOR_LETTER_P (VALUE, C)'
+     A C expression that defines the machine-dependent operand
+     constraint letters (`I', `J', `K', ... `P') that specify
+     particular ranges of integer values.  If C is one of those
+     letters, the expression should check that VALUE, an integer, is in
+     the appropriate range and return 1 if so, 0 otherwise.  If C is
+     not one of those letters, the value should be 0 regardless of
+     VALUE.
+
+`CONST_DOUBLE_OK_FOR_LETTER_P (VALUE, C)'
+     A C expression that defines the machine-dependent operand
+     constraint letters that specify particular ranges of
+     `const_double' values (`G' or `H').
+
+     If C is one of those letters, the expression should check that
+     VALUE, an RTX of code `const_double', is in the appropriate range
+     and return 1 if so, 0 otherwise.  If C is not one of those
+     letters, the value should be 0 regardless of VALUE.
+
+     `const_double' is used for all floating-point constants and for
+     `DImode' fixed-point constants.  A given letter can accept either
+     or both kinds of values.  It can use `GET_MODE' to distinguish
+     between these kinds.
+
+`EXTRA_CONSTRAINT (VALUE, C)'
+     A C expression that defines the optional machine-dependent
+     constraint letters (`Q', `R', `S', `T', `U') that can be used to
+     segregate specific types of operands, usually memory references,
+     for the target machine.  Normally this macro will not be defined.
+     If it is required for a particular target machine, it should
+     return 1 if VALUE corresponds to the operand type represented by
+     the constraint letter C.  If C is not defined as an extra
+     constraint, the value returned should be 0 regardless of VALUE.
+
+     For example, on the ROMP, load instructions cannot have their
+     output in r0 if the memory reference contains a symbolic address.
+     Constraint letter `Q' is defined as representing a memory address
+     that does *not* contain a symbolic address.  An alternative is
+     specified with a `Q' constraint on the input and `r' on the
+     output.  The next alternative specifies `m' on the input and a
+     register class that does not include r0 on the output.
 
 
-File: gcc.info,  Node: define_peephole2,  Prev: define_peephole,  Up: Peephole Definitions
+File: gcc.info,  Node: Stack and Calling,  Next: Varargs,  Prev: Register Classes,  Up: Target Macros
 
-RTL to RTL Peephole Optimizers
-------------------------------
+Stack Layout and Calling Conventions
+====================================
 
-   The `define_peephole2' definition tells the compiler how to
-substitute one sequence of instructions for another sequence, what
-additional scratch registers may be needed and what their lifetimes
-must be.
-
-     (define_peephole2
-       [INSN-PATTERN-1
-        INSN-PATTERN-2
-        ...]
-       "CONDITION"
-       [NEW-INSN-PATTERN-1
-        NEW-INSN-PATTERN-2
-        ...]
-       "PREPARATION STATEMENTS")
-
-   The definition is almost identical to `define_split' (*note Insn
-Splitting::.) except that the pattern to match is not a single
-instruction, but a sequence of instructions.
-
-   It is possible to request additional scratch registers for use in the
-output template.  If appropriate registers are not free, the pattern
-will simply not match.
-
-   Scratch registers are requested with a `match_scratch' pattern at
-the top level of the input pattern.  The allocated register (initially)
-will be dead at the point requested within the original sequence.  If
-the scratch is used at more than a single point, a `match_dup' pattern
-at the top level of the input pattern marks the last position in the
-input sequence at which the register must be available.
-
-   Here is an example from the IA-32 machine description:
-
-     (define_peephole2
-       [(match_scratch:SI 2 "r")
-        (parallel [(set (match_operand:SI 0 "register_operand" "")
-                        (match_operator:SI 3 "arith_or_logical_operator"
-                          [(match_dup 0)
-                           (match_operand:SI 1 "memory_operand" "")]))
-                   (clobber (reg:CC 17))])]
-       "! optimize_size && ! TARGET_READ_MODIFY"
-       [(set (match_dup 2) (match_dup 1))
-        (parallel [(set (match_dup 0)
-                        (match_op_dup 3 [(match_dup 0) (match_dup 2)]))
-                   (clobber (reg:CC 17))])]
-       "")
-
-This pattern tries to split a load from its use in the hopes that we'll
-be able to schedule around the memory load latency.  It allocates a
-single `SImode' register of class `GENERAL_REGS' (`"r"') that needs to
-be live only at the point just before the arithmetic.
-
-   A real example requiring extended scratch lifetimes is harder to
-come by, so here's a silly made-up example:
-
-     (define_peephole2
-       [(match_scratch:SI 4 "r")
-        (set (match_operand:SI 0 "" "") (match_operand:SI 1 "" ""))
-        (set (match_operand:SI 2 "" "") (match_dup 1))
-        (match_dup 4)
-        (set (match_operand:SI 3 "" "") (match_dup 1))]
-       "DETERMINE 1 DOES NOT OVERLAP 0 AND 2"
-       [(set (match_dup 4) (match_dup 1))
-        (set (match_dup 0) (match_dup 4))
-        (set (match_dup 2) (match_dup 4))]
-        (set (match_dup 3) (match_dup 4))]
-       "")
-
-If we had not added the `(match_dup 4)' in the middle of the input
-sequence, it might have been the case that the register we chose at the
-beginning of the sequence is killed by the first or second `set'.
-
-
-File: gcc.info,  Node: Insn Attributes,  Next: Conditional Execution,  Prev: Peephole Definitions,  Up: Machine Desc
-
-Instruction Attributes
-======================
-
-   In addition to describing the instruction supported by the target
-machine, the `md' file also defines a group of "attributes" and a set of
-values for each.  Every generated insn is assigned a value for each
-attribute.  One possible attribute would be the effect that the insn
-has on the machine's condition code.  This attribute can then be used
-by `NOTICE_UPDATE_CC' to track the condition codes.
+   This describes the stack layout and calling conventions.
 
 * Menu:
 
-* Defining Attributes:: Specifying attributes and their values.
-* Expressions::         Valid expressions for attribute values.
-* Tagging Insns::       Assigning attribute values to insns.
-* Attr Example::        An example of assigning attributes.
-* Insn Lengths::        Computing the length of insns.
-* Constant Attributes:: Defining attributes that are constant.
-* Delay Slots::         Defining delay slots required for a machine.
-* Function Units::      Specifying information for insn scheduling.
+* Frame Layout::
+* Stack Checking::
+* Frame Registers::
+* Elimination::
+* Stack Arguments::
+* Register Arguments::
+* Scalar Return::
+* Aggregate Return::
+* Caller Saves::
+* Function Entry::
+* Profiling::
 
 
-File: gcc.info,  Node: Defining Attributes,  Next: Expressions,  Up: Insn Attributes
+File: gcc.info,  Node: Frame Layout,  Next: Stack Checking,  Up: Stack and Calling
 
-Defining Attributes and their Values
-------------------------------------
+Basic Stack Layout
+------------------
 
-   The `define_attr' expression is used to define each attribute
-required by the target machine.  It looks like:
+   Here is the basic stack layout.
 
-     (define_attr NAME LIST-OF-VALUES DEFAULT)
+`STACK_GROWS_DOWNWARD'
+     Define this macro if pushing a word onto the stack moves the stack
+     pointer to a smaller address.
 
-   NAME is a string specifying the name of the attribute being defined.
+     When we say, "define this macro if ...," it means that the
+     compiler checks this macro only with `#ifdef' so the precise
+     definition used does not matter.
 
-   LIST-OF-VALUES is either a string that specifies a comma-separated
-list of values that can be assigned to the attribute, or a null string
-to indicate that the attribute takes numeric values.
+`FRAME_GROWS_DOWNWARD'
+     Define this macro if the addresses of local variable slots are at
+     negative offsets from the frame pointer.
 
-   DEFAULT is an attribute expression that gives the value of this
-attribute for insns that match patterns whose definition does not
-include an explicit value for this attribute.  *Note Attr Example::,
-for more information on the handling of defaults.  *Note Constant
-Attributes::, for information on attributes that do not depend on any
-particular insn.
+`ARGS_GROW_DOWNWARD'
+     Define this macro if successive arguments to a function occupy
+     decreasing addresses on the stack.
 
-   For each defined attribute, a number of definitions are written to
-the `insn-attr.h' file.  For cases where an explicit set of values is
-specified for an attribute, the following are defined:
+`STARTING_FRAME_OFFSET'
+     Offset from the frame pointer to the first local variable slot to
+     be allocated.
 
-   * A `#define' is written for the symbol `HAVE_ATTR_NAME'.
+     If `FRAME_GROWS_DOWNWARD', find the next slot's offset by
+     subtracting the first slot's length from `STARTING_FRAME_OFFSET'.
+     Otherwise, it is found by adding the length of the first slot to
+     the value `STARTING_FRAME_OFFSET'.
 
-   * An enumeral class is defined for `attr_NAME' with elements of the
-     form `UPPER-NAME_UPPER-VALUE' where the attribute name and value
-     are first converted to upper case.
+`STACK_POINTER_OFFSET'
+     Offset from the stack pointer register to the first location at
+     which outgoing arguments are placed.  If not specified, the
+     default value of zero is used.  This is the proper value for most
+     machines.
 
-   * A function `get_attr_NAME' is defined that is passed an insn and
-     returns the attribute value for that insn.
+     If `ARGS_GROW_DOWNWARD', this is the offset to the location above
+     the first location at which outgoing arguments are placed.
 
-   For example, if the following is present in the `md' file:
+`FIRST_PARM_OFFSET (FUNDECL)'
+     Offset from the argument pointer register to the first argument's
+     address.  On some machines it may depend on the data type of the
+     function.
 
-     (define_attr "type" "branch,fp,load,store,arith" ...)
+     If `ARGS_GROW_DOWNWARD', this is the offset to the location above
+     the first argument's address.
 
-the following lines will be written to the file `insn-attr.h'.
+`STACK_DYNAMIC_OFFSET (FUNDECL)'
+     Offset from the stack pointer register to an item dynamically
+     allocated on the stack, e.g., by `alloca'.
 
-     #define HAVE_ATTR_type
-     enum attr_type {TYPE_BRANCH, TYPE_FP, TYPE_LOAD,
-                      TYPE_STORE, TYPE_ARITH};
-     extern enum attr_type get_attr_type ();
+     The default value for this macro is `STACK_POINTER_OFFSET' plus the
+     length of the outgoing arguments.  The default is correct for most
+     machines.  See `function.c' for details.
 
-   If the attribute takes numeric values, no `enum' type will be
-defined and the function to obtain the attribute's value will return
-`int'.
+`DYNAMIC_CHAIN_ADDRESS (FRAMEADDR)'
+     A C expression whose value is RTL representing the address in a
+     stack frame where the pointer to the caller's frame is stored.
+     Assume that FRAMEADDR is an RTL expression for the address of the
+     stack frame itself.
 
-
-File: gcc.info,  Node: Expressions,  Next: Tagging Insns,  Prev: Defining Attributes,  Up: Insn Attributes
+     If you don't define this macro, the default is to return the value
+     of FRAMEADDR--that is, the stack frame address is also the address
+     of the stack word that points to the previous frame.
 
-Attribute Expressions
----------------------
+`SETUP_FRAME_ADDRESSES'
+     If defined, a C expression that produces the machine-specific code
+     to setup the stack so that arbitrary frames can be accessed.  For
+     example, on the Sparc, we must flush all of the register windows
+     to the stack before we can access arbitrary stack frames.  You
+     will seldom need to define this macro.
 
-   RTL expressions used to define attributes use the codes described
-above plus a few specific to attribute definitions, to be discussed
-below.  Attribute value expressions must have one of the following
-forms:
+`BUILTIN_SETJMP_FRAME_VALUE'
+     If defined, a C expression that contains an rtx that is used to
+     store the address of the current frame into the built in `setjmp'
+     buffer.  The default value, `virtual_stack_vars_rtx', is correct
+     for most machines.  One reason you may need to define this macro
+     is if `hard_frame_pointer_rtx' is the appropriate value on your
+     machine.
 
-`(const_int I)'
-     The integer I specifies the value of a numeric attribute.  I must
-     be non-negative.
+`RETURN_ADDR_RTX (COUNT, FRAMEADDR)'
+     A C expression whose value is RTL representing the value of the
+     return address for the frame COUNT steps up from the current
+     frame, after the prologue.  FRAMEADDR is the frame pointer of the
+     COUNT frame, or the frame pointer of the COUNT - 1 frame if
+     `RETURN_ADDR_IN_PREVIOUS_FRAME' is defined.
 
-     The value of a numeric attribute can be specified either with a
-     `const_int', or as an integer represented as a string in
-     `const_string', `eq_attr' (see below), `attr', `symbol_ref',
-     simple arithmetic expressions, and `set_attr' overrides on
-     specific instructions (*note Tagging Insns::.).
+     The value of the expression must always be the correct address when
+     COUNT is zero, but may be `NULL_RTX' if there is not way to
+     determine the return address of other frames.
 
-`(const_string VALUE)'
-     The string VALUE specifies a constant attribute value.  If VALUE
-     is specified as `"*"', it means that the default value of the
-     attribute is to be used for the insn containing this expression.
-     `"*"' obviously cannot be used in the DEFAULT expression of a
-     `define_attr'.
+`RETURN_ADDR_IN_PREVIOUS_FRAME'
+     Define this if the return address of a particular stack frame is
+     accessed from the frame pointer of the previous stack frame.
 
-     If the attribute whose value is being specified is numeric, VALUE
-     must be a string containing a non-negative integer (normally
-     `const_int' would be used in this case).  Otherwise, it must
-     contain one of the valid values for the attribute.
+`INCOMING_RETURN_ADDR_RTX'
+     A C expression whose value is RTL representing the location of the
+     incoming return address at the beginning of any function, before
+     the prologue.  This RTL is either a `REG', indicating that the
+     return value is saved in `REG', or a `MEM' representing a location
+     in the stack.
 
-`(if_then_else TEST TRUE-VALUE FALSE-VALUE)'
-     TEST specifies an attribute test, whose format is defined below.
-     The value of this expression is TRUE-VALUE if TEST is true,
-     otherwise it is FALSE-VALUE.
+     You only need to define this macro if you want to support call
+     frame debugging information like that provided by DWARF 2.
 
-`(cond [TEST1 VALUE1 ...] DEFAULT)'
-     The first operand of this expression is a vector containing an even
-     number of expressions and consisting of pairs of TEST and VALUE
-     expressions.  The value of the `cond' expression is that of the
-     VALUE corresponding to the first true TEST expression.  If none of
-     the TEST expressions are true, the value of the `cond' expression
-     is that of the DEFAULT expression.
+`INCOMING_FRAME_SP_OFFSET'
+     A C expression whose value is an integer giving the offset, in
+     bytes, from the value of the stack pointer register to the top of
+     the stack frame at the beginning of any function, before the
+     prologue.  The top of the frame is defined to be the value of the
+     stack pointer in the previous frame, just before the call
+     instruction.
 
-   TEST expressions can have one of the following forms:
+     You only need to define this macro if you want to support call
+     frame debugging information like that provided by DWARF 2.
 
-`(const_int I)'
-     This test is true if I is non-zero and false otherwise.
+`ARG_POINTER_CFA_OFFSET'
+     A C expression whose value is an integer giving the offset, in
+     bytes, from the argument pointer to the canonical frame address
+     (cfa).  The final value should coincide with that calculated by
+     `INCOMING_FRAME_SP_OFFSET'.  Which is unfortunately not usable
+     during virtual register instantiation.
 
-`(not TEST)'
-`(ior TEST1 TEST2)'
-`(and TEST1 TEST2)'
-     These tests are true if the indicated logical function is true.
-
-`(match_operand:M N PRED CONSTRAINTS)'
-     This test is true if operand N of the insn whose attribute value
-     is being determined has mode M (this part of the test is ignored
-     if M is `VOIDmode') and the function specified by the string PRED
-     returns a non-zero value when passed operand N and mode M (this
-     part of the test is ignored if PRED is the null string).
-
-     The CONSTRAINTS operand is ignored and should be the null string.
-
-`(le ARITH1 ARITH2)'
-`(leu ARITH1 ARITH2)'
-`(lt ARITH1 ARITH2)'
-`(ltu ARITH1 ARITH2)'
-`(gt ARITH1 ARITH2)'
-`(gtu ARITH1 ARITH2)'
-`(ge ARITH1 ARITH2)'
-`(geu ARITH1 ARITH2)'
-`(ne ARITH1 ARITH2)'
-`(eq ARITH1 ARITH2)'
-     These tests are true if the indicated comparison of the two
-     arithmetic expressions is true.  Arithmetic expressions are formed
-     with `plus', `minus', `mult', `div', `mod', `abs', `neg', `and',
-     `ior', `xor', `not', `ashift', `lshiftrt', and `ashiftrt'
-     expressions.
-
-     `const_int' and `symbol_ref' are always valid terms (*note Insn
-     Lengths::.,for additional forms).  `symbol_ref' is a string
-     denoting a C expression that yields an `int' when evaluated by the
-     `get_attr_...' routine.  It should normally be a global variable.
-
-`(eq_attr NAME VALUE)'
-     NAME is a string specifying the name of an attribute.
-
-     VALUE is a string that is either a valid value for attribute NAME,
-     a comma-separated list of values, or `!' followed by a value or
-     list.  If VALUE does not begin with a `!', this test is true if
-     the value of the NAME attribute of the current insn is in the list
-     specified by VALUE.  If VALUE begins with a `!', this test is true
-     if the attribute's value is *not* in the specified list.
-
-     For example,
-
-          (eq_attr "type" "load,store")
-
-     is equivalent to
-
-          (ior (eq_attr "type" "load") (eq_attr "type" "store"))
-
-     If NAME specifies an attribute of `alternative', it refers to the
-     value of the compiler variable `which_alternative' (*note Output
-     Statement::.) and the values must be small integers.  For example,
-
-          (eq_attr "alternative" "2,3")
-
-     is equivalent to
-
-          (ior (eq (symbol_ref "which_alternative") (const_int 2))
-               (eq (symbol_ref "which_alternative") (const_int 3)))
-
-     Note that, for most attributes, an `eq_attr' test is simplified in
-     cases where the value of the attribute being tested is known for
-     all insns matching a particular pattern.  This is by far the most
-     common case.
-
-`(attr_flag NAME)'
-     The value of an `attr_flag' expression is true if the flag
-     specified by NAME is true for the `insn' currently being scheduled.
-
-     NAME is a string specifying one of a fixed set of flags to test.
-     Test the flags `forward' and `backward' to determine the direction
-     of a conditional branch.  Test the flags `very_likely', `likely',
-     `very_unlikely', and `unlikely' to determine if a conditional
-     branch is expected to be taken.
-
-     If the `very_likely' flag is true, then the `likely' flag is also
-     true.  Likewise for the `very_unlikely' and `unlikely' flags.
-
-     This example describes a conditional branch delay slot which can
-     be nullified for forward branches that are taken (annul-true) or
-     for backward branches which are not taken (annul-false).
-
-          (define_delay (eq_attr "type" "cbranch")
-            [(eq_attr "in_branch_delay" "true")
-             (and (eq_attr "in_branch_delay" "true")
-                  (attr_flag "forward"))
-             (and (eq_attr "in_branch_delay" "true")
-                  (attr_flag "backward"))])
-
-     The `forward' and `backward' flags are false if the current `insn'
-     being scheduled is not a conditional branch.
-
-     The `very_likely' and `likely' flags are true if the `insn' being
-     scheduled is not a conditional branch.  The `very_unlikely' and
-     `unlikely' flags are false if the `insn' being scheduled is not a
-     conditional branch.
-
-     `attr_flag' is only used during delay slot scheduling and has no
-     meaning to other passes of the compiler.
-
-`(attr NAME)'
-     The value of another attribute is returned.  This is most useful
-     for numeric attributes, as `eq_attr' and `attr_flag' produce more
-     efficient code for non-numeric attributes.
+     You only need to define this macro if you want to support call
+     frame debugging information like that provided by DWARF 2.
 
 
-File: gcc.info,  Node: Tagging Insns,  Next: Attr Example,  Prev: Expressions,  Up: Insn Attributes
+File: gcc.info,  Node: Stack Checking,  Next: Frame Registers,  Prev: Frame Layout,  Up: Stack and Calling
 
-Assigning Attribute Values to Insns
------------------------------------
+Specifying How Stack Checking is Done
+-------------------------------------
 
-   The value assigned to an attribute of an insn is primarily
-determined by which pattern is matched by that insn (or which
-`define_peephole' generated it).  Every `define_insn' and
-`define_peephole' can have an optional last argument to specify the
-values of attributes for matching insns.  The value of any attribute
-not specified in a particular insn is set to the default value for that
-attribute, as specified in its `define_attr'.  Extensive use of default
-values for attributes permits the specification of the values for only
-one or two attributes in the definition of most insn patterns, as seen
-in the example in the next section.
+   GNU CC will check that stack references are within the boundaries of
+the stack, if the `-fstack-check' is specified, in one of three ways:
 
-   The optional last argument of `define_insn' and `define_peephole' is
-a vector of expressions, each of which defines the value for a single
-attribute.  The most general way of assigning an attribute's value is
-to use a `set' expression whose first operand is an `attr' expression
-giving the name of the attribute being set.  The second operand of the
-`set' is an attribute expression (*note Expressions::.) giving the
-value of the attribute.
+  1. If the value of the `STACK_CHECK_BUILTIN' macro is nonzero, GNU CC
+     will assume that you have arranged for stack checking to be done at
+     appropriate places in the configuration files, e.g., in
+     `FUNCTION_PROLOGUE'.  GNU CC will do not other special processing.
 
-   When the attribute value depends on the `alternative' attribute
-(i.e., which is the applicable alternative in the constraint of the
-insn), the `set_attr_alternative' expression can be used.  It allows
-the specification of a vector of attribute expressions, one for each
-alternative.
+  2. If `STACK_CHECK_BUILTIN' is zero and you defined a named pattern
+     called `check_stack' in your `md' file, GNU CC will call that
+     pattern with one argument which is the address to compare the stack
+     value against.  You must arrange for this pattern to report an
+     error if the stack pointer is out of range.
 
-   When the generality of arbitrary attribute expressions is not
-required, the simpler `set_attr' expression can be used, which allows
-specifying a string giving either a single attribute value or a list of
-attribute values, one for each alternative.
+  3. If neither of the above are true, GNU CC will generate code to
+     periodically "probe" the stack pointer using the values of the
+     macros defined below.
 
-   The form of each of the above specifications is shown below.  In
-each case, NAME is a string specifying the attribute to be set.
+   Normally, you will use the default values of these macros, so GNU CC
+will use the third approach.
 
-`(set_attr NAME VALUE-STRING)'
-     VALUE-STRING is either a string giving the desired attribute value,
-     or a string containing a comma-separated list giving the values for
-     succeeding alternatives.  The number of elements must match the
-     number of alternatives in the constraint of the insn pattern.
+`STACK_CHECK_BUILTIN'
+     A nonzero value if stack checking is done by the configuration
+     files in a machine-dependent manner.  You should define this macro
+     if stack checking is require by the ABI of your machine or if you
+     would like to have to stack checking in some more efficient way
+     than GNU CC's portable approach.  The default value of this macro
+     is zero.
 
-     Note that it may be useful to specify `*' for some alternative, in
-     which case the attribute will assume its default value for insns
-     matching that alternative.
+`STACK_CHECK_PROBE_INTERVAL'
+     An integer representing the interval at which GNU CC must generate
+     stack probe instructions.  You will normally define this macro to
+     be no larger than the size of the "guard pages" at the end of a
+     stack area.  The default value of 4096 is suitable for most
+     systems.
 
-`(set_attr_alternative NAME [VALUE1 VALUE2 ...])'
-     Depending on the alternative of the insn, the value will be one of
-     the specified values.  This is a shorthand for using a `cond' with
-     tests on the `alternative' attribute.
+`STACK_CHECK_PROBE_LOAD'
+     A integer which is nonzero if GNU CC should perform the stack probe
+     as a load instruction and zero if GNU CC should use a store
+     instruction.  The default is zero, which is the most efficient
+     choice on most systems.
 
-`(set (attr NAME) VALUE)'
-     The first operand of this `set' must be the special RTL expression
-     `attr', whose sole operand is a string giving the name of the
-     attribute being set.  VALUE is the value of the attribute.
+`STACK_CHECK_PROTECT'
+     The number of bytes of stack needed to recover from a stack
+     overflow, for languages where such a recovery is supported.  The
+     default value of 75 words should be adequate for most machines.
 
-   The following shows three different ways of representing the same
-attribute value specification:
+`STACK_CHECK_MAX_FRAME_SIZE'
+     The maximum size of a stack frame, in bytes.  GNU CC will generate
+     probe instructions in non-leaf functions to ensure at least this
+     many bytes of stack are available.  If a stack frame is larger
+     than this size, stack checking will not be reliable and GNU CC
+     will issue a warning.  The default is chosen so that GNU CC only
+     generates one instruction on most systems.  You should normally
+     not change the default value of this macro.
 
-     (set_attr "type" "load,store,arith")
-     
-     (set_attr_alternative "type"
-                           [(const_string "load") (const_string "store")
-                            (const_string "arith")])
-     
-     (set (attr "type")
-          (cond [(eq_attr "alternative" "1") (const_string "load")
-                 (eq_attr "alternative" "2") (const_string "store")]
-                (const_string "arith")))
+`STACK_CHECK_FIXED_FRAME_SIZE'
+     GNU CC uses this value to generate the above warning message.  It
+     represents the amount of fixed frame used by a function, not
+     including space for any callee-saved registers, temporaries and
+     user variables.  You need only specify an upper bound for this
+     amount and will normally use the default of four words.
 
-   The `define_asm_attributes' expression provides a mechanism to
-specify the attributes assigned to insns produced from an `asm'
-statement.  It has the form:
-
-     (define_asm_attributes [ATTR-SETS])
-
-where ATTR-SETS is specified the same as for both the `define_insn' and
-the `define_peephole' expressions.
-
-   These values will typically be the "worst case" attribute values.
-For example, they might indicate that the condition code will be
-clobbered.
-
-   A specification for a `length' attribute is handled specially.  The
-way to compute the length of an `asm' insn is to multiply the length
-specified in the expression `define_asm_attributes' by the number of
-machine instructions specified in the `asm' statement, determined by
-counting the number of semicolons and newlines in the string.
-Therefore, the value of the `length' attribute specified in a
-`define_asm_attributes' should be the maximum possible length of a
-single machine instruction.
+`STACK_CHECK_MAX_VAR_SIZE'
+     The maximum size, in bytes, of an object that GNU CC will place in
+     the fixed area of the stack frame when the user specifies
+     `-fstack-check'.  GNU CC computed the default from the values of
+     the above macros and you will normally not need to override that
+     default.
 
 
-File: gcc.info,  Node: Attr Example,  Next: Insn Lengths,  Prev: Tagging Insns,  Up: Insn Attributes
+File: gcc.info,  Node: Frame Registers,  Next: Elimination,  Prev: Stack Checking,  Up: Stack and Calling
 
-Example of Attribute Specifications
------------------------------------
+Registers That Address the Stack Frame
+--------------------------------------
 
-   The judicious use of defaulting is important in the efficient use of
-insn attributes.  Typically, insns are divided into "types" and an
-attribute, customarily called `type', is used to represent this value.
-This attribute is normally used only to define the default value for
-other attributes.  An example will clarify this usage.
+   This discusses registers that address the stack frame.
 
-   Assume we have a RISC machine with a condition code and in which only
-full-word operations are performed in registers.  Let us assume that we
-can divide all insns into loads, stores, (integer) arithmetic
-operations, floating point operations, and branches.
+`STACK_POINTER_REGNUM'
+     The register number of the stack pointer register, which must also
+     be a fixed register according to `FIXED_REGISTERS'.  On most
+     machines, the hardware determines which register this is.
 
-   Here we will concern ourselves with determining the effect of an
-insn on the condition code and will limit ourselves to the following
-possible effects:  The condition code can be set unpredictably
-(clobbered), not be changed, be set to agree with the results of the
-operation, or only changed if the item previously set into the
-condition code has been modified.
+`FRAME_POINTER_REGNUM'
+     The register number of the frame pointer register, which is used to
+     access automatic variables in the stack frame.  On some machines,
+     the hardware determines which register this is.  On other
+     machines, you can choose any register you wish for this purpose.
 
-   Here is part of a sample `md' file for such a machine:
+`HARD_FRAME_POINTER_REGNUM'
+     On some machines the offset between the frame pointer and starting
+     offset of the automatic variables is not known until after register
+     allocation has been done (for example, because the saved registers
+     are between these two locations).  On those machines, define
+     `FRAME_POINTER_REGNUM' the number of a special, fixed register to
+     be used internally until the offset is known, and define
+     `HARD_FRAME_POINTER_REGNUM' to be the actual hard register number
+     used for the frame pointer.
 
-     (define_attr "type" "load,store,arith,fp,branch" (const_string "arith"))
-     
-     (define_attr "cc" "clobber,unchanged,set,change0"
-                  (cond [(eq_attr "type" "load")
-                             (const_string "change0")
-                         (eq_attr "type" "store,branch")
-                             (const_string "unchanged")
-                         (eq_attr "type" "arith")
-                             (if_then_else (match_operand:SI 0 "" "")
-                                           (const_string "set")
-                                           (const_string "clobber"))]
-                        (const_string "clobber")))
-     
-     (define_insn ""
-       [(set (match_operand:SI 0 "general_operand" "=r,r,m")
-             (match_operand:SI 1 "general_operand" "r,m,r"))]
-       ""
-       "@
-        move %0,%1
-        load %0,%1
-        store %0,%1"
-       [(set_attr "type" "arith,load,store")])
+     You should define this macro only in the very rare circumstances
+     when it is not possible to calculate the offset between the frame
+     pointer and the automatic variables until after register
+     allocation has been completed.  When this macro is defined, you
+     must also indicate in your definition of `ELIMINABLE_REGS' how to
+     eliminate `FRAME_POINTER_REGNUM' into either
+     `HARD_FRAME_POINTER_REGNUM' or `STACK_POINTER_REGNUM'.
 
-   Note that we assume in the above example that arithmetic operations
-performed on quantities smaller than a machine word clobber the
-condition code since they will set the condition code to a value
-corresponding to the full-word result.
+     Do not define this macro if it would be the same as
+     `FRAME_POINTER_REGNUM'.
+
+`ARG_POINTER_REGNUM'
+     The register number of the arg pointer register, which is used to
+     access the function's argument list.  On some machines, this is
+     the same as the frame pointer register.  On some machines, the
+     hardware determines which register this is.  On other machines,
+     you can choose any register you wish for this purpose.  If this is
+     not the same register as the frame pointer register, then you must
+     mark it as a fixed register according to `FIXED_REGISTERS', or
+     arrange to be able to eliminate it (*note Elimination::.).
+
+`RETURN_ADDRESS_POINTER_REGNUM'
+     The register number of the return address pointer register, which
+     is used to access the current function's return address from the
+     stack.  On some machines, the return address is not at a fixed
+     offset from the frame pointer or stack pointer or argument
+     pointer.  This register can be defined to point to the return
+     address on the stack, and then be converted by `ELIMINABLE_REGS'
+     into either the frame pointer or stack pointer.
+
+     Do not define this macro unless there is no other way to get the
+     return address from the stack.
+
+`STATIC_CHAIN_REGNUM'
+`STATIC_CHAIN_INCOMING_REGNUM'
+     Register numbers used for passing a function's static chain
+     pointer.  If register windows are used, the register number as
+     seen by the called function is `STATIC_CHAIN_INCOMING_REGNUM',
+     while the register number as seen by the calling function is
+     `STATIC_CHAIN_REGNUM'.  If these registers are the same,
+     `STATIC_CHAIN_INCOMING_REGNUM' need not be defined.
+
+     The static chain register need not be a fixed register.
+
+     If the static chain is passed in memory, these macros should not be
+     defined; instead, the next two macros should be defined.
+
+`STATIC_CHAIN'
+`STATIC_CHAIN_INCOMING'
+     If the static chain is passed in memory, these macros provide rtx
+     giving `mem' expressions that denote where they are stored.
+     `STATIC_CHAIN' and `STATIC_CHAIN_INCOMING' give the locations as
+     seen by the calling and called functions, respectively.  Often the
+     former will be at an offset from the stack pointer and the latter
+     at an offset from the frame pointer.
+
+     The variables `stack_pointer_rtx', `frame_pointer_rtx', and
+     `arg_pointer_rtx' will have been initialized prior to the use of
+     these macros and should be used to refer to those items.
+
+     If the static chain is passed in a register, the two previous
+     macros should be defined instead.
 
 
-File: gcc.info,  Node: Insn Lengths,  Next: Constant Attributes,  Prev: Attr Example,  Up: Insn Attributes
+File: gcc.info,  Node: Elimination,  Next: Stack Arguments,  Prev: Frame Registers,  Up: Stack and Calling
 
-Computing the Length of an Insn
--------------------------------
+Eliminating Frame Pointer and Arg Pointer
+-----------------------------------------
 
-   For many machines, multiple types of branch instructions are
-provided, each for different length branch displacements.  In most
-cases, the assembler will choose the correct instruction to use.
-However, when the assembler cannot do so, GCC can when a special
-attribute, the `length' attribute, is defined.  This attribute must be
-defined to have numeric values by specifying a null string in its
-`define_attr'.
+   This is about eliminating the frame pointer and arg pointer.
 
-   In the case of the `length' attribute, two additional forms of
-arithmetic terms are allowed in test expressions:
+`FRAME_POINTER_REQUIRED'
+     A C expression which is nonzero if a function must have and use a
+     frame pointer.  This expression is evaluated  in the reload pass.
+     If its value is nonzero the function will have a frame pointer.
 
-`(match_dup N)'
-     This refers to the address of operand N of the current insn, which
-     must be a `label_ref'.
+     The expression can in principle examine the current function and
+     decide according to the facts, but on most machines the constant 0
+     or the constant 1 suffices.  Use 0 when the machine allows code to
+     be generated with no frame pointer, and doing so saves some time
+     or space.  Use 1 when there is no possible advantage to avoiding a
+     frame pointer.
 
-`(pc)'
-     This refers to the address of the *current* insn.  It might have
-     been more consistent with other usage to make this the address of
-     the *next* insn but this would be confusing because the length of
-     the current insn is to be computed.
+     In certain cases, the compiler does not know how to produce valid
+     code without a frame pointer.  The compiler recognizes those cases
+     and automatically gives the function a frame pointer regardless of
+     what `FRAME_POINTER_REQUIRED' says.  You don't need to worry about
+     them.
 
-   For normal insns, the length will be determined by value of the
-`length' attribute.  In the case of `addr_vec' and `addr_diff_vec' insn
-patterns, the length is computed as the number of vectors multiplied by
-the size of each vector.
+     In a function that does not require a frame pointer, the frame
+     pointer register can be allocated for ordinary usage, unless you
+     mark it as a fixed register.  See `FIXED_REGISTERS' for more
+     information.
 
-   Lengths are measured in addressable storage units (bytes).
+`INITIAL_FRAME_POINTER_OFFSET (DEPTH-VAR)'
+     A C statement to store in the variable DEPTH-VAR the difference
+     between the frame pointer and the stack pointer values immediately
+     after the function prologue.  The value would be computed from
+     information such as the result of `get_frame_size ()' and the
+     tables of registers `regs_ever_live' and `call_used_regs'.
 
-   The following macros can be used to refine the length computation:
+     If `ELIMINABLE_REGS' is defined, this macro will be not be used and
+     need not be defined.  Otherwise, it must be defined even if
+     `FRAME_POINTER_REQUIRED' is defined to always be true; in that
+     case, you may set DEPTH-VAR to anything.
 
-`FIRST_INSN_ADDRESS'
-     When the `length' insn attribute is used, this macro specifies the
-     value to be assigned to the address of the first insn in a
-     function.  If not specified, 0 is used.
+`ELIMINABLE_REGS'
+     If defined, this macro specifies a table of register pairs used to
+     eliminate unneeded registers that point into the stack frame.  If
+     it is not defined, the only elimination attempted by the compiler
+     is to replace references to the frame pointer with references to
+     the stack pointer.
 
-`ADJUST_INSN_LENGTH (INSN, LENGTH)'
-     If defined, modifies the length assigned to instruction INSN as a
-     function of the context in which it is used.  LENGTH is an lvalue
-     that contains the initially computed length of the insn and should
-     be updated with the correct length of the insn.
+     The definition of this macro is a list of structure
+     initializations, each of which specifies an original and
+     replacement register.
 
-     This macro will normally not be required.  A case in which it is
-     required is the ROMP.  On this machine, the size of an `addr_vec'
-     insn must be increased by two to compensate for the fact that
-     alignment may be required.
+     On some machines, the position of the argument pointer is not
+     known until the compilation is completed.  In such a case, a
+     separate hard register must be used for the argument pointer.
+     This register can be eliminated by replacing it with either the
+     frame pointer or the argument pointer, depending on whether or not
+     the frame pointer has been eliminated.
 
-   The routine that returns `get_attr_length' (the value of the
-`length' attribute) can be used by the output routine to determine the
-form of the branch instruction to be written, as the example below
-illustrates.
+     In this case, you might specify:
+          #define ELIMINABLE_REGS  \
+          {{ARG_POINTER_REGNUM, STACK_POINTER_REGNUM}, \
+           {ARG_POINTER_REGNUM, FRAME_POINTER_REGNUM}, \
+           {FRAME_POINTER_REGNUM, STACK_POINTER_REGNUM}}
 
-   As an example of the specification of variable-length branches,
-consider the IBM 360.  If we adopt the convention that a register will
-be set to the starting address of a function, we can jump to labels
-within 4k of the start using a four-byte instruction.  Otherwise, we
-need a six-byte sequence to load the address from memory and then
-branch to it.
+     Note that the elimination of the argument pointer with the stack
+     pointer is specified first since that is the preferred elimination.
 
-   On such a machine, a pattern for a branch instruction might be
-specified as follows:
+`CAN_ELIMINATE (FROM-REG, TO-REG)'
+     A C expression that returns non-zero if the compiler is allowed to
+     try to replace register number FROM-REG with register number
+     TO-REG.  This macro need only be defined if `ELIMINABLE_REGS' is
+     defined, and will usually be the constant 1, since most of the
+     cases preventing register elimination are things that the compiler
+     already knows about.
 
-     (define_insn "jump"
-       [(set (pc)
-             (label_ref (match_operand 0 "" "")))]
-       ""
-       "*
-     {
-        return (get_attr_length (insn) == 4
-                ? \"b %l0\" : \"l r15,=a(%l0); br r15\");
-     }"
-       [(set (attr "length") (if_then_else (lt (match_dup 0) (const_int 4096))
-                                           (const_int 4)
-                                           (const_int 6)))])
+`INITIAL_ELIMINATION_OFFSET (FROM-REG, TO-REG, OFFSET-VAR)'
+     This macro is similar to `INITIAL_FRAME_POINTER_OFFSET'.  It
+     specifies the initial difference between the specified pair of
+     registers.  This macro must be defined if `ELIMINABLE_REGS' is
+     defined.
+
+`LONGJMP_RESTORE_FROM_STACK'
+     Define this macro if the `longjmp' function restores registers from
+     the stack frames, rather than from those saved specifically by
+     `setjmp'.  Certain quantities must not be kept in registers across
+     a call to `setjmp' on such machines.
+
+
+File: gcc.info,  Node: Stack Arguments,  Next: Register Arguments,  Prev: Elimination,  Up: Stack and Calling
+
+Passing Function Arguments on the Stack
+---------------------------------------
+
+   The macros in this section control how arguments are passed on the
+stack.  See the following section for other macros that control passing
+certain arguments in registers.
+
+`PROMOTE_PROTOTYPES'
+     Define this macro if an argument declared in a prototype as an
+     integral type smaller than `int' should actually be passed as an
+     `int'.  In addition to avoiding errors in certain cases of
+     mismatch, it also makes for better code on certain machines.
+
+`PUSH_ROUNDING (NPUSHED)'
+     A C expression that is the number of bytes actually pushed onto the
+     stack when an instruction attempts to push NPUSHED bytes.
+
+     If the target machine does not have a push instruction, do not
+     define this macro.  That directs GNU CC to use an alternate
+     strategy: to allocate the entire argument block and then store the
+     arguments into it.
+
+     On some machines, the definition
+
+          #define PUSH_ROUNDING(BYTES) (BYTES)
+
+     will suffice.  But on other machines, instructions that appear to
+     push one byte actually push two bytes in an attempt to maintain
+     alignment.  Then the definition should be
+
+          #define PUSH_ROUNDING(BYTES) (((BYTES) + 1) & ~1)
+
+`ACCUMULATE_OUTGOING_ARGS'
+     If defined, the maximum amount of space required for outgoing
+     arguments will be computed and placed into the variable
+     `current_function_outgoing_args_size'.  No space will be pushed
+     onto the stack for each call; instead, the function prologue should
+     increase the stack frame size by this amount.
+
+     Defining both `PUSH_ROUNDING' and `ACCUMULATE_OUTGOING_ARGS' is
+     not proper.
+
+`REG_PARM_STACK_SPACE (FNDECL)'
+     Define this macro if functions should assume that stack space has
+     been allocated for arguments even when their values are passed in
+     registers.
+
+     The value of this macro is the size, in bytes, of the area
+     reserved for arguments passed in registers for the function
+     represented by FNDECL.
+
+     This space can be allocated by the caller, or be a part of the
+     machine-dependent stack frame: `OUTGOING_REG_PARM_STACK_SPACE' says
+     which.
+
+`MAYBE_REG_PARM_STACK_SPACE'
+`FINAL_REG_PARM_STACK_SPACE (CONST_SIZE, VAR_SIZE)'
+     Define these macros in addition to the one above if functions might
+     allocate stack space for arguments even when their values are
+     passed in registers.  These should be used when the stack space
+     allocated for arguments in registers is not a simple constant
+     independent of the function declaration.
+
+     The value of the first macro is the size, in bytes, of the area
+     that we should initially assume would be reserved for arguments
+     passed in registers.
+
+     The value of the second macro is the actual size, in bytes, of the
+     area that will be reserved for arguments passed in registers.
+     This takes two arguments: an integer representing the number of
+     bytes of fixed sized arguments on the stack, and a tree
+     representing the number of bytes of variable sized arguments on
+     the stack.
+
+     When these macros are defined, `REG_PARM_STACK_SPACE' will only be
+     called for libcall functions, the current function, or for a
+     function being called when it is known that such stack space must
+     be allocated.  In each case this value can be easily computed.
+
+     When deciding whether a called function needs such stack space,
+     and how much space to reserve, GNU CC uses these two macros
+     instead of `REG_PARM_STACK_SPACE'.
+
+`OUTGOING_REG_PARM_STACK_SPACE'
+     Define this if it is the responsibility of the caller to allocate
+     the area reserved for arguments passed in registers.
+
+     If `ACCUMULATE_OUTGOING_ARGS' is defined, this macro controls
+     whether the space for these arguments counts in the value of
+     `current_function_outgoing_args_size'.
+
+`STACK_PARMS_IN_REG_PARM_AREA'
+     Define this macro if `REG_PARM_STACK_SPACE' is defined, but the
+     stack parameters don't skip the area specified by it.
+
+     Normally, when a parameter is not passed in registers, it is
+     placed on the stack beyond the `REG_PARM_STACK_SPACE' area.
+     Defining this macro suppresses this behavior and causes the
+     parameter to be passed on the stack in its natural location.
+
+`RETURN_POPS_ARGS (FUNDECL, FUNTYPE, STACK-SIZE)'
+     A C expression that should indicate the number of bytes of its own
+     arguments that a function pops on returning, or 0 if the function
+     pops no arguments and the caller must therefore pop them all after
+     the function returns.
+
+     FUNDECL is a C variable whose value is a tree node that describes
+     the function in question.  Normally it is a node of type
+     `FUNCTION_DECL' that describes the declaration of the function.
+     From this you can obtain the DECL_MACHINE_ATTRIBUTES of the
+     function.
+
+     FUNTYPE is a C variable whose value is a tree node that describes
+     the function in question.  Normally it is a node of type
+     `FUNCTION_TYPE' that describes the data type of the function.
+     From this it is possible to obtain the data types of the value and
+     arguments (if known).
+
+     When a call to a library function is being considered, FUNDECL
+     will contain an identifier node for the library function.  Thus, if
+     you need to distinguish among various library functions, you can
+     do so by their names.  Note that "library function" in this
+     context means a function used to perform arithmetic, whose name is
+     known specially in the compiler and was not mentioned in the C
+     code being compiled.
+
+     STACK-SIZE is the number of bytes of arguments passed on the
+     stack.  If a variable number of bytes is passed, it is zero, and
+     argument popping will always be the responsibility of the calling
+     function.
+
+     On the Vax, all functions always pop their arguments, so the
+     definition of this macro is STACK-SIZE.  On the 68000, using the
+     standard calling convention, no functions pop their arguments, so
+     the value of the macro is always 0 in this case.  But an
+     alternative calling convention is available in which functions
+     that take a fixed number of arguments pop them but other functions
+     (such as `printf') pop nothing (the caller pops all).  When this
+     convention is in use, FUNTYPE is examined to determine whether a
+     function takes a fixed number of arguments.
 

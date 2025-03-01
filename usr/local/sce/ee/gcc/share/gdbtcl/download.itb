@@ -1,21 +1,11 @@
-# Download class implementation for GDBtk.
-# Copyright 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# download.itb - implements Download class
 # ----------------------------------------------------------------------
 # Download window and associated procs
 #
 # ----------------------------------------------------------------------
+#   Copyright (C) 1999 Cygnus Solutions
+#
 
 body Download::constructor {args} {
   global gdb_pretty_name
@@ -23,11 +13,13 @@ body Download::constructor {args} {
   eval itk_initialize $args
   window_name "Download Status" "Download"
   add_hook download_progress_hook "$this update_download"
-
+    debug 3
   label $itk_interior.dload -text "Downloading $filename to $gdb_pretty_name"
-
+  debug 4
   label $itk_interior.stat
   set f [frame $itk_interior.f]
+
+
 
   set i 0
   while {$i <$num_sections} {
@@ -37,14 +29,14 @@ body Download::constructor {args} {
     grid $f.sec$i $f.meter$i $f.num$i -padx 4 -pady 4 -sticky news
     incr i
   }
-
+  debug 6
   grid $itk_interior.dload -padx 5 -pady 5
   grid $itk_interior.stat -padx 5 -pady 5
   grid $itk_interior.f -padx 5 -pady 5
-
+  debug 7
   button $itk_interior.cancel -text Cancel -command "$this cancel" \
     -state active -width 10
-  grid $itk_interior.cancel -padx 5 -pady 5
+  grid $itk_interior.cancel -padx 4 -pady 4 
 #  grid  $itk_interior
   
 }
@@ -124,7 +116,7 @@ body Download::do_download_hooks {} {
 
 body Download::download_hash { section num } {
   global download_timer
-  debug "sec=$section num=$num tot=$total_bytes ok=$::download_cancel_ok"
+  debug "sec=$section num=$num tot=$total_bytes $::download_cancel_ok"
   ::update
   # Only run the timer at discrete times...
   if {[info exists download_timer(timer)]} {
@@ -165,13 +157,13 @@ body Download::download_it { } {
   # Only places that load files should do set_exe
   #set_exe
   switch [set_target] {
-    ERROR {
+    0 {
       # target command failed
       set gdb_downloading 0
       gdbtk_idle
       return 0
     }
-    CANCELED {
+    2 {
       # command cancelled by user
       set gdb_downloading 0
       if {$gdb_running} {
@@ -223,12 +215,11 @@ body Download::download_it { } {
 
   if {[pref getd gdb/load/$target-verbose] == "1"} {
     # open a detailed download dialog window
-    set download_dialog [ManagedWin::open Download -transient -filename $gdb_exe_name]
+    set download_dialog [ManagedWin::open Download -filename $gdb_exe_name]
   } else {
     # raise source windows
     foreach src [ManagedWin::find SrcWin] {
       $src reveal
-      $src toolbar downloading
     }
     set download_dialog ""
   }
@@ -248,24 +239,25 @@ body Download::download_it { } {
   
   debug "Done loading"
 
-  set gdb_downloading 0
-  if {$::download_cancel_ok} {
-    set gdb_loaded 0
-    if {$download_dialog != ""} {
-      catch {$download_dialog done $download_error}
-    }
-  } else {
-    set gdb_loaded 1
-    if {$download_dialog != ""} {
-      catch {$download_dialog done}
-    }
-  }
   
   foreach src [ManagedWin::find SrcWin] {
     if {$download_error == "CANCEL"} {
       $src download_progress CANCEL 1 1
     } else {
       $src download_progress DONE 0 $total_bytes $download_error
+    }
+  }
+
+  set gdb_downloading 0
+  if {$::download_cancel_ok} {
+    set gdb_loaded 0
+    if {$download_dialog != ""} {
+      $download_dialog done $download_error
+    }
+  } else {
+    set gdb_loaded 1
+    if {$download_dialog != ""} {
+      $download_dialog done
     }
   }
 

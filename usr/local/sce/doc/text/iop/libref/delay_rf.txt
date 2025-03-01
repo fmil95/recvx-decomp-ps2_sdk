@@ -1,0 +1,112 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                            CSL MIDIディレイ
+                           =================
+
+    
+
+ 1 構造体
+==========
+
+=========================================================================
+sceMidiDelay_DelayBuffer                                         [構造体]
+=========================================================================
+                                                         ディレイバッファ
+[構造]
+        typedef struct {
+        	unsigned int delayBfSize;
+        	unsigned int rp, wp;
+        	unsigned short curTime;
+        	unsigned short delayTime;
+        	unsigned char delayBf[0];
+        } sceMidiDelay_DelayBuffer;
+        
+[メンバ]
+        delayBfSize	ディレイバッファ(delayBf[])のバイト数
+        rp		ディレイバッファ読み出しポインタ
+        wp		ディレイバッファ書き込みポインタ
+        curTime		現在時刻
+        delayTime	ディレイタイム(ATick()の呼出し回数)
+        delayBf		ディレイバッファ
+        		実際には delayBf[delayBfSize] となる
+        
+[解説]
+        入力バッファに対応するディレイバッファ用構造体です。
+
+ 2 関数
+========
+
+
+=========================================================================
+sceMidiDelay_ATick                                                 [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceMidiDelay_ATick(sceCslCtx *module_context)
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        割り込みから定期的に呼出される処理を行います。
+        
+
+=========================================================================
+sceMidiDelay_Flush                                                 [関数]
+=========================================================================
+                                     ディレイバッファ上のデータを全て出力
+[形式]
+        int sceMidiDelay_Flush(sceCslCtx *module_context)
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        ディレイバッファ上のデータをすべてディレイ時間に関係なく出力バッ
+        ファに出力します。
+        
+
+=========================================================================
+sceMidiDelay_GetDelayBuffer                                        [関数]
+=========================================================================
+                                           ディレイバッファアドレスの取得
+[形式]
+        sceMidiDelay_DelayBuffer *sceMidiDelay_GetDelayBuffer(
+        		sceCslCtx *module_context,
+        		 unsigned int port_number)
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        ディレイバッファアドレス
+        
+[解説]
+        port_numberに対応するディレイバッファのアドレスを取得します。
+        
+
+=========================================================================
+sceMidiDelay_Init                                                  [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceMidiDelay_Init(sceCslCtx *module_context)
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        モジュールの内部環境を初期化します。

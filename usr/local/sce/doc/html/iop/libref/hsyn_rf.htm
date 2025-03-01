@@ -1,0 +1,1347 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CSLハードウェア・シンセサイザ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CSLハードウェア・シンセサイザ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_EffectAttr>sceHSyn_EffectAttr </A><BR>
+</TD><TD> </TD>
+<TD>エフェクトパラメータ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_VoiceStat>sceHSyn_VoiceStat </A><BR>
+</TD><TD> </TD>
+<TD>モジュールの状態</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSynChStat>sceHSynChStat </A><BR>
+</TD><TD> </TD>
+<TD>チャンネル毎のボイス使用状況取得用構造体</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSynEnv>sceHSynEnv </A><BR>
+</TD><TD> </TD>
+<TD>入力環境</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSynUserLfoWave>sceHSynUserLfoWave </A><BR>
+</TD><TD> </TD>
+<TD>ユーザー定義LFO波形</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSynUserVelocityMap>sceHSynUserVelocityMap </A><BR>
+</TD><TD> </TD>
+<TD>ユーザー定義velocity変換テーブル</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_AllNoteOff>sceHSyn_AllNoteOff </A><BR>
+</TD><TD> </TD>
+<TD>入力バッファの全てのVoiceを KEY_OFF</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_AllSoundOff>sceHSyn_AllSoundOff </A><BR>
+</TD><TD> </TD>
+<TD>入力バッファの全Voiceを消音</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_ATick>sceHSyn_ATick </A><BR>
+</TD><TD> </TD>
+<TD>割り込み処理</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_GetChStat>sceHSyn_GetChStat </A><BR>
+</TD><TD> </TD>
+<TD>全チャンネルのボイス使用状況の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_GetVolume>sceHSyn_GetVolume </A><BR>
+</TD><TD> </TD>
+<TD>入力毎のボリューム値の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_Init>sceHSyn_Init </A><BR>
+</TD><TD> </TD>
+<TD>初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_Load>sceHSyn_Load </A><BR>
+</TD><TD> </TD>
+<TD>SPU2上の wave data とヘッダを登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_ResetAllControler>sceHSyn_ResetAllControler </A><BR>
+</TD><TD> </TD>
+<TD>入力バッファのコントローラの値を初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_SetEffectAttr>sceHSyn_SetEffectAttr </A><BR>
+</TD><TD> </TD>
+<TD>EFFECT の設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_SetOutputMode>sceHSyn_SetOutputMode </A><BR>
+</TD><TD> </TD>
+<TD>出力のモノ／ステレオ切り替え</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_SetReservVoice>sceHSyn_SetReservVoice </A><BR>
+</TD><TD> </TD>
+<TD>予約Voiceの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_SetVoiceStatBuffer>sceHSyn_SetVoiceStatBuffer </A><BR>
+</TD><TD> </TD>
+<TD>モジュールの状態モニタバッファの登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_SetVolume>sceHSyn_SetVolume </A><BR>
+</TD><TD> </TD>
+<TD>入力毎のボリュームの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceHSyn_VoiceTrans>sceHSyn_VoiceTrans </A><BR>
+</TD><TD> </TD>
+<TD>SPU2へ wave data を転送</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceHSyn_EffectAttr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_EffectAttr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        エフェクトパラメータ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	int <I>core</I>;
+#define SCEHS_REV_MODE_OFF		0
+#define SCEHS_REV_MODE_ROOM	1
+#define SCEHS_REV_MODE_STUDIO_A	2
+#define SCEHS_REV_MODE_STUDIO_B	3
+#define SCEHS_REV_MODE_STUDIO_C	4
+#define SCEHS_REV_MODE_HALL		5
+#define SCEHS_REV_MODE_SPACE	6
+#define SCEHS_REV_MODE_ECHO	7
+#define SCEHS_REV_MODE_DELAY	8
+#define SCEHS_REV_MODE_PIPE		9
+#define SCEHS_REV_MODE_MAX		10
+#define SCEHS_REV_MODE_CLEAR_WA	(1&lt;&lt;8)
+	int <I>mode</I>;
+	short <I>depth_L, depth_R</I>;
+	int <I>delay</I>;
+	int <I>feedback</I>;
+	short <I>vol_l, vol_r</I>;
+} <B>sceHSyn_EffectAttr</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>vol_l, vol_r	エフェクト出力ボリューム
+その他は、libsd.h sceSdEffectAttr と同一
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    エフェクト属性を設定するための構造体です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_VoiceStat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_VoiceStat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        モジュールの状態
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	int <I>pendingVoiceCount</I>;
+	int <I>workVoiceCount</I>;
+	unsigned char <I>voice_state</I>[sceHSyn_NumCore][sceHSyn_NumVoice];
+	unsigned short <I>voice_env</I>[sceHSyn_NumCore][sceHSyn_NumVoice];
+} <B>sceHSyn_VoiceStat</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pendingVoiceCount</I>	発音待機中のボイスの数
+<I>workVoiceCount</I>	発音中のボイスの数(KEY_OFFを含む)
+<I>voice_state</I>	ボイスの状態
+		bit-7:	データ有効ビット
+			== 1 の場合、bit-0 -- bit-6 の内容が有効となる。
+		bit-4,5,6:	ボイスの状態
+	sceHSyn_VoiceStat_Free	空き
+	sceHSyn_VoiceStat_Pending	発音待ち
+	sceHSyn_VoiceStat_KeyOn	キーオン・発音中
+	sceHSyn_VoiceStat_KeyOff	キーオフ・発音中
+		bit-0,1,2,3:	使用しているポートの番号
+<I>voice_env</I>	エンベロープ値（sceHSyn_VoiceStat_KeyOn, 
+			sceHSyn_VoiceStat_KeyOff 時のみ有効）
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    モジュールの状態を取得するための構造体です。 <BR>
+    メンバ<I>voice_state</I>を取り扱うマクロとして次のものが用意されています。 <BR>
+    <blockquote>
+    	sceHSyn_GetVoiceStat(voice_state[?][?])	ボイス状態の取得 <BR>
+    </blockquote>
+    <blockquote>
+    	sceHSyn_GetVoiceCtrlPort(voice_state[?][?])	使用ポートの取得 <BR>
+    </blockquote>
+    いずれも、bit-7 == 0の場合、-1が返ります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSynChStat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSynChStat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャンネル毎のボイス使用状況取得用構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char <I>ch</I>[16];
+} <B>sceHSynChStat</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>ch[<I>XX</I>]	XXチャンネルのボイスの使用状況
+以下のビットにより検査し状態を知ることができる。
+sceHSynChStat_KeyOn	KEY ONで発音中のボイスあり
+sceHSynChStat_Hold	MIDI Note Off Messageを受信したがHOLD ONのため発音が
+			継続しているボイスあり
+sceHSynChStat_KeyOff	KEY OFFでまだ発音が終了していないボイスあり
+空きチャンネル（まったく発音していないチャンネル）はch[<I>XX</I>]==0となります。
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceHSyn_GetChStat()で各チャンネルの発音状態を調べる際に、結果を受け取るための構造体です。 <BR>
+        </BLOCKQUOTE>
+<BR>
+</blockquote>
+<A name=sceHSynEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSynEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力環境
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char <I>priority</I>;
+	unsigned char <I>maxPolyphony</I>;
+	int <I>lfoWaveNum</I>;
+	sceHSynUserLfoWave *<I>lfoWaveTbl</I>;
+	int <I>velocityMapNum</I>;
+	sceHSynUserVelocityMap *<I>velocityMapTbl</I>;
+	unsigned char <I>system</I>[sceHSynEnvSize];
+} <B>sceHSynEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>priority</I>		入力 buffer 毎の優先度
+		wave parameter の優先度を w_pri とした場合
+		 <I>priority</I> + w_pri が、発音中の voice の優先度となり、
+		最大優先度は 255
+<I>maxPolyphony</I>	この入力で使用する最大音数（デフォルト 48)
+<I>lfoWaveNum</I>	ユーザー定義 LFO の数
+<I>lfoWaveTbl</I>	ユーザー定義 LFO 配列の先頭アドレス
+<I>velocityMapNum</I>	ユーザー定義 velocity 変換テーブルの数
+<I>velocityMapTbl</I>	ユーザー定義 velocity 変換テーブル配列の先頭アドレス
+<I>system</I>		このモジュールが使う内部変数領域
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    入力 buffer 毎に演奏状態等を管理するための環境バッファです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSynUserLfoWave>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSynUserLfoWave
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザー定義LFO波形
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char <I>id</I>;
+	unsigned short <I>waveLen</I>;	// in sample
+	short *<I>wave</I>;
+} <B>sceHSynUserLfoWave</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>		Wave Parameter で指定する LFO の ID
+<I>waveLen	</I>	波形データの数
+		16bitを単位として扱います。
+		(20 byte の波形の場合 10)
+<I>wave</I>		波形データ
+		符号付き16bit
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ユーザー定義LFOを定義するための構造体です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSynUserVelocityMap>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSynUserVelocityMap
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザー定義velocity変換テーブル
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char <I>velMap</I>[sceHSynNumVelocity];
+} <B>sceHSynUserVelocityMap</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>velMap</I>[<I>v</I>]<I>	</I>Velocity == <I>v</I>に対応する値（1 -- 127）
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Note On MessageのVelocityを修飾するためのテーブルです。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceHSyn_AllNoteOff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_AllNoteOff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力バッファの全てのVoiceを KEY_OFF
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_AllNoteOff</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された入力バッファの全ボイスをキーオフ状態にします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_AllSoundOff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_AllSoundOff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力バッファの全Voiceを消音
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_AllSoundOff</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された入力バッファの全ボイスを消音します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_ATick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_ATick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込み処理
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_ATick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みから定期的に呼出される処理です。 <BR>
+    すべての入力メッセージを処理し、Voice の状態を更新します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_GetChStat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_GetChStat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        全チャンネルのボイス使用状況の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_GetChStat</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	sceHSynChStat *<I>buff_addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>buff_addr</I>	状態取得バッファのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたポートの全チャンネルのボイス使用状況を調べます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_GetVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_GetVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力毎のボリューム値の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned short <B>sceHSyn_GetVolume</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された入力バッファのボリューム値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    入力バッファ単位でのボリューム値を取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_Init>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_Init
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_Init</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>interval</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>interval</I>		ATick()が呼出される周期をマイクロ秒で表したもの
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェア・シンセサイザモジュールの内部環境およびSPU2の初期化を行ないます。 <BR>
+    指定されたwave dataをSPU2へ転送する処理も実行します。 <BR>
+    EffectはOFFになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_Load>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_Load
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SPU2上の wave data とヘッダを登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_Load</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	void *<I>spu2_wave_address</I>,
+	void *<I>header_address</I>,
+	unsigned int <I>bank</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>		Module Context のアドレス
+<I>port_number</I>		入力ポート番号
+<I>spu2_wave_address</I>	SPU2上のウェーブデータアドレス
+<I>header_address</I>		ヘッダアドレス
+<I>bank</I>			バンク番号（０～１５）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SPU2に転送した wave data とヘッダ（パラメータ）を登録します。 <BR>
+    発音中のポートバンクを変更した場合の動作は保証されません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_ResetAllControler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_ResetAllControler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力バッファのコントローラの値を初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_ResetAllControler</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された入力バッファのコントローラの値を初期値に戻します。 <BR>
+    初期値に戻すコントローラは <BR>
+    <blockquote>
+    	ホールド <BR>
+    </blockquote>
+    <blockquote>
+    	ピッチベンド <BR>
+    </blockquote>
+    <blockquote>
+    	モジュレーション <BR>
+    </blockquote>
+    <blockquote>
+    	ポルタメント <BR>
+    </blockquote>
+    です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_SetEffectAttr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_SetEffectAttr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EFFECT の設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_SetEffectAttr</B>(
+	sceHSyn_EffectAttr *<I>effect_attribute</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>effect_attribute</I>	設定するエフェクトの状態
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SPU2 のエフェクトの設定を行ないます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_SetOutputMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_SetOutputMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力のモノ／ステレオ切り替え
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_SetOutputMode</B>(
+	int <I>output_mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>output_mode</I>	出力モード
+	sceHSynOutputMode_Mono    パンポットが無効になり、
+				すべてがセンターになる
+	sceHSynOutputMode_Stereo   パンポットが有効
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    出力モード（パンポットの有効／無効）の設定を行ないます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_SetReservVoice>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_SetReservVoice
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        予約Voiceの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_SetReservVoice</B>(
+	unsigned int <I>voice_bit[2]</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>voice_bit[0]</I>にはcore 0の予約ボイス、<I>voice_bit[1]</I>にはcore 1の
+予約ボイスを指定する。
+bit-0がvoice 0, bit-N が voice N に対応し、該当ビットが1の
+ボイスが予約ボイスとなる。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    各コアの持つボイスのうち、一部のボイスを予約ボイスとして、シンセサイザモジュールでの使用を禁止します。 <BR>
+    ボイスが発音中に呼出された場合の動作は保証されません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_SetVoiceStatBuffer>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_SetVoiceStatBuffer
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        モジュールの状態モニタバッファの登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_SetVoiceStatBuffer</B>(
+	sceHSyn_VoiceStat *<I>status_buffer</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>status_buffer</I>	状態格納用バッファアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    モジュールの現在の状態モニタ用バッファを登録します。 <BR>
+    状態はATick()の実行によって更新されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_SetVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_SetVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力毎のボリュームの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_SetVolume</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned short<I> vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>vol</I>		ボリューム値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    入力バッファ単位でのボリュームの設定を行ないます。 <BR>
+    voice の volume を v_vol とした場合、実際に出力される値は <BR>
+    (v_vol * vol) / sceHSyn_Volume_0db <BR>
+    となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceHSyn_VoiceTrans>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceHSyn_VoiceTrans
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SPU2へ wave data を転送
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceHSyn_VoiceTrans</B>(
+	short <I>channel</I>,
+	unsigned char *<I>data_address</I>,
+	unsigned char *<I>spu2_address</I>,
+	unsigned int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>channel</I>		使用チャンネル
+<I>data_address</I>	データのメモリ上アドレス（転送元）
+<I>spu2_address</I>	SPU2のアドレス（転送先）
+<I>size</I>		転送サイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SPU2にwave dataをDMA転送します。 <BR>
+    SPU2上の発音中のデータを上書きした場合、その元データを使って出力されていた音声は保証されません。 <BR>
+    libsdを使うとより細かな制御が可能です。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

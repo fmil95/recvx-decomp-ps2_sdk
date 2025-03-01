@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm307</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm306.htm">[前]</A> <A HREF="arm308.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.7 <A NAME="anchor2733556"></A>ステータス・レジスタ・アクセス</H3>
+
+<BLOCKQUOTE>
+  <P><A NAME="anchor1966015"></A>プログラム・ステータス・レジスタの内容を汎用レジスタとの間で移動する命令は2つあります。どちらも<A
+  NAME="anchor3229431"></A>CPSRと<A NAME="anchor126149"></A>SPSRの両方にアクセス可能です。以下に示すとおり、各ステータス・レジスタは4つの8ビット・フィールドに分割され、個々に書き込むことができます。</P>
+  <P><TABLE WIDTH="60%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%">
+      <BLOCKQUOTE>
+        ビット31～24</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="50%">
+      フラグ・フィールド</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%">
+      <BLOCKQUOTE>
+        ビット23～16</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="50%">
+      ステータス・フィールド</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%">
+      <BLOCKQUOTE>
+        ビット15～8</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="50%">
+      拡張フィールド</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%">
+      <BLOCKQUOTE>
+        ビット7～0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="50%">
+      制御フィールド</TD> 
+    </TR>
+  </TABLE><BR>
+  ARMv4はステータス・フィールドと拡張フィールドは使用せず、またフラグ・フィールドの4ビットは使用されていません。4つのコンディション・コード・フラグがフラグ・フィールドの残り4ビットを占有します。また制御フィールドには、2つの割り込みディスエーブル・ビット、5つのプロセッサ・モード・ビット、そしてARMv4TのThumbビットが含まれます（2.4「プログラム・ステータス・レジスタ」を参照してください）。</P>
+  <P>ステータス・レジスタの未使用ビットは、将来のARMアーキテクチャで使用される可能性があるため、ソフトウェアで変更してはなりません。将来の互換性を考慮して、リード・モディファイ・ライト方式でステータス・レジスタの値を更新する必要があります。ステータス・レジスタは、リード・モディファイ・ライト・オペレーションのリード部分で読み出せるように、そしてプロセッサ・ステートをすべて保持できるように（たとえば、処理内容の切り替え中に）読み出し可能となっています。また、リード・モディファイ・ライト・オペレーションのライト部分で書き込めるように、そしてすべてのプロセッサ・ステートをリストアできるように書き込み可能となっています。</P>
+</BLOCKQUOTE>
+
+<H4>3.7.1 <A NAME="anchor3231514"></A>CPSR値</H4>
+
+<BLOCKQUOTE>
+  <P>CPSRの値の変更は、以下の場合に使用します。</P>
+  <P>コンディション・コード・フラグの値を既知の値にセットします。<BR>
+  割り込みをイネーブルまたはディスエーブルします。<BR>
+  プロセッサ・モードを変更します（たとえば、スタック・ポインタを初期化するために）</P>
+</BLOCKQUOTE>
+
+<H4>3.7.2 例</H4>
+
+<BLOCKQUOTE>
+  <PRE>MRS    R0, CPSR             ; Read the CPSR
+BIC    R0, R0, #0xf0000000  ; Clear the N, Z, C and V bits
+MSR    CPSR_f, R0           ; Update the flag bits in the CPSR
+; N, Z, C and V flags now all clear
+MRS    R0, CPSR             ; Read the CPSR
+ORR    R0, R0, #0x80        ; Set the interrupt disable bit
+MSR    CPSR_c, R0           ; Update the control bits in the CPSR
+; interrupts (IRQ) now disabled
+MRS    R0, CPSR             ; Read the CPSR
+BIC     R0, R0, #0x1f       ; Clear the mode bits
+ORR    R0, R0, #0x11        ; Set the mode bits to FIQ mode
+MSR    CPSR_c, R0           ; Update the control bits in the CPSR
+; now in FIQ mode</PRE>
+</BLOCKQUOTE>
+
+<H4>3.7.3 <A NAME="anchor1970325"></A>ステータス・レジスタ・アクセス命令のリスト</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_mrs.htm"><B>MRS</B></A> SRを汎用レジスタに移動<BR>
+  <B><A HREF="a_msr.htm">MSR</A></B> 汎用レジスタの内容をSRに移動<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm306.htm">[前]</A> <A HREF="arm308.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

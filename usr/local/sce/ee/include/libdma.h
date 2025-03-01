@@ -1,15 +1,15 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
- *                          Version 0.12
+ *                          Version 0.10
  *                           Shift-JIS
  *
- *         Copyright (C) 2001 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  *
- *                        libdma - libdma.h
+ *                       libdma - libdma.h
  *                      header file of libdma
  *
  *       Version        Date            Design      Log
@@ -17,9 +17,6 @@
  *      0.09            October.07.1998 suzu        initial
  *      0.10            March.25.1999   suzu        use inline function
  *      0.11            May,17,1999     suzu        delete warnings
- *      0.12            January,23,2001 akiyuki     addition of prototype
- *                                                   declaration and __inline__
- *      0.13            Feb,16,2001      kumagae     delete unused value declarasion
  */
 
 #ifndef _LIB_DMA_H_
@@ -93,6 +90,7 @@ typedef struct {
 extern "C" {
 #endif
 int sceDmaReset(int mode);
+int sceDmaDebug(int mode);
 int sceDmaPutEnv(sceDmaEnv *env);
 sceDmaEnv *sceDmaGetEnv(sceDmaEnv *env);
 void *sceDmaPutStallAddr(void *addr);
@@ -103,19 +101,28 @@ void sceDmaSendI(sceDmaChan *d, void *addr, int size);
 void sceDmaRecv(sceDmaChan *d);
 void sceDmaRecvN(sceDmaChan *d, void *addr, int size);
 void sceDmaRecvI(sceDmaChan *d, void *addr, int size);
+void sceDmaSendM(void *saddr, int size);
 int sceDmaSync(sceDmaChan *d, int mode, int timeout);
 int sceDmaWatch(sceDmaChan *d, void *addr, int mode, int timeout);
-u_int sceDmaPause(sceDmaChan *d);
-int sceDmaRestart(sceDmaChan *d, u_int chcr);
+int sceDmaSyncN(int mode, int timeout);
+void sceDmaLastSyncTime(int time[16]);
+int sceDmaPause(sceDmaChan *d);
+int sceDmaRestart(sceDmaChan *d);
+void *sceDmaCallback(int cause, void (*func)());
 #ifdef __cplusplus
 }
 #endif
 
 // select inline function strategy
 #ifndef INLINE
-#define INLINE	extern __inline__
+#define INLINE	extern inline
 #endif
 
+// tag manipulation
+//
+extern int		sceDmaDebugMode;
+extern sceDmaEnv	sceDmaCurrentEnv;	
+extern volatile int	sceDmaAlarmTarget;
 
 #define setADR(v,x)	{if ((v)!=(void *)-1) (v)=(sceDmaTag *)(x);}
 #define setQWC(v,x)	(v)=(x)
@@ -123,7 +130,6 @@ int sceDmaRestart(sceDmaChan *d, u_int chcr);
 #define settag(t,i,a,q)	(t)->id=(i),(t)->next=(sceDmaTag *)(a),(t)->qwc=(u_short)(q)
 
 // Tag manipulation
-INLINE sceDmaTag *sceDmaGetNextTag(sceDmaTag *tag);
 INLINE sceDmaTag *sceDmaGetNextTag(sceDmaTag *tag)
 {
 	switch (tag->id&0x70) {
@@ -139,7 +145,6 @@ INLINE sceDmaTag *sceDmaGetNextTag(sceDmaTag *tag)
 	return(0);
 }
 
-INLINE void sceDmaAddExpress(sceDmaTag *tag);
 INLINE void sceDmaAddExpress(sceDmaTag *tag)
 {
 	sceDmaTag *ntag;
@@ -149,7 +154,6 @@ INLINE void sceDmaAddExpress(sceDmaTag *tag)
 	}
 }
 
-INLINE void *sceDmaAddRef(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddRef(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x30,addr,qwc);
@@ -157,7 +161,6 @@ INLINE void *sceDmaAddRef(sceDmaTag **tag, int qwc, void *addr)
 	return(addr);
 }
 
-INLINE void *sceDmaAddRefe(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddRefe(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x00,addr,qwc);
@@ -166,7 +169,6 @@ INLINE void *sceDmaAddRefe(sceDmaTag **tag, int qwc, void *addr)
 
 }
 
-INLINE void *sceDmaAddRefs(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddRefs(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x40,addr,qwc);
@@ -175,7 +177,6 @@ INLINE void *sceDmaAddRefs(sceDmaTag **tag, int qwc, void *addr)
 
 }
 
-INLINE void *sceDmaAddCont(sceDmaTag **tag, int qwc);
 INLINE void *sceDmaAddCont(sceDmaTag **tag, int qwc)
 {
 	void *ret;
@@ -185,7 +186,6 @@ INLINE void *sceDmaAddCont(sceDmaTag **tag, int qwc)
 	return(ret);
 }
 
-INLINE void *sceDmaAddNext(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddNext(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -195,7 +195,6 @@ INLINE void *sceDmaAddNext(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddCall(sceDmaTag **tag, int qwc, void *ctag);
 INLINE void *sceDmaAddCall(sceDmaTag **tag, int qwc, void *ctag)
 {
 	void *ret;
@@ -205,7 +204,6 @@ INLINE void *sceDmaAddCall(sceDmaTag **tag, int qwc, void *ctag)
 	return(ret);
 }
 
-INLINE void *sceDmaAddRet(sceDmaTag **tag, int qwc);
 INLINE void *sceDmaAddRet(sceDmaTag **tag, int qwc)
 {
 	void *ret;
@@ -215,7 +213,6 @@ INLINE void *sceDmaAddRet(sceDmaTag **tag, int qwc)
 	return(ret);
 }
 
-INLINE void *sceDmaAddEnd(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddEnd(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -225,7 +222,6 @@ INLINE void *sceDmaAddEnd(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddDest(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddDest(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -235,7 +231,6 @@ INLINE void *sceDmaAddDest(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddDests(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddDests(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -245,7 +240,6 @@ INLINE void *sceDmaAddDests(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddIRef(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIRef(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x30|0x80,addr,qwc);
@@ -253,7 +247,6 @@ INLINE void *sceDmaAddIRef(sceDmaTag **tag, int qwc, void *addr)
 	return(addr);
 }
 
-INLINE void *sceDmaAddIRefe(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIRefe(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x00|0x80,addr,qwc);
@@ -262,7 +255,6 @@ INLINE void *sceDmaAddIRefe(sceDmaTag **tag, int qwc, void *addr)
 
 }
 
-INLINE void *sceDmaAddIRefs(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIRefs(sceDmaTag **tag, int qwc, void *addr)
 {
 	settag(*tag,0x40|0x80,addr,qwc);
@@ -271,7 +263,6 @@ INLINE void *sceDmaAddIRefs(sceDmaTag **tag, int qwc, void *addr)
 
 }
 
-INLINE void *sceDmaAddICont(sceDmaTag **tag, int qwc);
 INLINE void *sceDmaAddICont(sceDmaTag **tag, int qwc)
 {
 	void *ret;
@@ -281,7 +272,6 @@ INLINE void *sceDmaAddICont(sceDmaTag **tag, int qwc)
 	return(ret);
 }
 
-INLINE void *sceDmaAddINext(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddINext(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -291,7 +281,6 @@ INLINE void *sceDmaAddINext(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddICall(sceDmaTag **tag, int qwc, void *ctag);
 INLINE void *sceDmaAddICall(sceDmaTag **tag, int qwc, void *ctag)
 {
 	void *ret;
@@ -301,7 +290,6 @@ INLINE void *sceDmaAddICall(sceDmaTag **tag, int qwc, void *ctag)
 	return(ret);
 }
 
-INLINE void *sceDmaAddIRet(sceDmaTag **tag, int qwc);
 INLINE void *sceDmaAddIRet(sceDmaTag **tag, int qwc)
 {
 	void *ret;
@@ -311,7 +299,6 @@ INLINE void *sceDmaAddIRet(sceDmaTag **tag, int qwc)
 	return(ret);
 }
 
-INLINE void *sceDmaAddIEnd(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIEnd(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -321,7 +308,6 @@ INLINE void *sceDmaAddIEnd(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddIDest(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIDest(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;
@@ -331,7 +317,6 @@ INLINE void *sceDmaAddIDest(sceDmaTag **tag, int qwc, void *addr)
 	return(ret);
 }
 
-INLINE void *sceDmaAddIDests(sceDmaTag **tag, int qwc, void *addr);
 INLINE void *sceDmaAddIDests(sceDmaTag **tag, int qwc, void *addr)
 {
 	void *ret;

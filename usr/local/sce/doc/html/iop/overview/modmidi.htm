@@ -1,0 +1,232 @@
+<HTML>
+<HEAD>
+<TITLE> CSL MIDIシーケンサモジュール(modmidi)</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="modmidi.htm" SELECTED> CSL MIDIシーケンサモジュール(modmidi)
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSL MIDIシーケンサモジュール<BR>(modmidi)<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+<P><A HREF="#Heading3_2">  2 利用方法<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> バッファ構造<BR></A><BR>
+    <A HREF="#Heading4_2_2"> MIDIメッセージフィルタコールバック<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 機能概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ループの制御<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    modmidiは、CSL（Component Sound Library）に準拠して実装されているIOPモジュールで、sqデータ（sequenceデータ）を入力して解釈しMIDI Streamデータを出力する機能を持ちます。<BR>
+    modmidiへの入力となるsqデータは、smfからコンバートした独自形式のデータで、SCEから提供するツール（smf2sqあるいはJAM）を用いて作成します。modmidiは複数の入力バッファを持つことができますので、複数のsqデータを同時に演奏することができます。<BR>
+    modmidiが出力するMIDI Streamデータは、音源モジュール（ハードウェア・シンセサイザやソフトウェア・シンセサイザ）の入力データとなります。modmidiは複数の出力バッファを持つことができ、複数の音源をドライブすることができます。トラックと出力先バッファの対応は、MIDIメッセージのBank Change LSB（32）で指定します。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>利用方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>バッファ構造</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>Buffer Group 0：入力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2</TD>
+<TD valign="TOP">入力ポートN番の入力バッファ</TD>
+<TD valign="TOP">void[]</TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2+1</TD>
+<TD valign="TOP">入力ポートN番の環境</TD>
+<TD valign="TOP">sceMidiEnv</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>Buffer Group 1：出力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">N</TD>
+<TD valign="TOP">出力ポートN番の出力バッファ</TD>
+<TD valign="TOP">sceCslMidiStream<BR>void[ buffsize - sizeof <BR>(sceCslMidiStream) ]</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/midin1.gif">
+<P>
+    入力バッファとその環境は必ず対で存在する必要があります。片方が欠けている場合、初期化時にエラーとなるか、そのバッファが使用できなくなります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>MIDIメッセージフィルタコールバック</B>
+</A>
+</H3>
+<blockquote>
+    modmidiが出力するMIDIメッセージを随時変更できるように、以下のコールバックが用意されています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>トリガ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コールバック関数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>フィルタ機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">チャンネルメッセージ</TD>
+<TD valign="TOP">chMsgCallBack</TD>
+<TD valign="TOP">メッセージの置き換え</TD>
+</TR>
+<TR>
+<TD valign="TOP">エクスクルーシブメッセージ</TD>
+<TD valign="TOP">excMsgCallBack</TD>
+<TD valign="TOP">メッセージの出力抑止</TD>
+</TR>
+<TR>
+<TD valign="TOP">メタイベント</TD>
+<TD valign="TOP">metaMsgCallBack</TD>
+<TD valign="TOP">メッセージの出力抑止</TD>
+</TR>
+<TR>
+<TD valign="TOP">ループ</TD>
+<TD valign="TOP">repeatCallBack</TD>
+<TD valign="TOP">ループの抑止</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    コールバック関数はsceMidiEnvに登録しておきます。シーケンスデータ中にトリガとなるメッセージ等が現れると、それぞれ対応するコールバック関数が呼び出されます。コールバック関数はパラメータとして渡されたメッセージ等を調べ、そのメッセージの出力を抑止したり、そのメッセージの代りに出力するメッセージを指定したりすることができます。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>機能概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ループの制御</B>
+</A>
+</H3>
+<blockquote>
+    modmidiでは、ループ演奏を以下のcontrol changeメッセージとして埋め込むことができます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>メッセージ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ループスタート</TD>
+<TD valign="TOP">$B0,$63,$00,$B0,$06,$nn</TD>
+<TD valign="TOP">nnはループ番号</TD>
+</TR>
+<TR>
+<TD valign="TOP">ループエンド</TD>
+<TD valign="TOP">$B0,$63,$01,$B0,$06,$nn,$B0,$26,mm</TD>
+<TD valign="TOP">nnはループ番号<BR>mmはループ回数</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    ループ回数をゼロにすると、無限ループになります。<BR>
+    ループ設定はネストすることができます。たとえば次のようにループスタート / ループエンドを設定すると、演奏順序はA B B B C A B B B Cとなります。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/midin2.gif">
+<P>
+    <BR>
+</DIV>
+    なお、SEQでのループと同様、シーケンス単位でのループとなり、トラック単位でのループは設定できません。そのため、ループ設定はどれか１つのトラックに行ないます。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

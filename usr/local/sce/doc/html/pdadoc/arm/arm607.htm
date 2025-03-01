@@ -1,0 +1,204 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm607</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm606.htm">[前]</A> <A HREF="arm608.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>6.7 <A NAME="anchor1546200"></A>ロードおよびストア・マルチプル命令</H3>
+
+<BLOCKQUOTE>
+  <P>Thumbは、4種類のロードおよびストア・マルチプル命令をサポートします。</P>
+  <P>2つ（ロードとストア）の命令は、ブロック・コピーをサポートするように設計されています。これら命令は、ベース・レジスタからの固定インクリメント・アフタ・アドレッシング・モードを備えています。</P>
+  <P>また、他の2つの命令（PUSHおよびPOPと呼ぶ）も固定アドレッシング・モードを備えています。これらの命令は、完全な降順スタックをインプリメントし、スタック・ポインタ（R13）がベース・レジスタとして使用されます。</P>
+  <P>4つの命令はすべて下位の8つのレジスタの一部または全部を転送できます。PUSHはリターン・アドレスもスタックでき、POPはPCをロードできます。4つすべての命令は、転送後にベース・レジスタを更新します。</P>
+</BLOCKQUOTE>
+
+<H4>6.7.1フォーマット</H4>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット1</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode1&gt;  Rn!, &lt;register_list&gt;
+&lt;opcode1&gt;  := LDMIA | STMIA</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875148"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875150"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875152"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875154"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875156"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875158"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875160"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875162"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875164"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875166"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875168"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875170"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875172"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875174"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875176"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875178"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875180"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875182"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875184"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875186"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875188"></A><BR>
+    L</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="875190"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="875196"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット2</B></P>
+  <BLOCKQUOTE>
+    <PRE>PUSH  {&lt;register_list&gt;,&lt;LR&gt;}
+POP   {&lt;register_list&gt;,&lt;PC&gt;}</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875687"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875689"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875691"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875693"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875695"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875697"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875699"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875701"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875703"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875705"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875707"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875709"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875711"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875713"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875715"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875717"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875719"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875721"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875723"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875725"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875727"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875729"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875731"></A><BR>
+    L</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="875733"></A><BR>
+    R</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="875735"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>6.7.2 <A NAME="anchor1548699"></A>例</H4>
+
+<BLOCKQUOTE>
+  <PRE> LDMIA R7!, {R0 - R3, R5} ; Load R0 to R3 and R5 from R7 then add 20 to R7
+ STMIA R0!, {R3, R4, R5}  ; Store R3-R5 to R0: add 12 to R0
+
+function
+ PUSH {R0 - R7, LR}       ; push onto the stack (R13) R0 - R7 and
+                          ; the return address
+...                       ; code of the function body
+...
+ POP {R0 - R7, PC}        ; restore R0 - R7 from the stack
+                          ; and the program counter, and return</PRE>
+</BLOCKQUOTE>
+
+<H4>6.7.3 <A NAME="anchor1541682"></A>ロードおよびストア・マルチプル命令のリスト</H4>
+
+<BLOCKQUOTE>
+  <P>以下の命令は、上記のフォーマットに従います。</P>
+  <P><A HREF="t_ldm.htm"><B>LDM</B></A> ロード・マルチプル<BR>
+  <B><A HREF="t_pop.htm">POP</A></B> ポップ・マルチプル<BR>
+  <B><A HREF="t_push.htm">PUSH</A></B> プッシュ・マルチプル<BR>
+  <B><A HREF="t_stm.htm">STM</A></B> ストア・マルチプル<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm606.htm">[前]</A> <A HREF="arm608.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

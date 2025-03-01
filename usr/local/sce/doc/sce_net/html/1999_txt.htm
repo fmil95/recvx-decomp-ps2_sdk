@@ -1,0 +1,2882 @@
+<html>
+<head> 
+<title> PlayStation Develop 1999</title>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#336699" alink="#FF6699" vlink="#008080">
+
+<A NAME="Top">
+
+
+<A NAME="9912280">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/12/28</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>GS から EE への割り込み処理に関する御注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/12/28
+                                               (株)SCE ソフトウェア開発部
+
+
+                 GS から EE への割り込み処理に関する御注意点
+
+
+GS から EE への割り込み要因の種類として、SIGNAL、FINISH、HSync、VSync が
+あります。
+GS 割り込みに対する割り込みハンドラ処理中に、別な GS 割り込みが発生した場
+合、割り込みハンドラの記述次第では、2つ目以降の割り込みを EE 側が取り損ね
+る事があります。この現象は最終仕様においても発生します。
+
+GS 割り込みのハンドラ中で、一旦 GS の割り込みマスクレジスタをマスク状態にす
+れば、上記の症状を防ぐことができます。
+具体的には、以下のような記述になります。
+
+   u_long UserIMR;
+
+   // 全割り込みをマスク
+   UserIMR = sceGsPutIMR(0xff00);
+
+   // 割り込み要因の種別による分岐
+
+   // 割り込み要因のクリア
+
+   // 割り込みに対応する処理
+
+   // 割り込みマスクの解除
+   sceGsPutIMR(UserIMR);
+
+なお、V-Blank の開始／終了割り込みに関しましては、GS 割り込みとは別の
+割り込みとして EE に入力されますので、上記の対処は必要ありません。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9912250">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/12/25</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 での CD/DVD からの起動について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/12/25
+                                               (株)SCE ソフトウェア開発部
+
+
+                   DTL-T10000 での CD/DVD からの起動について
+
+
+Library 1.3 環境より、DTL-T10000 上での CD/DVD からの起動にも対応致しました。
+ただし、DTL-T10000 にドライブが搭載されている環境が対象となります。
+文末の（例）のような起動プログラムを dsedb で実行してください。
+
+
+・起動手順
+
+  1) dsedb（必要ならdsidbも）を立ち上げる。
+
+  2) dsedb 中のコマンドラインで、起動プログラムを実行する。
+     dsedb S> run main.elf
+
+  （補足）
+  $ dsedb -r run main.elf
+  などのように、シェルのコマンドラインから直接実行すると、リセット時に
+  dsedb が終了してしまいますので、メッセージ出力が見れなくなります。
+
+
+以下に、ブートファイル名を SLPS_999.99 とした場合の例を示します。
+
+（例）
+#include &lt;eekernel.h&gt;
+#include &lt;sifrpc.h&gt;
+#include &lt;libcdvd.h&gt;
+
+main()
+{
+        sceSifInitRpc(0);
+        sceCdInit(SCECdINIT);
+        sceSifExitCmd();
+        LoadExecPS2("cdrom0:\\SLPS_999.99;1",0,0);
+}
+
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9912130">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/12/13</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 メモリーカードファイルシステム運用規定 Ver.1.0</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                '99/12/13
+                                               (株)SCE ソフトウェア開発部
+
+            PS2 メモリーカードファイルシステム運用規定 Ver.1.0
+
+  PS2 におけるメモリーカードを扱う上での運用規定について、仕様を公開致します。
+以下の内容は、'99/12/13 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 メモリーカード対応
+  PS2 で扱えるメモリーカードは以下の通りです。
+  ・メモリーカード 8MB   (8MB)
+  ・ポケットステーション (128KB)
+  ・メモリーカード       (128KB)
+
+  各メモリーカードに対する PS/PS2 の対応は以下のようになります。
+  
+                      |     PlayStation 2     |     PlayStation       
+                      |-----------------------+-----------------------
+                      | ゲーム |メモリーカード| ゲーム |メモリーカード
+                      |タイトル| 本体ブラウザ |タイトル| 本体管理画面 
+  --------------------+--------+--------------+--------+--------------
+  メモリーカード 8MB  |   ○   |      ○      |   ×   |      ×      
+  ポケットステーション| ○(*1) |    ○(*3)    |   ○   |      ○      
+  メモリーカード      | ×(*2) |    ○(*3)    |   ○   |      ○      
+  --------------------------------------------------------------------
+
+  (*1) 現時点では、PS2 からポケットステーションの機能を使用するライブラリ
+       を提供しておりません。(データファイルのアクセスのみ可、将来対応予定)
+  (*2) PS2 ゲームタイトルでは、従来のメモリーカードへのリード、ライトを
+       禁止します。
+  (*3) PS2 本体のメモリーカード管理画面では、ポケットステーションおよび
+       メモリーカードと、メモリーカード 8MB との双方向コピーが可能です。
+       ただし、扱えるファイルは、PS 用データファイル形式のみとし、PS2 専用
+       データは、コピーすることができません。
+
+2.メモリーカードファイルシステム
+  2-1 メモリーカード 8MB
+      PS2 専用メモリーカードファイルシステムを採用
+      ディレクトリ構造あり、1KB 単位のファイル管理
+  2-2 ポケットステーションおよびメモリーカード
+      PS 用メモリーカードファイルシステムに準拠
+      ディレクトリ構造なし、データファイルはブロック(8KB)単位で扱う。
+      ただし、表記は KB を単位とする。
+      また、PS 用データファイル形式には、従来のメモリーカードファイルヘッダ
+      と、ポケットステーション用メモリーカード拡張ファイルヘッダがありますが、
+      どちらも使用することが可能です。
+
+3.メモリーカード 8MB におけるファイル作成規定
+  3-1 各アプリケーションは、ルートディレクトリに任意の数のサブディレクトリを
+      作成することが可能
+  3-2 ディレクトリの階層は、ルートディレクトリを含め、2 階層までとする。よっ
+      て、サブディレクトリ中にさらにサブディレクトリを作成することは禁止する。
+  3-3 ひとつのサブディレクトリの中にセーブできるユーザーデータ(ゲームデータ)
+      は 1 ファイルのみとする。よって、ファイルを複数に分ける場合は、別ディ
+      レクトリにセーブする。
+  3-4 ディレクトリ名、ファイル名は後述の命名規定に従う。
+  3-5 各サブディレクトリ内には、以下のファイルを格納する。
+      ・PS2 ファイル形式の場合
+        icon.sys (ファイル名：小文字)  アイコン管理用ファイル (必須)
+        アイコンファイル               3D アイコン表示用データ
+                                       定義ファイルは以下の 3 種類
+                                         一覧表示用アイコン     (必須)
+                                         コピー中表示用アイコン (任意/兼用可)
+	                                 削除中表示用アイコン   (任意/兼用可)
+        ユーザーデータ                 ゲームデータ等、データフォーマットは任意
+				       (ファイル名規定あり)
+      ・PS ファイル形式の場合
+        ユーザーデータ                 ゲームデータ等、PS 用ファイル形式準拠
+				       (ファイル名規定あり)
+
+4.8MB メモリーカードにおけるディレクトリ名、ファイル名の命名規定
+  4-1 ディレクトリ名、ファイル名とも、大文字、小文字の区別あり
+  4-2 ファイル名 ASCII 32 バイト
+                 使用可能な文字 0 ～ 9、A ～ Z、a ～ z、
+	                        - (ハイフン)、_ (アンダースコア)、~ (チルダ)、
+                                . (ピリオド)
+  4-3 ディレクトリ名の命名規定
+      Key Code (2byte) + 商品型番 (10byte) + 任意文字列 (Max 8byte) 
+      ディレクトリ名の終端は Null ターミネート (0x00) する。
+
+      Key Code   商品型番
+      BI         SLPS-xxxxx     SCEI 向けライセンスタイトル
+      BI         SCPS-xxxxx     SCEI 向け SCEI タイトル
+      BI         SIPS-xxxxx     SCEI 向け SCEI タイトル
+      BA         SLUS-xxxxx     SCEA 向けライセンスタイトル
+      BA         SCUS-xxxxx     SCEA 向け SCEA タイトル
+      BE         SLES-xxxxx     SCEE 向けライセンスタイトル
+      BE         SCES-xxxxx     SCEE 向け SCEE タイトル
+      BPLAYSTATION              Sound Scope (PlayStation 本体)
+　    その他、SCEI/SCEA/SCEE が指定した商品型番を適用してください。
+
+     (注) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+          イルヘッダを使用しているときは、ディレクトリ名の先頭から 7byte 目
+	  の "-"(0x2D) を "P"(0x50) とする。
+
+  4-4 ファイル名の命名規定
+      ・PS2 ファイル形式の場合
+        icon.sys                      ファイル名固定：すべて小文字
+        アイコンファイル              任意 ASCII Max 63byte + 0x00
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠
+      ・PS ファイル形式の場合
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠
+      (注1) どちらのファイル形式でデータをセーブする場合も、格納するディレ
+            クトリ名とファイル名は一致させる。
+      (注2) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+            イルヘッダを使用しているときは、ファイル名の先頭から 7byte 目の
+            "-"(0x2D) を "P"(0x50) とする。
+
+  4-5 ファイルの格納例
+      商品型番 SLPS-12345 の場合、以下のようになります。
+
+      ・PS2 ファイル形式：
+        /BISLPS-12345xxx/icon.sys
+                        /アイコンファイル(1 ～ 3)
+                        /BISLPS-12345xxx
+      ・PS ファイル形式：
+        /BISLPS-12345yyy/BISLPS-12345yyy
+      ・PS ファイル形式 (メモリーカード拡張ファイルヘッダ対応)：
+　      /BISLPSP12345zzz/BISLPSP12345zzz
+
+5.ポケットステーション(メモリーカード)におけるファイル作成規定
+  従来の PS におけるファイルシステムに準拠します。
+
+
+(備考)
+icon.sys およびアイコンファイルのデータフォーマットは別途公開予定
+
+                                                       以上
+
+</pre></blockquote>
+
+<A NAME="9912090">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/12/09</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 マスターディスク仕様 Ver.1.0</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                '99/12/09
+                                               (株)SCE ソフトウェア開発部
+
+                    PS2 マスターディスク仕様 Ver.1.0
+
+  PS2 マスターディスクの起動仕様およびその作成方法についてお知らせ致します。
+以下の内容は、'99/12/09 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 アプリケーションに関するディスク起動仕様
+  1-1 DTL-T10000 用 Runtime Library Release 1.2 以上を使用している。
+  1-2 ルートディレクトリ上のファイル、ディレクトリ数は合計 30 までとする。
+  1-3 ファイルシステムは ISO9660 準拠とする。(CD-ROM および DVD-ROM)
+        ファイル    ：(ファイル名).(拡張子)  8 文字 ＋ 3 文字
+        ディレクトリ：ディレクトリ名 8 文字 (拡張子不可)
+        使用可能文字：0 ～ 9、A ～ Z、_ (アルファベットは大文字のみ)
+  1-4 ブートファイルについて
+        ELF 形式
+        ディスク上のルートディレクトリに配置
+        ファイル名に該当タイトルの商品型番を適用し、以下のように命名する。
+        ちなみに、商品型番は、アルファベット 4 文字－数字 5 桁
+        (例)商品型番 SLPS-12345 の場合：SLPS_123.45
+        型番が決定していない時点では、任意の英数字をご使用ください。
+  1-5 起動用システムファイル (SYSTEM.CNF)について
+        テキストファイル
+        ディスク上のルートディレクトリに配置
+        SYSTEM.CNF の記述方法：
+          BOOT2 = デバイス名：ブートファイル名；1
+　　　    VER = ディスクバージョン(任意の数字 3 桁  例：1.00、1.23 等)
+            (注)リマスター等でディスク上のイメージデータが変更される場合は、
+                この VER でバージョン管理を行ってください。
+          VMODE = 映像方式 (NTSC or PAL)
+            (注)SCEI および SCEA 向けタイトル：NTSC
+                SCEE 向けタイトル：PAL
+          (記述例) 商品型番 SLPS-12345 の場合
+                   BOOT2 = cdrom0:\SLPS_123.45;1
+	           VER = 1.00
+                   VMODE = NTSC
+
+2.起動サンプルディスクの作成
+  DTL-T10000 用 Runtime Library Release 1.2 の中のサンプルプログラムを使った
+  例を示します。
+
+  2-1 sce/ee/sample/vu0/tballs の場合
+      ディスクブートのみのテストを行う場合、最も簡単に試すことができます。
+      tballs をコンパイルし、生成された main.elf を、上記の手続きにて CD-R
+      または DVD-R に焼く。
+      
+  2-2 sce/ee/sample/pad/dual2 の場合
+      ソース main.c の内容を以下のように変更し、コンパイルする。
+      int main(void)
+      {
+                   ：
+                   ：
+      /* Sifライブラリ初期化 */
+              sceSifInitRpc(0);
+	      
+              /* load sio2main.irx */
+              if (sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0)
+              {
+                  printf("Can't load module sio2man\n");
+                  exit(0);
+              }
+              /* load padman.irx */
+              if (sceSifLoadModule("cdrom0:\\PADMAN.IRX;1", 0, NULL) < 0)
+              {
+                  printf("Can't load module padman\n");
+                  exit(0);
+              }
+                   ：
+                   ：
+
+      生成された main.elf を、上記の手続きにて CD-R または DVD-R に焼く。
+
+      (注) 暫定処置として、ディスク上のデータ領域の最外周に十分なサイズの
+           ダミーデータを配置してくさい。
+
+3.ディスクオーサリング環境
+    ライター　　：CD-R ドライブ SONY CDU921S/CDU921S mk2/CDU921S-PR
+                 DVD-R ドライブ 弊社指定のもの(後日案内予定)
+    ソフトウェア：DTL-S15000 CD/DVD-ROM Generator ver.1.00 (近日発売予定)
+
+4.使用可能メディア
+    現行 PS/PS2 兼用 CD-R (CD-R71PS)
+    PS2 専用 DVD-R (DVD-R47PS)
+
+    発売元  ：(株)スタートラボ
+    製造元  ：太陽誘電(株)
+    発売時期：'99/12 予定
+
+                                                       以上
+
+</pre></blockquote>
+
+<A NAME="9911160">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>csl（新サウンドライブラリ）Ver.1.1 についての補足説明</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/11/16
+                                               (株)SCE ソフトウェア開発部
+
+
+            csl（新サウンドライブラリ）Ver.1.1 についての補足説明
+
+
+csl（新サウンドライブラリ）の不具合報告と、ドキュメントの補足です。
+
+
+■１■ ハードシンセサイザの pan の不具合
+
+ハードシンセサイザ(csl_hsyn）で、pan に不具合があり、正しい設定値にならない
+ことがあります。この不具合は次バージョンで修正する予定です。これはsqに
+設定する場合もhd（音色バンク）に設定する場合も同様です。
+
+
+■２■ nrpm による音色パラメータ設定について
+
+ソフトシンセサイザのドキュメントには、nrpmによる音色パラメータ設定の記述が
+ありますが、これらはまだ実装されていません。年内に対応する予定です。
+ハードシンセサイザも、エフェクトとADSRの設定をnrpmで行なえるようにする予定
+ですが、未実装です。これらは次バージョンで対応する予定です。
+
+
+■３■ sq でのループ設定
+
+sq でのループ設定は 1.1.0 ではサポートしていませんでしたが、ソースを変更す
+すれば使用できます。sce/iop/src/module/csl_midi/csl_midi.c　の78行目の部分
+を、以下のように変更してください。
+
+     (変更前）
+    sceMidiRepeatCtrl *pRep = getRepeatCtrl(pPlayEnv->repeatTbl, d);
+
+    （変更後）
+    sceMidiRepeatCtrl *pRep;
+    pRep = getRepeatCtrl(pPlayEnv->repeatTbl, pPlayEnv->sceLpNum);
+
+
+その後、ビルドしたモジュールをインストールしてください。
+次バージョンでは正式にサポートします。
+
+設定は標準MIDIファイルに埋め込む nrpm によって、以下のように行います。
+
+    ループスタート：  $B0,$63,$00,$B0,$06,$nn
+                      (nn はループ番号)
+    ループエンド　：  $B0,$63,$01,$B0,$06,$nn,$B0,$26,mm
+                      (nn はループ番号、mm はループ回数)
+
+また、ループ設定はネストする事が可能です。
+
+    例)
+    Start/End . LoopNo . LoopCnt で表すと、
+
+      S.1         S.0         E.0.2      E.1.1
+    --------------------------------------------
+             A           B             C
+
+    の場合、 A B B B C A B B B C と演奏されます。
+
+なお、SEQ でのループと同様、シーケンス単位でのループとなります(トラック単位
+でのループは出来ません)。その為、どれか１つのトラックにループ設定を行って頂
+ければ結構です。
+
+
+■４■ sceHSyn の注意事項について
+
+sceHSyn_Load と sceHSyn_voisTrans のリファレンスに、
+
+   「voice が発音中に呼出された場合の動作は保証されません」
+
+とありますが、これは
+
+   「発音中のボイスを上書きすると動作は保証できない」
+
+という表現が適切でした。発音中のボイスと別の領域にボディを転送したり、ヘッ
+ダを登録することは問題ありません。
+また、以下のスペルミスがありました。次バージョンで修正いたします。
+（旧名も使えるように define する予定です）
+
+    （旧）sceHSyn_voisTrans
+    （新）sceHSyn_voiceTrans
+
+
+■５■ sce????_Init について
+
+cslモジュールには、sceCslCtxに環境構造体をセットするものがありますが、その
+場合、sce????_Init() （????はモジュールによって異なる）の中で環境構造体の
+初期化を行なっています。従って、以下の２点に注意してください。
+
+   ・Initをコールする前に、sceCslBuffCtx の sceCslCtxに 環境構造体のセット
+     （ポインタ代入）を行なってください。
+
+   ・環境構造体に独自の設定を行なう場合は、Initの後にして下さい。
+     前に行なうとInitによって上書きされます。
+
+
+■６■ csl_midi の outPort
+
+csl_midi の環境構造体には outPort 配列があり、どのチャンネルをどのポートに
+出力するかを設定できます。配列の要素はチャンネルで、配列の 0 番が midi チャ
+ンネルの 1 番です。
+各要素の設定値はビットマスクで、1 が 1 番目のポート、以下 2,4,... となりま
+す。複数のビットを立てることで、1 つのチャンネルを複数のポートに出力するこ
+とも可能です。
+excOutPortの設定も同様です。
+
+
+■７■ sceHSyn_Load と sceMidi_Load について
+
+sceHSyn_Load の内部では、メモリにある音色バンクのヘッダ(bd)とSPUメモリにあ
+るボディ(hd)を、ポートに登録する処理だけを行なっています。具体的には、環境
+構造体の非公開メンバ（ソースは公開しています）に設定を行ないます。
+
+同様に sceMidi_Loadも、sceCslCtxにセットされているsqをポートに登録する処理
+のみを行ないます。やはり環境構造体の非公開メンバに設定を書いています。
+
+両者とも、実際になにかをメモリにロードする処理を行なっているわけではありま
+せんから、UnLoad処理のようなものはありません。
+
+
+■８■ ボイスストリーム再生に関する情報
+
+暫定ライブラリにはボイスストリーミングを行なうAPI群（SpuStシリーズ）があり
+ましたが、新ライブラリにはまだ実装されていません。年内に独立したcslモジュ
+ールとしてリリースする予定ですが、同様の機能を独自に実装していただくことは
+可能です。
+方法としては以下のようになります。
+
+    1) SPU メモリのアドレス A から C の領域に波形（vagのボディ）を転送し、
+       その中点 B に IRQ をかけておく。
+
+    2) アドレス A からキーオンすると再生され、やがてBに達した時に IRQ が
+       かかる。
+
+    3) 2) の IRQ コールバックで、まず IRQ を C にセットし、次に A から B の
+       領域に続きの波形を転送します。
+
+    4) C で IRQ がかかったら、IRQ を B にセットし、B（の1ブロック後ろ）から
+       C の領域に続きの波形を転送する。
+
+    5) 以上の処理を繰り返す。
+
+この方法を行なうには、転送する波形がAからCの領域でループするように設定して
+おく必要があります。ループフラグは vag のヘッダに埋めこみます。
+vag は 16byte のブロックを単位として構成され、各ブロックには 16byte のヘッ
+ダがブロック先頭にあります。
+
+    bit8  : ループエンド
+    bit9  : ループあり（ループ内部）
+    bit10 : ループスタート
+
+vag の全体がループするようにあらかじめ作っておき、A-B に転送する前に先頭ブ
+ロックにスタートビットを立て、B-C に転送する前に最終ブロックにエンドビット
+を立てる、という手法が一般的です。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9911080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>libgraph 1.1 sceGsSyncV() 関数仕様について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+                                                                   99.11.8
+                                                    SCEIソフトウェア開発部
+
+
+
+             libgraph Ver.1.1 sceGsSyncV() 関数仕様について
+
+
+
+  Runtime Library Release 1.1 に含まれます libgraph の関数 sceGsSyncV() の
+関数仕様について、前バージョンから変更がありましたが、ドキュメントに記載漏
+れがありましたため、お知らせいたします。
+
+  sceGsSyncV() は、VBlank によるコールバックとの併用を行いますと、ブロック
+する時間が必要以上に大きくなり、結果フレーム落ちのような現象が発生すること
+があります。この仕様は、VBlank のコールバックが同じ用途に使用できることか
+ら、併用の必要性がないとの判断でした。しかしながら、皆様からのご質問、ご要
+望が多かったため、次回リリースでは併用可能な方法を提供する予定です（仕様は
+検討中ですので、次回ドキュメントは必ずご参照をお願いいたします）。
+
+  ただ、やはり併用の必要性はあまりないと思われますし（開発初期段階のデバッ
+グ用途くらいだと思われます）、また併用はお薦めしません。理由は以下です。
+
+  PlayStation2 での VBlank、VSync、GS_CSR.FIELD の関係は下図のようになって
+います。
+
+GS_CSR.FIELD *1  -- odd(even)--&gt;+&lt;--- even(odd) ----------------------
+
+VSync            ---------------+              +----------------------
+                                |              |
+VBlank           ----+          +--------------+               +------
+                     |                                         |
+                     +-----------------------------------------+
+                     *2
+
+*1 GS_CSR は GS 特権レジスタ CSR です。FIELD（13 bit目）は even/odd どちら
+   のフレームを走査中か示します。sceGsSyncV() の返り値にも使用されています。
+   return ((DGET_GS_CSR() &gt;&gt; 13) & 0x1);（eeregs.h 参照）
+*2 VBlank コールバック発生位置、sceGsSyncV() リターン位置
+
+  ご覧のように、（他に負荷がない状態では）コールバック発生や sceGsSyncV()
+のリターンする位置が、FIELD の切り替わる位置よりも前にあるのです。
+sceGsHalfOffset() を使った高解像度化では 60fps が条件ですので、
+sceGsSyncV() は *2 よりも前に呼ばれます（*2 より後だと次の VBlank まで待た
+されてフレーム落ちします）。よって、sceGsSyncV() だけを使っている場合は *2
+で正しくリターンします。
+  しかし、コールバックルーチンを設定、併用しますと、sceGsSyncV() のブロッ
+ク中に割り込みが入ることになり、さらにコールバックルーチンの終了が遅くなっ
+て VSync の発生位置を超えてリターンしたとすると、sceGsSyncV() はその時点の
+FIELD を返すため、プログラムが期待している値と違ってしまいます。
+
+  以上のことから、開発を続ける上で併用は避けた方が無難です。また単独の場合
+柔軟性から考えますと、sceGsSyncV() よりは VBlank コールバックを使用した方
+が良いですが、コールバックルーチン内では、FIELD は早いうちに取得しないと、
+VSync が発生し FIELD が切り替わってしまいますのでご注意ください。
+
+  なお、今回のライブラリでは、負荷がなくとも違う理由で併用はできなくなって
+います。
+
+以上
+</pre></blockquote>
+
+<A NAME="9910290">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/10/29</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 スタートアップマニュアル Ver.1.0</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+                                                                  99.10.29
+                                                    SCEIソフトウェア開発部
+
+
+
+                 DTL-T10000 スタートアップマニュアル Ver.1.0
+
+
+
+このマニュアルは、DTL-T10000での作業を円滑に行って頂くために、セットアップ
+からサンプルの起動までの基本的な流れを説明するものです。
+EBシリーズの使用経験が無く、T10000 から初めてPS2タイトルの開発に携わる方や
+Linux(Unix) 初心者の方を対象にしています。
+
+
+■１■ ハードウェアセットアップ
+
+T10000 同梱の取扱説明書に従い、ネットワーク接続・設定作業を行って下さい。
+
+DTL-T10000 の使用法としましては、単なる PlayStation2 のターゲットボックス
+とお考え下さい。ネットワーク設定をWWWブラウザで行い、正しくネットワーク上
+に浮かび上がれば、あたかも開発マシンに載っているボードの如く使用する事が可
+能です。従って、開発マシンから T10000 にログインする必要はありません。また
+ログインできない仕様になっています。
+
+
+■２■ ソフトウェアセットアップ
+
+必要なソフトウェアを開発マシン上にインストールします。T10000 に対しては、
+dsnet と Flash ROM（PS2カーネル）のアップデート以外の変更は必要ありません。
+
+
+１）SCE-NET から必要なソフトをダウンロードする
+
+    常に最新のソフトウェアが SCE-NET に置かれています。最低限必要なソフト
+    ウェアパッケージは、以下の２種類です。
+
+      DTL-T10000用 Runtime Library Release X.X
+      Tool Chain Release X.X
+
+    この他、部分的にバージョンアップを行っている場合がありますので、そちら
+    も併せて最新のものをダウンロードして下さい。
+
+２）パッケージを解凍・インストールする
+
+    開発ソフトウェアは /usr/local/sce 以下にインストールして使用します。
+    アップデートの際は、前の環境をリネームする等して保存しておき、新規にイ
+    ンストールするようにした方が安全です。
+    root権限にて /usr/local 以下に解凍して下さい。空き容量に余裕がない場合
+    は、別のパーティションに解凍して /usr/local からシンボリックリンクを
+    張る(ln -s)などして対応して下さい。
+
+      $ su
+        :
+      # cd /usr/local
+      # mv sce sce_old
+      # tar xzvf lib_110.tgz
+           :
+      # tar xzvf eb_110.tgz
+           :
+      # ls -1 -t
+      sce
+      readme_j.txt
+      readme_e.txt
+      t10000-XXXX.bin
+        :
+        :
+
+３）T10000 上の dsnet をアップデートする
+
+    まず、T10000 上の dsnet をアップデートします。開発マシン上のWWWブラウ
+    ザで「T10000 管理ツール」を起動し、以下の rpm パッケージを指定してアッ
+    プデートを行ってください。
+    具体的な手順については「T10000 取扱説明書」の p.17 を参照して下さい。
+
+      /usr/local/sce/rpm/dsnet-X.X.XX-X.i386.rpm
+
+４）T10000 をリブートする
+
+    「T10000 管理ツール」の「シャットダウン」メニューで、T10000をリブート
+    して下さい。新しい dsnet が起動されます。
+
+５）パスの設定
+
+    以下のディレクトリにパスを通す事が必要です。~/.bash_profile 等の PATH 
+    設定行に追加して下さい。
+      /usr/local/sce/bin
+      /usr/local/sce/ee/gcc/bin
+      /usr/local/sce/iop/gcc/bin
+
+６）環境変数の設定
+
+    環境変数 DSNETM に T10000 のホスト名(又はIPアドレス)を指定しておきま
+    す。こうするとデバッガ(dsedb)等を起動する際に -d オプションで指定せず
+    に済みます。~/.bash_profile 等の中に記述しておくと便利です。
+
+      $ export DSNETM=hostname
+
+７）Flash ROM の書き込み
+
+    T10000 内蔵の Flash ROM（PS2カーネル）を書き込みます。
+    Runtime Library に含まれる t10000-XXXX.bin が Flash ROM のイメージファ
+    イルです。dsflash を使用して書き込んでください。
+    正常に終了した場合、以下のように Complete! と出力されます。
+    その後 dsreset でリセットして下さい。
+
+      $ dsflash t10000-XXXX.bin
+      *** Updating Flash ROM ...
+      *** Resetting...
+
+      MPU-4.0 board DSW602
+          :
+          :
+      Complete!
+      *** End of Program
+      *** Resident retval=....
+          :
+          :
+      $ dsreset
+      dsreset (Version X.X.XX ...
+      $
+
+    途中で中断した、または何らかの理由で書き込みに失敗した場合、再度
+    dsflash で書き込めなくなる場合があります。
+    その場合は SCE-NET から「DTL-T10000用 カーネル修復ツール」をダウンロー
+    ドして、修復作業を行って下さい。
+
+
+■３■ サンプルを起動する
+
+実際にサンプル sce/ee/sample/basic3d/vu1 を起動してみます。
+
+１）ファイル許可属性変更
+
+    そのままでは sce/ee/sample 以下はリードオンリになっているので、root権
+    限にて許可属性を変更して下さい。
+
+      $ su
+        :
+      # cd /usr/local/sce/ee
+      # chmod -R a+w sample
+      # exit
+      $
+
+２）ビルドする
+
+    'make' もしくは 'make all' でビルドします。
+    サンプルの Makefile は汎用的に使えるようになっていますので、TOP= や
+    OBJS= の行を書き換えるなどして、ユーザプログラムにも流用できます。
+
+      $ cd /usr/local/sce/ee/sample/basic3d/vu1
+      $ make all
+
+３）起動する
+
+    前述の環境変数 DSNETM を正しく設定している場合は 'make run' で実行でき
+    ます。設定していない場合は、以下のように T10000 のホスト名を指定して起
+    動して下さい。
+
+      $ dsedb -d hostname -r run main.elf
+
+    elf ファイルがネットワーク経由で T10000 に送られ、正しく起動できた場合
+    には以下のように出力されます。
+
+      $ dsedb -d hostname -r run main.elf
+      *** Resetting...
+
+      EE DECI2 Manager version...
+        CPUID=...., BoardID=...., ROMGEN=........,128M
+
+      Loading Program (address= ... size= ...) ...
+      Loading XXX symbols ...
+      Entry address = ...
+      GP value      = ...
+
+
+■４■ 注意事項
+
+以上の内容は、あくまで基本的な動作確認方法を示したものであり、サンプルに
+よっては起動方法が異なったり、IOPプログラム等は別途環境設定が必要になる
+場合があります。
+ソフトウェアのインストールに関する最新の情報は、リリースパッケージの
+readme_j.txt もしくは sce/1st_read/setup2.txt にありますので、リリース時
+にはご一読頂きますようお願いいたします。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9910080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/10/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>CD-ROM "Runtime Library Release 1.0" について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/10/08
+                                               (株)SCE ソフトウェア開発部
+
+
+                 CD-ROM "Runtime Library Release 1.0" について
+
+
+DTL-T10000 同梱の CD-ROM "Runtime Library Release 1.0" の内容は、SCE-NET で
+リリースしておりました "Development Software for EE Release 0.5.0" に相当す
+るものです。
+内容的には "Development Software for EE Release 0.5.5（アップデート版）" の
+方が新しいものとなります。ご注意下さい。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909162">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] DMA の速度に関して [追加]</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/16
+                                               (株)SCE ソフトウェア開発部
+
+
+                           DMA の速度に関して [追加]
+
+
+テクスチャデータを転送する場合など、DMA で大量のデータをを転送する場合は、
+次の要因が転送速度に影響を与えることがわかりました。アプリケーション開発の
+ご参考にお願いいたします。
+
+
+1. 画像データなどの大容量の転送データは、先頭アドレスを 8 quad word
+   バウンダリに合わせて下さい。その場合最大30%程度転送効率が向上する
+   可能性があります。
+
+
+2. DMA転送の最中に非キャッシュアクセスが発生すると、それだけ転送時間
+   が延びます。DMAコントローラのステータス(Dn_CHCR.STR) のポーリングも
+   転送時間が延びる要因となります。
+   バスを乱さずにDMA終了を検出するには、D_PCR と D_STAT を設定して、bc0f,bc0t
+   命令を使用する方法、つまり CPCOND[0] 信号を見る方法があります。
+   以下に簡単に例を示します。
+
+    1) 使用したいチャネルの D_PCR.CPCn を 1 にする。
+    2) D_STAT.CISn に 1 を書き込んでクリアする。
+    3) Dn_CHCR.STR に 1 を書き込んでDMAを開始する。
+    4) bc0f,bc0t 命令等でDMA終了を検出し、処理を行う
+    5) 2) に戻る
+
+   補足：
+   ・DMA終了時には、D_STAT.CISn が 1 になり、CPCOND[0] が真(true)となります。
+   ・2) 及び 3) は write buffer経由でDMACに送られますので、4) を連続実行する
+     場合には、"sync.p", "sync.l"命令で、4) の前にDMACに設定されたことを保証
+     する必要があります。
+   ・DMAが終了しない、または、DMAが一度も起動されていない状態(つまり、
+     D_STAT.CISn が 1 にならない状態)でbc0fを呼ばれると、無限ループに入りま
+     すので注意してください。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909161">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] テクスチャ座標 ST と UV の差</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/16
+                                               (株)SCE ソフトウェア開発部
+
+
+                        テクスチャ座標 ST と UV の差
+
+
+テクスチャ座標の、STとUVの差は、主にテクセルサンプリングのオーバヘッド
+の差があります。
+発生したテクセル座標は、Q 値が1.0でも同じにはならない場合がごく稀にあり
+ます。その場合、スピード差がでる可能性があります。
+
+また、演算自身はパイプライン処理されていますので、実用上はスピード差は
+ありません。
+従って、テクスチャ座標としては、Q=1.0 で使用する場合、STでもUVでも等価
+なものとして扱って頂いて、問題ありません。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909160">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] CLUT 格納モード CSM2 に関して</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/16
+                                               (株)SCE ソフトウェア開発部
+
+
+                         CLUT 格納モード CSM2 に関して
+
+
+GS の仕様では、CLUT 格納モードに CSM2 を指定している場合、CLUT 格納フォーマ
+ットとして PSMCT16(S) しか動作保証をしておりません。
+他の格納フォーマットでも偶然正常に動作する時もありますが、CSM2モード時は
+PSMCT16(S) 以外ではご使用になられませんようお願い致します。
+
+CSM2 モードは PSMCT16(S) でしか使用できませんし、スピード的なペナルティも
+大きいのであまりお勧めできません。可能ならば CSM1 モードのご使用をお勧め
+します。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909082">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>dsreset/dsedb/dsidb ブートパラメータに関する補足資料</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/08
+                                               (株)SCE ソフトウェア開発部
+
+
+             dsreset/dsedb/dsidb ブートパラメータに関する補足資料
+
+
+dsreset コマンド、及び dsedb/dsidb の reset コマンドはパラメータを二つとり
+ます。どちらも数値で、最初の数値が EE のブートパラメータ２番目の数値が IOP
+のブートパラメータです。
+
+- EEのブートパラメータは未定義のため 0 を指定してください。
+- IOP のブートパラメータは、３ビットで定義されており、その意味は
+  以下のとおりです。
+
+   bit 0:
+        0: EE のスタートを行なう(SIF の初期化をする)。
+        1: EE のスタートを行わない(SIF の初期化をしない)。
+   bit 1:
+        0: FILEIO サービスを行う。
+        1: FILEIO サービスを行わない。
+   bit 2:
+        0: Auto Load を行う。
+        1: Auto Load を行わない。
+
+
+代表的な設定例を以下に示します。
+
+   % dsreset 0 0		EE,IOP が同時に起動する。
+   % dsreset 0 7		IOP のみが起動する。(EEは起動しない)
+   % dsreset 0 2		FILEIO サービスが行われない。
+   % dsreset 0 4		Auto Load が行われない。
+				（スレッドマネージャと FILEIOプログラムは
+				ロードされない）
+
+※ FILEIO とは、IOP 上で稼働する EE の為のファイル入出力サービスです。
+※ Auto Load とは、Flash/Rom の容量不足のために載らなかった IOP の
+   機能モジュールを dsnetm が稼動しているマシンから取ってくる機能です。
+
+
+なお、この資料は 99/9/3 時点の情報に基づいており、将来仕様が変更される
+可能性があります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909081">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] フォグ係数 F の求め方 [訂正]</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/08
+                                               (株)SCE ソフトウェア開発部
+
+
+                        フォグ係数 F の求め方 [訂正]
+
+
+'99/06/22 のFAQ「フォグ係数 F の求め方」の内容に間違いがありました。
+ここに訂正し、改めて正しい内容をUPいたします。
+
+  （誤）
+  FB = FogFar*FogNear*(Fmin-Fmax)/(FogFar-FogNear)
+
+  （正）
+  FB = FogFar*FogNear*(Fmax-Fmin)/(FogFar-FogNear)
+
+-------------------------------------------------------------------------
+
+
+                          フォグ係数 F の求め方
+
+
+  フォグ係数Fは、
+
+    F    = FA*Z + FB (線形フォグ)
+    F/Z  = FA + FB/Z (非線型フォグ)
+
+  FA = ((Fmin-Fmax)*(FogFar+FogNear)/(FogFar-FogNear)+(Fmin+Fmax))/2
+  FB = FogFar*FogNear*(Fmax-Fmin)/(FogFar-FogNear)
+  として求められます。
+
+  Fmin = 0, Fmax = 255, FogNear = 2500, FogFar = 5500とすると
+  FA = -212.5
+  FB = 1168750.0
+  となります。
+
+  マイクロコードで記述すると以下のようになります。
+    ; VF31 = 透視変換直前のスクリーン座標系座標値
+    ; VF01 = (FA, 0, 0, 0)
+    ; VF02 = (FB, 0, 0, 0)
+       NOP			DIV Q, VF00w, VF31w
+       MULq.xyzw VF31,VF31,Q	WAITQ
+       MULA.w ACC,VF01,VF00	LOI 255.0  ;ACCw=FA
+       MADDq.w VF31,VF02,Q	NOP	   ;VF31w=ACCw+FB*(1/Z)
+       MINIi.w VF31,VF31,I	NOP	   ;if(VF31w>=255)VF31w=255.0
+       MAXx.w VF31,VF31,VF00	NOP	   ;if(VF31w<=0)VF32w=0.0
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>ee-gdb GUI版の機能制限について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/08
+                                               (株)SCE ソフトウェア開発部
+
+
+                        ee-gdb GUI版の機能制限について
+
+
+ハードウェアでのデバッグに ee-gdb を GUI モードで使う場合、いくつかの制限
+が存在します。これらの制限は、将来的に無くなる予定です。
+
+なお、ee-gdb は 0.5.0 からデフォルトでコマンドライン版が起動します。
+GUI 版は 'ee-gdb -w xxxx.elf' で起動して下さい。
+
+
+1. ターゲットの指定とダウンロード
+
+  ターゲットの指定とプログラムのダウンロードは、[Run] メニューからではなく
+  [View → Console] でコンソールウィンドウを開き、コマンドラインで行って
+  下さい。詳しい操作は sce/1st_read/gdb_j.txt を御参照下さい。
+
+2. プログラムの中断
+
+  実行中のプログラムを stop ボタンで停止することはできません。ee-gdb のプ
+  ロセスに SIGINT を送ることで代用できます。ee-gdb を端末から起動した場合
+  は、その端末（ee-gdbを起動した kterm 等）で ctrl-c を押せばよく、そうで
+  ない場合は、端末から 'kill -INT ee-gdbのプロセス番号' とすることで停止で
+  きます。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909070">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/07</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] キャッシュの不整合に関する注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/07
+                                               (株)SCE ソフトウェア開発部
+
+
+                      キャッシュの不整合に関する注意点
+
+
+キャッシュ／非キャッシュ両方でアクセスしている領域が存在している場合、
+その領域はキャッシュのラインサイズ(64 byte)にアラインメントを揃えないと、
+キャッシュのライトバック操作で不整合が起きる可能性があります。
+
+そのような領域をヒープ中に確保したい場合は、malloc() ではなく memalign()
+を使用すると、アライメントを揃える事ができます。なお、サイズも必ず64の倍数
+にして下さい。
+
+  (例）
+  u_long128 *p;
+  p = (u_long128*)memalign( 64, memSize )
+
+また、現在の printf() の仕様では、内部で malloc() が呼ばれる事に注意して下
+さい。例えば以下に挙げる (A) のようなコードでは、２回目以降の printf() が
+正常に出力されない可能性があります。(B) のように memalign() を使用する事で
+回避できます。
+
+  (A) 良くない例
+  long *a;
+  a = (long *)((u_int)malloc(size) | 0x20000000);
+  *a = 1111;
+	:
+	:
+  printf( "a = %d\n", a );
+  printf( "a = %d\n", a );
+
+  (B) 良い例
+  long *a;
+  a = (long *)((u_int)memalign(64, size) | 0x20000000);
+  *a = 1111;
+	:
+	:
+  printf( "a = %d\n", a );
+  printf( "a = %d\n", a );
+
+
+memalign() についての詳細は、infoファイルを参照してください。
+
+  % cd /usr/loca/sce/ee/gcc/info
+  % info -f libc.info
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909021">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/02</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] sinf(), cosf() の処理時間について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/02
+                                               (株)SCE ソフトウェア開発部
+
+
+                     sinf(), cosf() の処理時間について
+
+
+float版三角関数 sinf(), cosf() の引数が -63*PI～63*PI の範囲に無い場合、
+処理スピードが一桁低下します。これは gnu の数学ライブラリ libm.a の実装に
+起因するものです。将来のリリースで対処する予定ですが、現時点では、前もって
+引数にリミッタをかける等の回避策を取って頂けますようお願いいたします。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909020">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/02</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] DMA の速度に関して</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/02
+                                               (株)SCE ソフトウェア開発部
+
+
+                            DMA の速度に関して
+
+
+テクスチャデータを転送する場合など、DMA で大量のデータをを転送する場合は、
+次の要因が転送速度に影響を与えることがわかりました。アプリケーション開発の
+ご参考にお願いいたします。
+
+1. 画像データなどの大容量の転送データは、先頭アドレスを 8 quad word
+   バウンダリに合わせて下さい。その場合最大30%程度転送効率が向上する
+   可能性があります。
+
+2. DMA転送の最中に非キャッシュアクセスが発生すると、それだけ転送時間
+   が延びます。DMAコントローラのステータス(Dn_CHCR.STR) のポーリングも
+   転送時間が延びる要因となります。バスを乱さずにDMA終了を検出するには、
+   D_PCRとD_STATを設定して、bc0f,bc0t命令等を使用する方法があります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9908271">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/08/27</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] 数学関数使用についての注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/08/27
+                                               (株)SCE ソフトウェア開発部
+
+
+                       数学関数使用についての注意点
+
+
+Ｃ標準の数学ライブラリ（sin(),cos()等）は double 仕様になっています。
+次世代用アプリケーションの開発にあたっては、この double 仕様の関数を使う
+と soft-float 演算が発生し、著しくパフォーマンスが低下します。
+
+このため、gcc では float 仕様の数学関数（sinf(),cosf()等）が用意されて
+います。こちらは FPU を使用しますのでパフォーマンスの低下は起こりません。
+通常は float 仕様の数学関数を使う事をお勧めします。
+
+float 仕様の数学関数名については
+  sce/ee/gcc/mips64r5900-sky-elf/include/math.h
+を御参照下さい。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9908270">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/08/27</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] テクセルフォーマット PSMT4, PSMT8 使用時の注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/08/27
+                                               (株)SCE ソフトウェア開発部
+
+
+              テクセルフォーマット PSMT4, PSMT8 使用時の注意点
+
+
+テクセルフォーマット PSMT4, PSMT8 のデータを GS ローカルメモリに転送する
+場合、バッファ幅は 2 の倍数である必要があります。
+
+GS ローカルメモリは、2048wordのサイズのDRAMページの集合で構成されており、
+そのページがメモリアクセスの基本となります。このDRAMページは pixel-depth
+に応じて、以下のような形状で扱われます。
+（GS User's Manual Ver.1.10 の Appendix 参照）
+
+        pixel-depth  |  形状
+        -------------+-------------
+        PSMCT32      |  64x32pixel
+        PSMCT24      |
+        -------------+-------------
+        PSMCT16      |  64x64pixel
+        -------------+-------------
+        PSMT8        |  128x64pixel
+        -------------+-------------
+        PSMT4        |  128x128pixel
+
+
+いま PSMT8 の場合を考えますと、このページが以下のように敷き詰められた状態
+で使用されます。
+
+      128     128           128
+   +-------+-------+-   -+-------+
+64 |   0   |   1   | ... |TBW/2-1|
+   +-------+-------+-   -+-------+
+64 | TBW/2 |TBW/2+1| ... |TBW - 1|
+                     ...
+
+ここで バッファ幅 TBW を 1 にしてしまうと、第0ページのみしか使用されない
+状態になります。
+従って、例えばこの領域に 64x128 のテクスチャを転送すれば、下半分だけがメ
+モリ上に残る(上半分に上書きされる)状態になり、次のページも同様の状態で下
+半分のみが残り、描画時には各テクスチャの下半分だけしか使用されない事にな
+ります。
+
+
+こういったケースでの有効な方法は、以下の2種類あります。
+
+1) 転送先のバッファ幅を2にして、さらに2枚目のテクスチャのベースアドレ
+   スを1枚目から 4096word 離れた位置にする。
+   (1枚目上をA, 下をB, 2枚目上をC, 下をDとする)
+
+       128
+    +---+---+ base
+64  | A |   |
+    +---+---+ 2048word
+64  | B |   |
+    +---+---+ 4096word
+64  | C |   |
+    +---+---+ 6144word
+64  | D |   |
+    +---+---+
+
+2) 転送先テクスチャバッファを128x128の領域として見て、一枚目のテクスチャ
+   の右側に2枚目のテクスチャを転送する。2枚目のテクスチャを使用する場
+   合には、テクスチャ幅を128として、Sを0.5から1.0までとして使用する。
+
+       128
+    +---+---+ base
+64  | A | C |
+    +---+---+ 2048word
+64  | B | D |
+    +---+---+ 4096word
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9907280">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/28</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>SPU2 サンプルプログラムについての補足</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/28
+                                               (株)SCE ソフトウェア開発部
+
+
+                     SPU2 サンプルプログラムについての補足
+
+
+「Development Software for EE Release 0.3.0」より、SPU2 に関するサンプル
+プログラムが追加されています。（sce/ee/sample/spu2）
+各SPU2 サンプルプログラムの readme_j.txt 中に以下の記述がありますが、これ
+について補足致します。
+
+・このプログラムが動作するには、IOP側でfileio.coffが起動している必要が
+  あります。(library 0.3.0の場合）
+
+[補足]
+カーネル（flash-0705.coff）は、起動時に
+
+/usr/local/sce/iop/modules/fileio.coff
+/usr/local/sce/iop/modules/threadman.coff
+
+の２ファイルを読み出し実行します。つまり、fileio.coff はIOP側で自動的に
+起動されますので、ユーザが明示的に起動する必要はありません。
+そのままでサンプルは正常動作いたします。
+
+なお、音声出力はAVマルチ端子でなく、SPU基盤の音声出力のみとなります。
+サンプルによっては非常に音が小さいものもありますので、ボリュームも確認して
+下さいますよう、お願いします。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9907270">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/27</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>EB-2000S における EE の変更点について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/27
+                                               (株)SCE ソフトウェア開発部
+
+
+                  EB-2000S における EE の変更点について
+
+
+開発機 EB-2000S より、EE Rev.2.3/2.4 が搭載されています。
+EE Rev.2.3/2.4 におきましては、EE Rev.1.0 の既知バグ（/usr/local/sce/1st_
+read/bugs_j.txt）について修正された点があります。
+EE Rev.1.0 から Rev.2.3/2.4 の変更点を以下に挙げます。
+
+1. SPR (Scratch PAD RAM) の DMA 転送に関して
+   以下の制限を無くしました。
+　 ・SPR を転送元とする DMA 転送においては、転送の最後のアドレスが
+     8qword の倍数になるように指定する必要がある
+
+2. MFIFO  DMA 転送に関して
+   以下の不具合を修正しました。
+   ・MFIFO のリングバッファの残りサイズを計算する際に読み出す 
+     Ds_MADR, Dd_TADR の値が正しくない値 (0) を返す
+
+3. VPU の定数レジスタに関して
+   VPU の定数レジスタ (VF00) を以下の値に変更しました。
+   ・VF00 = (0.0, 0.0, 0.0, 1.0)
+
+4. IPU に関して
+   以下の制限を無くしました。
+   ・IPU で IDEC または BDEC コマンドを実行する際、データがある条件を
+　　 満たすとデコードが途中で止まることがある
+
+5. VPU 命令について
+   以下の VPU Lower 命令及び対応するマクロ命令が使用可能になりました。
+       RSQRT
+       ERLENG
+       ERSQRT
+
+
+また、bugs_j.txt にありました以下の３点は、Rev.2.3/2.4 でも修正されていま
+せん。
+
+1. デバッグ機能（ハードウェアブレークポイント等）に関して
+   以下のような不明確な点および不具合があります。
+   ・ハードウェアブレークポイントの data value break point およびパフォ
+     ーマンスカウンタは、厳密には正確な Program Counter の位置で停止しま
+     せん。
+   ・ハードウェアブレークポイントの data value break point/ address break
+     point は正常に動作しません。
+
+2. MFIFO の Drain Channel の設定に関して
+   MFIFO の Drain Channel の DMA が動作している途中で MFIFO のリングバッ
+   ファアドレスを変更すると、動作が不安定になることがあります。
+   Drain Channel の転送中にリングバッファアドレスを変更することはお控え下
+   さい。
+
+3. EFU命令のレイテンシに関して
+   将来的に 300MHz に移行した際、以下の表の通り EFU 命令のスループット／
+   レイテンシが 2cycle増加します。
+   VPU1 で WAITP 同期をとらないマイクロプログラムは300MHz の移行に対して
+   動作しなくなる可能性があります。
+
+                        EFU new thourhgput/latency
+                        --------------------------
+        ===========================================================
+                          200Mhz                  300Mhz
+        instruction  throughput latency      throughput latency
+        -----------------------------------------------------------
+        EATAN           51      52              53      54
+        EATANxy         51      52              53      54
+        EATANxz         51      52              53      54
+        EEXP            41      42              43      44
+        ELENG           15      16              17      18
+        ERCPR           9       10              11      12
+        ERLENG          21      22              23      24
+        ERSADD          15      16              17      18
+        ERSQRT          15      16              17      18
+        ESADD           8       9               10      11
+        ESIN            26      27              28      29
+        ESQRT           9       10              11      12
+        ESUM            9       10              11      12
+        -----------------------------------------------------------
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9907263">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/26</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>コントローラの接続位置について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/26
+                                               (株)SCE ソフトウェア開発部
+
+
+                       コントローラの接続位置について
+
+
+「Development Software for EE Release 0.3.0」より、コントローラの接続位置
+が変更になりましたのでアナウンス致します。
+
+EB-1000/2000/2000S の４つのコントローラコネクタを、向かって左から
+
+　　Ａ　Ｂ　Ｃ　Ｄ
+
+とすると、接続位置は以下のようになります。
+
+・0.3.0 より前の環境
+  コントローラ１：　Ｄ
+  コントローラ２：　Ｂ
+
+・0.3.0 以降の環境
+  コントローラ１：　Ｄ
+  コントローラ２：　Ｃ
+
+なお、ドライバについての詳細は sce/doc/ee/kernel/eekernel.txt を御覧下さ
+い。
+
+よろしくお願い致します。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9907262">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/26</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>訂正：VPU 命令について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/26
+                                               (株)SCE ソフトウェア開発部
+
+
+                     　　　訂正：VPU 命令について 
+
+
+'99/04/20の技術情報「VPU 命令の一部使用禁止について」の中で、以下のように
+アナウンス致しましたが、ここに訂正いたします。
+
+（誤）
+-------------------------------------------------------------------------
+EE の最終仕様において、以下の VPU Lower 命令および対応するマクロ命令
+は使用禁止となります。
+
+      RSQRT
+      ERLENG
+      ERSQRT
+-------------------------------------------------------------------------
+
+
+正しくは以下のようになります。
+
+（正）
+-------------------------------------------------------------------------
+EB-2000S 以降の開発機において、以下の VPU Lower 命令および対応するマクロ
+命令は使用可能です。これが最終仕様となります。
+
+      RSQRT
+      ERLENG
+      ERSQRT
+
+なお、EB-1000/2000 では使用不可です。
+SQRT+DIV、ELENG+DIV、ESQRT+DIV で代用して下さい。
+-------------------------------------------------------------------------
+
+
+よろしくお願い致します。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9907261">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/26</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>再掲：VPU 定数レジスタ VF00 の仕様変更について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/26
+                                               (株)SCE ソフトウェア開発部
+
+
+                再掲：VPU 定数レジスタ VF00 の仕様変更について
+
+
+'99/04/20に技術情報にてお伝え致しました通り、VPU の定数レジスタ VF00 に
+おいて仕様変更が発生しましたのでお知らせ致します。
+
+
+[変更点]
+
+EB-2000S に搭載されているEE（リビジョン2.3/2.4）より、定数レジスタ VF00 の
+各フィールド値は以下のように変更されました。
+
+  VF00 = (0.0, 0.5, -1.0, 1.0)  →  VF00 = (0.0, 0.0, 0.0, 1.0)
+
+
+なお、この仕様が最終仕様となります。
+よろしくお願い致します。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9907260">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/26</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>開発機のスペックについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/26
+                                               (株)SCE ソフトウェア開発部
+
+
+                     開発機のスペックについて
+
+
+99年7月26日現在、各開発機の基本仕様は下表のようになっています。
+
+なお、EE 2.3 と 2.4 は動作上の違いはありません。
+GSのリビジョン1.0と3.0の違いについては
+「Development Software for EE Release 0.3.0」の
+/usr/local/sce/1st_read/notice_j.txt を御参照ください。
+
+よろしくお願い致します。
+
+
+---------------------------------------------------------
+型名                       EB-1000    EB-2000    EB-2000S
+=========================================================
+EE                           1.0        ←        2.3/2.4
+
+System CLK                  200MHz      ←         ←
+
+GS                           1.0        3.0        3.0
+
+RDRAM                       128MB       ←         ←
+
+SPU2                         無し       無し       有り
+----------------------------------------------------------
+筐体色                       白         緑         ←
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9907080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>EB-1000/2000上での librspu2 の動作について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/08
+                                               (株)SCE ソフトウェア開発部
+
+
+             EB-1000/2000上での librspu2 の動作について
+
+
+「Development Software for EE Release 0.3.0」では、新たにサウンド
+ライブラリ librspu2 を追加いたしました。
+
+開発機 EB-1000/2000 におきましては、SPU2 が搭載されていないために
+サウンドライブラリ（librspu2）は正常に動作しません。
+従って /usr/local/ee/sample/spu2/ 以下のサンプルも動作しません。
+
+こちらの情報が不足しており、ライセンシの皆様の混乱を招きました事を
+深くお詫びいたします。
+
+なお、近日出荷予定の EB-2000S には、SPU2を搭載しております。
+具体的なスケジュールに関しましては、弊社業務部より別途御案内させて
+いただきます。
+
+よろしくお願いいたします。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9906237">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] CPU Core と VPU1 間の Interface</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                      CPU Core と VPU1 間の Interface
+
+
+CPU Core と VPU１DSP間のInterface について、簡潔に御説明いたします。
+
+CPU Core と VPU1は、次の3つの経路で接続されています。
+
+  1) メインメモリ空間にIOマップされたVIF1-FIFO
+  2) VPU0のデータメモリ空間にマップされた、VU1のレジスタ群
+  3) メインメモリ空間にマップされたVPU1のデータメモリ
+
+1) VPU1は、VIF1という メインバス-VU1間のインタフェースブロックを持って
+います。通常は、このVIF1が持つFIFOにデータをDMA転送することによりVPU1
+を使用します。
+
+2) VU1のレジスタは、VPU0のデータメモリ空間にマップされていますのでVPU0
+とVPU1が共に停止している時には、VPU0のマクロ命令(COP2) を使用してアク
+セス可能です。
+
+3) メインメモリ空間にVPU1のデータメモリがマップされていますので、VPU1
+が停止している時には、COREから直接アクセスすることが可能です。しかしな
+がら3)の経路はデバッグ用ですので速度的なペナルティが大きいです。
+
+従って、通常使う場合には、
+CPU Coreから直接見えるのは、DSPのデータ入力用FIFOの入り口のみが見える
+ということになります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906236">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] 高速化について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                              高速化について
+
+
+今回のシステムにおいてパフォーマンスを出すためには、メモりアクセスを
+極力避けることが重要です。
+そのためには、スクラッチパッド(SPR)を上手に活用することが必要です。
+
+VU0のライブラリでは、すべてが関数呼出しになっており、そのオーバーヘッド
+も問題になります。
+
+現在のコンパイラでは、プログラム内部で定数を利用する場合に、たとえば、
+"2.0f"のように明確に型を宣言しないと、floatのつもりがdouble扱いにな
+ってしまい、著しくパフォーマンスが落ちますので御注意ください。
+
+将来的には、より多くのポリゴンを表示させるためには、透視変換や光源計算
+といった定型処理は、VU1のマイクロ命令で実行されることが望まれます。
+それと並列に非定型な処理をCPU,VU0で行う形になります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906235">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] メモリアクセスについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                         メモリアクセスについて
+
+
+ＳＰＲ上に書き込んで、メインメモリにＤＭＡ転送するのと、直接メインメモリ
+に書き込むのと、どれぐらいの速度的な違いがあるのかという質問をよく受けま
+す。
+
+これは、ケースバイケースなので正確には述べられません。
+まず、確実に言えることは、DMA <-> Main MemoryのDMAが、このシステムでの
+最速のメモリアクセス方法であるということです。また、転送中CPUは動くこ
+とができます。
+
+直接メインメモリにアクセスする方法としては、uncached と cachedの２つが
+あります。uncachedでアクセスする場合write bufferで吸収できないぐらい
+writeが連続する場合、メモリアクセスのレイテンシの分CPUは停止してしまい
+ます。
+
+cachedでアクセスする場合は、キャッシュミスした場合、現在のcache lineの
+内容をメモリにwrite backしてから、writeアドレスの内容をキャッシュ内に
+読み込みそれからwriteとなります。そして、DMAする際にキャッシュ内のデー
+タを全てwrite backしなければならず、一度のwriteに対して最悪3回のメモリ
+アクセスが入ります。キャッシュミスが発生するかどうかは、それ以前のキャッ
+シュアクセス状況や、割り込み処理の発生状況などで変化するため、不確定に
+なります。(経験的には、上記DMAとcachedアクセスで1桁ぐらいスピードに差
+がでることがあります。)
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906234">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] DMAtagも含めて転送するメリット</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                      DMAtagも含めて転送するメリット
+
+
+DMA転送において、Dn_CHCR.TTE = 1 の場合、DMAtag自身も転送します。
+タグ自身を転送するのと、そうでないのとでは、どのような違いがあるのかと
+いう質問をよく受けます。
+
+DMAtagは64bitですが、DMAの転送自身は、128bitアライメントに合わせて
+転送が行われるためDMAtagの上位64bitは無駄になります。VIFはDMAtagのみ読
+み飛ばすという機能がついているので、タグごと転送する設定にすれば、タグ
+の上位64bitもデータとして利用できます。
+つまり、
+
+
+   D1_CHCR.TTE == 1
+  127                63                 0
+   +--------+--------+--------+--------+
+   |  data1 |  data0 |     DMAtag      |
+   +--------+--------+--------+--------+
+   |  data5 |  data4 |  data3 |  data2 |
+   +--------+--------+--------+--------+
+   |              ......               |
+
+
+   D1_CHCR.TTE == 0
+  127                63                 0
+   +--------+--------+--------+--------+
+   |  ----- |  ----- |     DMAtag      |
+   +--------+--------+--------+--------+
+   |  data3 |  data2 |  data1 |  data0 |
+   +--------+--------+--------+--------+
+   |              ......               |
+
+
+となります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906233">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] VUアセンブラ：E-bit の Delay Slot について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                VUアセンブラ：E-bit の Delay Slot について
+
+
+サンプル等で以下のようなコードをよく使用しています。
+
+	 NOP				NOP
+	 NOP[E]   	 		NOP
+	 NOP   	 			NOP (*1)
+	 NOP   	 			B START_P
+	 NOP   	 			NOP
+
+コード中の[E]は、オペコードのE-bitを立てるインストラクションを表し、動
+作としては、プログラムの終了を指定するものです。ただし、E-bitは1サイク
+ルのdelay slotを要求します(つまり、[E]の次のサイクルまで実行してから終
+了します)。E-bitのdelay slotに置いてはいけない命令として、
+
+  分岐命令
+  XTOP, XITOP
+  XGKICK
+  VU Mem ロード／ストア命令
+  E-bitを1にした命令
+
+があります。
+
+B START_Pは分岐命令ですので、E-bitのdelay slotにおくことはできません。
+従って、この場合 (*1) の行は、必要です。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906232">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] VUアセンブラ：プログラミング上の注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                  VUアセンブラ：プログラミング上の注意点
+
+
+レジスタへの書き込みポートは１つなので、異なるパイプラインから同じサイ
+クルで同じレジスタへwrite backしようとすると、maskに関係なく早い者勝ち
+(先に書き込みポートを取った方)で書き込まれ、遅い方はそのまま捨てられます。
+「VU User's Manual Ver.1.10」の p.35 に記述がありますが、ここでは具体的
+な例を挙げて御説明いたします。
+
+
+（例）
+プログラムＡ（正しく動作する）
+	MULw.xyz VF11, VF11, VF01w	MOVE.w VF01, VF09
+	ADD.xy VF01, VF01, VF23		NOP
+
+プログラムＢ（誤動作する）
+	MULw.xyz VF11, VF11, VF01w	NOP
+	ADD.xy VF01, VF01, VF23		MOVE.w VF01, VF09
+
+
+Ａのプログラムは、VUのFMACがパイプライン動作しているため正しく動作
+いたします。上のプログラムの動作を見てみると、
+
+MULw.xyz VF11,VF11,VF01w |M|T(1)|X|Y|Z|S|
+MOVE.w VF01, VF09        |M|T   |X|Y|Z|S(1)|
+---------------------------+----+-+-+-+----+
+ADD.xy VF01,VF01,VF23      |M   |T|X|Y|Z   |S(2)|
+NOP                        |M   |T|X|Y|Z   |S   |
+
+となっております。MULw.xyzのVF01wレジスタのread動作は、T(1)のサイクル
+で行われ、MOVE.wのVF01wへのwrite動作は、S(1)のサイクルで実行されます。
+また、ADD.xyのVF01xyへのwrite動作は、S(2)のサイクルで実行されます。
+MULwのreadが最初で、次にMOVEのwriteであり、最後にADDのwriteが実行され
+ます。従って、MULwはLQでloadした値が使用されるので、正しく動作いたしま
+す。
+
+一方、Ｂのプログラムを見てみますと、
+
+MULw.xyz VF11,VF11,VF01w |M|T(1)|X|Y|Z|S|
+NOP                      |M|T   |X|Y|Z|S|
+---------------------------+----+-+-+-+----+
+ADD.xy VF01,VF01,VF23      |M   |T|X|Y|Z|S(1)|
+MOVE.w VF01,VF09           |M   |T|X|Y|Z|S(2)|
+
+となっています。MULw自身は正しく動作しますが、問題は、S(1)とS(2)が同一
+サイクルに実行される部分です。VUのレジスタの書き込みポートは1つしかあ
+りません。S(1)とS(2)が同一サイクルで実行されるということは、1つのポー
+トに2つのユニットから書き込みがおこることになります。この場合、仕様と
+して、Upper命令が優先されます。従って、MOVE.wにより書き込みは無効にな
+ります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906231">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] VUアセンブラ：E,M,D,T,Iビットを含む記述について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                VUアセンブラ：E,M,D,T,Iビットを含む記述について
+
+
+E,M,D,Tビットは、
+
+	NOP[d]		NOP
+	NOP[t]		NOP
+	NOP[m]		NOP
+	NOP[e]		NOP
+
+のように、Upper instructionの最後に記述頂けます。
+I ビットに関しては、lower instructionに 疑似命令が用意されています。
+
+	NOP		LOI	255.0
+
+のように記述していただければ、I ビットを立てた時のコードを生成します。
+
+「SKY Simulator User's Guide」(/usr/local/sce/doc/ee/tool/sky_sim.doc) に
+説明がありますので御参照ください。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906230">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/23</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] VIFがDMAtagをVIFcodeと取り違えない理由</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/23
+                                               (株)SCE ソフトウェア開発部
+
+
+                   VIFがDMAtagをVIFcodeと取り違えない理由
+
+
+VIFパケット転送において、DMAtagを含めた転送とDMAtagを含めない転送の、
+２種類のモードがあります。
+
+D1_CHCR.TTEを1にしてDMAを起動した場合、DMAtagごとVIFにデータを転送しま
+す。このモードでのDMA転送中は、DMACはDMAtagを転送する際、VIFに特別な信
+号を出しています。VIFはその信号を受け取るとその128bitのLSB側64bitを読
+み飛ばします。そのためVIFはDMAtagをVIFcodeと誤認識することはありません。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906228">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] パースペクティブ補正時の Q 計算式</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                    パースペクティブ補正時の Q 計算式
+
+
+    Q = 1/w  (wはスクリーン座標系でのw値)
+    S = s/w
+    T = t/w  (但し、s,tは TW, THで正規化されたu, v座標)
+
+  でパースペクティブ補正が正しくかかります。
+  マイクロコードで記述すると以下のようになります。
+
+    ; VF01  テクスチャ座標(s, t, 1.0, 0)
+    ; VF02  スクリーン座標系での頂点座標
+    NOP				DIV Q, VF00w, VF02w
+    MULq.xyzw VF02, VF02, Q	WAITQ
+    MULq.xyz  VF01, VF01, Q	NOP
+    NOP				NOP
+    NOP				NOP
+    FTOI4.xyzw VF03, VF02	NOP
+    NOP				SQ VF01, 0(VI01)   ; STQ
+    NOP				NOP
+    NOP				NOP
+    NOP				SQ VF03, 0(VI02)   ; XYZF2
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906227">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] サンプルで 640*224 を使用している理由</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                   サンプルで 640*224 を使用している理由
+
+
+  GSでは、フレームバッファのメモリ上でのアドレスの設定は、メモリのページ
+  単位(2048word)でしか設定できません。また、32/24bitモード時のページの形
+  状は、64x32 pixelになっております。FRAME.FBPで指定されたアドレスから
+
+        64    64                   (640)
+      +-----+-----+----------+-----+
+    32|  0  |  1  |   ...    | bw-1|
+      +-----+-----+----------+-----+
+    32| bw  | bw+1|   ...    |2bw-1|
+      +-----+-----+----------+-----+
+      | ... | ... |   ...    | ... |
+      +-----+-----+----------+-----+
+    (224)
+
+  という並びで、メモリが利用されます。この時、縦解像度を240と指定すると
+  224以降のラインは、ページの途中までしか使用しません。しかしながら、フ
+  レームバッファのアドレスはページ単位でしか指定できませんので、ダブルバッ
+  ファを取る際にページの残りの部分は無駄になってしまいます。メモリの無駄
+  を出さないように、サンプルでは縦解像度を224に設定しています。
+
+  また、実用上の面からいっても、実際のテレビモニタで240まで表示できるも
+  のはまれで、大抵の機種では220程度しか表示できません。その意味からも224
+  に設定されています。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906226">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] ピクセル方式・テクスチャサイズによる速度差</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                  ピクセル方式・テクスチャサイズによる速度差
+
+
+  ピクセル格納方式や、転送するテクスチャサイズによって、速度は大きく変わ
+  ります。
+  ピクセルフォーマットに関しては、32bit,24bit,16bitが最速になります。
+  8bitがそれより若干遅くなり、4bitはさらに遅くなります。32bitと4bitでは、
+  半分ぐらいのスピードになります。
+  テクスチャのサイズに関しては、メモリのページサイズを越えるとアクセスペ
+  ナルティが発生します。メモリのページサイズは以下のようになっています。
+
+    32bit	64x32(pixel)
+    24bit	64x32(pixel)
+    16bit	64x64(pixel)
+    8bit	128x64(pixel)
+    4bit	128x128(pixel)
+
+
+以上
+</pre></blockquote>
+
+<A NAME="9906225">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] MIPMAPベースポインタ自動計算の条件</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                 MIPMAPベースポインタ自動計算の条件
+
+
+16x16のテクスチャでは、ベースポインタは正しく自動計算されません。
+MIPMAPでベースポインタを正しく自動計算できるのは、
+
+・PSMCT32/PSMCT24/PSMT8H/PSMT4HL/PSMT4HHの場合
+  幅 = 高さ = {32, 64, 128, 256, 512}
+・PSMCT16/PSMCT8/PSMCT4の場合
+  幅 = 高さ = {32, 64, 128, 256, 512, 1024}
+
+の時のみになります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906224">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] フォグ係数 F の求め方</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                          フォグ係数 F の求め方
+
+
+  フォグ係数Fは、
+
+    F    = FA*Z + FB (線形フォグ)
+    F/Z  = FA + FB/Z (非線型フォグ)
+
+  FA = ((Fmin-Fmax)*(FogFar+FogNear)/(FogFar-FogNear)+(Fmin+Fmax))/2
+  FB = FogFar*FogNear*(Fmin-Fmax)/(FogFar-FogNear)
+  として求められます。
+
+  Fmin = 0, Fmax = 255, FogNear = 2500, FogFar = 5500とすると
+  FA = -212.5
+  FB = 1168750.0
+  となります。
+
+  マイクロコードで記述すると以下のようになります。
+    ; VF31 = 透視変換直前のスクリーン座標系座標値
+    ; VF01 = (FA, 0, 0, 0)
+    ; VF02 = (FB, 0, 0, 0)
+       NOP			DIV Q, VF00w, VF31w
+       MULq.xyzw VF31,VF31,Q	WAITQ
+       MULA.w ACC,VF01,VF00	LOI 255.0  ;ACCw=FA
+       MADDq.w VF31,VF02,Q	NOP	   ;VF31w=ACCw+FB*(1/Z)
+       MINIi.w VF31,VF31,I	NOP	   ;if(VF31w>=255)VF31w=255.0
+       MAXx.w VF31,VF31,VF00	NOP	   ;if(VF31w<=0)VF32w=0.0
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906223">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] インターレスとノンインターレスの切替</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                  インターレスとノンインターレスの切替
+
+
+  インタレースモードとノンインタレースモードの切り替えが可能です。
+  方法としては、カーネルサービス関数SetGsCrt()を以下のように呼んで頂けば
+  よいです。
+
+  インタレースモード時：
+    SetGsCrt(SCE_GS_INTERLACE, SCE_GS_NTSC, SCE_GS_FRAME);
+
+  ノンインタレースモード時：
+    SetGsCrt(SCE_GS_NONINTERLACE, SCE_GS_NTSC, SCE_GS_FRAME);
+
+  ただし、この関数を実行すると、テレビ信号(この場合NTSC)の同期が乱れます
+  ので、必ずV-Blank期間内に実行してください。(libgraph の関数と併用される
+  場合、libgraph の外部変数sceGsInterModeを指定した値に設定してください。)
+
+  また、水平方向解像度ですが、2560の整数分の一になる解像度を設定できます。
+  この時の整数とは、GSのDISPLAYレジスタのMAGH値で指定された値です。
+  使い方は、libgraph のsceGsSetDefDispEnv関数をご参照ください。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906222">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] ニアクリップの方法</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                           ニアクリップの方法
+
+
+  クリッピングする場合、
+
+    i)  クリッピング座標系(View座標系をView Volumeで正規化した座標系)を導
+        入して、CLIP命令でクリッピングする。
+    ii) GSプリミティブ座標系のXY値とスクリーン座標系のZ値を組み合わせて
+        使用する
+
+  というのが、一般的です。
+  i)の手法は、頂点を一度view座標系に変換しますので、ポリゴンをview volume
+  の境界線で分割する場合等に有効です。ただし、計算のペナルティは若干大きい
+  です。
+  ii)の手法は、計算のペナルティは小さいですが、一気にプリミティブ座標系ま
+  で持ってきてしまいますので、ポリゴン分割等の後処理が若干困難になります。
+
+  ここでは、ii)の方法に関してVUアセンブラでご説明します。
+    ; VF02 = GSPrim/local matrix
+    ; VF03 = GSPrim/local matrix
+    ; VF04 = GSPrim/local matrix
+    ; VF05 = GSPrim/local matrix
+    ; VF20 = (Zmin, 0, Ymin, Xmin) = (nearZ, 0, 0, 0)
+    ; VF21 = (Zmax, 0, Ymax, Xmax) = (farZ, 0, 4095, 4095)
+    ; VI08 = sign flag of MACflag (0x00d0)
+    ; VI12 = ADC bit of Fog value (0x8000)
+    ; RotTransPers
+       MULAx.xyzw ACC, VF02, VF01x	NOP
+       MADDAy.xyzw ACC, VF03, VF01y	NOP
+       MADDAz.xyzw ACC, VF04, VF01z	NOP
+       MADDw.xyzw VF31, VF05, VF01w	NOP
+       NOP				NOP
+       NOP				NOP
+       NOP				NOP
+       NOP				DIV Q, VF00w, VF31w
+       MULq.xyz VF31, VF31, Q		WAITQ			; *1
+    ; GS area clip
+       SUB.xyw VF30, VF20, VF31		MFIR.w VF27w, VI00	; *2
+       SUB.xyw VF30, VF31, VF21		MFIR.w VF26w, VI12	; *3
+       FTOI4.xyz VF27, VF31		NOP
+       FTOI4.xyz VF26, VF31		NOP
+       NOP				FMAND VI01, VI08	; *4
+       NOP				FMAND VI01, VI01	; *5
+       NOP				IBNE  VI01, VI08, CLIP
+       NOP				SQ VF26, 0(VI02)	; *6
+       NOP				SQ VF27, 0(VI02)
+
+  簡単に説明いたしますと、まず透視変換まで行いますが、この時W値(スクリー
+  ン座標系のZ値)を残しておきます(*1)。次にGS View Volumeからはみ出してい
+  ないか引き算で確かめます(*2, *3)。View Volume内に含まれる場合MACflagの
+  xywのsign bitが全て立つはずです。そこで、はみ出した場合、FOG値のADCビッ
+  トを立ててXYZF3扱いになるようにします(*6)。
+
+  ここで、注意が必要なのが、フラグ参照命令の位置(*4, *5)です。フラグ参照
+  したいUpper命令から、4サイクル後にしかフラグは反映されません。また、参
+  照したいUpper命令と、フラグ参照命令の間にNOP以外のUpper命令がある場合、
+  4サイクル後以降では、フラグの値が書き変わってしまいます。従って、この
+  位置にしかフラグ参照命令は置くことができません。
+
+  また、この例では、簡単化のため、一頂点分のコードになっております、実際
+  の処理では、三頂点分の履歴をとっておいて、一頂点でもはみ出したらXYZF3
+  とする必要があります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906221">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] CLUTエントリオフセット(CSA) について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/22
+                                               (株)SCE ソフトウェア開発部
+
+
+                    CLUTエントリオフセット(CSA) について
+
+
+  GSのCLUT用の内部バッファは、256*32 bitのサイズを持っています。従って、
+
+    PSM=PSMT8, CPSM=PSMCT32の場合1エントリ
+    PSM=PSMT4, CPSM=PSMCT32の場合16エントリ
+    PSM=PSMT8, CPSM=PSMCT16の場合2エントリ
+    PSM=PSMT4, CPSM=PSMCT16の場合32エントリ
+
+  しかバッファ内に保持することができません。
+  よって、CLUTのピクセルフォーマットを32bit(CPSM=PSMCT32)で御使用の場合、
+  CSA (CLUTエントリオフセット) は0～15までしか有効でありません。
+
+  CSAは、CSA=Nとした場合、そのバッファ内で、CPSMで指定したピクセルフォー
+  マットの N*16ピクセル目をCLUTの先頭にするということを意味します。
+  PSM=PSMT4, CPSM=PSMCT32, CSA=16と指定すると、バッファサイズを越えてしま
+  うので、CSA=0と等価の動作をします。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906220">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] GsSetHalfOffset() についての補足</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                     GsSetHalfOffset() についての補足
+
+
+  まず、フレームバッファ上でのＹ方向のアドレスと、ＴＶ画面上での見え方に
+  ついて見てみると、
+
+
+      偶数Field用 Frame Buffer
+      +---------------------+
+      |  0                  |
+      +---------------------+
+      |  1                  |
+      +---------------------+
+      |  2                  |
+      +---------------------+
+      |  3                  |
+
+      奇数Field用 Frame Buffer
+      +---------------------+
+      |  0                  |
+      +---------------------+
+      |  1                  |
+      +---------------------+
+      |  2                  |
+      +---------------------+
+      |  3                  |
+
+      TV画面
+      +---------------------+
+      |  0 (odd)            |
+      +---------------------+
+      |  0 (even)           |
+      +---------------------+
+      |  1 (odd)            |
+      +---------------------+
+      |  1 (even)           |
+      +---------------------+
+      |  2 (odd)            |
+      +---------------------+
+      |  2 (even)           |
+      +---------------------+
+      |  3 (odd)            |
+      +---------------------+
+      |  3 (even)           |
+
+
+  という関係にあります。偶数フィールドのＹ方向アドレスを基準として考えれ
+  ば、奇数フィールド上のY=0の点は、偶数フィールド上のY=0.5の点に相当す
+  るわけです。ＧＳでは小数点以下の座標値もサポートしていますので、奇数
+  フィールド描画時に、座標を0.5かさあげしてやれば、偶数フィールドのライ
+  ンとラインの間に相当するピクセルを奇数フィールド用Frame Bufferに描画
+  することができます。
+
+  また、このように0.5かさあげしない場合、偶数Fieldと奇数Fieldは同じ座
+  標で描画されることになるので、同じ内容が２ライン表示されることになり
+  ます。つまり、ＴＶ画面上で期待した解像度にならず、縦方向が半分の解像
+  度になってしまいます。
+
+  この方法の応用範囲に関してですが、これはインタレースでかつ、FRAMEモー
+  ド時のみに使用できます。
+  ノンインタレース時には、ＴＶ画面上で偶数フィールドと奇数フィールドは
+  同じ位置に表示されるので、座標系はいっしょになります。
+  また、インタレースでFIELDモード時は、Frame BufferのアドレスとＴＶ画
+  面のアドレスが同じですので、かさあげする必要がありません。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906217">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] FRAMEモードとFIELDモードの違いについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                  FRAMEモードとFIELDモードの違いについて
+
+
+  GSのCRTC(CRTコントローラ)が、GSのローカルメモリからデータを読み出し、
+  テレビモニタに画像として出力していますが、その時のCRTCのデータの読みだ
+  し方を指定するのがFRAME/FIELD(sceGsResetGraph関数の第4引数)です。
+  次のようにローカルメモリ上にフレームバッファが設定されていた場合、
+
+    +-----//-----+
+    |0    //     |
+    +-----//-----+
+    |1    //     |
+    +-----//-----+
+    |2    //     |
+    +-----//-----+
+    |3    //     |
+    +-----//-----+
+    |4    //     |
+    +-----//-----+
+    |5    //     |
+    +-----//-----+
+
+  FRAMEモード時は、CRTは0, 1, 2, 3,... という順でデータを読み出します。
+  一方FIELDモード時は、0, 2, 4,... (又は、1, 3, 5,...)という順で1行おき
+  に読み出します。
+  インタレースでは、ある1/60秒だけを考えた場合、片フィールドのみが表示さ
+  れますから、読み出されるデータも640x224分だけということになります。
+  つまり、ある1/60だけを考えれば、FRAMEモードだと640x224のバッファを用意
+  すればいいことになります。そしてそのバッファを２つ持ちダブルバッファに
+  として使用すれば、テレビモニタ上では640x448のインタレース画面として表
+  示されます。
+
+  一方FIELDモードでは、640x448のバッファを用意し、その中から櫛歯状に表示
+  されます。この時640x448のバッファとしてそのまま描画してしまうと、表示
+  と描画がぶつかり、描画している部分が画面に見えてしまいますので、
+  SCANMASKレジスタを用いて、表示側フィールドは描画しないようにする必要が
+  あります。
+
+  まとめますと、
+
+  FRAMEモードでは、640x224のバッファを2つ用意し、1/60秒毎に切り替えて使
+  用する。
+  FIELDモードでは、640x448のバッファを１つ用意し、1/60秒毎にSCANMASKで描
+  画フィールドを切り替えて使用する。
+
+  となっています。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906216">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] フレームバッファイメージの保存方法</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                    フレームバッファイメージの保存方法
+
+
+  フレームバッファ上のイメージを保存するツールは現在のところありません。
+  そうするためには、プログラム上でイメージデータをPCのファイルシステムに
+  書き込んで頂くしかありません。以下にその手順をご説明いたします。
+
+  まず、GS上のローカルメモリの内容をEEのメインメモリ上に読み出す方法です
+  が、これは、libgsの関数sceGsSetDefStoreImage(), sceGsExecStoreImage()
+  を使用すると簡単に実現できます。例えば、FBP=0, PSM=PSMCT24のフレームバ
+  ッファを取り出す場合、
+
+    unsigned char image_buf[640*224*3] __attribute__((aligned(16)));
+    sceGsStoreImage sp;
+    sceGsSetDefStoreImage(&sp, 0, 10, SCE_GS_PSMCT24, 0, 0, 640, 224);
+    FlushDCache();
+    sceGsExecStoreImage(&sp, (u_int *)image_buf);
+    sceGsSyncPath(0);
+
+  とすれば、メインメモリ上のimage_bufにフレームバッファのイメージデータ
+  を取り出すことができます。
+  また、EEのメインメモリから、PCのファイルシステムに書き込むためには、
+
+    u_int fd;
+    if((fd = open("sim:a.raw", O_CREAT | O_TRUNC | O_WRONLY)) == -1){
+        printf("can not open a.raw\n");
+    }
+    write(fd, image_buf, 640*224*3);
+    close(fd);
+
+  とすれば書き込むことができます。
+  ちなみに、インタレースの640*448のイメージするためには、ダブルバッファ
+  リングしているフレームバッファの両方のイメージを取り出し、片方が奇数フィ
+  ールド、もう片方が偶数フィールドになるように、混ぜ合わせればよいです。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906215">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] 半端なテクスチャサイズの扱い方</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                       半端なテクスチャサイズの扱い方
+
+
+  GSの仕様では、テクスチャサイズ(TW,TH)は２のべき乗でなければならないと
+  いう制約があります。
+  但し、テクスチャ幅TWとバッファ幅TBWは一致しなくてもOKです。これを利用す
+  れば、２のべき乗でない半端なテクスチャサイズのデータを利用可能です。
+
+  例えば、実効テクスチャサイズを640x224としたい場合にはTBW=10,TW=1024,
+  TH=256 とし、各頂点のテクスチャアドレスをUVで(0,0)～(639,223)の領域だけ
+  使用すれば、うまく描画できます。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906214">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] 一度に送れるパケットサイズの上限</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                   一度に送れるパケットサイズの上限
+
+
+  １回に送ることのできるパケットのサイズは、DMAの転送時に設定される
+  QWCの値が１６ビットであることにより制限されており、最大１Ｍバイトと
+  なっています。
+
+  それ以上のサイズのパケットを送りたい場合は、パケットを分解して送る
+  必要があります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906213">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] EB-1000/2000 のクロック周波数について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                  EB-1000/2000 のクロック周波数について
+
+
+  EB-1000/2000のクロック周波数は
+
+    CPU   200MHz
+    バス  100MHz
+
+  となっています。
+
+  最終版開発機では CPU300MHz,バス150MHz となり、メモリアクセスも含め全ての
+  処理が1.5 倍の速さになります。
+  ちなみにGSのクロックも上がるので、GSを含む処理も単純に1.5 倍となります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906212">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] スクラッチパッド(SPR)についての補足</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                   スクラッチパッド(SPR)についての補足
+
+
+  スクラッチパッドメモリ (SPR) とは小容量(16KB) の高速ワークメモリで
+  通常のメモリに比べて以下の利点があります。
+
+    ・高速なアクセス
+    ・メインメモリから DMA 転送（ハードウェアメモリコピー）が可能
+
+  DMA 転送と CPU は同時に SPR へアクセスできます。
+  繁雑に使用するデータは一旦 SPR へコピーしてから処理を行ない、
+  結果をまとめてメモリへ書き戻すという使用法が有効です。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906211">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] FLASH ROM アップデート失敗時の対処法</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                   FLASH ROM アップデート失敗時の対処法
+
+
+  EB-1000/2000において、FLASH ROM のアップデートは dsflash で行いますが、
+  書き込みに失敗した場合、再度 dsflash を起動しても、以下のメッセージを
+  出力後にターゲットが停止してしまいます。
+
+    $ dsflash flash-0522.coff
+    *** Updating Flash ROM ...
+    *** Resetting...
+
+  このような場合は、以下の方法で再度 FLASH ROM のアップデートを行ってくだ
+  さい。
+
+    1. EE が載っている基板の向かって左手前にある DSW601の2番目のスイッチを
+       OFFにする。（内蔵ROMでの起動モードになります）
+    2. リセットボタンを押してリセットする。
+    3. dsnetm を立ちあげた状態で、dsflash flash-0522.coff を実行する。
+    4. スイッチを元に戻す。
+    5. リセットボタンを押してリセットする。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9906210">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/06/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>[FAQ] EB-1000/2000が認識されない場合の対処法</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/06/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                 EB-1000/2000が認識されない場合の対処法
+
+
+  "mrp start" や "dsnetm" が正常に動作しない場合は、以下の事を試して下さい。
+  一番多いのが、ケーブルがきちんとささっていないことです。
+
+    1) PCIケーブルの接続がしっかりとしているかを確認する。
+    2) PC側BIOSの設定項目にPlug and Playの項目があればそれをoffにする。
+    3) インターフェースボードを挿すPCIスロットを換えてみる。
+    4) EB-1000/2000のリセットボタンを何度か押してみる。
+
+  それでも上手くいかない場合は、以下の情報をSCE-NETにてお送り下さい。
+
+    ・mrp start を実行したときのメッセージ
+    ・dsnetm -i を実行したときのメッセージ
+    ・cat /proc/pci の結果
+    ・mrp start 起動後の cat /proc/mrp の結果
+    ・dsnetm 起動後の cat /proc/mrp の結果
+    ・EB-1000/2000 のディップスイッチの設定
+
+  なお、正常に認識された場合は、以下のようなメッセージが出力されます。
+
+    # mrp start
+    Loading mrp driver ( /usr/local/sce/driver/dsnet/2.0.36/mrp.o )
+    Creating device files for mrp driver
+    # dsnetm
+    dsnetm (Version 0.1.24 Mon May 17 18:16:55 JST 1999)
+    Connecting to /dev/mrp0 ...
+    Entering server mode (pid=1201)
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9904201">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/04/20</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>VPU 定数レジスタ VF00 の仕様変更について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+  VPU の定数レジスタ VF00 において仕様変更が発生しましたのでお知らせ致し
+ます。
+
+[変更点]
+EE の最終仕様において、定数レジスタ VF00 の各フィールド値は以下のように変更
+されます。
+
+  VF00 = (0.0, 0.5, -1.0, 1.0)  →  VF00 = (0.0, 0.0, 0.0, 1.0)
+
+[対策]
+VF00.y、VF00.z は使用しないで下さい。
+</pre></blockquote>
+
+<A NAME="9904200">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/04/20</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>VPU 命令の一部使用禁止について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+  VPU Lower 命令および対応するマクロ命令一部に仕様変更が発生しました
+のでお知らせ致します。
+
+[変更点]
+EE の最終仕様において、以下の VPU Lower 命令および対応するマクロ命令
+は使用禁止となります。
+
+      RSQRT
+      ERLENG
+      ERSQRT
+
+[対策]
+現在、上記命令を使用されている場合は、それぞれ SQRT+DIV、ELENG+DIV、
+ESQRT+DIV で代用するようお願いします。
+
+
+********** 追記 ***********
+
+EE の最終仕様で、上記３関数が使用できるようになりました。
+修正済の情報を以下に掲載しています。
+
+  技術情報 → 開発に関するご注意点 '99 → 訂正：VPU 命令について（99/07/26）
+
+
+以上
+</pre></blockquote>
+
+<table border=0>
+<TR><TD width=580>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<h4>
+<address><center><I>Copyright (c) 2000 Sony Computer Entertainment Inc.All Rights Reserved.</I></center></address>
+</h4>
+</TD></TR>
+</TABLE>
+
+</body>
+</html>

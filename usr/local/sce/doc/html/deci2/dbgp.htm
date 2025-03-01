@@ -1,0 +1,863 @@
+<HTML>
+<HEAD>
+<TITLE> DBGP Specification</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="dbgp.htm" SELECTED> DBGP
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+DBGP Specification<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> メッセージフォーマット<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 メッセージ<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> Configuration (GETCONF/GETCONFR)<BR></A><BR>
+    <A HREF="#Heading4_2_2"> Register (GETREG/GETREGR/PUTREG/PUTREGR)<BR></A><BR>
+    <A HREF="#Heading4_2_3"> Memory (RDMEM/RDMEMR/WRMEM/WRMEMR)<BR></A><BR>
+    <A HREF="#Heading4_2_4"> Breakpoint (GETBRKP/GETBRKPTR/PUTBRKPT/PUTBRKPTR)<BR></A><BR>
+    <A HREF="#Heading4_2_5"> Execution (BREAK/BREAKR/CONTINUE/CONTINUER/RUN/RUNR)<BR></A><BR>
+    <A HREF="#Heading4_2_6"> XGKICK Trace (XGKTCTL/XGKTCTLR/XGKTDATAR)<BR></A><BR>
+    <A HREF="#Heading4_2_7"> Debug Control (DBGCTL/DBGCTLR)<BR></A><BR>
+    <A HREF="#Heading4_2_8"> GS StoreImage (RDIMG/RDIMGR)<BR></A><BR>
+    <A HREF="#Heading4_2_9"> Break Function(SETBPFUNC/SETBPFUNCR)<BR></A><BR>
+    <A HREF="#Heading4_2_10"> Appendix A (IOP register kind, number)<BR></A><BR>
+    <A HREF="#Heading4_2_11"> Appendix B (EE register kind, number)<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつであるDBGP (デバッグプロトコル) について説明します。<BR>
+    <BR>
+    DBGPは、IOP/EE の System レベル / Thread レベルそれぞれでデバッグに使用する４つのプロトコルの総称です。プロトコル番号は以下のようになります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      IOP System Debugger: ISDBGP = 0x0130<BR>
+      IOP Thread Debugger: ITDBGP = 0x0140 (予約、実装予定あり)<BR>
+      EE System Debugger: ESDBGP = 0x0230<BR>
+      EE Thread Debugger: ETDBGP = 0x0240 (予約、実装予定なし)<BR>
+      </BLOCKQUOTE>
+    <BR>
+    上記 4 つのプロトコルの総称を DBGP とします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>メッセージフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    DBGP メッセージは、DECI2 ヘッダに引き続き、常に以下の DBGP ヘッダを持ちます。DBGP ヘッダ以降のデータ形式はそれぞれメッセージタイプに依存します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf1.gif">
+<P>
+    <B>図 1 基本的な DBGP メッセージヘッダ</B>
+</DIV>
+
+     <H4><B>id</B></H4>
+
+      <BLOCKQUOTE>
+      メッセージの対象が、CPU、VU0、VU1 の各プロセッサのいずれであるかを表します。ESDBGP 以外のプロトコルでは未定義(=0)となります。<BR>
+      <BR>
+      DBGP_CPUID_CPU	0	// CPU (ESDBGP)<BR>
+      DBGP_CPUID_VU0	1	// VU0 (ESDBGP)<BR>
+      DBGP_CPUID_VU1	2	// VU1 (ESDBGP)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>type</B></H4>
+
+      <BLOCKQUOTE>
+      メッセージタイプで、メッセージの対象(Memory、Register、Execution)や要求/応答の区別を表します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>code</B></H4>
+
+      <BLOCKQUOTE>
+      同じメッセージタイプ内でのコードで、実行コマンドにおける Step と Next の区別等を表します。<BR>
+      type と code には以下のものがあります。<BR>
+      <BR>
+      DBGP_TYPE_GETCONF		0x00	// Get Configuration Request<BR>
+      DBGP_TYPE_GETCONFR		0x01	// Get Configuration Reply<BR>
+      DBGP_TYPE_GETREG		0x04	// Get Register Request<BR>
+      DBGP_TYPE_GETREGR		0x05	// Get Register Reply<BR>
+      DBGP_TYPE_PUTREG		0x06	// Put Register Request<BR>
+      DBGP_TYPE_PUTREGR		0x07	// Put Register Reply<BR>
+      DBGP_TYPE_RDMEM		0x08	// Read Memory Request<BR>
+      DBGP_TYPE_RDMEMR		0x09	// Read Memory Reply<BR>
+      DBGP_TYPE_WRMEM		0x0a	// Write Memory Request<BR>
+      DBGP_TYPE_WRMEMR		0x0b	// Write Memory Reply<BR>
+      DBGP_TYPE_GETBRKPT		0x10	// Get Breakpoint Request<BR>
+      DBGP_TYPE_GETBRKPTR	0x11	// Get Breakpoint Reply<BR>
+      DBGP_TYPE_PUTBRKPT		0x12	// Put Breakpoint Request<BR>
+      DBGP_TYPE_PUTBRKPTR	0x13	// Put Breakpoint Reply<BR>
+      DBGP_TYPE_BREAK		0x14	// Break Request<BR>
+      DBGP_TYPE_BREAKR		0x15	// Break Reply<BR>
+      	DBGP_CODE_OTHER	0xff	//   not-DBGP_TYPE_CONTINUE<BR>
+      DBGP_TYPE_CONTINUE		0x16	// Continue Request<BR>
+      	DBGP_CODE_CONT	0x0	//   Continue<BR>
+      	DBGP_CODE_STEP	0x1	//   Step<BR>
+      	DBGP_CODE_NEXT	0x2	//   Next<BR>
+      DBGP_TYPE_CONTINUER	0x17	// Continue Reply<BR>
+      DBGP_TYPE_RUN		0x18	// Run Request (ESDBGP only)<BR>
+      DBGP_TYPE_RUNR		0x19	// Run Reply (ESDBGP only)<BR>
+      DBGP_TYPE_XGKTCTL		0x20	// XGKICK Trace Control Request (ESDBGP)<BR>
+      DBGP_TYPE_XGKTCTLR		0x21	// XGKICK Trace Control Reply (ESDBGP)<BR>
+      DBGP_TYPE_XGKTDATAR	0x23	// XGKICK Trace Data Reply (ESDBGP)<BR>
+      DBGP_TYPE_DBGCTL		0x24	// Debug Control Request (ESDBGP)<BR>
+      DBGP_TYPE_DBGCTLR		0x25	// Debug Control Reply (ESDBGP)<BR>
+      DBGP_TYPE_RDIMG		0x28	// read GS image request (ESDBGP)<BR>
+      DBGP_TYPE_RDIMGR		0x29	// read GS image response (ESDBGP)<BR>
+      DBGP_TYPE_SETBPFUNC	0x2e	// set break point function request<BR>
+      DBGP_TYPE_SETBPFUNCR	0x2f	// set break point function response<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>result</B></H4>
+
+      <BLOCKQUOTE>
+      ターゲットからホストへのメッセージにおいて、次の表に示す結果コードが入ります。ホストからターゲットへ送信するメッセージでは常に 0 を設定します。<BR>
+      <BR>
+      DBGP_RESULT_GOOD		0x00	// Good<BR>
+      DBGP_RESULT_INVALREQ	0x01	// Invalid Request<BR>
+      DBGP_RESULT_UNIMPREQ	0x02	// Unimplemented Request<BR>
+      DBGP_RESULT_ERROR		0x03	// Error<BR>
+      DBGP_RESULT_INVALCONT	0x04	// Invalid Continue<BR>
+      DBGP_RESULT_TLBERR		0x10	// TLB mod/load/store while cmd exec<BR>
+      DBGP_RESULT_ADRERR		0x11	// Address Error for WRMEM/RDMEM<BR>
+      DBGP_RESULT_BUSERR		0x12	// Bus Error for WRMEM/RDMEM<BR>
+      DBGP_RESULT_INVALSTATE	0x20	// Invalid State<BR>
+      DBGP_RESULT_BREAKED	0x21	// Breaked<BR>
+      DBGP_RESULT_BRKPT		0x22	// Breakpoint<BR>
+      DBGP_RESULT_STEPNEXT	0x23	// Step or Next<BR>
+      DBGP_RESULT_EXCEPTION	0x24	// Exception<BR>
+      DBGP_RESULT_PROGEND	0x25	// normal end of program (EE)<BR>
+      DBGP_RESULT_BUSYSTATE	0x26	// busy/critical state<BR>
+      DBGP_RESULT_DEBUG_EXCEPTION 0x27	// Debug Exception<BR>
+      DBGP_RESULT_TIMEOUT	0x28	// timeout<BR>
+      <BR>
+      ターゲットが認識できないタイプのメッセージを受けとった場合は、受けとったメッセージと同じタイプを持った result=DBGP_RESULT_INVALREQ のメッセージを返します。ターゲットが応答タイプとして要求タイプをそのまま返すのは、この「認識できないタイプ」の場合のみです。<BR>
+      <BR>
+      ターゲットがタイプを認識した後に不正要求であると判断した場合や、認識できるが実装していないタイプのメッセージを受けとった場合は、それぞれ適切なタイプにはその応答タイプのメッセージを返します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>count</B></H4>
+
+      <BLOCKQUOTE>
+      メッセージの操作の対象数、たとえは操作の対象がレジスタならレジスタブロック数、実行ならば実行回数などを表します。値は符号なしで、0-255 の範囲です。この count を単に N と記述する場合があります。<BR>
+      <BR>
+      なお、このドキュメントで明示されていないフィールドには、送信側は常に 0 を設定しなければなりません。また受信側は、0 でない値を得たときにはできるだけエラー扱いとしなければなりません。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>メッセージ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>Configuration (GETCONF/GETCONFR)</B>
+</A>
+</H3>
+<blockquote>
+    ターゲット側のデバッグ機能の設定値を読み出すメッセージです。<BR>
+    以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_GETCONF:  DECI2 ヘッダ + DBGP ヘッダ + DBGP_CONF_DATA<BR>
+      DBGP_TYPE_GETCONFR: DECI2 ヘッダ + DBGP ヘッダ + DBGP_CONF_DATA<BR>
+      </BLOCKQUOTE>
+    <BR>
+    設定値はターゲット側のデバッグモジュールの各実装バージョンによって異なる可能性があるため、ホスト側は常にこの設定を読みだし、その値に対応したコマンドを発行しなくてはなりません。ホスト側が常に最小限の機能だけを使う対応はデータ転送速度等で著しい性能低下を招く恐れがあるため推奨しません。<BR>
+    <BR>
+    特定の major_ver にのみ対応するホスト側のアプリケーションであっても、DBGP_CONF_DATA の大きさのチェックは、このドキュメントのデータ数と「一致するか」ではなく、「より大きいか」としないと、将来の仕様拡張時に互換性が取れなくなる可能性があります。<BR>
+    <BR>
+    また、特定の major_ver にのみ対応するホスト側アプリケーションでも、将来の仕様拡張時に互換性を確保するため、DBGP_CONF_DATA のサイズはこのドキュメントに示されたデータ数と等しいかどうかではなく、より大きいかどうかでチェックするようにしてください。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf2.gif">
+<P>
+    <B>図 2 DBGP Configuration Data (DBGP_CONF_DATA)</B>
+</DIV>
+
+     <H4><B>major_ver</B></H4>
+
+      <BLOCKQUOTE>
+      DBGP プロトコルのバージョンが設定されます(現仕様では常に 3 です)。<BR>
+      DBGP_CONF_DATA のフォーマットを将来拡張した場合の参照用です。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>minor_ver</B></H4>
+
+      <BLOCKQUOTE>
+      ターゲット側の実装バージョンが設定されます。このドキュメントでは最初の実装バージョンを 0 と定めるだけで、その他は定義しません。<BR>
+      アプリケーションで表示を行うことはできますが、チェックしてはいけません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>target_id</B></H4>
+
+      <BLOCKQUOTE>
+      DBGP のプロトコル番号が設定されます。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>mem_align</B></H4>
+
+      <BLOCKQUOTE>
+      メモリ関連のメッセージでターゲットがサポートする align 値の組合せが設定されます。後に説明する DBGP_MEM ヘッダ中の align 値の組合せによって表現されます。たとえば、バイト、ハーフワード、ワードの 3 つをサポートするなら 0x07 となります。少なくとも ((mem_align & 1) == 1) が成立します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>reserved2</B></H4>
+
+      <BLOCKQUOTE>
+      互換性維持のため常に 1 が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>reg_size</B></H4>
+
+      <BLOCKQUOTE>
+      レジスタ関連のメッセージにおけるレジスタデータの大きさを示す値が設定されます。IOP については 5、EE については 7 となります。<BR>
+      <BR>
+      DBGP_CF_REG_SIZE_WORD	 5	// (1 &lt;&lt; 5) =  32bit (IOP)<BR>
+      DBGP_CF_REG_SIZE_QUAD	7	// (1 &lt;&lt; 7) = 128bit (EE)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>nreg</B></H4>
+
+      <BLOCKQUOTE>
+      レジスタ関連のメッセージにおけるレジスタブロック数の上限値が、1-255 の範囲で設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>nbrkpt</B></H4>
+
+      <BLOCKQUOTE>
+      ブレークポイント関連のメッセージにおけるアドレス数の上限値が、0-255 の範囲で設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ncont</B></H4>
+
+      <BLOCKQUOTE>
+      継続実行時の実行回数値の上限値が設定されます。常に 1 が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>nstep</B></H4>
+
+      <BLOCKQUOTE>
+      ステップ実行時の指定命令数の上限値が、0-255 の範囲で設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>nnext</B></H4>
+
+      <BLOCKQUOTE>
+      ネクスト実行時の指定命令数の上限値が、0-255 の範囲で設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>mem_limit_align / mem_limit_size</B></H4>
+
+      <BLOCKQUOTE>
+      メモリ関連のメッセージでは、align によってパケットのサイズが制限される場合があります。mem_limit_align では、サイズ制限を受けるメッセージのalign の組み合わせが設定されます(組み合わせの指定方法は mem_align と同じです)。mem_limit_size では、サイズ制限を受けるメッセージの DECI2、DBGP、DBGP_MEM のヘッダ等も含めた DECI2 パケット全体の最大バイト数が設定されます。<BR>
+      <BR>
+      たとえば mem_limit_align=0x1f、mem_limit_size=0x400 である場合、align が 16byte 以下のメモリ関連メッセージのパケットサイズは 1KBytes が上限となります。他の align に対する上限値は、DECI2 パケットの上限である (64K - 1) byte です。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>run_stop_state</B></H4>
+
+      <BLOCKQUOTE>
+      ターゲットの実行、停止状態が設定されます。<BR>
+      run_stop_state は、ホスト側でターゲットの初期状態を知るために参照されます。ターゲットはどの状態でも DBGP_TYPE_GETCONFR では「現在の状態」をこのフィールドに設定しますが、ホスト側はいったん DBGP_TYPE_GETCONF を発行した後は送受信したパケットによって状態を判定する方が望ましいです。<BR>
+      <BR>
+      DBGP_CF_RSS_RUNNING 	1  // 実行中<BR>
+      DBGP_CF_RSS_STOPPED 	2  // 停止中<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>hdbg_area_addr / hdbg_area_size</B></H4>
+
+      <BLOCKQUOTE>
+      ホスト側デバッガが自由に使用可能なターゲット上のメモリ領域が設定されます。<BR>
+      hdbg_area_addr は仮想アドレスでメモリ関連のメッセージで指定可能なアドレスで、ワード境界でアラインされ、かつ CPU がカーネルモードの時に命令フェッチとデータアクセスに使用可能なアドレスです。hdbg_area_size はバイト数で、0 でない時の下限値は 256 バイトとなります。<BR>
+      <BR>
+      このメモリ領域は、ごく小さなモジュールをターゲット側に送り込み、それを実行することでホスト側からメモリへのパターンフィル、パターンサーチ等の機能を高速に実現するための作業領域の確保を目的としています。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>Register (GETREG/GETREGR/PUTREG/PUTREGR)</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットのレジスタ値の読み出し、および設定を行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_GETREG:  DECI2 ヘッダ + DBGP ヘッダ + (DBGP_REG + &lt;reg&gt;) * N<BR>
+      DBGP_TYPE_GETREGR: DECI2 ヘッダ + DBGP ヘッダ + (DBGP_REG + &lt;reg&gt;) * N<BR>
+      DBGP_TYPE_PUTREG:  DECI2 ヘッダ + DBGP ヘッダ + (DBGP_REG + &lt;reg&gt;) * N<BR>
+      DBGP_TYPE_PUTREGR: DECI2 ヘッダ + DBGP ヘッダ + (DBGP_REG + &lt;reg&gt;) * N<BR>
+      </BLOCKQUOTE>
+    <BR>
+    &lt;reg&gt; は、DBGP_REG ヘッダに引き続くレジスタデータです。大きさは実際のレジスタの大きさではなく、DBGP_CONF_DATA の reg_size によってターゲットごとに固定の大きさとなります。IOP では常に 32bits、EE では常に 128bits です。<BR>
+    <BR>
+    reg_size よりも実際のレジスタのビット数が少ない場合は、データの下位側に有効データを置かなければなりません。有効部以外は 0 を設定することが望ましいですが、必須ではありません。<BR>
+    <BR>
+    VU0、VU1 のレジスタにアクセスする場合は、DBGP ヘッダの id にそれぞれのプロセッサ ID を指定しなければなりません。したがって、EE のレジスタと VU0 のレジスタをひとつのメッセージで同時にアクセスすることはできません。<BR>
+    <BR>
+    DBGP_TYPE_GETREG メッセージにおいて、&lt;reg&gt; の値はターゲット側で参照されませんが、ターゲット側での領域確保処理を省くためにダミーデータを送信します。<BR>
+    ホスト側が送る &lt;reg&gt; の値は 0 が望ましいですが、必須ではありません。<BR>
+    <BR>
+    DBGP_TYPE_PUTREG メッセージにおいて、ターゲット側は &lt;reg&gt; の値を指定のレジスタに設定し、&lt;reg&gt; はそのままで DBGP_TYPE_PUTREGR メッセージを返します。<BR>
+    <BR>
+    ターゲット側は、存在しない未定義のレジスタの読み出し要求に対しては 0 を返し、書き込み要求は単に破棄します。ともにエラーは通知しません。<BR>
+    <BR>
+    ひとつの DBGP_TYPE_GETREG/DBGP_TYPE_PUTREG メッセージで操作可能なレジスタ数の上限は DBGP_CONF_DATA 中の nreg の値となり、ターゲット側の実装に依存しますが、1 &lt;= nreg は保障されています。<BR>
+    <BR>
+    DBGP_REG ヘッダの形式は次のとおりです。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf3.gif">
+<P>
+    <B>図 3 DBGP Register Header (DBGP_REG)</B>
+</DIV>
+
+     <H4><B>kind</B></H4>
+
+      <BLOCKQUOTE>
+      レジスタの種別コードです。EE と IOP では同名のレジスタでもそれぞれ異なるコードとなります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>number</B></H4>
+
+      <BLOCKQUOTE>
+      レジスタ番号です。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    kind、number の具体的数値はこのドキュメントの補足(Appendix A、B)を参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>Memory (RDMEM/RDMEMR/WRMEM/WRMEMR)</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットのメモリの読み出し、および書き込みを行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_RDMEM: DECI2 ヘッダ + DBGP ヘッダ + DBGP_MEM<BR>
+      DBGP_TYPE_RDMEMR: DECI2 ヘッダ + DBGP ヘッダ + DBGP_MEM + &lt;pad&gt; + &lt;data&gt;<BR>
+      DBGP_TYPE_WRMEM: DECI2 ヘッダ + DBGP ヘッダ + DBGP_MEM + &lt;pad&gt; + &lt;data&gt;<BR>
+      DBGP_TYPE_WRMEMR: DECI2 ヘッダ + DBGP ヘッダ + DBGP_MEM<BR>
+      </BLOCKQUOTE>
+    <BR>
+    &lt;data&gt; は、このメッセージで実際に読み書きされるメモリデータです。&lt;data&gt; は、DBGP_MEM ヘッダ中の align フィールドの指定によって、パケットの先頭からアラインされなければなりません。<BR>
+    <BR>
+    &lt;pad&gt; は、アライメントによって生じるパディングデータです。<BR>
+    <BR>
+    DECI2、DBGP、DBGP_MEM の各ヘッダの大きさの合計は 28 バイトですので、 align が BYTE、HALF、WORD のいずれかであるなら &lt;pad&gt; の大きさは 0 となります。align が 1KB の場合は、&lt;pad&gt; の大きさは 1024-28 バイトとなります。<BR>
+    <BR>
+    ターゲット側が DBGP_TYPE_RDMEMR メッセージでエラーを返す場合には、&lt;pad&gt; + &lt;data&gt; 部分が省略される可能性があります。<BR>
+    <BR>
+    一度に読み書きできるデータ数は、DBGP_CONF_DATA の mem_limit_align、mem_limit_size によるサイズか、もしくは、 DECI2 パケットの上限である(64K - 1) byte のいずれかになります(DBGP_CONF_DATA の該当部分を参照してください)。<BR>
+    <BR>
+    DBGP ヘッダ の count フィールドは常に 1 を設定する必要があります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf4.gif">
+<P>
+    <B>図 4 DBGP Memory Header (DBGP_MEM)</B>
+</DIV>
+
+     <H4><B>space</B></H4>
+
+      <BLOCKQUOTE>
+      メモリアドレスの空間コードです。以下のいずれかの値を指定します。<BR>
+      <BR>
+      DBGP_SPACE_MAIN_MEMORY	0	// main memory<BR>
+      DBGP_SPACE_VU_MEM		1	// VU memory(ESDBGP)<BR>
+      DBGP_SPACE_VU_UMEM	2	// VU micro memory(ESDBGP)<BR>
+      <BR>
+      DBGP_SPACE_VU_MEM または DBGP_SPACE_VU_UMEM を指定する時は、DBGP ヘッダのCPU ID に読み書きしたいプロセッサの ID(この場合、DBGP_CPUID_VU0 かDBGP_CPUID_VU1)を指定する必要があります。<BR>
+      <BR>
+      メインメモリはいつでも読み書きすることができますが、DBGP_SPACE_VU_MEM または DBGP_SPACE_VU_UMEM の場合は、ターゲット側のデバッガはパケットを受けとった時点で読み書き可能かどうかを判断し、読み書きができない場合は DBGP_RESULT_BUSYSTATE を返します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>align</B></H4>
+
+      <BLOCKQUOTE>
+      ターゲットがどのようにそのメモリ空間をアクセスすべきかを指定するアライン値です。バイト=0、ハーフワード=1、ワード=2、ダブル=3、クワッドワード=4、1KB=10 となります。<BR>
+      DBGP_CONF_DATA で該当するビットが off となっている場合は DBGP_RESULT_INVALREQ エラーとなります。<BR>
+      <BR>
+      space に DBGP_SPACE_VU_MEM を指定した場合は 4、DBGP_SPACE_VU_UMEM を<BR>
+      指定した場合は 3 を常に指定しなければなりません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>address</B></H4>
+
+      <BLOCKQUOTE>
+      バイト単位のメモリアドレス。align の指定にそってアラインされていない場合は DBGP_RESULT_INVALREQ エラーとなります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>length</B></H4>
+
+      <BLOCKQUOTE>
+      バイト単位のメモリデータのサイズ。align の指定にそってアラインされていない場合は DBGP_RESULT_INVALREQ エラーとなります。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>Breakpoint (GETBRKP/GETBRKPTR/PUTBRKPT/PUTBRKPTR)</B>
+</A>
+</H3>
+<blockquote>
+    ブレークポイントの設定と現在の設定の読み出しを行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_GETBRKPT:  DECI2 ヘッダ + DBGP ヘッダ<BR>
+      DBGP_TYPE_GETBRKPTR: DECI2 ヘッダ + DBGP ヘッダ + (&lt;adr&gt; + &lt;cnt&gt;) * N<BR>
+      DBGP_TYPE_PUTBRKPT:  DECI2 ヘッダ + DBGP ヘッダ + (&lt;adr&gt; + &lt;cnt&gt;) * N<BR>
+      DBGP_TYPE_PUTBRKPTR: DECI2 ヘッダ + DBGP ヘッダ<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf5.gif">
+<P>
+      </BLOCKQUOTE>
+    <B>図 5 DBGP Breakpoint Data</B>
+</DIV>
+    &lt;adr&gt; は、ブレークポイントのアドレスです。<BR>
+    <BR>
+    &lt;cnt&gt; は、&lt;adr&gt; の通過回数を意味します。DBGP_TYPE_PUTBRKPT メッセージにおいては初期値を設定し、DBGP_TYPE_GETBRKPTR メッセージにおいては初期値から既に通過した回数を減じた値をターゲット側が設定して返します。<BR>
+    <BR>
+    &lt;cnt&gt; は符号なし 32bit 数で、&lt;adr&gt; を通過するごとにデクリメントされる &lt;cnt&gt; が 1 から 0 へ遷移した時にターゲットは停止状態になり、DBGP_TYPE_BREAKR(DBGP_RESULT_BRKPT)メッセージを返します。<BR>
+    <BR>
+    特別な値として &lt;cnt&gt; が 0xffffffff の場合は、通過した回数を減じることはなく、&lt;adr&gt; を通過するたびにターゲットは停止状態になり、 DBGP_TYPE_BREAKR (DBGP_RESULT_BRKPT)メッセージを返します。<BR>
+    <BR>
+    ターゲットは &lt;cnt&gt; の現在値が 0 であるブレークポイントは無効状態とみなします。<BR>
+    <BR>
+    設定できるブレークポイント数の上限値は、DBGP_CONF_DATA 中の nbrkpt の値となります。DBGP_TYPE_PUTBRKPT メッセージで DBGP ヘッダ中の count 値 (=N) が nbrkpt を越えている場合にはターゲット側は DBGP_RESULT_INVALREQ エラーを返します。<BR>
+    <BR>
+    DBGP_TYPE_PUTBRKPT メッセージでブレークポイントの部分的な追加／削除はできません。設定は常にすべての設定を更新することを意味します。すべて削除する場合には N=0 を指定する必要があります。<BR>
+    <BR>
+    ターゲットは、DBGP_TYPE_PUTBRKPT で要求された設定の部分的な成功／エラーは通知しません。すべて正常終了、もしくはすべてがエラーとなります。<BR>
+    <BR>
+    DBGP_TYPE_GETBRKPTR メッセージにおいてターゲットから返される DBGP ヘッダ中の count 値 (=N) は実際の設定数です。<BR>
+    <BR>
+    DBGP_TYPE_GETBRKPT および DBGP_TYPE_PUTBRKPTR メッセージにおいて DBGP ヘッダ中の count にはともに 0 を設定する必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>Execution (BREAK/BREAKR/CONTINUE/CONTINUER/RUN/RUNR)</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットプログラムの実行、停止を行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_BREAK:	DECI2 ヘッダ + DBGP ヘッダ<BR>
+      DBGP_TYPE_BREAKR:	DECI2 ヘッダ + DBGP ヘッダ<BR>
+      DBGP_TYPE_CONTINUE:	DECI2 ヘッダ + DBGP ヘッダ<BR>
+      DBGP_TYPE_CONTINUER: DECI2 ヘッダ + DBGP ヘッダ<BR>
+      DBGP_TYPE_RUN:	DECI2 ヘッダ + DBGP ヘッダ + DBGP_EERUN + &lt;args&gt;...<BR>
+      DBGP_TYPE_RUNR:	DECI2 ヘッダ + DBGP ヘッダ<BR>
+      </BLOCKQUOTE>
+    <BR>
+    DBGP_TYPE_BREAK は、ターゲットプログラムの停止要求メッセージです。<BR>
+    ターゲットは、実行中であれば DBGP_TYPE_BREAKR(DBGP_RESULT_BREAKED)を、すでに停止中であれば DBGP_TYPE_BREAKR(DBGP_RESULT_INVALSTATE)を返します。<BR>
+    <BR>
+    DBGP_TYPE_CONTINUE メッセージは code フィールドによって、継続実行、<BR>
+    ステップ実行、ネクスト実行のいずれかの要求となります。<BR>
+    DBGP_TYPE_CONTINUE をターゲットが受信したときは、エラーがなければまず DBGP_TYPE_CONTINUER を返し、その後下記の実行動作を開始します。なんらかのエラーがあればそれを DBGP_TYPE_CONTINUER で通知し、ターゲットは実行動作を開始せず停止状態に留まります。<BR>
+    <BR>
+<UL>
+         <LI> DBGP_CODE_CONT では継続実行で、N は常に 1。<BR>
+         <LI> DBGP_CODE_STEP では命令のステップ実行で、N はステップ数(単位は命令数)。<BR>
+         <LI> DBGP_CODE_NEXT では命令のネクスト実行で、N はネクスト数(単位は命令数)。<BR>
+</UL>
+    <BR>
+    ターゲットは、ステップ／ネクスト実行が例外発生等なしに終了した時点でDBGP_TYPE_BREAKR(DBGP_RESULT_STEPNEXT)を返します。<BR>
+    <BR>
+    DBGP_TYPE_BREAKR メッセージでは result=DBGP_RESULT_GOOD が返ることはありません。DBGP_TYPE_BREAKR メッセージが返されたときはターゲットプログラムは常に停止中であり、ホストからのコマンド待ちの状態にあります。<BR>
+    <BR>
+    DBGP_TYPE_BREAKR メッセージの count 値には、それが DBGP_TYPE_CONTINUE メッセージによって引き起こされたものであれば指定された DBGP_TYPE_CONTINUE の count 値から実際の操作完了数を減じた値が設定されます。同時に、code フィールドには DBGP_TYPE_CONTINUE の code 値と同じ値が設定されます。<BR>
+    リセット直後の停止などによって、DBGP_TYPE_BREAKR メッセージを送信する場合は 「DBGP_TYPE_CONTINUE によって実行が開始されたわけではない」ことを示すために code フィールドには DBGP_CODE_OTHER が設定されます。<BR>
+    <BR>
+    ステップ／ネクスト実行の終了(ステップ/ネクスト数分の命令を実行した場合)とブレークポイント条件の成立(指定通過回数を満たした場合)が同時に発生したときには、ターゲットは DBGP_TYPE_BREAKR(DBGP_RESULT_BRKPT) を返し、 code フィールドは DBGP_CODE_STEP/DBGP_CODE_NEXT となります。<BR>
+    <BR>
+    以下はターゲットが返す DBGP_TYPE_BREAKR メッセージの例です。<BR>
+    <BR>
+      例<BR>
+    <OL>
+         <LI VALUE= 1> DBGP_TYPE_CONTINUE、DBGP_CODE_STEP で count=3 が指定され、最初の命令のステップ実行中にバスエラーが発生した場合<BR>-&gt; DBGP_TYPE_BREAKR, DBGP_RESULT_EXCEPTION, DBGP_CODE_STEP, count=3<BR>
+         <LI VALUE= 2> DBGP_TYPE_CONTINUE、DBGP_CODE_STEP で count=8 が指定され、1 命令のステップ実行後にブレークポイント (&lt;cnt&gt;=1) に遭遇した場合<BR>-&gt; DBGP_TYPE_BREAKR, DBGP_RESULT_BRKPT, DBGP_CODE_STEP, count=7<BR>
+         <LI VALUE= 3> DBGP_TYPE_CONTINUE、DBGP_CODE_NEXT で count=2 が指定され、2 命令のネクスト実行後にブレークポイント (&lt;cnt&gt;=1) に遭遇した場合<BR>-&gt; DBGP_TYPE_BREAKR, DBGP_RESULT_BRKPT, DBGP_CODE_NEXT, count=0<BR>
+    </OL>
+    <BR>
+    VU0、1 の D-bit 割り込みにより中断した場合は、ターゲットは DBGP ヘッダの CPUID に DBGP_CPUID_VU0 もしくは DBGP_CPUID_VU1 が設定した DBGP_TYPE_BREAKR (DBGP_RESULT_EXCEPTION)を返します。<BR>
+    <BR>
+    DBGP_TYPE_RUN は、EE 上でのターゲットプログラムの実行を要求するメッセージです。DBGP_TYPE_RUN は、以下のヘッダを持ちます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf6.gif">
+<P>
+    <B>図 6 DBGP EE Run Header (DBGP_EERUN)</B>
+</DIV>
+
+     <H4><B>entry</B></H4>
+
+      <BLOCKQUOTE>
+      プログラムの開始アドレスを指定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>gp</B></H4>
+
+      <BLOCKQUOTE>
+      GP レジスタの値を指定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>argc</B></H4>
+
+      <BLOCKQUOTE>
+      引数の個数を指定します。<BR>
+      </BLOCKQUOTE>
+    <BR>
+    DBGP_EERUN ヘッダに続く引数データは以下のような形式になります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      各引数の長さを表す配列 (4 byte * argc 個)<BR>
+      (長さには各引数末尾の null を含む)<BR>
+      </BLOCKQUOTE>
+    <BR>
+    null-terminate された各引数 (不定バイト * argc 個)<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>XGKICK Trace (XGKTCTL/XGKTCTLR/XGKTDATAR)</B>
+</A>
+</H3>
+<blockquote>
+    VU1 で XGKICK 命令が実行される時の GIF パケットデータのトレースの実行、停止を行なうメッセージとその応答メッセージ、ならびにトレースデータの応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_XGKTCTL:	DECI2 ヘッダ + DBGP ヘッダ + DBGP_XGKT_CTL<BR>
+      DBGP_TYPE_XGKTCTLR:	DECI2 ヘッダ + DBGP ヘッダ + DBGP_XGKT_CTL<BR>
+      DBGP_TYPE_XGKTDATAR:DECI2 ヘッダ + DBGP ヘッダ + DBGP_XGKT_DATA<BR>
+      </BLOCKQUOTE>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf7.gif">
+<P>
+    <B>図 7 DBGP XGKICK Trace Control (DBGP_XGKT_CTL)</B>
+</DIV>
+    DBGP_TYPE_XGKTCTL メッセージは XGKICK トレースの開始要求です。<BR>
+    指定オフセット &lt;off&gt; から指定回数 &lt;cnt&gt; 分の XGKICK 命令により GIF パケットデータをトレースします(&lt;off&gt;=0 なら次の、&lt;off&gt;=1 なら 2 回目の XGKICK 命令からトレースします)。<BR>
+    XGKICK トレースを行うには、XGKICK 命令の upper 命令に D-bit をあらかじめたてておく必要があります。また、XGKICK トレース関連のパケットは、すべて DBGP ヘッダの id フィールドに DBGP_CPUID_VU1 を指定してください。<BR>
+
+     <H4><B>flag</B></H4>
+
+      <BLOCKQUOTE>
+      動作オプションを示し、以下のビット値の OR です。<BR>
+      <BR>
+      DBGX_VBS0	0x00000001	/ VU0  busy<BR>
+      //DBGX_VIF0	0x00000010	// VIF0 busy (reserved)<BR>
+      //DBGX_VBS1	0x00000100	// VU1  busy (reserved)<BR>
+      DBGX_VIF1	0x00001000	// VIF1 busy<BR>
+      //DBGX_GIF	0x00010000	// GIF  busy (reserved)<BR>
+      <BR>
+      &lt;flag&gt; の指定ビットが OFF の時はその条件が解除されるまでターゲットは時間制限なしで無限に待ちます。ON の時はその条件が成立している場合はトレース処理をせずに「処理をしなかった」理由を flag の対応ビットで示し、 &lt;length&gt;=0 の DBG_TYPE_XGKTDATAR をホストに送信します。<BR>
+      <BR>
+      DBGP_TYPE_XGKTCTLR メッセージは XGKICK トレース開始要求への応答で、 &lt;flag&gt;、&lt;off&gt;、&lt;cnt&gt; は DBGP_TYPE_XGKTCTL と同じ値を返します。<BR>
+      <BR>
+      DBGP_TYPE_XGKTDATAR メッセージはターゲットからホストに送られるトレースデータです。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf8.gif">
+<P>
+      </BLOCKQUOTE>
+    <B>図 8  DBGP XGKICK Trace Data (DBGP_XGKT_DATA)</B>
+</DIV>
+
+     <H4><B>flag</B></H4>
+
+      <BLOCKQUOTE>
+      DBGP_TYPE_XGKTCTL の &lt;flag&gt; のビット値のいずれかが ON で、その条件が成立し、以後のトレース処理をしなかった場合、対応ビットが ON となります(この場合は常に length=0 です)。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>length</B></H4>
+
+      <BLOCKQUOTE>
+      GIF パケットデータのバイト数。<BR>
+      同一の &lt;offset&gt; で送られる GIF パケットデータ全体のバイト数です。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>offset</B></H4>
+
+      <BLOCKQUOTE>
+      引き続く GIF パケットデータに対応する XGKICK 命令の 0 から始まるオフセット番号です。例えば DBGP_TYPE_XGKTCTL の &lt;off&gt; が 2 である時の最初の DBGP_XGKT_DATA 中の &lt;offset&gt; は 2 となります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sequence</B></H4>
+
+      <BLOCKQUOTE>
+      ある XGKICK 命令に対応する GIF パケットデータは複数の DECI2 パケットに分割される場合があります。sequence は 0 から始まる分割番号です(分割の2 番目以降の flag、length、offset は常に分割の 1 番目と同じ値を持ちます)。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>GIF Packets Data</B></H4>
+
+      <BLOCKQUOTE>
+      トレースした GIF パケットデータです。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>Debug Control (DBGCTL/DBGCTLR)</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットのプロセッサごとのデバッグモードの on、off を行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_DBGCTL:	DECI2 ヘッダ + DBGP ヘッダ + flag(32bit)<BR>
+      DBGP_TYPE_DBGCTLR:	DECI2 ヘッダ + DBGP ヘッダ + flag(32bit)<BR>
+      </BLOCKQUOTE>
+    <BR>
+    対象となるプロセッサは、DBGP ヘッダの id フィールドで指定します。<BR>
+    on の時に、VU0、VU1 の D-bit の enable、割り込みの許可、off の時に D-bit の disable を行います。DBGP_CPUID_CPU に対しては何も行いません。<BR>
+
+     <H4><B>flag</B></H4>
+
+      <BLOCKQUOTE>
+      on の時、1。<BR>
+      off の時、0。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>GS StoreImage (RDIMG/RDIMGR)</B>
+</A>
+</H3>
+<blockquote>
+    GS のローカルメモリからイメージデータの読み出しを行なうメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_RDIMG:  DECI2 ヘッダ + DBGP ヘッダ + DBGP_RDIMG<BR>
+      DBGP_TYPE_RDIMGR: DECI2 ヘッダ + DBGP ヘッダ + DBGP_RDIMG_DATA<BR>
+      </BLOCKQUOTE>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf9.gif">
+<P>
+    <B>図 9 DBGP StoreImage header (DBGP_RDIMG)</B>
+</DIV>
+    DBGP_TYPE_RDIMG メッセージは GS イメージデータの読みだし要求です。<BR>
+    イメージデータのサイズ(w×h×ピクセルサイズ)は、16byte の倍数で 32767×16byte 以下でなければなりません。また、ピクセルサイズが 8bit の場合は x,w はともに 2 の倍数、ピクセルサイズが 4bit の場合は x,w はともに 4 の倍数でなければなりません。<BR>
+
+     <H4><B>sbp</B></H4>
+
+      <BLOCKQUOTE>
+      転送バッファベースアドレス(sbp x 64 が実際のアドレスになります)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sbw</B></H4>
+
+      <BLOCKQUOTE>
+      転送バッファ幅(sbw x 64 が実際の幅になります)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>spsm</B></H4>
+
+      <BLOCKQUOTE>
+      転送データのピクセルフォーマット<BR>
+      0 : PSMCT32	(ピクセルサイズ:32bit)<BR>
+      1 : PSMCT24	(ピクセルサイズ:24bit)<BR>
+      2 : PSMCT16	(ピクセルサイズ:16bit)<BR>
+      10: PSMCT16S	(ピクセルサイズ:16bit)<BR>
+      19: PSMT8	(ピクセルサイズ:8bit)<BR>
+      20: PSMT4	(ピクセルサイズ:4bit)<BR>
+      27: PSMT8H	(ピクセルサイズ:8bit)<BR>
+      36: PSMT4HL	(ピクセルサイズ:4bit)<BR>
+      44: PSMT4HH	(ピクセルサイズ:4bit)<BR>
+      48: PSMZ32	(ピクセルサイズ:32bit)<BR>
+      49: PSMZ24	(ピクセルサイズ:24bit)<BR>
+      50: PSMZ16	(ピクセルサイズ:16bit)<BR>
+      58: PSMZ16S	(ピクセルサイズ:16bit)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>x, y</B></H4>
+
+      <BLOCKQUOTE>
+      転送領域の左上端点<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>w, h</B></H4>
+
+      <BLOCKQUOTE>
+      転送領域の幅、高さ(ピクセル単位)<BR>
+      </BLOCKQUOTE>
+    <BR>
+    DBGP_TYPE_RDIMGR メッセージはターゲットからホストに送られるイメージデータを含んだメッセージです。イメージデータがターゲット上のデバッガが持つバッファのサイズよりも大きい場合には複数のパケットに分割されて送信されます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dbgpf10.gif">
+<P>
+    <B>図 10 DBGP StoreImage Data (DBGP_RDIMG_DATA)</B>
+</DIV>
+
+     <H4><B>length</B></H4>
+
+      <BLOCKQUOTE>
+      GS イメージデータ全体のバイト数。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sequence</B></H4>
+
+      <BLOCKQUOTE>
+      GS イメージデータは複数の DECI2 パケットに分割される場合があります。<BR>
+      sequence は 0 から始まる分割番号です(分割の 2 番目以降の length は常に分割の 1 番目と同じ値を持ちます)。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>GS Image Data</B></H4>
+
+      <BLOCKQUOTE>
+      読み出した GS イメージデータです。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_9">
+<A HREF="#Heading3_2"> 2. </A>9 <B>Break Function(SETBPFUNC/SETBPFUNCR)</B>
+</A>
+</H3>
+<blockquote>
+    ブレークポイントを通過する時に実行される関数を設定するメッセージと、その応答メッセージです。以下のようなヘッダとデータで構成されます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      DBGP_TYPE_SETBPFUNC:	DECI2 ヘッダ + DBGP ヘッダ + &lt;adr&gt;<BR>
+      DBGP_TYPE_SETBPFUNCR:	DECI2 ヘッダ + DBGP ヘッダ + &lt;adr&gt;<BR>
+      </BLOCKQUOTE>
+    <BR>
+    DBGP_TYPE_SETBPFUNC メッセージはブレークポイントを通過する時に実行される関数の設定要求です。例えば、ある変数の値をメモリに保存する関数を用意して、その関数をこのメッセージを使用して設定しておき、&lt;cnt&gt; 付きのブレークポイントを設定して実行すれば、ブレークポイントを通過したときの変数の値をトレースすることができます。このメッセージを使用すれば、  プログラム中にこのような関数呼び出しをスタティックに埋め込む様な方法と比べて、再コンパイルなしで任意の場所から呼び出すことができます。<BR>
+    <BR>
+    &lt;adr&gt; には、呼び出したい関数のアドレスを指定します。0 が指定された場合は設定を解除をします。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_10">
+<A HREF="#Heading3_2"> 2. </A>10 <B>Appendix A (IOP register kind, number)</B>
+</A>
+</H3>
+<blockquote>
+    ISDBGP_KIND_HL	1	// hi,lo<BR>
+      <BLOCKQUOTE>
+      ISDBGP_NUM_LO	0<BR>
+      ISDBGP_NUM_HI	1<BR>
+      </BLOCKQUOTE>
+    ISDBGP_KIND_GPR	2	// general purpose register<BR>
+    ISDBGP_KIND_SCC	3	// system control register<BR>
+    ISDBGP_KIND_GTER	6	// GTE register<BR>
+    ISDBGP_KIND_GTEC	7	// GTE control register<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_11">
+<A HREF="#Heading3_2"> 2. </A>11 <B>Appendix B (EE register kind, number)</B>
+</A>
+</H3>
+<blockquote>
+    ESDBGP_KIND_GPR	0	// general purpose register (128bit x 32)<BR>
+    ESDBGP_KIND_HLS	1	// hi,lo,sa<BR>
+      <BLOCKQUOTE>
+      ESDBGP_NUM_HI	  0	//   hi  (64bit)<BR>
+      ESDBGP_NUM_LO	  1	//   lo  (64bit)<BR>
+      ESDBGP_NUM_HI1	  2	//   hi1 (64bit)<BR>
+      ESDBGP_NUM_LO1	  3	//   lo1 (64bit)<BR>
+      ESDBGP_NUM_SA	  4	// shift amount (32bit)<BR>
+      </BLOCKQUOTE>
+    ESDBGP_KIND_SCR	2	// system control register (32bit x 32)<BR>
+    ESDBGP_KIND_PCR	3	// performance counter (32bit x 3)<BR>
+    ESDBGP_KIND_HDR	4	// hardware debug register (32bit x 8)<BR>
+    ESDBGP_KIND_FPR	5	// floating point register (32bit x 32)<BR>
+    ESDBGP_KIND_FPC	6	// floating point control (32bit x 2)<BR>
+    ESDBGP_KIND_V0F	7	// VU0 floating point register (128bit x 32)<BR>
+    ESDBGP_KIND_V0I		8	// VU0 integer/control register (32bit x 32)<BR>
+    ESDBGP_KIND_V1F	9	// VU1 floating point register (128bit x 32)<BR>
+    ESDBGP_KIND_V1I		10	// VU1 integer/control register (32bit x 32)<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

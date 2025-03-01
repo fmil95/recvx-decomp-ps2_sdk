@@ -1,16 +1,12 @@
-# GDBtk (Insight) entry point
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
+# main.tcl
+# ----------------------------------------------------------------------
+# GDB tcl entry point
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
+# Just initialize everything then set up main state engine
+# ----------------------------------------------------------------------
+#   Copyright (C) 1997, 1998, 1999 Cygnus Solutions
+#
 
 # State is controlled by 5 global boolean variables.
 #
@@ -96,13 +92,38 @@ if {$tcl_platform(platform) == "unix"} {
 }
 
 # initialize state variables
-initialize_gdbtk
+
+set gdb_target_changed 0
+set gdb_exe_changed 0
+set gdb_running 0
+set gdb_downloading 0
+set gdb_loaded 0
+set gdb_program_has_run 0
+set file_done 0
+set gdb_target_name {}
+set gdb_pretty_name {}
+set gdb_exec {}
+set gdb_target_cmd ""
+    
 
 # set traces on state variables
 trace variable gdb_running w do_state_hook
 trace variable gdb_downloading w do_state_hook
 trace variable gdb_loaded w do_state_hook
 define_hook state_hook
+
+set download_dialog ""
+
+# gdb_pretty_name is the name of the GDB target as it should be
+# displayed to the user.
+set gdb_pretty_name ""
+
+# gdb_exe_name is the name of the executable we are debugging.  
+set gdb_exe_name ""
+
+# Initialize readline
+set gdbtk_state(readline) 0
+set gdbtk_state(console) ""
 
 # set up preferences
 pref init
@@ -112,6 +133,7 @@ standard_look_and_feel
 
 # now let GDB set its default preferences
 pref_set_defaults
+
 
 # read in preferences
 pref_read
@@ -136,21 +158,13 @@ if {![info exists env(GDBTK_TEST_RUNNING)] || !$env(GDBTK_TEST_RUNNING)} {
 gdb_cmd {set height 0}
 gdb_cmd {set width 0}
 
-if {[info exists env(GDBTK_TEST_RUNNING)] && $env(GDBTK_TEST_RUNNING)} {
-  set gdb_target_name "exec"
-} else {
-  # gdb_target_name is the name of the GDB target; that is, the argument
-  # to the GDB target command.
-  set gdb_target_name ""
-  # By setting gdb_target_changed, we force a target dialog
-  # to be displayed on the first "run"
-  set gdb_target_changed 1
-}
+# gdb_target_name is the name of the GDB target; that is, the argument
+# to the GDB target command.
+set gdb_target_name [pref get gdb/load/target]
+set gdb_target_cmd ""
+set gdb_target_changed 1
+#set_target_name "" 0
 
 update
-
-# Uncomment the next line if you want a splash screen at startup...
-# ManagedWin::open About -transient -expire 5000
-
 gdbtk_idle
 

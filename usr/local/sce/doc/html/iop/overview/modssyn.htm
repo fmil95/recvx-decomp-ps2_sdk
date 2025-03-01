@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<TITLE> CSLソフトウェア・シンセサイザ (modssyn)</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="modssyn.htm" SELECTED> CSLソフトウェア・シンセサイザ (modssyn)
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSLソフトウェア・シンセサイザ (modssyn)<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 演奏の時間精度<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 利用方法<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> バッファ構造<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    modssynは、CSL（Component Sound Library）に準拠して実装されているソフトウェア・シンセサイザのIOPモジュールです。EE側のライブラリ（libssyn）と対になって動作し、入力バッファのMIDI Streamデータを解釈して、ソフトウェア音源で発音させます。ソフトウェア・シンセサイザの機能や外部仕様についてはlibssynのドキュメントを参照してください。modssynは、入力バッファのMIDI StreamデータをEE側のlibssynに送る働きを受け持っています。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/ssynn1.gif">
+<P>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>演奏の時間精度</B>
+</A>
+</H3>
+<blockquote>
+    一般に、EE側では他の処理の合間にソフトウェア・シンセサイザの処理を行うことになるため、IOP側よりも処理頻度つまり時間精度が落ちることになります。IOP側で1/240secごとに処理しても、EE側は1/60secごとにしか処理できないというケースも多いことでしょう。そのような場合でも高い精度を確保するため、modssynからlibssynに転送するデータには、タイムスタンプが付加されています。EE側ではそのタイムスタンプを元に波形を生成するので、IOP側の処理頻度に応じた時間精度で演奏することができるようになっています。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>利用方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>バッファ構造</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>Buffer Group 0：入力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2</TD>
+<TD valign="TOP">入力ポートN番の入力バッファ</TD>
+<TD valign="TOP">sceCslMidiStream<BR>void[ buffsize - sizeof<BR>(sceCslMidiStream) ]</TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2+1</TD>
+<TD valign="TOP">入力ポートN番の環境</TD>
+<TD valign="TOP">sceSSynEnv</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/ssynn2.gif">
+<P>
+    入力バッファとその環境は必ず対で存在する必要があります。片方が欠けた場合は、初期化時にエラーとなるかその入力バッファが使用できなくなります。<BR>
+    データバッファのサイズ（buffsize - sizeof(sceCslMidiStream)）は、16の整数倍である必要があります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

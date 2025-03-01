@@ -1,0 +1,157 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - mipmap -
+ *
+ *                         Version 0.3.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : rect.dsm
+ *                     Description : data to send to vu1.
+ *
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.3.0          Jun, 4, 1999    munekis     first verison
+ */
+
+.include "vumacros.h"
+.global My_dma_start
+.global My_matrix
+.global My_light_matrix
+.global My_rot_trans_matrix
+.global My_rect_start
+.global My_dma_next
+.global My_no_mip
+
+.data
+
+.align 4
+My_dma_start:
+DMAcnt *
+MPG 0, *
+.include "basic.vsm" 
+.EndMPG
+.EndDmaData
+
+My_dma_next:
+DMAnext *, My_rect_start
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.000000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT COLOR MATRIX
+fxyzw 0.8, 0.2, 0.2, 0.0
+fxyzw 0.2, 0.8, 0.2, 0.0
+fxyzw 0.2, 0.2, 0.8, 0.0
+fxyzw 0.2, 0.2, 0.2, 1.0
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 0.0, -1.0, 0.0, 0.000000
+fxyzw 1.0, 0.0, 0.0, 0.000000
+fxyzw 0.0, 0.0, 0.0, 0.000000
+fxyzw 0.0, 0.0, 0.0, 1.000000
+.EndUnpack
+
+MSCAL 0         ; 
+BASE 0          ; sets the vif1 base register
+OFFSET 512      ; sets the vif1 offset register
+.EndDmaData
+
+
+; --------------------------------------------
+.align 4
+My_rect_start:
+DMAcnt *
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000000, 0x00000412, 0x300a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+; --- position ---
+fxyzw -5.0, -5.0, 0.0, 1.0
+fxyzw -5.0,  5.0, 0.0, 1.0
+fxyzw  5.0, -5.0,  0.0, 1.0
+fxyzw  5.0, 5.0,  0.0, 1.0
+
+; --- normal ---
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+
+; --- color ---
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+
+; --- st ---
+fxyzw 0.0, 0.0, 1.0, 0.0
+fxyzw 0.0, 1.0, 1.0, 0.0
+fxyzw 1.0, 0.0, 1.0, 0.0
+fxyzw 1.0, 1.0, 1.0, 0.0
+.EndUnpack
+MSCNT
+
+.EndDmaData
+
+DMAend
+
+
+; --------------------------------------------
+My_no_mip:
+DMAcnt *
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000000, 0x00000412, 0x300a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+; --- position ---
+fxyzw 5.0, -5.0, 0.0, 1.0
+fxyzw 5.0,  5.0, 0.0, 1.0
+fxyzw 15.0, -5.0, 0.0, 1.0
+fxyzw 15.0,  5.0, 0.0, 1.0
+
+; --- normal ---
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+
+; --- color ---
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+fxyzw 200.0, 200.0, 200.0, 128.0
+
+; --- st ---
+fxyzw 0.0, 0.0, 1.0, 0.0
+fxyzw 0.0, 1.0, 1.0, 0.0
+fxyzw 1.0, 0.0, 1.0, 0.0
+fxyzw 1.0, 1.0, 1.0, 0.0
+.EndUnpack
+MSCNT
+
+.EndDmaData
+
+DMAend
+

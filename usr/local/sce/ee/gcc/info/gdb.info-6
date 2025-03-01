@@ -1,17 +1,15 @@
 This is Info file ./gdb.info, produced by Makeinfo version 1.68 from
 the input file gdb.texinfo.
 
-INFO-DIR-SECTION Programming & development tools.
 START-INFO-DIR-ENTRY
 * Gdb: (gdb).                     The GNU debugger.
 END-INFO-DIR-ENTRY
-
    This file documents the GNU debugger GDB.
 
-   This is the Eighth Edition, March 2000, of `Debugging with GDB: the
-GNU Source-Level Debugger' for GDB Version 5.0-ee-001003-1.
+   This is the Seventh Edition, February 1999, of `Debugging with GDB:
+the GNU Source-Level Debugger' for GDB Version 4.17-ee-991111.
 
-   Copyright (C) 1988-2000 Free Software Foundation, Inc.
+   Copyright (C) 1988-1999 Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -27,464 +25,7 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: gdb.info,  Node: Symbols,  Next: Altering,  Prev: Languages,  Up: Top
-
-Examining the Symbol Table
-**************************
-
-   The commands described in this chapter allow you to inquire about the
-symbols (names of variables, functions and types) defined in your
-program.  This information is inherent in the text of your program and
-does not change as your program executes.  GDB finds it in your
-program's symbol table, in the file indicated when you started GDB
-(*note Choosing files: File Options.), or by one of the file-management
-commands (*note Commands to specify files: Files.).
-
-   Occasionally, you may need to refer to symbols that contain unusual
-characters, which GDB ordinarily treats as word delimiters.  The most
-frequent case is in referring to static variables in other source files
-(*note Program variables: Variables.).  File names are recorded in
-object files as debugging symbols, but GDB would ordinarily parse a
-typical file name, like `foo.c', as the three words `foo' `.' `c'.  To
-allow GDB to recognize `foo.c' as a single symbol, enclose it in single
-quotes; for example,
-
-     p 'foo.c'::x
-
-looks up the value of `x' in the scope of the file `foo.c'.
-
-`info address SYMBOL'
-     Describe where the data for SYMBOL is stored.  For a register
-     variable, this says which register it is kept in.  For a
-     non-register local variable, this prints the stack-frame offset at
-     which the variable is always stored.
-
-     Note the contrast with `print &SYMBOL', which does not work at all
-     for a register variable, and for a stack local variable prints the
-     exact address of the current instantiation of the variable.
-
-`whatis EXPR'
-     Print the data type of expression EXPR.  EXPR is not actually
-     evaluated, and any side-effecting operations (such as assignments
-     or function calls) inside it do not take place.  *Note
-     Expressions: Expressions.
-
-`whatis'
-     Print the data type of `$', the last value in the value history.
-
-`ptype TYPENAME'
-     Print a description of data type TYPENAME.  TYPENAME may be the
-     name of a type, or for C code it may have the form `class
-     CLASS-NAME', `struct STRUCT-TAG', `union UNION-TAG' or `enum
-     ENUM-TAG'.
-
-`ptype EXPR'
-`ptype'
-     Print a description of the type of expression EXPR.  `ptype'
-     differs from `whatis' by printing a detailed description, instead
-     of just the name of the type.
-
-     For example, for this variable declaration:
-
-          struct complex {double real; double imag;} v;
-
-     the two commands give this output:
-
-          (gdb) whatis v
-          type = struct complex
-          (gdb) ptype v
-          type = struct complex {
-              double real;
-              double imag;
-          }
-
-     As with `whatis', using `ptype' without an argument refers to the
-     type of `$', the last value in the value history.
-
-`info types REGEXP'
-`info types'
-     Print a brief description of all types whose names match REGEXP
-     (or all types in your program, if you supply no argument).  Each
-     complete typename is matched as though it were a complete line;
-     thus, `i type value' gives information on all types in your
-     program whose names include the string `value', but `i type
-     ^value$' gives information only on types whose complete name is
-     `value'.
-
-     This command differs from `ptype' in two ways: first, like
-     `whatis', it does not print a detailed description; second, it
-     lists all source files where a type is defined.
-
-`info source'
-     Show the name of the current source file--that is, the source file
-     for the function containing the current point of execution--and
-     the language it was written in.
-
-`info sources'
-     Print the names of all source files in your program for which
-     there is debugging information, organized into two lists: files
-     whose symbols have already been read, and files whose symbols will
-     be read when needed.
-
-`info functions'
-     Print the names and data types of all defined functions.
-
-`info functions REGEXP'
-     Print the names and data types of all defined functions whose
-     names contain a match for regular expression REGEXP.  Thus, `info
-     fun step' finds all functions whose names include `step'; `info
-     fun ^step' finds those whose names start with `step'.
-
-`info variables'
-     Print the names and data types of all variables that are declared
-     outside of functions (i.e., excluding local variables).
-
-`info variables REGEXP'
-     Print the names and data types of all variables (except for local
-     variables) whose names contain a match for regular expression
-     REGEXP.
-
-     Some systems allow individual object files that make up your
-     program to be replaced without stopping and restarting your
-     program.  For example, in VxWorks you can simply recompile a
-     defective object file and keep on running.  If you are running on
-     one of these systems, you can allow GDB to reload the symbols for
-     automatically relinked modules:
-
-    `set symbol-reloading on'
-          Replace symbol definitions for the corresponding source file
-          when an object file with a particular name is seen again.
-
-    `set symbol-reloading off'
-          Do not replace symbol definitions when encountering object
-          files of the same name more than once.  This is the default
-          state; if you are not running on a system that permits
-          automatic relinking of modules, you should leave
-          `symbol-reloading' off, since otherwise GDB may discard
-          symbols when linking large programs, that may contain several
-          modules (from different directories or libraries) with the
-          same name.
-
-    `show symbol-reloading'
-          Show the current `on' or `off' setting.
-
-`set opaque-type-resolution on'
-     Tell GDB to resolve opaque types.  An opaque type is a type
-     declared as a pointer to a `struct', `class', or `union'--for
-     example, `struct MyType *'--that is used in one source file
-     although the full declaration of `struct MyType' is in another
-     source file.  The default is on.
-
-     A change in the setting of this subcommand will not take effect
-     until the next time symbols for a file are loaded.
-
-`set opaque-type-resolution off'
-     Tell GDB not to resolve opaque types.  In this case, the type is
-     printed as follows:
-          {<no data fields>}
-
-`show opaque-type-resolution'
-     Show whether opaque types are resolved or not.
-
-`maint print symbols FILENAME'
-`maint print psymbols FILENAME'
-`maint print msymbols FILENAME'
-     Write a dump of debugging symbol data into the file FILENAME.
-     These commands are used to debug the GDB symbol-reading code.  Only
-     symbols with debugging data are included.  If you use `maint print
-     symbols', GDB includes all the symbols for which it has already
-     collected full details: that is, FILENAME reflects symbols for
-     only those files whose symbols GDB has read.  You can use the
-     command `info sources' to find out which files these are.  If you
-     use `maint print psymbols' instead, the dump shows information
-     about symbols that GDB only knows partially--that is, symbols
-     defined in files that GDB has skimmed, but not yet read
-     completely.  Finally, `maint print msymbols' dumps just the
-     minimal symbol information required for each object file from
-     which GDB has read some symbols.  *Note Commands to specify files:
-     Files, for a discussion of how GDB reads symbols (in the
-     description of `symbol-file').
-
-
-File: gdb.info,  Node: Altering,  Next: GDB Files,  Prev: Symbols,  Up: Top
-
-Altering Execution
-******************
-
-   Once you think you have found an error in your program, you might
-want to find out for certain whether correcting the apparent error
-would lead to correct results in the rest of the run.  You can find the
-answer by experiment, using the GDB features for altering execution of
-the program.
-
-   For example, you can store new values into variables or memory
-locations, give your program a signal, restart it at a different
-address, or even return prematurely from a function.
-
-* Menu:
-
-* Assignment::                  Assignment to variables
-* Jumping::                     Continuing at a different address
-* Signaling::                   Giving your program a signal
-* Returning::                   Returning from a function
-* Calling::                     Calling your program's functions
-* Patching::                    Patching your program
-
-
-File: gdb.info,  Node: Assignment,  Next: Jumping,  Up: Altering
-
-Assignment to variables
-=======================
-
-   To alter the value of a variable, evaluate an assignment expression.
-*Note Expressions: Expressions.  For example,
-
-     print x=4
-
-stores the value 4 into the variable `x', and then prints the value of
-the assignment expression (which is 4).  *Note Using GDB with Different
-Languages: Languages, for more information on operators in supported
-languages.
-
-   If you are not interested in seeing the value of the assignment, use
-the `set' command instead of the `print' command.  `set' is really the
-same as `print' except that the expression's value is not printed and
-is not put in the value history (*note Value history: Value History.).
-The expression is evaluated only for its effects.
-
-   If the beginning of the argument string of the `set' command appears
-identical to a `set' subcommand, use the `set variable' command instead
-of just `set'.  This command is identical to `set' except for its lack
-of subcommands.  For example, if your program has a variable `width',
-you get an error if you try to set a new value with just `set
-width=13', because GDB has the command `set width':
-
-     (gdb) whatis width
-     type = double
-     (gdb) p width
-     $4 = 13
-     (gdb) set width=47
-     Invalid syntax in expression.
-
-The invalid expression, of course, is `=47'.  In order to actually set
-the program's variable `width', use
-
-     (gdb) set var width=47
-
-   Because the `set' command has many subcommands that can conflict
-with the names of program variables, it is a good idea to use the `set
-variable' command instead of just `set'.  For example, if your program
-has a variable `g', you run into problems if you try to set a new value
-with just `set g=4', because GDB has the command `set gnutarget',
-abbreviated `set g':
-
-     (gdb) whatis g
-     type = double
-     (gdb) p g
-     $1 = 1
-     (gdb) set g=4
-     (gdb) p g
-     $2 = 1
-     (gdb) r
-     The program being debugged has been started already.
-     Start it from the beginning? (y or n) y
-     Starting program: /home/smith/cc_progs/a.out
-     "/home/smith/cc_progs/a.out": can't open to read symbols:
-                                      Invalid bfd target.
-     (gdb) show g
-     The current BFD target is "=4".
-
-The program variable `g' did not change, and you silently set the
-`gnutarget' to an invalid value.  In order to set the variable `g', use
-
-     (gdb) set var g=4
-
-   GDB allows more implicit conversions in assignments than C; you can
-freely store an integer value into a pointer variable or vice versa,
-and you can convert any structure to any other structure that is the
-same length or shorter.
-
-   To store values into arbitrary places in memory, use the `{...}'
-construct to generate a value of specified type at a specified address
-(*note Expressions: Expressions.).  For example, `{int}0x83040' refers
-to memory location `0x83040' as an integer (which implies a certain size
-and representation in memory), and
-
-     set {int}0x83040 = 4
-
-stores the value 4 into that memory location.
-
-
-File: gdb.info,  Node: Jumping,  Next: Signaling,  Prev: Assignment,  Up: Altering
-
-Continuing at a different address
-=================================
-
-   Ordinarily, when you continue your program, you do so at the place
-where it stopped, with the `continue' command.  You can instead
-continue at an address of your own choosing, with the following
-commands:
-
-`jump LINESPEC'
-     Resume execution at line LINESPEC.  Execution stops again
-     immediately if there is a breakpoint there.  *Note Printing source
-     lines: List, for a description of the different forms of LINESPEC.
-     It is common practice to use the `tbreak' command in conjunction
-     with `jump'.  *Note Setting breakpoints: Set Breaks.
-
-     The `jump' command does not change the current stack frame, or the
-     stack pointer, or the contents of any memory location or any
-     register other than the program counter.  If line LINESPEC is in a
-     different function from the one currently executing, the results
-     may be bizarre if the two functions expect different patterns of
-     arguments or of local variables.  For this reason, the `jump'
-     command requests confirmation if the specified line is not in the
-     function currently executing.  However, even bizarre results are
-     predictable if you are well acquainted with the machine-language
-     code of your program.
-
-`jump *ADDRESS'
-     Resume execution at the instruction at address ADDRESS.
-
-   On many systems, you can get much the same effect as the `jump'
-command by storing a new value into the register `$pc'.  The difference
-is that this does not start your program running; it only changes the
-address of where it *will* run when you continue.  For example,
-
-     set $pc = 0x485
-
-makes the next `continue' command or stepping command execute at
-address `0x485', rather than at the address where your program stopped.
-*Note Continuing and stepping: Continuing and Stepping.
-
-   The most common occasion to use the `jump' command is to back
-up--perhaps with more breakpoints set--over a portion of a program that
-has already executed, in order to examine its execution in more detail.
-
-
-File: gdb.info,  Node: Signaling,  Next: Returning,  Prev: Jumping,  Up: Altering
-
-Giving your program a signal
-============================
-
-`signal SIGNAL'
-     Resume execution where your program stopped, but immediately give
-     it the signal SIGNAL.  SIGNAL can be the name or the number of a
-     signal.  For example, on many systems `signal 2' and `signal
-     SIGINT' are both ways of sending an interrupt signal.
-
-     Alternatively, if SIGNAL is zero, continue execution without
-     giving a signal.  This is useful when your program stopped on
-     account of a signal and would ordinary see the signal when resumed
-     with the `continue' command; `signal 0' causes it to resume
-     without a signal.
-
-     `signal' does not repeat when you press <RET> a second time after
-     executing the command.
-
-   Invoking the `signal' command is not the same as invoking the `kill'
-utility from the shell.  Sending a signal with `kill' causes GDB to
-decide what to do with the signal depending on the signal handling
-tables (*note Signals::.).  The `signal' command passes the signal
-directly to your program.
-
-
-File: gdb.info,  Node: Returning,  Next: Calling,  Prev: Signaling,  Up: Altering
-
-Returning from a function
-=========================
-
-`return'
-`return EXPRESSION'
-     You can cancel execution of a function call with the `return'
-     command.  If you give an EXPRESSION argument, its value is used as
-     the function's return value.
-
-   When you use `return', GDB discards the selected stack frame (and
-all frames within it).  You can think of this as making the discarded
-frame return prematurely.  If you wish to specify a value to be
-returned, give that value as the argument to `return'.
-
-   This pops the selected stack frame (*note Selecting a frame:
-Selection.), and any other frames inside of it, leaving its caller as
-the innermost remaining frame.  That frame becomes selected.  The
-specified value is stored in the registers used for returning values of
-functions.
-
-   The `return' command does not resume execution; it leaves the
-program stopped in the state that would exist if the function had just
-returned.  In contrast, the `finish' command (*note Continuing and
-stepping: Continuing and Stepping.) resumes execution until the
-selected stack frame returns naturally.
-
-
-File: gdb.info,  Node: Calling,  Next: Patching,  Prev: Returning,  Up: Altering
-
-Calling program functions
-=========================
-
-`call EXPR'
-     Evaluate the expression EXPR without displaying `void' returned
-     values.
-
-   You can use this variant of the `print' command if you want to
-execute a function from your program, but without cluttering the output
-with `void' returned values.  If the result is not void, it is printed
-and saved in the value history.
-
-   For the A29K, a user-controlled variable `call_scratch_address',
-specifies the location of a scratch area to be used when GDB calls a
-function in the target.  This is necessary because the usual method of
-putting the scratch area on the stack does not work in systems that
-have separate instruction and data spaces.
-
-
-File: gdb.info,  Node: Patching,  Prev: Calling,  Up: Altering
-
-Patching programs
-=================
-
-   By default, GDB opens the file containing your program's executable
-code (or the corefile) read-only.  This prevents accidental alterations
-to machine code; but it also prevents you from intentionally patching
-your program's binary.
-
-   If you'd like to be able to patch the binary, you can specify that
-explicitly with the `set write' command.  For example, you might want
-to turn on internal debugging flags, or even to make emergency repairs.
-
-`set write on'
-`set write off'
-     If you specify `set write on', GDB opens executable and core files
-     for both reading and writing; if you specify `set write off' (the
-     default), GDB opens them read-only.
-
-     If you have already loaded a file, you must load it again (using
-     the `exec-file' or `core-file' command) after changing `set
-     write', for your new setting to take effect.
-
-`show write'
-     Display whether executable files and core files are opened for
-     writing as well as reading.
-
-
-File: gdb.info,  Node: GDB Files,  Next: Targets,  Prev: Altering,  Up: Top
-
-GDB Files
-*********
-
-   GDB needs to know the file name of the program to be debugged, both
-in order to read its symbol table and in order to start your program.
-To debug a core dump of a previous run, you must also tell GDB the name
-of the core dump file.
-
-* Menu:
-
-* Files::                       Commands to specify files
-* Symbol Errors::               Errors reading symbol files
-
-
-File: gdb.info,  Node: Files,  Next: Symbol Errors,  Up: GDB Files
+File: gdb.info,  Node: Files,  Next: Symbol Errors,  Prev: GDB Files,  Up: GDB Files
 
 Commands to specify files
 =========================
@@ -508,7 +49,7 @@ useful.
      program to run.  You can change the value of this variable, for
      both GDB and your program, using the `path' command.
 
-     On systems with memory-mapped files, an auxiliary file named
+     On systems with memory-mapped files, an auxiliary file
      `FILENAME.syms' may hold symbol table information for FILENAME.
      If so, GDB maps in the symbol table from `FILENAME.syms', starting
      up more quickly.  See the descriptions of the file options
@@ -617,22 +158,18 @@ useful.
 
 `add-symbol-file FILENAME ADDRESS'
 `add-symbol-file FILENAME ADDRESS [ -readnow ] [ -mapped ]'
-`add-symbol-file FILENAME -sSECTION ADDRESS'
      The `add-symbol-file' command reads additional symbol table
      information from the file FILENAME.  You would use this command
      when FILENAME has been dynamically loaded (by some other means)
      into the program that is running.  ADDRESS should be the memory
      address at which the file has been loaded; GDB cannot figure this
-     out for itself.  You can additionally specify an arbitrary number
-     of `-sSECTION ADDRESS' pairs, to give an explicit section name and
-     base address for that section.  You can specify any ADDRESS as an
-     expression.
+     out for itself.  You can specify ADDRESS as an expression.
 
      The symbol table of the file FILENAME is added to the symbol table
      originally read with the `symbol-file' command.  You can use the
      `add-symbol-file' command any number of times; the new symbol data
      thus read keeps adding to the old.  To discard all old symbol data
-     instead, use the `symbol-file' command without any arguments.
+     instead, use the `symbol-file' command.
 
      `add-symbol-file' does not repeat if you press <RET> after using
      it.
@@ -653,8 +190,8 @@ useful.
      of the exec file to ADDR.  This can be used if the exec file does
      not contain section addresses, (such as in the a.out format), or
      when the addresses specified in the file itself are wrong.  Each
-     section must be changed separately.  The `info files' command,
-     described below, lists all the sections and their addresses.
+     section must be changed separately.  The "info files" command
+     lists all the sections and their addresses.
 
 `info files'
 `info target'
@@ -670,16 +207,11 @@ names as arguments.  GDB always converts the file name to an absolute
 file name and remembers it that way.
 
    GDB supports HP-UX, SunOS, SVr4, Irix 5, and IBM RS/6000 shared
-libraries.
-
-   GDB automatically loads symbol definitions from shared libraries
-when you use the `run' command, or when you examine a core file.
-(Before you issue the `run' command, GDB does not understand references
-to a function in a shared library, however--unless you are debugging a
-core file).
-
-   On HP-UX, if the program loads a library explicitly, GDB
-automatically loads the symbols at the time of the `shl_load' call.
+libraries.  GDB automatically loads symbol definitions from shared
+libraries when you use the `run' command, or when you examine a core
+file.  (Before you issue the `run' command, GDB does not understand
+references to a function in a shared library, however--unless you are
+debugging a core file).
 
 `info share'
 `info sharedlibrary'
@@ -692,29 +224,6 @@ automatically loads the symbols at the time of the `shl_load' call.
      loads shared libraries required by your program for a core file or
      after typing `run'.  If REGEX is omitted all shared libraries
      required by your program are loaded.
-
-   On HP-UX systems, GDB detects the loading of a shared library and
-automatically reads in symbols from the newly loaded library, up to a
-threshold that is initially set but that you can modify if you wish.
-
-   Beyond that threshold, symbols from shared libraries must be
-explicitly loaded.  To load these symbols, use the command
-`sharedlibrary FILENAME'.  The base address of the shared library is
-determined automatically by GDB and need not be specified.
-
-   To display or set the threshold, use the commands:
-
-`set auto-solib-add THRESHOLD'
-     Set the autoloading size threshold, in megabytes.  If THRESHOLD is
-     nonzero, symbols from all shared object libraries will be loaded
-     automatically when the inferior begins execution or when the
-     dynamic linker informs GDB that a new library has been loaded,
-     until the symbol table of the program and libraries exceeds this
-     threshold.  Otherwise, symbols must be loaded manually, using the
-     `sharedlibrary' command.  The default threshold is 100 megabytes.
-
-`show auto-solib-add'
-     Display the current autoloading size threshold, in megabytes.
 
 
 File: gdb.info,  Node: Symbol Errors,  Prev: Files,  Up: GDB Files
@@ -776,7 +285,7 @@ Optional warnings and messages: Messages/Warnings.).
 `unknown symbol type `0xNN''
      The symbol information contains new data types that GDB does not
      yet know how to read.  `0xNN' is the symbol type of the
-     uncomprehended information, in hexadecimal.
+     misunderstood information, in hexadecimal.
 
      GDB circumvents the error by ignoring this symbol information.
      This usually allows you to debug your program, though certain
@@ -797,21 +306,18 @@ Optional warnings and messages: Messages/Warnings.).
      GDB could not parse a type specification output by the compiler.
 
 
-File: gdb.info,  Node: Targets,  Next: Configurations,  Prev: GDB Files,  Up: Top
+File: gdb.info,  Node: Targets,  Next: Controlling GDB,  Prev: GDB Files,  Up: Top
 
 Specifying a Debugging Target
 *****************************
 
    A "target" is the execution environment occupied by your program.
-
-   Often, GDB runs in the same host environment as your program; in
-that case, the debugging target is specified as a side effect when you
-use the `file' or `core' commands.  When you need more flexibility--for
+Often, GDB runs in the same host environment as your program; in that
+case, the debugging target is specified as a side effect when you use
+the `file' or `core' commands.  When you need more flexibility--for
 example, running GDB on a physically separate host, or controlling a
 standalone system over a serial port or a realtime system over a TCP/IP
-connection--you can use the `target' command to specify one of the
-target types configured for GDB (*note Commands for managing targets:
-Target Commands.).
+connection--you
 
 * Menu:
 
@@ -819,10 +325,9 @@ Target Commands.).
 * Target Commands::             Commands for managing targets
 * Byte Order::                  Choosing target byte order
 * Remote::                      Remote debugging
-* KOD::                         Kernel Object Display
 
 
-File: gdb.info,  Node: Active Targets,  Next: Target Commands,  Up: Targets
+File: gdb.info,  Node: Active Targets,  Next: Target Commands,  Prev: Targets,  Up: Targets
 
 Active targets
 ==============
@@ -889,8 +394,8 @@ Commands for managing targets
      command.  Unlike most `target' commands, with `gnutarget' the
      `target' refers to a program, not a machine.
 
-          *Warning:* To specify a file format with `set gnutarget', you
-          must know the actual BFD name.
+     *Warning:* To specify a file format with `set gnutarget', you must
+     know the actual BFD name.
 
      *Note Commands to specify files: Files.
 
@@ -914,29 +419,143 @@ configuration):
 `target remote DEV'
      Remote serial target in GDB-specific protocol.  The argument DEV
      specifies what serial device to use for the connection (e.g.
-     `/dev/ttya'). *Note Remote debugging: Remote.  `target remote'
+     `/dev/ttya'). *Note Remote debugging: Remote.  `target remote' now
      supports the `load' command.  This is only useful if you have some
      other way of getting the stub to the target system, and you can put
      it somewhere in memory where it won't get clobbered by the
      download.
 
 `target sim'
-     Builtin CPU simulator.  GDB includes simulators for most
-     architectures.  In general,
-                  target sim
-                  load
-                  run
+     CPU simulator.  *Note Simulated CPU Target: Simulator.
 
-     works; however, you cannot assume that a specific memory map,
-     device drivers, or even basic I/O is available, although some
-     simulators do provide these.  For info about any
-     processor-specific simulator details, see the appropriate section
-     in *Note Embedded Processors: Embedded Processors.
+   The following targets are all CPU-specific, and only available for
+specific configurations.
 
-   Some configurations may include these targets as well:
+`target abug DEV'
+     ABug ROM monitor for M68K.
+
+`target adapt DEV'
+     Adapt monitor for A29K.
+
+`target amd-eb DEV SPEED PROG'
+     Remote PC-resident AMD EB29K board, attached over serial lines.
+     DEV is the serial device, as for `target remote'; SPEED allows you
+     to specify the linespeed; and PROG is the name of the program to
+     be debugged, as it appears to DOS on the PC.  *Note The EBMON
+     protocol for AMD29K: EB29K Remote.
+
+`target array DEV'
+     Array Tech LSI33K RAID controller board.
+
+`target bug DEV'
+     BUG monitor, running on a MVME187 (m88k) board.
+
+`target cpu32bug DEV'
+     CPU32BUG monitor, running on a CPU32 (M68K) board.
+
+`target dbug DEV'
+     dBUG ROM monitor for Motorola ColdFire.
+
+`target ddb DEV'
+     NEC's DDB monitor for Mips Vr4300.
+
+`target dink32 DEV'
+     DINK32 ROM monitor for PowerPC.
+
+`target e7000 DEV'
+     E7000 emulator for Hitachi H8 and SH.
+
+`target es1800 DEV'
+     ES-1800 emulator for M68K.
+
+`target est DEV'
+     EST-300 ICE monitor, running on a CPU32 (M68K) board.
+
+`target hms DEV'
+     A Hitachi SH, H8/300, or H8/500 board, attached via serial line to
+     your host.  Use special commands `device' and `speed' to control
+     the serial line and the communications speed used.  *Note GDB and
+     Hitachi Microprocessors: Hitachi Remote.
+
+`target lsi DEV'
+     LSI ROM monitor for Mips.
+
+`target m32r DEV'
+     Mitsubishi M32R/D ROM monitor.
+
+`target mips DEV'
+     IDT/SIM ROM monitor for Mips.
+
+`target mon960 DEV'
+     MON960 monitor for Intel i960.
+
+`target nindy DEVICENAME'
+     An Intel 960 board controlled by a Nindy Monitor.  DEVICENAME is
+     the name of the serial device to use for the connection, e.g.
+     `/dev/ttya'.  *Note GDB with a remote i960 (Nindy): i960-Nindy
+     Remote.
 
 `target nrom DEV'
      NetROM ROM emulator.  This target only supports downloading.
+
+`target op50n DEV'
+     OP50N monitor, running on an OKI HPPA board.
+
+`target pmon DEV'
+     PMON ROM monitor for Mips.
+
+`target ppcbug DEV'
+
+`target ppcbug1 DEV'
+     PPCBUG ROM monitor for PowerPC.
+
+`target r3900 DEV'
+     Densan DVE-R3900 ROM monitor for Toshiba R3900 Mips.
+
+`target rdi DEV'
+     ARM Angel monitor, via RDI library interface.
+
+`target rdp DEV'
+     ARM Demon monitor.
+
+`target rom68k DEV'
+     ROM 68K monitor, running on an M68K IDP board.
+
+`target rombug DEV'
+     ROMBUG ROM monitor for OS/9000.
+
+`target sds DEV'
+     SDS monitor, running on a PowerPC board (such as Motorola's ADS).
+
+`target sparclite DEV'
+     Fujitsu sparclite boards, used only for the purpose of loading.
+     You must use an additional command to debug the program.  For
+     example: target remote DEV using GDB standard remote protocol.
+
+`target sh3 DEV'
+
+`target sh3e DEV'
+     Hitachi SH-3 and SH-3E target systems.
+
+`target st2000 DEV SPEED'
+     A Tandem ST2000 phone switch, running Tandem's STDBUG protocol.
+     DEV is the name of the device attached to the ST2000 serial line;
+     SPEED is the communication line speed.  The arguments are not used
+     if GDB is configured to connect to the ST2000 using TCP or Telnet.
+     *Note GDB with a Tandem ST2000: ST2000 Remote.
+
+`target udi KEYWORD'
+     Remote AMD29K target, using the AMD UDI protocol.  The KEYWORD
+     argument specifies which 29K board or simulator to use.  *Note The
+     UDI protocol for AMD29K: UDI29K Remote.
+
+`target vxworks MACHINENAME'
+     A VxWorks system, attached via TCP/IP.  The argument MACHINENAME
+     is the target system's machine name or IP address.  *Note GDB and
+     VxWorks: VxWorks Remote.
+
+`target w89k DEV'
+     W89K monitor, running on a Winbond HPPA board.
 
    Different targets are available on different configurations of GDB;
 your configuration may have more or fewer targets.
@@ -960,6 +579,18 @@ once you've successfully established a connection.
      executable.  For some object file formats, you can specify the
      load address when you link the program; for other formats, like
      a.out, the object file format specifies a fixed address.
+
+     On VxWorks, `load' links FILENAME dynamically on the current
+     target system as well as adding its symbols in GDB.
+
+     With the Nindy interface to an Intel 960 board, `load' downloads
+     FILENAME to the 960 as well as adding its symbols in GDB.
+
+     When you select remote debugging to a Hitachi SH, H8/300, or
+     H8/500 board (*note GDB and Hitachi Microprocessors: Hitachi
+     Remote.), the `load' command downloads your program to the Hitachi
+     board and also opens it as the current executable target for GDB
+     on your host (like the `file' command).
 
      `load' does not repeat if you press <RET> again after using it.
 
@@ -993,7 +624,7 @@ data on the host, and that they have absolutely no effect on the target
 system.
 
 
-File: gdb.info,  Node: Remote,  Next: KOD,  Prev: Byte Order,  Up: Targets
+File: gdb.info,  Node: Remote,  Prev: Byte Order,  Up: Targets
 
 Remote debugging
 ================
@@ -1018,9 +649,18 @@ use `help target' to list them.
 * Menu:
 
 * Remote Serial::               GDB remote serial protocol
+* i960-Nindy Remote::		GDB with a remote i960 (Nindy)
+* UDI29K Remote::               The UDI protocol for AMD29K
+* EB29K Remote::		The EBMON protocol for AMD29K
+* VxWorks Remote::		GDB and VxWorks
+* ST2000 Remote::               GDB with a Tandem ST2000
+* Hitachi Remote::              GDB and Hitachi Microprocessors
+* MIPS Remote::			GDB and MIPS boards
+* Sparclet Remote::             GDB and Sparclet boards
+* Simulator::                   Simulated CPU target
 
 
-File: gdb.info,  Node: Remote Serial,  Up: Remote
+File: gdb.info,  Node: Remote Serial,  Next: i960-Nindy Remote,  Up: Remote
 
 The GDB remote serial protocol
 ------------------------------
@@ -1035,8 +675,8 @@ program, you need:
      supplied by your hardware supplier, or you may have to write your
      own.
 
-  2. A C subroutine library to support your program's subroutine calls,
-     notably managing input and output.
+  2. You probably need a C subroutine library to support your program's
+     subroutine calls, notably managing input and output.
 
   3. A way of getting your program to the other machine--for example, a
      download program.  These are often supplied by the hardware
@@ -1090,9 +730,9 @@ added stubs.
 * Stub Contents::       What the stub can do for you
 * Bootstrapping::       What you must do for the stub
 * Debug Session::       Putting it all together
-* Protocol::            Definition of the communication protocol
-* Server::                Using the `gdbserver' program
-* NetWare::                Using the `gdbserve.nlm' program
+* Protocol::            Outline of the communication protocol
+* Server::		Using the `gdbserver' program
+* NetWare::		Using the `gdbserve.nlm' program
 
 
 File: gdb.info,  Node: Stub Contents,  Next: Bootstrapping,  Up: Remote Serial
@@ -1117,12 +757,12 @@ subroutines:
      execution (for example, on a breakpoint), and mediates
      communications with GDB on the host machine.  This is where the
      communications protocol is implemented; `handle_exception' acts as
-     the GDB representative on the target machine.  It begins by
-     sending summary information on the state of your program, then
-     continues to execute, retrieving and transmitting any information
-     GDB needs, until you execute a GDB command that makes your program
-     resume; at that point, `handle_exception' returns control to your
-     own code on the target machine.
+     the GDB representative on the target machine; it begins by sending
+     summary information on the state of your program, then continues
+     to execute, retrieving and transmitting any information GDB needs,
+     until you execute a GDB command that makes your program resume; at
+     that point, `handle_exception' returns control to your own code on
+     the target machine.
 
 `breakpoint'
      Use this auxiliary subroutine to make your program contain a
@@ -1139,4 +779,434 @@ subroutines:
      Call `breakpoint' if none of these is true, or if you simply want
      to make certain your program stops at a predetermined point for the
      start of your debugging session.
+
+
+File: gdb.info,  Node: Bootstrapping,  Next: Debug Session,  Prev: Stub Contents,  Up: Remote Serial
+
+What you must do for the stub
+.............................
+
+   The debugging stubs that come with GDB are set up for a particular
+chip architecture, but they have no information about the rest of your
+debugging target machine.
+
+   First of all you need to tell the stub how to communicate with the
+serial port.
+
+`int getDebugChar()'
+     Write this subroutine to read a single character from the serial
+     port.  It may be identical to `getchar' for your target system; a
+     different name is used to allow you to distinguish the two if you
+     wish.
+
+`void putDebugChar(int)'
+     Write this subroutine to write a single character to the serial
+     port.  It may be identical to `putchar' for your target system; a
+     different name is used to allow you to distinguish the two if you
+     wish.
+
+   If you want GDB to be able to stop your program while it is running,
+you need to use an interrupt-driven serial driver, and arrange for it
+to stop when it receives a `^C' (`\003', the control-C character).
+That is the character which GDB uses to tell the remote system to stop.
+
+   Getting the debugging target to return the proper status to GDB
+probably requires changes to the standard stub; one quick and dirty way
+is to just execute a breakpoint instruction (the "dirty" part is that
+GDB reports a `SIGTRAP' instead of a `SIGINT').
+
+   Other routines you need to supply are:
+
+`void exceptionHandler (int EXCEPTION_NUMBER, void *EXCEPTION_ADDRESS)'
+     Write this function to install EXCEPTION_ADDRESS in the exception
+     handling tables.  You need to do this because the stub does not
+     have any way of knowing what the exception handling tables on your
+     target system are like (for example, the processor's table might
+     be in ROM, containing entries which point to a table in RAM).
+     EXCEPTION_NUMBER is the exception number which should be changed;
+     its meaning is architecture-dependent (for example, different
+     numbers might represent divide by zero, misaligned access, etc).
+     When this exception occurs, control should be transferred directly
+     to EXCEPTION_ADDRESS, and the processor state (stack, registers,
+     and so on) should be just as it is when a processor exception
+     occurs.  So if you want to use a jump instruction to reach
+     EXCEPTION_ADDRESS, it should be a simple jump, not a jump to
+     subroutine.
+
+     For the 386, EXCEPTION_ADDRESS should be installed as an interrupt
+     gate so that interrupts are masked while the handler runs.  The
+     gate should be at privilege level 0 (the most privileged level).
+     The SPARC and 68k stubs are able to mask interrupts themselves
+     without help from `exceptionHandler'.
+
+`void flush_i_cache()'
+     (sparc and sparclite only) Write this subroutine to flush the
+     instruction cache, if any, on your target machine.  If there is no
+     instruction cache, this subroutine may be a no-op.
+
+     On target machines that have instruction caches, GDB requires this
+     function to make certain that the state of your program is stable.
+
+You must also make sure this library routine is available:
+
+`void *memset(void *, int, int)'
+     This is the standard library function `memset' that sets an area of
+     memory to a known value.  If you have one of the free versions of
+     `libc.a', `memset' can be found there; otherwise, you must either
+     obtain it from your hardware manufacturer, or write your own.
+
+   If you do not use the GNU C compiler, you may need other standard
+library subroutines as well; this varies from one stub to another, but
+in general the stubs are likely to use any of the common library
+subroutines which `gcc' generates as inline code.
+
+
+File: gdb.info,  Node: Debug Session,  Next: Protocol,  Prev: Bootstrapping,  Up: Remote Serial
+
+Putting it all together
+.......................
+
+   In summary, when your program is ready to debug, you must follow
+these steps.
+
+  1. Make sure you have the supporting low-level routines (*note What
+     you must do for the stub: Bootstrapping.):
+          `getDebugChar', `putDebugChar',
+          `flush_i_cache', `memset', `exceptionHandler'.
+
+  2. Insert these lines near the top of your program:
+
+          set_debug_traps();
+          breakpoint();
+
+  3. For the 680x0 stub only, you need to provide a variable called
+     `exceptionHook'.  Normally you just use:
+
+          void (*exceptionHook)() = 0;
+
+     but if before calling `set_debug_traps', you set it to point to a
+     function in your program, that function is called when `GDB'
+     continues after stopping on a trap (for example, bus error).  The
+     function indicated by `exceptionHook' is called with one
+     parameter: an `int' which is the exception number.
+
+  4. Compile and link together: your program, the GDB debugging stub for
+     your target architecture, and the supporting subroutines.
+
+  5. Make sure you have a serial connection between your target machine
+     and the GDB host, and identify the serial port on the host.
+
+  6. Download your program to your target machine (or get it there by
+     whatever means the manufacturer provides), and start it.
+
+  7. To start remote debugging, run GDB on the host machine, and specify
+     as an executable file the program that is running in the remote
+     machine.  This tells GDB how to find your program's symbols and
+     the contents of its pure text.
+
+     Then establish communication using the `target remote' command.
+     Its argument specifies how to communicate with the target
+     machine--either via a devicename attached to a direct serial line,
+     or a TCP port (usually to a terminal server which in turn has a
+     serial line to the target).  For example, to use a serial line
+     connected to the device named `/dev/ttyb':
+
+          target remote /dev/ttyb
+
+     To use a TCP connection, use an argument of the form `HOST:port'.
+     For example, to connect to port 2828 on a terminal server named
+     `manyfarms':
+
+          target remote manyfarms:2828
+
+   Now you can use all the usual commands to examine and change data
+and to step and continue the remote program.
+
+   To resume the remote program and stop debugging it, use the `detach'
+command.
+
+   Whenever GDB is waiting for the remote program, if you type the
+interrupt character (often <C-C>), GDB attempts to stop the program.
+This may or may not succeed, depending in part on the hardware and the
+serial drivers the remote system uses.  If you type the interrupt
+character once again, GDB displays this prompt:
+
+     Interrupted while waiting for the program.
+     Give up (and stop debugging it)?  (y or n)
+
+   If you type `y', GDB abandons the remote debugging session.  (If you
+decide you want to try again later, you can use `target remote' again
+to connect once more.)  If you type `n', GDB goes back to waiting.
+
+
+File: gdb.info,  Node: Protocol,  Next: Server,  Prev: Debug Session,  Up: Remote Serial
+
+Communication protocol
+......................
+
+   The stub files provided with GDB implement the target side of the
+communication protocol, and the GDB side is implemented in the GDB
+source file `remote.c'.  Normally, you can simply allow these
+subroutines to communicate, and ignore the details.  (If you're
+implementing your own stub file, you can still ignore the details: start
+with one of the existing stub files.  `sparc-stub.c' is the best
+organized, and therefore the easiest to read.)
+
+   However, there may be occasions when you need to know something about
+the protocol--for example, if there is only one serial port to your
+target machine, you might want your program to do something special if
+it recognizes a packet meant for GDB.
+
+   All GDB commands and responses (other than acknowledgements, which
+are single characters) are sent as a packet which includes a checksum.
+A packet is introduced with the character `$', and ends with the
+character `#' followed by a two-digit checksum:
+
+     $PACKET INFO#CHECKSUM
+
+CHECKSUM is computed as the modulo 256 sum of the PACKET INFO
+characters.
+
+   When either the host or the target machine receives a packet, the
+first response expected is an acknowledgement: a single character,
+either `+' (to indicate the package was received correctly) or `-' (to
+request retransmission).
+
+   The host (GDB) sends commands, and the target (the debugging stub
+incorporated in your program) sends data in response.  The target also
+sends data when your program stops.
+
+   Command packets are distinguished by their first character, which
+identifies the kind of command.
+
+   These are some of the commands currently supported (for a complete
+list of commands, look in `gdb/remote.c.'):
+
+`g'
+     Requests the values of CPU registers.
+
+`G'
+     Sets the values of CPU registers.
+
+`mADDR,COUNT'
+     Read COUNT bytes at location ADDR.
+
+`MADDR,COUNT:...'
+     Write COUNT bytes at location ADDR.
+
+`c'
+`cADDR'
+     Resume execution at the current address (or at ADDR if supplied).
+
+`s'
+`sADDR'
+     Step the target program for one instruction, from either the
+     current program counter or from ADDR if supplied.
+
+`k'
+     Kill the target program.
+
+`?'
+     Report the most recent signal.  To allow you to take advantage of
+     the GDB signal handling commands, one of the functions of the
+     debugging stub is to report CPU traps as the corresponding POSIX
+     signal values.
+
+`T'
+     Allows the remote stub to send only the registers that GDB needs
+     to make a quick decision about single-stepping or conditional
+     breakpoints.  This eliminates the need to fetch the entire
+     register set for each instruction being stepped through.
+
+     GDB now implements a write-through cache for registers and only
+     re-reads the registers if the target has run.
+
+   If you have trouble with the serial connection, you can use the
+command `set remotedebug'.  This makes GDB report on all packets sent
+back and forth across the serial line to the remote machine.  The
+packet-debugging information is printed on the GDB standard output
+stream.  `set remotedebug off' turns it off, and `show remotedebug'
+shows you its current state.
+
+
+File: gdb.info,  Node: Server,  Next: NetWare,  Prev: Protocol,  Up: Remote Serial
+
+Using the `gdbserver' program
+.............................
+
+   `gdbserver' is a control program for Unix-like systems, which allows
+you to connect your program with a remote GDB via `target remote'--but
+without linking in the usual debugging stub.
+
+   `gdbserver' is not a complete replacement for the debugging stubs,
+because it requires essentially the same operating-system facilities
+that GDB itself does.  In fact, a system that can run `gdbserver' to
+connect to a remote GDB could also run GDB locally!  `gdbserver' is
+sometimes useful nevertheless, because it is a much smaller program
+than GDB itself.  It is also easier to port than all of GDB, so you may
+be able to get started more quickly on a new system by using
+`gdbserver'.  Finally, if you develop code for real-time systems, you
+may find that the tradeoffs involved in real-time operation make it
+more convenient to do as much development work as possible on another
+system, for example by cross-compiling.  You can use `gdbserver' to
+make a similar choice for debugging.
+
+   GDB and `gdbserver' communicate via either a serial line or a TCP
+connection, using the standard GDB remote serial protocol.
+
+*On the target machine,*
+     you need to have a copy of the program you want to debug.
+     `gdbserver' does not need your program's symbol table, so you can
+     strip the program if necessary to save space.  GDB on the host
+     system does all the symbol handling.
+
+     To use the server, you must tell it how to communicate with GDB;
+     the name of your program; and the arguments for your program.  The
+     syntax is:
+
+          target> gdbserver COMM PROGRAM [ ARGS ... ]
+
+     COMM is either a device name (to use a serial line) or a TCP
+     hostname and portnumber.  For example, to debug Emacs with the
+     argument `foo.txt' and communicate with GDB over the serial port
+     `/dev/com1':
+
+          target> gdbserver /dev/com1 emacs foo.txt
+
+     `gdbserver' waits passively for the host GDB to communicate with
+     it.
+
+     To use a TCP connection instead of a serial line:
+
+          target> gdbserver host:2345 emacs foo.txt
+
+     The only difference from the previous example is the first
+     argument, specifying that you are communicating with the host GDB
+     via TCP.  The `host:2345' argument means that `gdbserver' is to
+     expect a TCP connection from machine `host' to local TCP port 2345.
+     (Currently, the `host' part is ignored.)  You can choose any number
+     you want for the port number as long as it does not conflict with
+     any TCP ports already in use on the target system (for example,
+     `23' is reserved for `telnet').(1) You must use the same port
+     number with the host GDB `target remote' command.
+
+*On the GDB host machine,*
+     you need an unstripped copy of your program, since GDB needs
+     symbols and debugging information.  Start up GDB as usual, using
+     the name of the local copy of your program as the first argument.
+     (You may also need the `--baud' option if the serial line is
+     running at anything other than 9600 bps.)  After that, use `target
+     remote' to establish communications with `gdbserver'.  Its argument
+     is either a device name (usually a serial device, like
+     `/dev/ttyb'), or a TCP port descriptor in the form `HOST:PORT'.
+     For example:
+
+          (gdb) target remote /dev/ttyb
+
+     communicates with the server via serial line `/dev/ttyb', and
+
+          (gdb) target remote the-target:2345
+
+     communicates via a TCP connection to port 2345 on host
+     `the-target'.  For TCP connections, you must start up `gdbserver'
+     prior to using the `target remote' command.  Otherwise you may get
+     an error whose text depends on the host system, but which usually
+     looks something like `Connection refused'.
+
+   ---------- Footnotes ----------
+
+   (1) If you choose a port number that conflicts with another service,
+`gdbserver' prints an error message and exits.
+
+
+File: gdb.info,  Node: NetWare,  Prev: Server,  Up: Remote Serial
+
+Using the `gdbserve.nlm' program
+................................
+
+   `gdbserve.nlm' is a control program for NetWare systems, which
+allows you to connect your program with a remote GDB via `target
+remote'.
+
+   GDB and `gdbserve.nlm' communicate via a serial line, using the
+standard GDB remote serial protocol.
+
+*On the target machine,*
+     you need to have a copy of the program you want to debug.
+     `gdbserve.nlm' does not need your program's symbol table, so you
+     can strip the program if necessary to save space.  GDB on the host
+     system does all the symbol handling.
+
+     To use the server, you must tell it how to communicate with GDB;
+     the name of your program; and the arguments for your program.  The
+     syntax is:
+
+          load gdbserve [ BOARD=BOARD ] [ PORT=PORT ]
+                        [ BAUD=BAUD ] PROGRAM [ ARGS ... ]
+
+     BOARD and PORT specify the serial line; BAUD specifies the baud
+     rate used by the connection.  PORT and NODE default to 0, BAUD
+     defaults to 9600 bps.
+
+     For example, to debug Emacs with the argument `foo.txt'and
+     communicate with GDB over serial port number 2 or board 1 using a
+     19200 bps connection:
+
+          load gdbserve BOARD=1 PORT=2 BAUD=19200 emacs foo.txt
+
+*On the GDB host machine,*
+     you need an unstripped copy of your program, since GDB needs
+     symbols and debugging information.  Start up GDB as usual, using
+     the name of the local copy of your program as the first argument.
+     (You may also need the `--baud' option if the serial line is
+     running at anything other than 9600 bps.  After that, use `target
+     remote' to establish communications with `gdbserve.nlm'.  Its
+     argument is a device name (usually a serial device, like
+     `/dev/ttyb').  For example:
+
+          (gdb) target remote /dev/ttyb
+
+     communications with the server via serial line `/dev/ttyb'.
+
+
+File: gdb.info,  Node: i960-Nindy Remote,  Next: UDI29K Remote,  Prev: Remote Serial,  Up: Remote
+
+GDB with a remote i960 (Nindy)
+------------------------------
+
+   "Nindy" is a ROM Monitor program for Intel 960 target systems.  When
+GDB is configured to control a remote Intel 960 using Nindy, you can
+tell GDB how to connect to the 960 in several ways:
+
+   * Through command line options specifying serial port, version of the
+     Nindy protocol, and communications speed;
+
+   * By responding to a prompt on startup;
+
+   * By using the `target' command at any point during your GDB
+     session.  *Note Commands for managing targets: Target Commands.
+
+* Menu:
+
+* Nindy Startup::               Startup with Nindy
+* Nindy Options::               Options for Nindy
+* Nindy Reset::                 Nindy reset command
+
+
+File: gdb.info,  Node: Nindy Startup,  Next: Nindy Options,  Up: i960-Nindy Remote
+
+Startup with Nindy
+..................
+
+   If you simply start `gdb' without using any command-line options,
+you are prompted for what serial port to use, *before* you reach the
+ordinary GDB prompt:
+
+     Attach /dev/ttyNN -- specify NN, or "quit" to quit:
+
+Respond to the prompt with whatever suffix (after `/dev/tty')
+identifies the serial port you want to use.  You can, if you choose,
+simply start up with no Nindy connection by responding to the prompt
+with an empty line.  If you do this and later wish to attach to Nindy,
+use `target' (*note Commands for managing targets: Target Commands.).
 

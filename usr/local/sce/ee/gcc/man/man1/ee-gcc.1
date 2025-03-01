@@ -1,4 +1,4 @@
-.\" Copyright (c) 1991, 1992, 1993, 1994, 2000 Free Software Foundation    -*-Text-*-
+.\" Copyright (c) 1991, 1992, 1993, 1994 Free Software Foundation    -*-Text-*-
 .\" See section COPYING for conditions for redistribution
 .\"
 .\" Set up \*(lq, \*(rq if -man hasn't already set it up.
@@ -20,10 +20,10 @@
 .if n .sp
 .if t .sp 0.4
 ..
-.Id $Id: gcc.1,v 1.104 2000/05/23 17:25:37 rth Exp $
+.Id $Id: gcc.1,v 1.99 1998/11/11 05:48:47 law Exp $
 .TH GCC 1 "\*(Dt" "GNU Tools" "GNU Tools"
 .SH NAME
-gcc, g++ \- GNU project C and C++ Compiler (gcc-2.96)
+gcc, g++ \- GNU project C and C++ Compiler (egcs-1.1)
 .SH SYNOPSIS
 .B gcc
 .RI "[ " option " | " filename " ].\|.\|."
@@ -150,8 +150,10 @@ in the following sections.
 .TP
 .B Language Options
 \-ansi
+\-fall\-virtual
 \-fcond\-mismatch
 \-fdollars\-in\-identifiers
+\-fenum\-int\-equiv
 \-fexternal\-templates
 \-fno\-asm
 \-fno\-builtin
@@ -162,6 +164,7 @@ in the following sections.
 \-fno\-strict\-prototype
 \-fsigned\-bitfields
 \-fsigned\-char
+\-fthis\-is\-variable
 \-funsigned\-bitfields
 \-funsigned\-char
 \-fwritable\-strings
@@ -182,6 +185,7 @@ in the following sections.
 \-Wchar\-subscript
 \-Wcomment
 \-Wconversion
+\-Wenum\-clash
 \-Werror
 \-Wformat
 .RI \-Wid\-clash\- len
@@ -202,15 +206,11 @@ in the following sections.
 \-Wshadow
 \-Wstrict\-prototypes
 \-Wswitch
+\-Wtemplate\-debugging
 \-Wtraditional
 \-Wtrigraphs
 \-Wuninitialized
 \-Wunused
-\-Wunused-function
-\-Wunused-label
-\-Wunused-parameter
-\-Wunused-variable
-\-Wunused-value
 \-Wwrite\-strings
 .TP
 .B Debugging Options
@@ -454,6 +454,8 @@ in the following sections.
 \-mpa\-risc\-1\-0
 \-mpa\-risc\-1\-1
 \-mkernel
+\-mshared\-libs
+\-mno\-shared\-libs
 \-mlong\-calls
 \-mdisable\-fpregs
 \-mdisable\-indexing
@@ -836,6 +838,14 @@ Attempt to support some aspects of traditional C compilers.
 For details, see the GNU C Manual; the duplicate list here
 has been deleted so that we won't get complaints when it
 is out of date.
+.Sp
+But one note about C++ programs only (not C).  `\|\c
+.B \-traditional\c
+\&\|' has one additional effect for C++: assignment to
+.B this
+is permitted.  This is the same as the effect of `\|\c
+.B \-fthis\-is\-variable\c
+\&\|'.
 .TP
 .B \-traditional\-cpp
 Attempt to support some aspects of traditional C preprocessors.
@@ -857,6 +867,17 @@ Permit the use of `\|\c
 .B $\c
 \&\|' by default on some target systems
 but not others.)
+.TP
+.B \-fenum\-int\-equiv
+Permit implicit conversion of \c
+.B int\c
+\& to enumeration types (C++
+only).  Normally GNU C++ allows conversion of \c
+.B enum\c
+\& to \c
+.B int\c
+\&,
+but not the other way around.
 .TP
 .B \-fexternal\-templates
 Produce smaller code for template declarations, by generating only a
@@ -883,9 +904,40 @@ Conversely, when you compile using the default option
 \&\|', all template instantiations are
 explicitly internal.
 .TP
+.B \-fall\-virtual
+Treat all possible member functions as virtual, implicitly.  All
+member functions (except for constructor functions and
+.B new
+or
+.B delete
+member operators) are treated as virtual functions of the class where
+they appear.
+.Sp
+This does not mean that all calls to these member functions will be
+made through the internal table of virtual functions.  Under some
+circumstances, the compiler can determine that a call to a given
+virtual function can be made directly; in these cases the calls are
+direct in any case.
+.TP
 .B \-fcond\-mismatch
 Allow conditional expressions with mismatched types in the second and
 third arguments.  The value of such an expression is void.
+.TP
+.B \-fthis\-is\-variable
+Permit assignment to \c
+.B this\c
+\& (C++ only).  The incorporation of
+user-defined free store management into C++ has made assignment to
+`\|\c
+.B this\c
+\&\|' an anachronism.  Therefore, by default it is invalid to
+assign to \c
+.B this\c
+\& within a class member function.  However, for
+backwards compatibility, you can make it valid with
+`\|\c
+.B \-fthis-is-variable\c
+\&\|'.
 .TP
 .B \-funsigned\-char
 Let the type \c
@@ -1699,50 +1751,10 @@ return-value in a function whose return-type is not \c
 .B void\c
 \&.
 .TP
-.B \-Wunused\-function
-Warn whenever a static function is declared but not defined or a
-non\-inline static function is unused.
-.TP
-.B \-Wunused\-label
-Warn whenever a label is declared but not used.
-
-To suppress this warning use the
-.B unused
-attribute.
-.TP
-.B \-Wunused\-parameter
-Warn whenever a function parameter is unused aside from its declaration.
-
-To suppress this warning use the
-.B unused
-attribute.
-.TP
-.B \-Wunused\-variable
-Warn whenever a local variable or non\-constant static variable
-is unused aside from its declaration
-
-To suppress this warning use the
-.B unused
-attribute.
-.TP
-.B \-Wunused\-value
-Warn whenever a statement computes a result that is explicitly not used.
-
-To suppress this warning cast the expression to
-.B void\c
-\&.
-.TP
 .B \-Wunused
-All all the above `\|\c
-.B \-Wunused\c
-\&\|' options combined.
-
-In order to get a warning about an unused function parameter, you must
-either specify `\|\c
-.B \-W \-Wunused\c
-\&\|' or separatly specify `\|\c
-.B \-Wunused\-parameter\c
-\&\|'.
+Warn whenever a local variable is unused aside from its declaration,
+whenever a function is declared static but never defined, and whenever
+a statement computes a result that is explicitly not used.
 .TP
 .B \-Wswitch
 Warn whenever a \c
@@ -1852,6 +1864,10 @@ Some spurious warnings can be avoided if you declare as
 .TP
 .B \-Wparentheses
 Warn if parentheses are omitted in certain contexts.
+.TP
+.B \-Wtemplate\-debugging
+When using templates in a C++ program, warn if debugging is not yet
+fully available (C++ only).
 .TP
 .B \-Wall
 All of the above `\|\c
@@ -1980,6 +1996,14 @@ header files.
 .B \-Wredundant-decls
 Warn if anything is declared more than once in the same scope, even in
 cases where multiple declaration is valid and changes nothing.
+.TP
+.B \-Wnested-externs
+Warn if an \c
+.B extern\c
+\& declaration is encountered within an function.
+.TP
+.B \-Wenum\-clash
+Warn about conversion between different enumeration types (C++ only).
 .TP
 .B \-Wlong-long
 Warn if
@@ -3546,7 +3570,6 @@ assembler files (with a `\|\c
 These `\|\c
 .B \-m\c
 \&\|' options are defined for the Intel 80386 family of computers:
-.TP
 .B \-m486
 .TP
 .B \-mno\-486
@@ -3602,6 +3625,15 @@ generate \c
 .B addil\c
 \& instructions instead.  This avoids a rather serious
 bug in the HP-UX linker.
+.TP
+.B \-mshared-libs
+Generate code that can be linked against HP-UX shared libraries.  This option
+is not fully function yet, and is not on by default for any PA target.  Using
+this option can cause incorrect code to be generated by the compiler.
+.TP
+.B \-mno-shared-libs
+Don't generate code that will be linked against shared libraries.  This is
+the default for all PA targets.
 .TP
 .B \-mlong-calls
 Generate code which allows calls to functions greater than 256K away from
@@ -4108,11 +4140,6 @@ comes from the environment variable
 if available, else
 .B /tmp\c
 \&).
-.SH "EXIT STATUS"
-Normally the exit status is 0, if compilation or link edit are successful,
-and nonzero else. The option
-.B -Werror
-treats each warning as an error.
 .SH "SEE ALSO"
 cpp(1), as(1), ld(1), gdb(1), adb(1), dbx(1), sdb(1).
 .br

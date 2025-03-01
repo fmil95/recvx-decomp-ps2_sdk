@@ -11,9 +11,11 @@ process_multilib_options ""
 
 set_board_info compiler  "[find_gcc]";
 set_board_info cflags  "[newlib_include_flags] [libgloss_include_flags]";
+set_board_info ldflags  "[libgloss_link_flags] [newlib_link_flags] [board_info $board addl_link_flags]";
 
-    set_board_info ldflags "[libgloss_link_flags] [newlib_link_flags] [board_info $board addl_link_flags]";
-    set_board_info ldscript "-Teval.ld"
+# CygMON linker script.
+set_board_info ldscript "-Teval.ld"
+
 # Standard remote protocol.
 set_board_info gdb_protocol "remote";
 # We can't do input in GDB (yet! HA!). It *will* do output, hurrah.

@@ -1,15 +1,12 @@
 #
 #  IOP thread sample program Makefile
 #
-#  $Id: Makefile,v 1.9 2001/05/20 09:23:33 tei Exp $
+#  $Id: Makefile,v 1.8 2000/08/02 14:54:36 tei Exp $
 #
 
 #----------- customize section --------------
-DBGFLAG  = -g
-#OPTFLAG  = -O2
-CFLAGS   = -Wall $(DBGFLAG) $(OPTFLAG)
-ASFLAGS  = $(DBGFLAG)
-LDFLAGS  = $(DBGFLAG)
+CFLAGS   = -Wall
+ASFLAGS  = 
 LOADLIBES=
 
 PROG1 = createth.irx

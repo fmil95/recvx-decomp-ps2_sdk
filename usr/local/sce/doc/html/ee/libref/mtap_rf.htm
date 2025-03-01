@@ -1,0 +1,433 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> マルチタップライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>マルチタップライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMtapChangeThreadPriority>sceMtapChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>IOPのスレッドプライオリティを変更する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMtapGetConnection>sceMtapGetConnection </A><BR>
+</TD><TD> </TD>
+<TD>マルチタップの接続状態の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMtapInit>sceMtapInit </A><BR>
+</TD><TD> </TD>
+<TD>マルチタップライブラリの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMtapPortClose>sceMtapPortClose </A><BR>
+</TD><TD> </TD>
+<TD>使用するマルチタップが接続されるポートをクローズする</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMtapPortOpen>sceMtapPortOpen </A><BR>
+</TD><TD> </TD>
+<TD>使用するマルチタップが接続されるポートをオープンする</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+<A name=sceMtapChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMtapChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPのスレッドプライオリティを変更する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMtapChangeThreadPriority</B>( 
+	int <I>priority_high</I>,
+	int <I>priority_low</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>priority_high	</I>メインスレッドのプライオリティ
+<I>priority_low	</I>SIFインターフェイススレッドのプライオリティ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    変更成功 <BR>
+    1以外	失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOPのモジュールmtapman.irxのスレッドプライオリティを変更します。スレッドプライオリティは、 <BR>
+    <blockquote>
+    	priority_high	メインスレッド <BR>
+    </blockquote>
+    <blockquote>
+    	priority_low	SIFインターフェイススレッド <BR>
+    </blockquote>
+    の両方を指定してください。メインスレッドは１フレームに１回実行されます。SIFインターフェイススレッドは、 <BR>
+    <blockquote>
+    	sceMtapPortOpen() <BR>
+    </blockquote>
+    <blockquote>
+    	sceMtapPortClose() <BR>
+    </blockquote>
+    <blockquote>
+    	sceMtapGetConnection() <BR>
+    </blockquote>
+    <blockquote>
+    	sceMtapChangeThreadPrioriry() <BR>
+    </blockquote>
+    実行時に起動します。 <BR>
+    なお、スレッドプライオリティはmtapman.irxをロードする時に指定することもできます。 <BR>
+    この関数は、sceMtapInit()実行後でなければ実行できません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMtapGetConnection>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMtapGetConnection
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マルチタップの接続状態の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMtapGetConnection</B>( 
+	int <I>port</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：マルチタップあり <BR>
+    1以外： マルチタップなし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされたポートに対して、マルチタップが接続されているかどうかの情報を取得します。この関数はRPCを使用して最新の情報をIOPに問い合わせます。 <BR>
+    オープンされていないポートに付いては、マルチタップの接続に関係なく"マルチタップなし"が返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMtapInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMtapInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マルチタップライブラリの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMtapInit</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：成功 <BR>
+    1以外：失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マルチタップライブラリを初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMtapPortClose>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMtapPortClose
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        使用するマルチタップが接続されるポートをクローズする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMtapPortClose</B>( 
+	int <I>port</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+	コントローラポート：0または1
+	メモリーカードスロット：	2または3
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストは受理された <BR>
+    1以外：リクエストは受理されなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マルチタップの接続先としてオープンしたポートをクローズします。 <BR>
+    なお、コントローラポート0とメモリーカードスロット2(またはコントローラポート1とメモリーカードスロット3)は物理的には同じマルチタップが接続されていますが、内部では独立したマルチタップとして動作しています。 <BR>
+    よって、sceMtapPortOpen()でオープンしたポートはそれぞれクローズしてください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./mtap_rf.htm#sceMtapPortOpen">sceMtapPortOpen</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMtapPortOpen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMtapPortOpen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        使用するマルチタップが接続されるポートをオープンする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMtapPortOpen</B>( 
+	int <I>port</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+	コントローラポート：0または1
+	メモリーカードスロット：	2または3
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストは受理された <BR>
+    1以外：リクエストは受理されなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マルチタップの接続先として監視を行うポートを指定します。 <BR>
+    IOPのドライバは、この関数で指定されたポートのみをマルチタップの接続先として認識し、定期的に状態をポーリングします。 <BR>
+    なお、コントローラポート0とメモリーカードスロット2(またはコントローラポート1とメモリーカードスロット3)は物理的には同じマルチタップが接続されていますが、内部では独立したマルチタップとして動作しています。 <BR>
+    よって、コントローラ、メモリーカード両方のポートのマルチタップを使用する場合は、両方オープンしてください。オープンしない方は、差し込み口Aのみ有効になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./mtap_rf.htm#sceMtapPortClose">sceMtapPortClose</a>()
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

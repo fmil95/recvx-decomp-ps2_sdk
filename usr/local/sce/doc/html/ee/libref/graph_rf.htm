@@ -1,0 +1,3769 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> GS基本ライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>GS基本ライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceGsAlphaEnv>sceGsAlphaEnv </A><BR>
+</TD><TD> </TD>
+<TD>アルファブレンディング関連の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsAlphaEnv2>sceGsAlphaEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>アルファブレンディング関連の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsClear>sceGsClear </A><BR>
+</TD><TD> </TD>
+<TD>バッファクリア用データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsDBuff>sceGsDBuff </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファに関する設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsDBuffDc>sceGsDBuffDc </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファに関する設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsDispEnv>sceGsDispEnv </A><BR>
+</TD><TD> </TD>
+<TD>表示環境の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsDrawEnv1>sceGsDrawEnv1 </A><BR>
+</TD><TD> </TD>
+<TD>描画環境の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsDrawEnv2>sceGsDrawEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>描画環境の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsGParam>sceGsGParam </A><BR>
+</TD><TD> </TD>
+<TD>ライブラリシステム情報</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsLoadImage>sceGsLoadImage </A><BR>
+</TD><TD> </TD>
+<TD>LoadImageのためのデータ構造</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsStoreImage>sceGsStoreImage </A><BR>
+</TD><TD> </TD>
+<TD>StoreImageのためのデータ構造</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsTexEnv>sceGsTexEnv </A><BR>
+</TD><TD> </TD>
+<TD>テクスチャ関連の設定データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsTexEnv2>sceGsTexEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>テクスチャ関連の設定データ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceGsExecLoadImage>sceGsExecLoadImage </A><BR>
+</TD><TD> </TD>
+<TD>LoadImageの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsExecStoreImage>sceGsExecStoreImage </A><BR>
+</TD><TD> </TD>
+<TD>StoreImageの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsGetGParam>sceGsGetGParam </A><BR>
+</TD><TD> </TD>
+<TD>ライブラリシステム情報を獲得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsGetIMR / isceGsGetIMR>sceGsGetIMR / isceGsGetIMR </A><BR>
+</TD><TD> </TD>
+<TD>割り込みマスクの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsPutDispEnv>sceGsPutDispEnv </A><BR>
+</TD><TD> </TD>
+<TD>表示関連の初期設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsPutDrawEnv>sceGsPutDrawEnv </A><BR>
+</TD><TD> </TD>
+<TD>描画関連の初期設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsPutIMR / isceGsPutIMR>sceGsPutIMR / isceGsPutIMR </A><BR>
+</TD><TD> </TD>
+<TD>割り込みマスクの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsResetGraph>sceGsResetGraph </A><BR>
+</TD><TD> </TD>
+<TD>GSの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsResetPath>sceGsResetPath </A><BR>
+</TD><TD> </TD>
+<TD>データパスデバイスの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefAlphaEnv>sceGsSetDefAlphaEnv </A><BR>
+</TD><TD> </TD>
+<TD>アルファブレンディング設定データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefAlphaEnv2>sceGsSetDefAlphaEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>アルファブレンディング設定データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefClear>sceGsSetDefClear </A><BR>
+</TD><TD> </TD>
+<TD>バッファクリア用データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefClear2>sceGsSetDefClear2 </A><BR>
+</TD><TD> </TD>
+<TD>バッファクリア用データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefDBuff>sceGsSetDefDBuff </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefDBuffDc>sceGsSetDefDBuffDc </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefDispEnv>sceGsSetDefDispEnv </A><BR>
+</TD><TD> </TD>
+<TD>表示環境データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefDrawEnv>sceGsSetDefDrawEnv </A><BR>
+</TD><TD> </TD>
+<TD>描画環境データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefDrawEnv2>sceGsSetDefDrawEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>描画環境データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefLoadImage>sceGsSetDefLoadImage </A><BR>
+</TD><TD> </TD>
+<TD>LoadImage情報の設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefStoreImage>sceGsSetDefStoreImage </A><BR>
+</TD><TD> </TD>
+<TD>StoreImage情報の設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefTexEnv>sceGsSetDefTexEnv </A><BR>
+</TD><TD> </TD>
+<TD>テクスチャ設定データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetDefTexEnv2>sceGsSetDefTexEnv2 </A><BR>
+</TD><TD> </TD>
+<TD>テクスチャ設定データの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetHalfOffset>sceGsSetHalfOffset </A><BR>
+</TD><TD> </TD>
+<TD>描画オフセットデータの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSetHalfOffset2>sceGsSetHalfOffset2 </A><BR>
+</TD><TD> </TD>
+<TD>描画オフセットデータの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSwapDBuff>sceGsSwapDBuff </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファの切り替え</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSwapDBuffDc>sceGsSwapDBuffDc </A><BR>
+</TD><TD> </TD>
+<TD>ダブルバッファの切り替え</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSyncPath>sceGsSyncPath </A><BR>
+</TD><TD> </TD>
+<TD>データ転送の終了待ち</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSyncV>sceGsSyncV </A><BR>
+</TD><TD> </TD>
+<TD>V-Blankとの同期待ち</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGsSyncVCallback>sceGsSyncVCallback </A><BR>
+</TD><TD> </TD>
+<TD>VSyncコールバック関数の設定</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceGsAlphaEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsAlphaEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アルファブレンディング関連の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsAlpha	<I>alpha1</I>;
+	long		<I>alpha1addr</I>;
+	sceGsPabe	<I>pabe</I>;
+	long		<I>pabeaddr</I>;
+	sceGsTexa	<I>texa</I>;
+	long		<I>texaaddr</I>;
+	sceGsFba	<I>fba1</I>;
+	long		<I>fba1addr</I>;
+} <B>sceGsAlphaEnv</B> __attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>alpha1</I>		ALPHA_1レジスタの設定値
+<I>alpha1addr</I>	ALPHA_1レジスタのアドレス
+<I>pabe</I>		PABEレジスタの設定値
+<I>pabeaddr</I>	PABEレジスタのアドレス
+<I>texa</I>		TEXAレジスタの設定値
+<I>texaaddr</I>		TEXAレジスタのアドレス
+<I>fba1</I>		FBA_1レジスタの設定値
+<I>fba1addr</I>		FBA_1レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アルファブレンディング情報(コンテキスト1)を保持する構造体です。 <BR>
+    sceGsSetDefAlphaEnv()関数で、構造体に値を設定できます。 <BR>
+    構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付ければ、そのままGIFに転送できる構造になっています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsAlphaEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsAlphaEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アルファブレンディング関連の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsAlpha	<I>alpha2</I>;
+	long		<I>alpha2addr</I>;
+	sceGsPabe	<I>pabe</I>;
+	long		<I>pabeaddr</I>;
+	sceGsTexa	<I>texa</I>;
+	long		<I>texaaddr</I>;
+	sceGsFba	<I>fba2</I>;
+	long		<I>fba2addr</I>;
+} <B>sceGsAlphaEnv2</B> __attribute__((aligned(16)));
+	
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>alpha2</I>		ALPHA_2レジスタの設定値
+<I>alpha2addr</I>	ALPHA_2レジスタのアドレス
+<I>pabe</I>		PABEレジスタの設定値
+<I>pabeaddr</I>	PABEレジスタのアドレス
+<I>texa</I>		TEXAレジスタの設定値
+<I>texaaddr</I>		TEXAレジスタのアドレス
+<I>fba2</I>		FBA_2レジスタの設定値
+<I>fba2addr</I>		FBA_2レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アルファブレンディング情報(コンテキスト2)を保持する構造体です。 <BR>
+    sceGsSetDefAlphaEnv2()関数で、構造体に値を設定できます。 <BR>
+    構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付ければ、そのままGIFに転送できる構造になっています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+    PABE, TEXAは、コンテキスト切り替えができませんので、コンテキスト1と異なる値を設定する場合には、注意してご使用ください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsClear>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsClear
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        バッファクリア用データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsTest	<I>testa</I>;
+	long		<I>testaaddr</I>;
+	sceGsPrim	<I>prim</I>;
+	long		<I>primaddr</I>;
+	sceGsRgbaq	<I>rgbaq</I>;
+	long		<I>rgbaqaddr</I>;
+	sceGsXyz	<I>xyz2a</I>;
+	long		<I>xyz2aaddr</I>;
+	sceGsXyz	<I>xyz2b</I>;
+	long		<I>xyz2baddr</I>;
+	sceGsTest	<I>testb</I>;
+	long		<I>testbaddr;</I>
+} <B>sceGsClear </B>__attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>testa</I>		クリア用TESTレジスタの設定値
+<I>testaaddr</I>	TESTレジスタのアドレス
+<I>prim</I>		クリア用スプライトのPRIM設定値
+<I>primaddr</I>	PRIMレジスタのアドレス
+<I>rgbaq</I>		フレームバッファクリア値
+<I>rgbaqaddr</I>	RGBAQレジスタのアドレス
+<I>xyz2a</I>		クリア用スプライトの左上端点座標
+<I>xyz2aaddr</I>	XYZ2レジスタのアドレス
+<I>xyz2b</I>		クリア用スプライトの右下端点座標
+<I>testb</I>		TESTレジスタの再設定値
+<I>testbaddr</I>	TESTレジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    バッファクリア用のデータを保持する構造体です。 <BR>
+    構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付ければ、そのままGIFに転送できる構造になっています。 <BR>
+    実体は単なるスプライト描画ですので、直前に設定されたXYOFFSETやSCISSOR等の描画環境設定の影響を受けます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsDBuff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsDBuff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファに関する設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsDispEnv	<I>disp[2]</I>;
+	sceGifTag	<I>giftag0</I>;
+	sceGsDrawEnv1	<I>draw0</I>;
+	sceGsClear	<I>clear0</I>;
+	sceGifTag	<I>giftag1</I>;
+	sceGsDrawEnv1	<I>draw1</I>;
+	sceGsClear	<I>clear1</I>;
+}<B> sceGsDBuff</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>disp[2]</I>		表示環境
+<I>giftag0</I>		描画環境用GIFtag(バッファ0用)
+<I>draw0	</I>	描画環境(バッファ0用)
+<I>clear0	</I>	描画バッファクリア環境(バッファ0用)
+<I>giftag1	</I>	描画環境用GIFtag(バッファ1用)
+<I>draw1	</I>	描画環境(バッファ1用)
+<I>clear1		</I>描画バッファクリア環境(バッファ1用)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ダブルバッファ情報を保持する構造体です。 <BR>
+    sceGsSetDefDBuff()関数で、構造体に値を設定できます。 <BR>
+    sceGsSwapDBuff()関数で、GS(GIF)に値を転送できます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+    この構造体は、コンテキスト1の設定のみを保持します。コンテキスト2を併用する場合は、sceGsDBuffDcを使用してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsDBuffDc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsDBuffDc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファに関する設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsDispEnv	<I>disp[2]</I>;
+	sceGifTag	<I>giftag0</I>;
+	sceGsDrawEnv1	<I>draw01</I>;
+	sceGsDrawEnv2	<I>draw02</I>;
+	sceGsClear	<I>clear0</I>;
+	sceGifTag	<I>giftag1</I>;
+	sceGsDrawEnv1	<I>draw11</I>;
+	sceGsDrawEnv2	<I>draw12</I>;
+	sceGsClear	<I>clear1</I>;
+} <B>sceGsDBuffDc</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>disp[2]	</I>	表示環境
+<I>giftag0	</I>	描画環境用GIFtag(バッファ0用)
+<I>draw01	</I>	描画環境(コンテキスト1、バッファ0用)
+<I>draw02		</I>描画環境(コンテキスト2、バッファ0用)
+<I>clear0	</I>	描画バッファクリア環境(バッファ0用)
+<I>giftag1	</I>	描画環境用GIFtag(バッファ1用)
+<I>draw11	</I>	描画環境(コンテキスト1、バッファ1用)
+<I>draw12	</I>	描画環境(コンテキスト2、バッファ1用)
+<I>clear1	</I>	描画バッファクリア環境(バッファ1用)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    2コンテキスト併用のダブルバッファ情報を保持する構造体です。 <BR>
+    sceGsSetDefDBuffDc()関数で、構造体に値を設定できます。 <BR>
+    sceGsSwapDBuffDc()関数で、GS(GIF)に値を転送できます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsDispEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsDispEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        表示環境の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	tGS_PMODE	<I>pmode</I>;
+	tGS_SMODE2	<I>smode2</I>;
+	tGS_DISPFB2	<I>dispfb</I>;
+	tGS_DISPLAY2	<I>display</I>;
+	tGS_BGCOLOR	<I>bgcolor</I>;
+} <B>sceGsDispEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pmode</I>		PCRTCのモード設定値(PMODEレジスタの値)
+<I>smode2</I>		ビデオ同期モード設定値(SMODE2レジスタの値)
+<I>dispfb</I>		表示フレームバッファの設定値(DISPFB2レジスタの値)
+<I>display</I>		テレビ画面上の表示位置の設定値(DISPLAY2レジスタの値)
+<I>bgcolor</I>		バックグラウンドカラーの設定値(BGCOLORレジスタの値)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    表示関連の設定、GSの矩形読み出し回路2に関する設定データを	保持する構造体です。 <BR>
+    sceGsSetDefDispEnv()関数で、構造体に値を設定できます。 <BR>
+    sceGsPutDispEnv()関数で、構造体の値をGSに設定できます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    smode2はGSのRevision.1チップでは無効です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsDrawEnv1>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsDrawEnv1
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画環境の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsFrame	<I>frame1</I>;
+	u_long		<I>frame1addr</I>;
+	sceGsZbuf	<I>zbuf1</I>;
+	long		<I>zbuf1addr</I>;
+	sceGsXyoffset	<I>xyoffset1</I>;
+	long		<I>xyoffset1addr</I>;
+	sceGsScissor	<I>scissor1;</I>
+	long		<I>scissor1addr</I>;
+	sceGsPrmodecont	<I>prmodecont</I>;
+	long		<I>prmodecontaddr</I>;
+	sceGsColclamp	<I>colclamp;</I>
+	long		<I>colclampaddr</I>;
+	sceGsDthe	<I>dthe</I>;
+	long		<I>dtheaddr</I>;
+	sceGsTest	<I>test1</I>;
+	long		<I>test1addr</I>;
+} <B>sceGsDrawEnv1</B> __attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>frame1	</I>	FRAME_1レジスタの設定値
+<I>frame1addr</I>	FRAME_1レジスタのアドレス
+<I>zbuf1</I>		ZBUF_1レジスタの設定値
+<I>zbuf1addr</I>	ZBUF_1レジスタのアドレス
+<I>xyoffset1</I>		XYOFFSET_1レジスタの設定値
+<I>xyoffset1addr</I>	XYOFFSET_1レジスタのアドレス
+<I>scissor1	</I>	SCISSOR_1レジスタの設定値
+<I>scissor1addr</I>	SCISSOR_1レジスタのアドレス
+<I>prmodecont</I>	PRMODECONTレジスタの設定値
+<I>prmodecontaddr</I>	PRMODECONTレジスタのアドレス
+<I>colclamp</I>		COLCLAMPレジスタの設定値
+<I>colclampaddr</I>	COLCLAMPレジスタのアドレス
+<I>dthe</I>		DTHEレジスタの設定値
+<I>dtheaddr</I>		DTHEレジスタのアドレス
+<I>test1</I>		TEST_1レジスタの設定値
+<I>test1addr</I>	TEST_1レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画環境情報(コンテキスト1)を保持する構造体です。 <BR>
+    sceGsSetDefDrawEnv()関数で、構造体に値を設定できます。 <BR>
+    また、この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を付ければ、sceGsPutDrawEnv()関数を用いてGSにそのまま転送することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsDrawEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsDrawEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画環境の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsFrame	<I>frame2</I>;
+	u_long		<I>frame2addr</I>;
+	sceGsZbuf	<I>zbuf2</I>;
+	long		<I>zbuf2addr</I>;
+	sceGsXyoffset	<I>xyoffset2</I>;
+	long		<I>xyoffset2addr</I>;
+	sceGsScissor	<I>scissor2</I>;
+	long		<I>scissor2addr;</I>
+	sceGsPrmodecont	<I>prmodecont</I>;
+	long		<I>prmodecontaddr</I>;
+	sceGsColclamp	<I>colclamp</I>;
+	long		<I>colclampaddr</I>;
+	sceGsDthe	<I>dthe</I>;
+	long		<I>dtheaddr</I>;
+	sceGsTest	<I>test2;</I>
+	long		<I>test2addr</I>;
+} <B>sceGsDrawEnv2</B> __attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>frame2	</I>	FRAME_2レジスタの設定値
+<I>frame2addr</I>	FRAME_2レジスタのアドレス
+<I>zbuf2</I>		ZBUF_2レジスタの設定値
+<I>zbuf2addr</I>	ZBUF_2レジスタのアドレス
+<I>xyoffset2</I>		XYOFFSET_2レジスタの設定値
+<I>xyoffset2addr</I>	XYOFFSET_2レジスタのアドレス
+<I>scissor2		</I>SCISSOR_2レジスタの設定値
+<I>scissor2addr</I>	SCISSOR_2レジスタのアドレス
+<I>prmodecont</I>	PRMODECONTレジスタの設定値
+<I>prmodecontaddr</I>	PRMODECONTレジスタのアドレス
+<I>colclamp</I>		COLCLAMPレジスタの設定値
+<I>colcalmpaddr</I>	COLCLAMPレジスタのアドレス
+<I>dthe</I>		DTHEレジスタの設定値
+<I>dtheaddr	</I>	DTHEレジスタのアドレス
+<I>test2</I>		TEST_2レジスタの設定値
+<I>test2addr</I>	TEST_2レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画環境情報(コンテキスト2)を保持する構造体です。 <BR>
+    sceGsSetDefDrawEnv2()関数で、構造体に値を設定できます。 <BR>
+    また、この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を付ければ、sceGsPutDrawEnv()関数を用いてGSにそのまま転送することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+    PRMODECONT, COLCLAMP, DTHEは、コンテキスト切り替えができませんので、コンテキスト1の設定と異なる値を設定する場合は注意してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsGParam>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsGParam
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ライブラリシステム情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	short	<I>sceGsInterMode</I>;
+	short	<I>sceGsOutMode</I>;
+	short	<I>sceGsFFMode</I>;
+	short	<I>sceGsVersion</I>;
+	volatile int (*<I>sceGsVSCfunc</I>)(int);
+	int	<I>sceGsVSCid</I>;
+} <B>sceGsGParam</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sceGsInterMode</I>		インタレース/ノンインタレースの設定値
+<I>sceGsOutMode</I>		NTSC/PALの設定値
+<I>sceGsFFMode</I>		FIELD/FRAMEの設定値
+<I>sceGsVersion</I>		GSのバージョン
+<I>sceGsVSCfunc</I>		sceGsSyncVCallbackで設定されたコールバック関数ポインタ
+<I>sceGsVSCid</I>		割り込みハンドラID
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ライブラリで使用するパラメータを保持する構造体です。 <BR>
+    ライブラリで使用中のデータはsceGsGetGParam()で参照できます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsLoadImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsLoadImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LoadImageのためのデータ構造
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGifTag	<I>giftag0</I>;
+	sceGsBitbltbuf	<I>bitbltbuf</I>;
+	long		<I>bitbltbufaddr</I>;
+	sceGsTrxpos	<I>trxpos</I>;
+	long		<I>trxposaddr</I>;
+	sceGsTrxreg	<I>trxreg</I>;
+	long		<I>trxregaddr</I>;
+	sceGsTrxdir	<I>trxdir</I>;
+	long		<I>trxdiraddr</I>;
+	sceGifTag	<I>giftag1</I>;
+} <B>sceGsLoadImage</B> __attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>giftag0</I>		転送情報設定用GIFtag
+<I>bitbltbuf</I>		BITBLTBUFレジスタの設定値
+<I>bitbltbufaddr</I>	BITBLTBUFレジスタのアドレス
+<I>trxpos</I>		TRXPOSレジスタの設定値
+<I>trxposaddr</I>	TRXPOSレジスタのアドレス
+<I>trxreg</I>		TRXREGレジスタの設定値
+<I>trxregaddr</I>	TRXREGレジスタのアドレス
+<I>trxdir</I>		TRXDIRレジスタの設定値
+<I>trxdiraddr</I>	TRXDIRレジスタのアドレス
+<I>giftag1</I>		転送イメージ用GIFtag
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSへのイメージデータ転送を行うための構造体です。 <BR>
+    sceGsSetDefLoadImage()関数で、構造体に値を設定することができます。 <BR>
+    この構造体はそのままGIFへ転送し、続けてイメージデータを転送することができます。 <BR>
+    また、より簡便な方法として、sceGsExecLoadImage()関数でGSへイメージデータ転送を行うことができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsStoreImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsStoreImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        StoreImageのためのデータ構造
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_int		<I>vifcode</I>[4];
+	sceGifTag	<I>giftag</I>;
+	sceGsBitbltbuf	<I>bitbltbuf</I>;
+	long		<I>bitbltbufaddr</I>;
+	sceGsTrxpos	<I>trxpos</I>;
+	long		<I>trxposaddr</I>;
+	sceGsTrxreg	<I>trxreg</I>;
+	long		<I>trxregaddr</I>;
+	sceGsFinish	<I>finish</I>;
+	long		<I>finishaddr</I>;
+	sceGsTrxdir	<I>trxdir</I>;
+	long		<I>trxdiraddr</I>;
+} <B>sceGsStoreImage</B> __attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>vifcode</I>[4]	Path2用VIFcodeの設定値
+<I>giftag</I>		転送情報設定GIFtag
+<I>bitbltbuf</I>		BITBLTBUFレジスタの値
+<I>bitbltbufaddr</I>	BITBLTBUFレジスタのアドレス
+<I>trxpos</I>		TRXPOSレジスタの設定値
+<I>trxposaddr</I>	TRXPOSレジスタのアドレス
+<I>trxreg</I>		TRXREGレジスタの設定値
+<I>trxregaddr</I>	TRXREGレジスタのアドレス
+<I>finish</I>		FINISHレジスタの設定値
+<I>finishaddr</I>	FINISHレジスタのアドレス
+<I>trxdir</I>		TRXDIRレジスタの設定値
+<I>trxdiraddr</I>	TRXDIRレジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PATH2経由でGSからのイメージデータ転送を行うための構造体です。 <BR>
+    sceGsSetDefStoreImage()関数で、構造体に値を設定することができます。 <BR>
+    また、簡便な方法として、sceGsExecStoreImage()関数でイメージデータ転送を行うことができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsTexEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsTexEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        テクスチャ関連の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsTexflush	<I>texflush</I>;
+	long		<I>texflushaddr</I>;
+	sceGsTex1	<I>tex11</I>;
+	long		<I>tex11addr</I>;
+	sceGsTex0	<I>tex01</I>;
+	long		<I>01addr</I>;
+	sceGsClamp	<I>clamp1</I>;
+	long		<I>clamp1addr</I>;
+} <B>sceGsTexEnv </B>__attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>texflush	</I>	TEXFLUSHレジスタの値
+<I>texflushaddr	</I>TEXFLUSHレジスタのアドレス
+<I>tex01	</I>	TEX0_1レジスタの値
+<I>tex01addr	</I>TEX0_1レジスタのアドレス
+<I>tex11	</I>	TEX1_1レジスタの値
+<I>tex11addr	</I>TEX1_1レジスタのアドレス
+<I>clamp1	</I>	CLAMP_1レジスタの値
+<I>clamp1addr	</I>CLAMP_1レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャ情報(コンテキスト1)を保持する構造体です。 <BR>
+    sceGsSetDefTexEnv()関数で、構造体に値を設定できます。 <BR>
+    構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付ければ、そのままGIFに転送できる構造になっています。 <BR>
+    mipmapを使用する場合には、この他にMIPTBP1_1, MIPTBP2_1レジスタの設定が必要です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsTexEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsTexEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        テクスチャ関連の設定データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceGsTexflush	<I>texflush</I>;
+	long		<I>texflushaddr</I>;
+	sceGsTex1	<I>tex12</I>;
+	long		<I>tex12addr</I>;
+	sceGsTex0	<I>tex02</I>;
+	long		<I>tex02addr</I>;
+	sceGsClamp	<I>clamp2</I>;
+	long		<I>clamp2addr</I>;
+} <B>sceGsTexEnv2 </B>__attribute__((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>texflush</I>		TEXFLUSHレジスタの値
+<I>texflushaddr</I>	TEXFLUSHレジスタのアドレス
+<I>tex02</I>		TEX0_2レジスタの値
+<I>tex02addr</I>	TEX0_2レジスタのアドレス
+<I>tex12</I>		TEX1_2レジスタの値
+<I>tex12addr</I>	TEX1_2レジスタのアドレス
+<I>clamp2</I>		CLAMP_2レジスタの値
+<I>clamp2addr</I>	CLAMP_2レジスタのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャ情報(コンテキスト2)を保持する構造体です。 <BR>
+    sceGsSetDefTexEnv2()関数で、構造体に値を設定できます。 <BR>
+    構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付ければ、そのままGIFに転送できる構造になっています。 <BR>
+    mipmapを使用する場合には、この他にMIPTBP1_2, MIPTBP2_2レジスタの設定が必要です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この構造体にはDMAで直接GSに転送されるデータが設定されますので、先頭を16byteアライメントに必ず合わせてメモリに配置してください。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceGsExecLoadImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsExecLoadImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LoadImageの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsExecLoadImage</B>(
+	sceGsLoadImage *<I>lp</I>,
+	u_long128 *<I>srcaddr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lp</I>		LoadImage情報が設定されている構造体のアドレス
+<I>srcaddr</I>		データ転送元アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    0 : 正常終了 <BR>
+    -1: Timeout <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PATH3経由でメインメモリからGSのローカルメモリへイメージデータを転送します。転送に必要な情報はあらかじめsceGsSetDefLoadImage()関数を用いて構造体にセットしておいてください。 <BR>
+    プロトタイピングやデバッグ用途を想定した簡易版ですので、DMAチャネル（ch-2）がアイドルでない場合は、アイドルになるまでプログラムがブロックされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsLoadImage構造体をCachedに指定した場合、この関数を呼び出す前にD-cacheをフラッシュしてメモリに書き戻しておくよう注意してください。 <BR>
+    新しいテクスチャをGSに転送したときには、テクスチャの再設定を行う必要があります。sceGsSetDefTexEnv()関数の説明を参照してください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsExecStoreImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsExecStoreImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        StoreImageの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsExecStoreImage</B>(
+	sceGsStoreImage *<I>sp</I>,
+	u_long128 *<I>dstaddr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sp	</I>	StoreImage情報が設定されている構造体のアドレス
+<I>dstaddr	</I>	データ転送先アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    0 : 正常終了 <BR>
+    -1: Timeout <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのローカルメモリからメインメモリへイメージデータを転送します。 <BR>
+    転送に必要な情報はあらかじめsceGsSetDefStoreImage()関数を用いて構造体にセットしておいてください。 <BR>
+    プロトタイピングやデバッグ用途を想定した簡易版ですので、転送が終了するまでプログラムはブロックされます。 <BR>
+    また、データ転送に使用するデータパスはPATH2ですが、他のデータパスも停止されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsStoreImage()ではDMA環境の待避を行いません。 <BR>
+    そのため、実行直後はDl_CHCR.TTE=0に初期化されてしまいます。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsGetGParam>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsGetGParam
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ライブラリシステム情報を獲得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceGsGParam *<B>sceGsGetGParam</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムで使用中の構造体のポインタ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ライブラリで使用中のシステム情報構造体のポインタを返します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsGetIMR / isceGsGetIMR>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsGetIMR / isceGsGetIMR
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みマスクの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>sceGsGetIMR</B>(
+	void
+)
+u_long <B>isceGsGetIMR</B>(
+	void
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前にsceGsPutIMR/isceGsPutIMR関数で設定されたIMRレジスタの値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSの割り込みマスクを設定するIMRレジスタは書き込み専用なので、現在の設定を確認することができません。IMRレジスタへの書き込みを必ずsceGsPutIMR関数を介して行うようにすれば、直前に設定されていた値を確認することが可能になります。 <BR>
+<BR>
+    割り込みハンドラ中で割り込みマスクを取得する場合には、isceGsGetIMR()をご使用ください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsPutDispEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsPutDispEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        表示関連の初期設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsPutDispEnv</B>(
+	sceGsDispEnv *<I>disp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>disp</I>		表示環境を設定する構造体のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    dispの内容をGSのレジスタに設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GS側のレジスタアドレスが、GSのバージョンによって異なります。 <BR>
+    この関数は、その差異を吸収します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsPutDrawEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsPutDrawEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画関連の初期設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsPutDrawEnv</B>(
+	sceGifTag *<I>giftag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>giftag	</I>	描画環境設定データの先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    0 : 正常終了 <BR>
+    -1: Timeout(先行するCh-2 DMAが終了しない場合) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画環境の設定データをGSに転送し、所要のレジスタに設定します。 <BR>
+    適切な値が設定された描画環境構造体sceGsDrawEnvを用意し、その直前にGIFtag（PACKEDモード,REGS=A+D）を置き、そのGIFtagのアドレスを引数giftagに指定してください。 <BR>
+    この関数はDMA転送を開始するとただちに（転送終了を待たずに）終了します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    データ転送はPATH3経由で行うため、この関数を呼び出す時点でtoGIFチャネルとGIFがアイドル状態で、PATH3がマスクされていないことが必要です。 <BR>
+    アイドル状態でなければアイドル状態になるまでプログラムがブロックされます。 <BR>
+    DMAを使用してデータ転送を行うため、GIFtagおよび後続のデータはメモリ上に置かれている必要があります。この関数を呼び出す前に、必ずユーザ側でD-cacheからフラッシュしてメモリ上に書き戻しておいてください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsPutIMR / isceGsPutIMR>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsPutIMR / isceGsPutIMR
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みマスクの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>sceGsPutIMR</B>(
+	u_long <I>imr</I>
+)
+u_long <B>isceGsPutIMR</B>(
+	u_long <I>imr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>imr	</I>	IMRレジスタに設定する値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前にsceGsPutIMR/isceGsPutIMR関数で設定されたIMRレジスタの値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSの割り込みマスクを設定するIMRレジスタは書き込み専用なので、現在の設定を確認することができません。IMRレジスタへの書き込みを必ずこの関数を介して行うようにすれば、直前に設定されていた値を確認することが可能になります。 <BR>
+<BR>
+    割り込みハンドラ中で割り込みマスクを設定する場合には、isceGsPutIMR()をご使用ください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsResetGraph>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsResetGraph
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GSの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsResetGraph</B>(
+	short <I>mode</I>,
+	short <I>inter</I>,
+	short <I>omode</I>,
+	short <I>ffmode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>		リセットモード
+		0: オールリセット
+		1: 描画リセット
+<I>inter</I>		インタレース/ノンインタレースの設定(mode==0の時のみ有効)
+		0 : non-interlace
+		1 : interlace
+<I>omode</I>		ビデオ信号フォーマットの設定(mode==0の時のみ有効)
+		2 : NTSC
+		3 : PAL 
+<I>ffmode</I>		FRAME/FIELDモードの設定(interlace時のみ有効)
+		0 : FIELDモード始点から1ラインおきに読む
+		  (+0,+2,+4,... / +1,+3,+5,...)
+		1 : FRAMEモード始点から1ラインずつ読む
+		  (+0,+1,+2,+3,...)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSを指定したモードでリセットします。 <BR>
+    modeに0を指定した場合はGS全体をリセットします。 <BR>
+    modeに1を指定した場合は、描画中の処理をキャンセルし、GSの内部バッファにあるプリミティブデータを破棄します（描画環境／表示環境は保持されます）。 <BR>
+    テレビ画面に対する表示関連の設定がGSチップのバージョンによって異なりますので、その差異を吸収するために、必ずこの関数を用いて初期化を行ってください。 <BR>
+    この関数を使用しない場合、画面表示が乱れることがあります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オールリセット時は、GSのローカルメモリの内容は保証されません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsResetPath>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsResetPath
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データパスデバイスの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsResetPath</B>(
+	void
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSへのデータ転送経路にあたるデバイス、つまりVIF1, VU1, GIFをリセットします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF1の汎用レジスタを以下のように初期化します。 <BR>
+    STCYCL	(WL=4, CL=4) <BR>
+    STMASK	(all 0) <BR>
+    STMOD	(MOD=0) <BR>
+    MSKPATH3	(0:転送許可) <BR>
+    BASE	(0) <BR>
+    OFFSET	(0) <BR>
+    ITOP	(0) <BR>
+    またVIF1の特権レジスタVIF1_ERRのME0を1にします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefAlphaEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefAlphaEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アルファブレンディング設定データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefAlphaEnv</B>(
+	sceGsAlphaEnv *<I>ap</I>,
+	short <I>pabe</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ap</I>		アルファブレンディング情報を設定する構造体のアドレス
+<I>pabe</I>		ピクセル単位のアルファブレンディングの制御
+		0 : 行わない
+		1 : 行う（A値のMSBが0のピクセルに対してはアルファ
+			ブレンディングoff)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsAlphaEnv構造体のサイズ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アルファブレンディングの設定(コンテキスト1)に関するデータを、sceGsAlphaEnv構造体の各メンバにセットします。 <BR>
+    この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのままGIFに転送することができます。構造体がCachedの場合はD-cacheをフラッシュしてメモリに書き戻さないと正しいデータが転送されませんので注意してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsAlphaEnv構造体の各メンバに設定される値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    alpha1.B = 1 <BR>
+    alpha1.D = 1 <BR>
+    pabe = pabe <BR>
+    texa.TA0 = 127 <BR>
+    texa.AEM = 1 <BR>
+    texa.TA1 = 129 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefAlphaEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefAlphaEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アルファブレンディング設定データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefAlphaEnv2</B>(
+	sceGsAlphaEnv2 *<I>ap</I>,
+	short <I>pabe</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ap</I>		アルファブレンディング情報を設定する構造体のアドレス
+<I>pabe</I>		ピクセル単位のアルファブレンディングの制御
+		0 : 行わない
+		1 : 行う（A値のMSBが0のピクセルに対してはアルファ
+			ブレンディングoff)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsAlphaEnv2構造体のサイズ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アルファブレンディングの設定(コンテキスト2)に関するデータを、sceGsAlphaEnv2構造体の各メンバにセットします。 <BR>
+    この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのままGIFに転送することができます。構造体がCachedの場合はD-cacheをフラッシュしてメモリに書き戻さないと正しいデータが転送されませんので注意してください。 <BR>
+    PABE, TEXAは、コンテキスト切り替えができませんので、コンテキスト1と異なる値を設定する場合は注意してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsAlphaEnv2構造体の各メンバに設定される値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    alpha2.B = 1 <BR>
+    alpha2.D = 1 <BR>
+    pabe = pabe <BR>
+    texa.TA0 = 127 <BR>
+    texa.AEM = 1 <BR>
+    texa.TA1 = 129 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefClear>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefClear
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        バッファクリア用データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefClear</B>(
+	sceGsClear *<I>cp</I>,
+	short <I>ztest</I>,
+	short <I>x</I>, short <I>y</I>,
+	short <I>w</I>, short <I>h</I>,
+	u_char <I>r</I>, u_char <I>g</I>, u_char <I>b</I>, u_char <I>a</I>,
+	u_int <I>z</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>cp</I>		バッファクリア用データを設定する構造体のアドレス
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファ不使用）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>x</I>, <I>y</I>		クリア領域左上端点座標
+<I>w</I>, <I>h</I>		クリア領域の幅、高さ(ピクセル単位)
+<I>r</I>,<I>g</I>,<I>b</I>,<I>a</I>		フレームバッファのクリア値
+<I>z</I>		Zバッファのクリア値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsClear構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    バッファクリア用のデータを、指定されたsceGsClear構造体の各メンバにセットします。この構造体の直前にGIFtag（PACKEDモード、A+D）を置いてGIFに転送すると、コンテキスト１のフレームバッファをr,g,b,aに指定した値で、同じくコンテキスト１のZバッファをzに指定した値でクリアすることになります。 <BR>
+    ztestに1-3を指定した場合は、デプステスト方式をいったんALWAYSとしてフレームバッファとZバッファをクリアし、あらためてztestに指定した方式を設定するようになります。 <BR>
+    ztestに0を指定した場合は、ztest=1と等価な動作をしますので、必ず、ZBUFのZMSKの値を1にしてからご使用ください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ztest != 0を指定したとき、この関数によってsceGsClear構造体の各メンバにセットされる値は次のとおりです。 <BR>
+    必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    testa.ZTE = 1 <BR>
+    testa.ZTST = 1 <BR>
+    prim = 6(SPRITE) <BR>
+    rgbaq.R = r <BR>
+    rgbaq.G = g <BR>
+    rgbaq.B = b <BR>
+    rgbaq.A = a <BR>
+    rgbaq.Q = 1.0f <BR>
+    xyz2a.X = x&lt;&lt;4 <BR>
+    xyz2a.Y = y&lt;&lt;4 <BR>
+    xyz2a.Z = z <BR>
+    xyz2b.X = (x+w)&lt;&lt;4 <BR>
+    xyz2b.Y = (y+h)&lt;&lt;4 <BR>
+    xyz2b.Z = z <BR>
+    testb.ZTE = 1 <BR>
+    testb.ZTST = ztest <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefClear2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefClear2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        バッファクリア用データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefClear2</B>(
+	sceGsClear *<I>cp</I>,
+	short <I>ztest</I>,
+	short <I>x</I>, short <I>y</I>,
+	short <I>w</I>, short <I>h</I>,
+	u_char <I>r</I>, u_char <I>g</I>, u_char <I>b</I>, u_char <I>a</I>,
+	u_int <I>z</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>cp</I>		バッファクリア用データを設定する構造体のアドレス
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファ不使用）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>x</I>, <I>y</I>		クリア領域左上端点座標
+<I>w</I>, <I>h</I>		クリア領域の幅、高さ(ピクセル単位)
+<I>r</I>,<I>g</I>,<I>b</I>,<I>a</I>		フレームバッファのクリア値
+<I>z</I>		Zバッファのクリア値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsClear構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    バッファクリア用のデータを、指定されたsceGsClear構造体の各メンバにセットします。この構造体の直前にGIFtag（PACKEDモード、A+D）を置いてGIFに転送すると、コンテキスト２のフレームバッファをr,g,b,aに指定した値で、同じくコンテキスト２のZバッファをzに指定した値でクリアすることになります。 <BR>
+    ztestに1-3を指定した場合は、デプステスト方式をいったんALWAYSとしてフレームバッファとZバッファをクリアし、あらためてztestに指定した方式を設定するようになります。 <BR>
+    ztestに0を指定した場合は、ztest=1と等価な動作をしますので、必ず、ZBUFのZMSKの値を1にしてからご使用ください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ztest != 0を指定したとき、この関数によってsceGsClear構造体の各メンバにセットされる値は次のとおりです。 <BR>
+    必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    testa.ZTE = 1 <BR>
+    testa.ZTST = 1 <BR>
+    prim = 6(SPRITE) <BR>
+    rgbaq.R = r <BR>
+    rgbaq.G = g <BR>
+    rgbaq.B = b <BR>
+    rgbaq.A = a <BR>
+    rgbaq.Q = 1.0f <BR>
+    xyz2a.X = x&lt;&lt;4 <BR>
+    xyz2a.Y = y&lt;&lt;4 <BR>
+    xyz2a.Z = z <BR>
+    xyz2b.X = (x+w)&lt;&lt;4 <BR>
+    xyz2b.Y = (y+h)&lt;&lt;4 <BR>
+    xyz2b.Z = z <BR>
+    testb.ZTE = 1 <BR>
+    testb.ZTST = ztest <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefDBuff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefDBuff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsSetDefDBuff</B>(
+	sceGsDBuff *<I>db</I>,
+	short <I>psm</I>,
+	short <I>w</I>, short <I>h</I>,
+	short <I>ztest</I>,
+	short <I>zpsm</I>
+	short <I>clear</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>db</I>		ダブルバッファ情報を設定する構造体アドレス
+<I>psm</I>		描画ピクセルフォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>w</I>, <I>h</I>		表示/描画領域の幅、高さ(ピクセル単位)
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファマスク）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>zpsm</I>		Z値格納フォーマット(ztest!=0の時のみ有効)
+		0 : PSMZ32
+		1 : PSMZ24
+		2 : PSMZ16
+		10: PSMZ16S
+<I>clear</I>		描画領域のクリア制御
+		0 : クリアしない
+		1 : クリアする
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ダブルバッファ情報構造体中にある2組の描画環境/表示環境/バッファクリア用データに、引数にしたがってそれぞれ適切な値を設定します。 <BR>
+    clearに1を指定した場合、sceGsSwapDBuff()関数を用いてダブルバッファを切り替える際にフレームバッファとZバッファが0クリアされるようになります。 <BR>
+    この関数は、コンテキスト1の環境のみを設定します。 <BR>
+    ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレース／FRAMEモードでclear = 1 , psm = PSMCT32と指定した場合、この関数によって構造体の各メンバに設定される値は次のとおりです。必要であれば適宜修正して使用してください。 <BR>
+<BR>
+    disp[0]	sceGsSetDefDispEnv(&db-&gt;disp[0], psm, w, h, 0, 0)の結果 <BR>
+    disp[1]	sceGsSetDefDispEnv(&db-&gt;disp[1], psm, w, h, 0, 0)の結果、 <BR>
+    <blockquote>
+    	ただしdisp[1].dispfb.FBP = ((w+63)/64)*((h+31)/32) <BR>
+    </blockquote>
+    draw0	sceGsSetDefDrawEnv(&db-&gt;draw0, psm, w, h, ztest, zpsm)の結果、 <BR>
+    <blockquote>
+    	ただしdraw0.frame1.FBP = ((w+63)/64)*((h+31)/32) <BR>
+    </blockquote>
+    draw1	sceGsSetDefDrawEnv(&db-&gt;draw1, psm, w, h, ztest, zpsm)の結果 <BR>
+    clear0	sceGsSetDefClear(&db-&gt;clear0, ztest, 2048-(w&gt;&gt;1), <BR>
+    <blockquote>
+    	2048-(h&gt;&gt;1), w, h, 0, 0, 0, 0, 0)の結果 <BR>
+    </blockquote>
+    clear1	sceGsSetDefClear(&db-&gt;clear1, ztest, 2048-(w&gt;&gt;1), <BR>
+    <blockquote>
+    	2048-(h&gt;&gt;1), w, h, 0, 0, 0, 0, 0)の結果 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefDBuffDc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefDBuffDc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsSetDefDBuffDc</B>(
+	sceGsDBuffDc *<I>db</I>,
+	short <I>psm</I>,
+	short <I>w</I>, short <I>h</I>,
+	short <I>ztest</I>,
+	short <I>zpsm</I>
+	short <I>clear</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>db</I>		ダブルバッファ情報を設定する構造体アドレス
+<I>psm</I>		描画ピクセルフォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>w</I>, <I>h</I>		表示/描画領域の幅、高さ(ピクセル単位)
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファマスク）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>zpsm</I>		Z値格納フォーマット(ztest!=0の時のみ有効)
+		0 : PSMZ32
+		1 : PSMZ24
+		2 : PSMZ16
+		10: PSMZ16S
+<I>clear</I>		描画領域のクリア制御
+		0 : クリアしない
+		1 : クリアする
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ダブルバッファ情報構造体中にある2組の描画環境/表示環境/バッファクリア用データに、引数にしたがってそれぞれ適切な値を設定します。 <BR>
+    clearに1を指定した場合、sceGsSwapDBuff()関数を用いてダブルバッファを切り替える際にフレームバッファとZバッファが0クリアされるようになります。 <BR>
+    この関数は、コンテキスト1と2の両方の環境を設定します。 <BR>
+    ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレース／FRAMEモードでclear = 1 , psm = PSMCT32と指定した場合、この関数によって構造体の各メンバに設定される値は次のとおりです。必要であれば適宜修正して使用してください。 <BR>
+<BR>
+    disp[0]	sceGsSetDefDispEnv(&db-&gt;disp[0], psm, w, h, 0, 0)の結果 <BR>
+    disp[1]	sceGsSetDefDispEnv(&db-&gt;disp[1], psm, w, h, 0, 0)の結果、 <BR>
+    <blockquote>
+    	ただしdisp[1].dispfb.FBP = ((w+63)/64)*((h+31)/32) <BR>
+    </blockquote>
+    draw01	sceGsSetDefDrawEnv(&db-&gt;draw01, psm, w, h, ztest, zpsm)の結果、 <BR>
+    <blockquote>
+    	ただしdraw01.frame1.FBP = ((w+63)/64)*((h+31)/32) <BR>
+    </blockquote>
+    draw02	sceGsSetDefDrawEnv2(&db-&gt;draw02, psm, w, h, ztest, zpsm)の結果、 <BR>
+    <blockquote>
+    	ただしdraw02.frame2.FBP = ((w+63)/64)*((h+31)/32) <BR>
+    </blockquote>
+    draw11	sceGsSetDefDrawEnv(&db-&gt;draw11, psm, w, h, ztest, zpsm)の結果 <BR>
+    draw12	sceGsSetDefDrawEnv2(&db-&gt;draw12, psm, w, h, ztest, zpsm)の結果 <BR>
+    clear0	sceGsSetDefClear(&db-&gt;clear0, ztest, 2048-(w&gt;&gt;1), <BR>
+    <blockquote>
+    	2048-(h&gt;&gt;1), w, h, 0, 0, 0, 0, 0)の結果 <BR>
+    </blockquote>
+    clear1	sceGsSetDefClear(&db-&gt;clear1, ztest, 2048-(w&gt;&gt;1), <BR>
+    <blockquote>
+    	2048-(h&gt;&gt;1), w, h, 0, 0, 0, 0, 0)の結果 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefDispEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefDispEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        表示環境データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsSetDefDispEnv</B>(
+	sceGsDispEnv *<I>disp</I>,
+	short <I>psm</I>,
+	short <I>w</I>, short <I>h</I>,
+	short <I>dx</I>, short <I>dy</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>disp</I>		表示環境を設定する構造体のアドレス
+<I>psm</I>		ピクセルフォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>w</I>, <I>h</I>		表示領域の幅、高さ(ピクセル単位)
+<I>dx</I>, <I>dy</I>		表示領域左上端点のテレビ画面上での位置 (ピクセル単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    表示環境構造体のメンバに値を設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレース／FRAMEモードを指定したとき、この関数によって構造体の各メンバに設定される値を次に示します。 <BR>
+    必要であれば適宜再設定してください。 <BR>
+<BR>
+    pmode = 0x66 <BR>
+    smode2 = 3 <BR>
+    dispfb2.PSM = psm; <BR>
+    dispfb.FBW = (w&gt;&gt;6)&lt;&lt;9 <BR>
+    display2.DH = ((h&lt;&lt;1)-1) &lt;&lt; 44 <BR>
+    display2.DW = (0x9ff)&lt;&lt;32 <BR>
+    display2.MAGH = (((2560+w-1)/w)-1) &lt;&lt; 23 <BR>
+    display2.DY = (50+dy) &lt;&lt;12 <BR>
+    display2.DX = 0x27c + (dx*(2560/w)) <BR>
+    bgcolor = 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefDrawEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefDrawEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画環境データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefDrawEnv</B>(
+	sceGsDrawEnv1 *<I>draw</I>,
+	short <I>psm</I>,
+	short <I>w</I>, short <I>h</I>,
+	short <I>ztest</I>,
+	short <I>zpsm</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>draw</I>		描画環境を設定する構造体のアドレス
+<I>psm</I>		描画ピクセルフォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>w</I>, <I>h</I>		描画領域の幅、高さ(ピクセル単位)
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファマスク）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>zpsm</I>		Z値格納フォーマット(ztest!=0の時のみ有効)
+		0 : PSMZ32
+		1 : PSMZ24
+		2 : PSMZ16
+		10: PSMZ16S
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsDrawEnv1構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コンテキスト1用描画環境構造体のメンバに値を設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    drawをcachedに指定した場合、この関数の終了時にはdrawの内容はcache上にありますので、DMAで転送する前にD-cacheをフラッシュしてメモリに書き戻しておく必要があります。 <BR>
+    ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。 <BR>
+<BR>
+    ztest != 0, psm = PSMCT32と指定したとき、この関数によって作成される構造体の各メンバの値を次に示します。 <BR>
+    必要であれば適宜修正して使用してください。 <BR>
+<BR>
+    frame1.PSM = psm <BR>
+    frame1.FBW = w <BR>
+    zbuf1.ZBP = ((w+63)/64)*((h+31)/32)*2; <BR>
+    zbuf1.ZPSM = zpsm <BR>
+    xyoffset1.OFX = (2048 - (w&gt;&gt;1))&lt;&lt;4; <BR>
+    xyoffset1.OFY = (2048 - (h&gt;&gt;1))&lt;&lt;4; <BR>
+    scissor1.SCAX1 = w-1 <BR>
+    scissor1.SCAY1 = h-1 <BR>
+    prmodecont.AC = 1 <BR>
+    colclamp.CLAMP = 1 <BR>
+    dthe.DTHE = 0 <BR>
+    test1.ZTE = 1 <BR>
+    test1.ZTST = ztest <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefDrawEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefDrawEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画環境データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefDrawEnv2</B>(
+	sceGsDrawEnv2 *<I>draw</I>,
+	short <I>psm</I>,
+	short <I>w</I>, short <I>h</I>,
+	short <I>ztest</I>,
+	short <I>zpsm</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>draw</I>		描画環境を設定する構造体のアドレス
+<I>psm</I>		描画ピクセルフォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>w</I>, <I>h</I>		描画領域の幅、高さ(ピクセル単位)
+<I>ztest</I>		デプステスト方式
+		0 : デプステストなし（Zバッファマスク）
+		1 : Zバッファの値にかかわらず全ピクセルを描画
+		2 : Z値がZバッファの値以上のピクセルを描画
+		3 : Z値がZバッファの値より大きいピクセルを描画
+<I>zpsm</I>		Z値格納フォーマット(ztest!=0の時のみ有効)
+		0 : PSMZ32
+		1 : PSMZ24
+		2 : PSMZ16
+		10: PSMZ16S
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsDrawEnv2構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コンテキスト2用描画環境構造体のメンバに値を設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    drawをcachedに指定した場合、この関数の終了時にはdrawの内容はcache上にありますので、DMAで転送する前にD-cacheをフラッシュしてメモリに書き戻しておく必要があります。 <BR>
+    PRMODECONT, COLCLAMP, DTHEは、コンテキスト切り替えができませんので、コンテキスト1と異なる値を設定する場合は注意してください。 <BR>
+    ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。 <BR>
+<BR>
+    ztest != 0, psm = PSMCT32と指定したとき、この関数によって作成される構造体の各メンバの値を次に示します。 <BR>
+    必要であれば適宜修正して使用してください。 <BR>
+<BR>
+    frame2.PSM = psm <BR>
+    frame2.FBW = w <BR>
+    zbuf2.ZBP = ((w+63)/64)*((h+31)/32)*2; <BR>
+    zbuf2.ZPSM = zpsm <BR>
+    xyoffset2.OFX = (2048 - (w&gt;&gt;1))&lt;&lt;4; <BR>
+    xyoffset2.OFY = (2048 - (h&gt;&gt;1))&lt;&lt;4; <BR>
+    scissor2.SCAX1 = w-1 <BR>
+    scissor2.SCAY1 = h-1 <BR>
+    prmodecont.AC = 1 <BR>
+    colclamp.CLAMP = 1 <BR>
+    dthe.DTHE = 0 <BR>
+    test2.ZTE = 1 <BR>
+    test2.ZTST = ztest <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefLoadImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefLoadImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LoadImage情報の設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefLoadImage</B>(
+	sceGsLoadImage *<I>lp</I>,
+	short <I>dbp</I>,
+	short <I>dbw</I>,
+	short <I>dpsm</I>,
+	short <I>x</I>, short <I>y</I>,
+	short <I>w</I>, short <I>h</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lp</I>		LoadImage情報を設定する構造体のアドレス
+<I>dbp</I>		dbp転送先バッファベースアドレス
+		(dpb x 64が実際のアドレスになる)
+<I>dbw</I>		dbw転送先バッファ幅
+		(dbw x 64が実際の幅になる)
+<I>dpsm</I>		転送データのピクセルフォーマット
+		0 : PSMCT32	（ピクセルサイズ:32bit）
+		1 : PSMCT24	（ピクセルサイズ:24bit）
+		2 : PSMCT16	（ピクセルサイズ:16bit）
+		10: PSMCT16S	（ピクセルサイズ:16bit）
+		19: PSMT8	（ピクセルサイズ:8bit）
+		20: PSMT4	（ピクセルサイズ:4bit）
+		27: PSMT8H	（ピクセルサイズ:8bit）
+		36: PSMT4HL	（ピクセルサイズ:4bit）
+		44: PSMT4HH	（ピクセルサイズ:4bit）
+		48: PSMZ32	（ピクセルサイズ:32bit）
+		49: PSMZ24	（ピクセルサイズ:24bit）
+		50: PSMZ16	（ピクセルサイズ:16bit）
+		58: PSMZ16S	（ピクセルサイズ:16bit）
+<I>x</I>, <I>y</I>		転送先領域の左上端点
+<I>w</I>, <I>h</I>		転送領域の幅、高さ(ピクセル単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsLoadImage構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PATH3経由でGSへイメージデータを転送するための構造体を作成します。 <BR>
+    作成した構造体はGIFtagを含んでいますので、イメージデータの転送に先立って、そのままGSへ転送することができます。 <BR>
+    イメージデータのサイズ（w×h×ピクセルサイズ）は16byteの倍数で、32767×16byte以下でなければなりません。 <BR>
+    また、ピクセルサイズが8bitの場合はx,wはともに2の倍数、ピクセルサイズが4bitの場合はx,wはともに4の倍数でなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsLoadImage構造体の各メンバにセットされる値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    bitbltbuf.DBP = dbp <BR>
+    bitbltbuf.DBW = dbw <BR>
+    bitbltbuf.DPSM = dpsm <BR>
+    trxpos.DSAX = x <BR>
+    trxpos.DSAY = y <BR>
+    trxreg.RRW = w <BR>
+    trxreg.RRH = h <BR>
+<BR>
+    sceGsLoadImage構造体を使用して簡便にデータ転送を行う関数として、sceGsExecLoadImage()関数が用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefStoreImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefStoreImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        StoreImage情報の設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefStoreImage</B>(
+	sceGsStoreImage *<I>sp</I>,
+	short <I>sbp</I>,
+	short <I>sbw</I>,
+	short <I>spsm</I>,
+	short <I>x</I>, short <I>y</I>,
+	short <I>w</I>, short <I>h</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sp</I>		StoreImage情報を設定する構造体のアドレス
+<I>sbp</I>		転送元バッファベースアドレス
+		(sbp x 64が実際のアドレスになる)
+<I>sbw</I>		転送元バッファ幅
+		(sbw x 64が実際の幅になる)
+<I>spsm</I>		転送データのピクセルフォーマット
+		0 : PSMCT32	（ピクセルサイズ:32bit）
+		1 : PSMCT24	（ピクセルサイズ:24bit）
+		2 : PSMCT16	（ピクセルサイズ:16bit）
+		10: PSMCT16S	（ピクセルサイズ:16bit）
+		19: PSMT8	（ピクセルサイズ:8bit）
+		27: PSMT8H	（ピクセルサイズ:8bit）
+		48: PSMZ32	（ピクセルサイズ:32bit）
+		49: PSMZ24	（ピクセルサイズ:24bit）
+		50: PSMZ16	（ピクセルサイズ:16bit）
+		58: PSMZ16S	（ピクセルサイズ:16bit）
+<I>x</I>, <I>y</I>		転送元領域の左上端点
+<I>w</I>, <I>h</I>		転送領域の幅、高さ(ピクセル単位)
+注意：ハード的な仕様によりPSMT4,PSMT4HH,PSMT4HLのlocal->hostへの
+      転送は出来ません。他のモードで取得しておき、そのデータを並び変えるといった
+      処理が必要となります。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsStoreImage構造体のサイズ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PATH2経由でGSからイメージデータを転送するための構造体を作成します。 <BR>
+    作成した構造体はGIFtagを含んでいますので、そのままGSへ転送することができます。 <BR>
+    イメージデータのサイズ（w×h×ピクセルサイズ）は16byteの倍数で、32767×16byte以下でなければなりません。 <BR>
+    また、ピクセルサイズが8bitの場合はx,wはともに2の倍数でなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsStoreImage構造体の各メンバにセットされる値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    vifcode[0] = VIFNOP <BR>
+    vifcode[1] = VIFMSKPATH3 (MASK on) <BR>
+    vifcode[2] = VIFFLUSHA <BR>
+    vifcode[3] = DIRECT <BR>
+    bitbltbuf,SBP = sbp <BR>
+    bitbltbuf.SBW = sbw <BR>
+    bitbltbuf.SPSM = spsm <BR>
+    trxpos.SSAX = x <BR>
+    trxpos.SSAY = y <BR>
+    trxreg.RRW = w <BR>
+    trxreg.RRH = h <BR>
+    trxdir.DIR = 1 <BR>
+<BR>
+    sceGsStoreImage構造体を使用して簡便にデータ転送を行う関数として、sceGsExecStoreImage()関数が用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefTexEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefTexEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        テクスチャ設定データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefTexEnv</B>(
+	sceGsTexEnv *<I>tp</I>,
+	short <I>flush</I>,
+	short <I>tbp0</I>,
+	short <I>tbw</I>,
+	short <I>psm</I>,
+	short <I>w</I>, <I>h</I>,
+	short <I>tfx</I>
+	short <I>cbp</I>,
+	short <I>cpsm</I>,
+	short <I>cld</I>,
+	short <I>filter</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tp</I>		テクスチャ情報を設定する構造体のアドレス
+<I>flush</I>		テクスチャページバッファの無効化
+		0 : 無効化しない
+		1 : 無効化する
+<I>tbp0</I>		テクスチャバッファベースアドレス
+		(tpb0 x 64が実際のアドレスになる)
+<I>tbw</I>		テクスチャバッファの幅
+		(tbw x 64が実際の幅になる)
+<I>psm</I>		テクスチャピクセル格納フォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+		19: PSMT8
+		20: PSMT4
+		27: PSMT8H
+		36: PSMT4HL
+		44: PSMT4HH
+		48: PSMZ32
+		49: PSMZ24
+		50: PSMZ16
+		58: PSMZ16S
+<I>w</I>, <I>h</I>		テクスチャの幅、高さ
+		(2^wおよび2^nが実際のサイズになる)
+<I>tfx</I>		テクスチャファンクション
+		0 : MODULATE
+		1 : DECAL
+		2 : HILIGHT
+		3 : HILIGHT2
+<I>cbp</I>		CLUTデータのベースアドレス
+		(cbp x 64が実際のアドレスになる)
+<I>cpsm</I>		CLUTエントリ格納フォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>cld</I>		CLUTバッファのロード制御
+		0 : ロードしない
+		1 : cbpからロードする
+		2 : cbpからロードし,GS内部レジスタCBP0にcbp値を設定
+		3 : cbpからロードし,GS内部レジスタCBP1にcbp値を設定
+		4 : CBP0!=cbpならロードし,CBP0にcbp値を設定
+		5 : CBP1!=cbpならロードし,CBP1にcbp値を設定
+<I>filter</I>		フィルタリング方式の指定
+		0 : NEAREST
+		1 : LINEAR
+		2 : NEAREST_MIPMAP_NEAREST
+		3 : NEAREST_MIPMAP_LINEAR
+		4 : LINEAR_MIPMAP_NEAREST
+		5 : LINEAR_MIPMAP_LINEAR
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsTexEnv構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャの設定に関するデータ(コンテキスト1)を、sceGsTexEnv構造体の各メンバに設定します。 <BR>
+    この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのままGIFに転送することができます。ただし構造体がCachedの場合は、D-cacheをフラッシュしてメモリに書き戻さないと正しいデータが転送されませんので注意してください。 <BR>
+    新しいテクスチャをGSに転送したときには、flushに1を指定して作成したsceGsTexEnv構造体を用いて、テクスチャの再設定を行ってください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsTexEnv構造体の各メンバに設定される値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    tex01.TBP0 = tbp0 <BR>
+    tex01.TBW = tbw <BR>
+    tex01.PSM = psm <BR>
+    tex01.TW = w <BR>
+    tex01.TH = h <BR>
+    tex01.TCC = 1 <BR>
+    tex01.TFX = tfx <BR>
+    tex01.CBP = cbp <BR>
+    tex01.CPSM = cpsm <BR>
+    tex01.CLD = cld <BR>
+    tex11.MMAG = filter & 1 <BR>
+    tex11.MMIN = filter <BR>
+    clamp1.WMS = 1 <BR>
+    clamp1.WMT = 1 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetDefTexEnv2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetDefTexEnv2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        テクスチャ設定データの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSetDefTexEnv2</B>(
+	sceGsTexEnv2 *<I>tp</I>,
+	short <I>flush</I>,
+	short <I>tbp0</I>,
+	short <I>tbw</I>,
+	short <I>psm</I>,
+	short <I>w</I>, <I>h</I>,
+	short <I>tfx</I>
+	short <I>cbp</I>,
+	short <I>cpsm</I>,
+	short <I>cld</I>,
+	short <I>filter</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tp</I>		テクスチャ情報を設定する構造体のアドレス
+<I>flush</I>		テクスチャページバッファの無効化
+		0 : 無効化しない
+		1 : 無効化する
+<I>tbp0</I>		テクスチャバッファベースアドレス
+		(tpb0 x 64が実際のアドレスになる)
+<I>tbw</I>		テクスチャバッファの幅
+		(tbw x 64が実際の幅になる)
+<I>psm</I>		テクスチャピクセル格納フォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+		19: PSMT8
+		20: PSMT4
+		27: PSMT8H
+		36: PSMT4HL
+		44: PSMT4HH
+		48: PSMZ32
+		49: PSMZ24
+		50: PSMZ16
+		58: PSMZ16S
+<I>w</I>, <I>h</I>		テクスチャの幅、高さ
+		(2^wおよび2^nが実際のサイズになる)
+<I>tfx</I>		テクスチャファンクション
+		0 : MODULATE
+		1 : DECAL
+		2 : HILIGHT
+		3 : HILIGHT2
+<I>cbp</I>		CLUTデータのベースアドレス
+		(cbp x 64が実際のアドレスになる)
+<I>cpsm</I>		CLUTエントリ格納フォーマット
+		0 : PSMCT32
+		1 : PSMCT24
+		2 : PSMCT16
+		10: PSMCT16S
+<I>cld</I>		CLUTバッファのロード制御
+		0 : ロードしない
+		1 : cbpからロードする
+		2 : cbpからロードし,GS内部レジスタCBP0にcbp値を設定
+		3 : cbpからロードし,GS内部レジスタCBP1にcbp値を設定
+		4 : CBP0!=cbpならロードし,CBP0にcbp値を設定
+		5 : CBP1!=cbpならロードし,CBP1にcbp値を設定
+<I>filter</I>		フィルタリング方式の指定
+		0 : NEAREST
+		1 : LINEAR
+		2 : NEAREST_MIPMAP_NEAREST
+		3 : NEAREST_MIPMAP_LINEAR
+		4 : LINEAR_MIPMAP_NEAREST
+		5 : LINEAR_MIPMAP_LINEAR
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceGsTexEnv2構造体のサイズ(word単位) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャの設定に関するデータ(コンテキスト2)を、sceGsTexEnv2構造体の各メンバに設定します。 <BR>
+    この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのままGIFに転送することができます。ただし構造体がCachedの場合は、D-cacheをフラッシュしてメモリに書き戻さないと正しいデータが転送されませんので注意してください。 <BR>
+    新しいテクスチャをGSに転送したときには、flushに1を指定して作成したsceGsTexEnv2構造体を用いて、テクスチャの再設定を行ってください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数によってsceGsTexEnv2構造体の各メンバに設定される値は次のとおりです。必要があれば適宜修正して使用してください。 <BR>
+<BR>
+    tex02.TBP0 = tbp0 <BR>
+    tex02.TBW = tbw <BR>
+    tex02.PSM = psm <BR>
+    tex02.TW = w <BR>
+    tex02.TH = h <BR>
+    tex02.TCC = 1 <BR>
+    tex02.TFX = tfx <BR>
+    tex02.CBP = cbp <BR>
+    tex02.CPSM = cpsm <BR>
+    tex02.CLD = cld <BR>
+    tex12.MMAG = filter & 1 <BR>
+    tex12.MMIN = filter <BR>
+    clamp2.WMS = 1 <BR>
+    clamp2.WMT = 1 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetHalfOffset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetHalfOffset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画オフセットデータの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsSetHalfOffset</B>(
+	sceGsDrawEnv1 *<I>draw</I>,
+	short <I>centerx</I>, short <I>centery</I>,
+	short <I>halfoff</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>draw</I>		描画環境を設定する構造体のアドレス
+<I>centerx</I>, <I>centery</I>	描画領域の中心座標
+<I>halfoff</I>		オフセット加算の制御
+		0 : 加算しない
+		1 : 加算する
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画領域の中心座標から描画オフセット座標を計算し、描画環境構造体内のxyoffset1の値を設定します。 <BR>
+    その際に、halfoffに1が指定されていれば、ハーフピクセル分としてy方向オフセットに8を加算して設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレースモードではoddフィールドとevenフィールドに半ピクセル分ずれた画像を描画させることによって、見かけ上の縦解像度を走査線数の2倍に引き上げることができます。 <BR>
+    バッファをFRAMEモードとした場合は、両フィールドのオフセット値をずらすことで半ピクセル分ずれた画像を描画させることができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSetHalfOffset2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSetHalfOffset2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        描画オフセットデータの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGsSetHalfOffset2</B>(
+	sceGsDrawEnv2 *<I>draw</I>,
+	short <I>centerx</I>, short <I>centery</I>,
+	short <I>halfoff</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>draw</I>		描画環境を設定する構造体のアドレス
+<I>centerx</I>, <I>centery</I>	描画領域の中心座標
+<I>halfoff</I>		オフセット加算の制御
+		0 : 加算しない
+		1 : 加算する
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画領域(コンテキスト2)の中心座標から描画オフセット座標を計算し、描画環境構造体内のxyoffset2の値を設定します。 <BR>
+    その際に、halfoffに1が指定されていれば、ハーフピクセル分としてy方向オフセットに8を加算して設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレースモードではoddフィールドとevenフィールドに半ピクセル分ずれた画像を描画させることによって、見かけ上の縦解像度を走査線数の2倍に引き上げることができます。 <BR>
+    バッファをFRAMEモードとした場合は、両フィールドのオフセット値をずらすことで半ピクセル分ずれた画像を描画させることができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSwapDBuff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSwapDBuff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファの切り替え
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSwapDBuff</B>(
+	sceGsDBuff *<I>db</I>,
+	int <I>id</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>db</I>		ダブルバッファ情報が設定されている構造体のアドレス
+<I>id</I>		バッファ番号(最下位1bitのみ有効)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    0 : 正常終了 <BR>
+    -1 : Timeout(先行するCh.2 DMAが終了しない場合) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数idの指定にしたがって、ダブルバッファ情報構造体中にある2組のうちいずれかの描画環境および表示環境をGSに設定します。 <BR>
+    この関数は、コンテキスト1の環境のみを設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ダブルバッファ情報構造体dbがCachedの場合は、D-cacheをフラッシュしてメモリに書き戻してからこの関数を呼び出してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSwapDBuffDc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSwapDBuffDc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ダブルバッファの切り替え
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSwapDBuffDc</B>(
+	sceGsDBuffDc *<I>db</I>,
+	int <I>id</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>db</I>		ダブルバッファ情報が設定されている構造体のアドレス
+<I>id</I>		バッファ番号(最下位1bitのみ有効)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    0 : 正常終了 <BR>
+    -1 : Timeout(先行するCh.2 DMAが終了しない場合) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数idの指定にしたがって、ダブルバッファ情報構造体中にある2組のうちいずれかの描画環境および表示環境をGSに設定します。 <BR>
+    この関数は、コンテキスト1と2の両方の環境を設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ダブルバッファ情報構造体dbがCachedの場合は、D-cacheをフラッシュしてメモリに書き戻してからこの関数を呼び出してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSyncPath>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSyncPath
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ転送の終了待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSyncPath</B>(
+	int <I>mode</I>,
+	u_short <I>timeout</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>		終了待ちモード
+		0 : 待ち条件が解除されるまでブロックする。
+		1 : ブロックせずに、その時の各デバイスのbusyステータスを返す。
+<I>timeout</I>		timeoutカウンタ
+		0    : システムデフォルト(約4VSync)
+		正数 : timeout発生時間(単位HSync) (※not supported yet)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    終了状態 <BR>
+    mode == 0 時 <BR>
+    <blockquote>
+    	0    : 正常終了 <BR>
+    </blockquote>
+    <blockquote>
+    	負数 : 異常終了(タイムアウト発生) <BR>
+    </blockquote>
+<BR>
+    mode == 1 時 <BR>
+    <blockquote>
+    	0    : 待ち条件が解除されている <BR>
+    </blockquote>
+    <blockquote>
+    	正数 : 以下のデバイスのbusyステータス <BR>
+    </blockquote>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">31　　　　　　　　　　　　　　　　　　　　　</TD>
+<TD valign="TOP"><DIV align=center>4</DIV></TD>
+<TD valign="TOP"><DIV align=center>3</DIV></TD>
+<TD valign="TOP"><DIV align=center>2</DIV></TD>
+<TD valign="TOP"><DIV align=center>1</DIV></TD>
+<TD valign="TOP"><DIV align=center>0</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">　　　　　　　　　　　　　　　　　　　　　　<BR><BR><BR></TD>
+<TD valign="TOP"><DIV align=center>G<BR>I<BR>F</DIV></TD>
+<TD valign="TOP"><DIV align=center>V<BR>U<BR>1</DIV></TD>
+<TD valign="TOP"><DIV align=center>V<BR>I<BR>F<BR>1</DIV></TD>
+<TD valign="TOP"><DIV align=center>D<BR>M<BR>A<BR>2</DIV></TD>
+<TD valign="TOP"><DIV align=center>D<BR>M<BR>A<BR>1</DIV></TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+    0:idle <BR>
+    1:busy <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数modeに0が指定された場合、データパス(PATH1,2,3)中のデバイスがidleになるまでプログラムをブロックします。timeoutで指定された期間にわたって転送が終了しない場合はタイムアウトとして、標準出力にメッセージを出力してエラー終了します。このとき、ロックしているデバイスはそのままで、リセットするなどの処置は行いません。 <BR>
+    引数timeoutには、最大何HSync分待機を続けるかを指定します。0を指定した場合は、4Vsync（1050Hsync)だけ待ちます。 <BR>
+<BR>
+    引数modeに1が指定された場合、その時点でのデータパス中のデバイスのbusyステータスを返します。 <BR>
+<BR>
+    引数modeに0が指定されて、以上終了時には以下のレジスタの内容をデバッグコンソールにプリントします。 <BR>
+    <blockquote>
+    	D1_CHCR, D1_TADR, D1_MADR, D1_QWC <BR>
+    </blockquote>
+    <blockquote>
+    	D2_CHCR, D2_TADR, D2_MADR, D2_QWC <BR>
+    </blockquote>
+    <blockquote>
+    	VIF1_STAT, GIF_STAT <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSyncV>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSyncV
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        V-Blankとの同期待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceGsSyncV</B>(
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>		reserved(0を指定すること)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    インタレースモードでのFIELD情報 <BR>
+    0: even field <BR>
+    1: odd field <BR>
+    ノンインタレースモード時は必ず1を返す <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    V-Blank期間の開始までプログラムをブロックします。 <BR>
+    modeは将来の機能拡張に備えて用意されている引数です。現バージョンでは必ず0を指定してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGsSyncVCallback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGsSyncVCallback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VSyncコールバック関数の設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int *<B>sceGsSyncVCallback</B>(
+	int (*<I>func</I>)(int)
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>func</I>		コールバック関数のエントリアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    それまでに設定されていたコールバック関数のエントリアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    V-Blank期間の先頭で呼び出されるコールバック関数を設定します。 <BR>
+    それまでの設定は破棄されます。 <BR>
+    設定した関数のエントリアドレスはグローバル変数sceGsVSCfuncに保存されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Vsyncコールバック関数の設定は、sceGsResetGraph(0)を呼び出すとクリアされます。 <BR>
+<BR>
+    この関数は、カーネルサービス関数AddIntcHandlerを使用していますので、func関数が-1を返す場合、AddIntcHandlerを使用して登録した他のVsync割り込みハンドラが呼ばれなくなる場合があります。 <BR>
+<BR>
+    func関数は割り込みハンドラとして実行されるため、プログラミングに際していくつか特別な注意が必要です。割り込みハンドラの記述について、\overview\eekernelに注意事項が記載されていますので参照してください。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

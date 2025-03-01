@@ -1,0 +1,175 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm311</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm310.htm">[前]</A> <A HREF="arm312.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.11 <A NAME="anchor1519731"></A>複数のロード/ストア命令（ロード/ストア・マルチプル）</H3>
+
+<BLOCKQUOTE>
+  <P>ロードマルチプル命令は汎用レジスタのサブセット（またはすべて）をメモリからロードします。</P>
+  <P>ストアマルチプル命令は汎用レジスタのサブセット（またはすべて）をメモリにストアします。</P>
+  <P>ロード/ストアマルチプル命令は次の形式で記述されます。</P>
+  <PRE>LDM{&lt;cond&gt;}&lt;addressing_mode&gt; Rn{!}, &lt;registers&gt;{^}
+STM{&lt;cond&gt;}&lt;addressing_mode&gt; Rn{!}, &lt;registers&gt;{^}</PRE>
+  <P>構文説明：</P>
+  <PRE>&lt;addressing_mode&gt; = IA | IB | DA | DB | FD | FA | ED | EA</PRE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" WIDTH="90%">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015191"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015193"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015195"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015197"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015199"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015201"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015203"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015205"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015207"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015209"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015211"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015213"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015215"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015217"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015219"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015221"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015223"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015225"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015227"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015229"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015231"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015233"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015235"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015237"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015239"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015241"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015243"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015245"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015247"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015249"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015251"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015253"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015255"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015263"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015265"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015267"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015269"></A><BR>
+    P</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015271"></A><BR>
+    U</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015273"></A><BR>
+    S</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015275"></A><BR>
+    W</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015277"></A><BR>
+    L</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015279"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="16">
+    <A NAME="1015287"></A><BR>
+    register list</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>レジスタ・リスト</B>：&lt;register_list&gt;には汎用レジスタごとに1つのビットがあります。ビット0はレジスタ・ゼロで、ビット15はレジスタ15（PC）です。</P>
+  <P>レジスタの構文リストは開きブラケット{、コンマで区切られたレジスタリスト、、閉じブラケット}の順となります。連続レジスタのシーケンスは、範囲内の最初と最後のレジスタをマイナス符号でつなぐことによって指定できます。</P>
+  <P><B>P、U、Wビット</B>：これらのビットは各種アドレッシング・モードを区別します。3.19「複数アドレッシング・モードのロード/ストア」を参照してください。<BR>
+  Sビット： PCをロードするLDMの場合、SビットはCPSRがSPSRからロードされることを示しています。PCをロードしないLDMと、すべてのSTMについては、プロセッサが特権モードにある場合にユーザ・モードbankedレジスタが転送され、現在モードのレジスタは転送されないことを示しています。</P>
+  <P><B>Lビット</B>：このビットはロード（L==1）命令とストア（L==0）命令を区別します。</P>
+</BLOCKQUOTE>
+
+<H5>アドレッシング・モード</H5>
+
+<BLOCKQUOTE>
+  <P>これらの命令に関するアドレッシング・モードの詳細については、3.19「複数ロード／ストアアドレッシング・モード」と3.20「複数ロード／ストアアドレッシング・モード（代替名）」を参照してください。</P>
+</BLOCKQUOTE>
+
+<H4>3.11.1 例</H4>
+
+<BLOCKQUOTE>
+  <PRE>STMFD	R13!,	{R0 - R12, LR}
+LDMFD	R13!,	{R0 - R12, PC}
+LDMIA	R0,	{R5 - R8}
+STMDA	R1!,	{R2, R5, R7 - R9, R11}</PRE>
+</BLOCKQUOTE>
+
+<H4>3.11.2 <A NAME="anchor1446244"></A>ロード/ストア・マルチプル命令の一覧</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_ldm1.htm"><B>LDM</B></A> 複数ロード・マルチプル<BR>
+  <B><A HREF="a_ldm2.htm">LDM</A></B> ユーザ・レジスタ・ロード・マルチプル<BR>
+  <B><A HREF="a_ldm3.htm">LDM</A></B> ロード・マルチプルとCSPRのリストア<BR>
+  <B><A HREF="a_stm.htm">STM</A></B> ストア・マルチプル<BR>
+  <B><A HREF="a_stm2.htm">STM</A></B> ユーザ・レジスタ・ストア・マルチプル<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm310.htm">[前]</A> <A HREF="arm312.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_swi</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_sub.htm">[前]</A> <A HREF="a_swp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">SWI</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>割り込み</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">SWI{&lt;cond&gt;} &lt;24_bit_immediate&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>SWI命令は、SWIの例外を発生します。「2.5　例外」を参照してください。</P>
+  <P>SWI命令は、<A NAME="anchor1844947"></A>オペレーティング・システムのサービス・コールとして使用されます。以下の2とおりの方法で使用できます。</P>
+  <UL>
+    <LI>24ビットのイミディエイトの値を使用して、要求されるOSサービスを示します。
+    <LI>24ビットのフィールドを無視して、汎用レジスタで要求されるサービスを示します。
+  </UL>
+  <P>SWI例外が発生すると、オペレーティング・システムがそれを処理し、要求されるサービスを提供します。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致した場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="1" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1399995"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1399997"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1399999"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400001"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400003"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400005"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400007"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400009"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400011"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400013"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400015"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400017"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400019"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400021"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400023"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400025"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400027"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400029"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400031"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400033"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400035"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400037"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400039"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400041"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400043"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400045"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400047"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400049"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400051"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400053"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400055"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1400057"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1400059"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1400067"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1400069"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1400071"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1400073"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="24">
+    <A NAME="1400075"></A><BR>
+    24_bit_immediate</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        R14_svc = address of SWI instruction + 4
+        SPSR_svc = CPSR
+        CPSR[5:0] = 0b010011; enter Supervisor mode */
+        CPSR[7] = ; disable IRQ
+        PC = 0x08</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1"><HR ALIGN=LEFT><BR>
+</FONT><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_sub.htm">[前]</A> <A HREF="a_swp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

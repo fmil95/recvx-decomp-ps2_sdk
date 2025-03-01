@@ -1,0 +1,304 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>t_stm</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]
+</A><A HREF="t_sbc.htm">[前]</A> <A HREF="t_str1.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">STM</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>Store multiple, increment after</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">STMIA Rn!, &lt;register_list&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>STM（Store Multiple）命令は、ブロック・ストア命令として有用です。LDM（load multiple）と組み合わせると、効率的なブロック・コピーが可能です。</P>
+  <P>STMIA（Store Multiple Increment After）命令は、順次メモリ・ロケーションに汎用レジスタのサブセット（または完全なセット）をストアします。レジスタは、以下の順序でストアされます。</P>
+  <UL>
+    <LI>最小番号のレジスタを先頭に、最下位メモリ・アドレス（&lt;start_address&gt;）から
+    <LI>最大番号のレジスタを最後に、最上位メモリ・アドレス（&lt;end_address&gt;）から
+  </UL>
+  <P>&lt;start_address&gt;は、ベース・レジスタRnの値です。</P>
+  <P>これ以降のアドレスは、前のアドレスを4ずつインクリメントして形成されます。&lt;register_list&gt;で指定された各レジスタに対して、1つのアドレスが生成されます。</P>
+  <P>&lt;end_address&gt;の値は、ベース・レジスタの値と&lt;register_list&gt;で指定したレジスタ数×4の合計から4を引いたものになります。<BR>
+  最後に、ベース・レジスタRnを、&lt;register_list&gt;のレジスタ数×4だけインクリメントします。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000682"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000684"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000686"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000688"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000690"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000692"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000694"></A></TD>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000696"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000698"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000700"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000702"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000704"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000706"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000708"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000710"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000712"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000714"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000716"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000718"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000720"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000722"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="1000724"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="1000730"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>&lt;start_address&gt; = Rn
+&lt;end_address&gt; = Rn + (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4) - 4
+&lt;address&gt; = &lt;start_address&gt;
+for i = 0 to 7
+     if &lt;register_list&gt;[i] == 1
+     Memory[&lt;address&gt;,4] = Ri
+     &lt;address&gt; = &lt;address&gt; + 4
+assert &lt;end_address&gt; == &lt;address&gt; - 4
+Rn = Rn + (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>データ・アボート</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>レジスタRn：</B>&lt;addressing_mode&gt;で使用するベース・レジスタを指定します。</P>
+  <P><B>オペランドの制限：</B>ベース・レジスタRnが&lt;register_list&gt;に指定され、かつライトバックが指定されている場合、RnにストアされるRnの値は、予測できません。</P>
+  <P><B>データ・アボート：</B>データ、アボードが通知された場合、Rnに残った値はインプリメンテーションで定義されますが、もとのベース・レジスタ値か、更新されたベース・レジスタ値になります。</P>
+  <P><B>ワードに整列していないアドレス：</B>ストア・マルチプル命令は、&lt;address&gt;の最下位2ビットを無視します（ワードはLoad
+  Wordのようにローテートされません）。</P>
+  <P><B>アラインメント：</B>インプリメンテーションに、システム・コントロール・コプロセッサ（英文リファレンスマニュアル第7章「システム・アーキテクチャとシステム・コントロール・コプロセッサ」を参照）が含まれており、アラインメント・チェックがイネーブルされている場合、ビット[1:0]!=0b00のアドレスによって、アラインメント例外が発生します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>同等なARM構文とエンコーディング</H4>
+
+<BLOCKQUOTE>
+  <H3><FONT COLOR="#009999">STMIA Rn!, &lt;register_list&gt;</FONT></H3>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000750"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000752"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000754"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000756"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000758"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000760"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000762"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000764"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000766"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000768"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000770"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000772"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000774"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000776"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000778"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000780"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000782"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000784"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000786"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000788"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000790"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000792"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000794"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000796"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000798"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000800"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000802"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000804"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000806"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000808"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000810"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000812"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000814"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000816"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000818"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000820"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000822"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000824"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000826"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000828"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000830"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000832"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000834"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000836"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000838"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000846"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000848"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000850"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000852"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000854"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000856"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000858"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000860"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="1000862"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE><BR>
+</P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次] </A><A
+HREF="t_sbc.htm">[前]</A> <A HREF="t_str1.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

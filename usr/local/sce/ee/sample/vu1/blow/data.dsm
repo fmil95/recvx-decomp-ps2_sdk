@@ -1,0 +1,383 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - blow -
+ *
+ *                         Version 0.3.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *          Name : data.dsm
+ *          Description : particle & particle shadow data packet
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.1.0          Mar,26,1999     munekis     first version
+ *       0.3.0          Jun, 2,1999     munekis     include optimized micro
+ */
+
+.include "vumacros.h"
+.global My_dma_start
+.global My_dma_start_part
+.global My_dma_start_shadow_part
+.global My_matrix
+.global My_offset
+
+.global My_part
+.global My_part1
+.global My_part_second_pole
+.global My_part1_second_pole
+.global My_part_third_pole
+.global My_part1_third_pole
+
+.global My_shadow_matrix
+.global My_shadow_offset
+.global My_shadow_part
+.global My_shadow_part1
+
+.global My_shadow_part_pole2
+.global My_shadow_part1_pole2
+.global My_shadow_part_pole3
+.global My_shadow_part1_pole3
+
+; -------------- BEGIN OF PARTICLE ----------------
+.data
+.align 4
+My_dma_start_part:
+DMAcnt *
+MPG 0,*
+;.include "p.vsm"
+.include "p_opt.vsm"
+.EndMPG
+.EndDmaData
+
+
+DMAcnt *
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+unpack 4, 4, V4_32, 4, *; offset vector
+My_offset:
+fwzyx 0.000000, 0.0000, -1.0000, -1.0000
+fwzyx 0.000000, 0.0000, 1.0000, -1.0000
+fwzyx 0.000000, 0.0000, -1.0000, 1.0000
+fwzyx 0.000000, 0.0000, 1.0000, 1.0000
+.EndUnpack
+unpack 4, 4, V4_32, 8, *; ST
+fwzyx 0.000000, 1.0000, 0.0000, 0.0000
+fwzyx 0.000000, 1.0000, 1.0000, 0.0000
+fwzyx 0.000000, 1.0000, 0.0000, 1.0000
+fwzyx 0.000000, 1.0000, 1.0000, 1.0000
+.EndUnpack
+unpack 4, 4, V4_32, 12, * ; ---- gif tag ----
+My_giftag:
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008028
+.EndUnpack
+BASE 20		; sets the vif1 base register
+OFFSET 510	; sets the vif1 offset register
+.EndDmaData
+
+;---------------------------------------------------
+DMAcnt *
+.align 4
+; ---------- 1st emitter -----------
+unpack[r] 4, 4, V4_32, 1, *
+My_part:
+.include "part.dat"
+.EndUnpack
+MSCAL 0 	
+
+unpack[r] 4, 4, V4_32, 1, *
+My_part1:
+.include "part.dat"
+.EndUnpack
+MSCNT
+
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+
+
+
+; ---------- 2nd emitter -----------
+unpack[r] 4, 4, V4_32, 1, *
+My_part_second_pole:
+.include "part.dat"
+.EndUnpack
+MSCNT 	
+
+unpack[r] 4, 4, V4_32, 1, *
+My_part1_second_pole:
+.include "part.dat"
+.EndUnpack
+MSCNT
+
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+
+
+
+; ---------- 3rd emitter -----------
+unpack[r] 4, 4, V4_32, 1, *
+My_part_third_pole:
+.include "part.dat"
+.EndUnpack
+MSCNT
+
+unpack[r] 4, 4, V4_32, 1, *
+My_part1_third_pole:
+.include "part.dat"
+.EndUnpack
+MSCNT
+
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+.include "part1.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+.include "part10.dsm"
+
+.include "part10.dsm"
+.include "part10.dsm"
+
+
+.EndDmaData
+
+DMAend
+
+; =========== Partcile Shadow =============
+;
+;
+;
+
+.align 4
+My_dma_start_shadow_part:
+DMAcnt *
+MPG 0,*
+.include "p2.vsm"
+.EndMPG
+.EndDmaData
+
+
+DMAcnt *
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_shadow_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+unpack 4, 4, V4_32, 4, *; offset vector
+My_shadow_offset:
+fwzyx 0.000000, 0.0000, -1.0000, -1.0000
+fwzyx 0.000000, 0.0000, 1.0000, -1.0000
+fwzyx 0.000000, 0.0000, -1.0000, 1.0000
+fwzyx 0.000000, 0.0000, 1.0000, 1.0000
+.EndUnpack
+unpack 4, 4, V4_32, 8, *; ST
+fwzyx 0.000000, 1.0000, 0.0000, 0.0000
+fwzyx 0.000000, 1.0000, 1.0000, 0.0000
+fwzyx 0.000000, 1.0000, 0.0000, 1.0000
+fwzyx 0.000000, 1.0000, 1.0000, 1.0000
+.EndUnpack
+BASE 20         ; sets the vif1 base register
+OFFSET 510      ; sets the vif1 offset register
+.EndDmaData
+
+
+; ----------- Particle Shadow 1 -------------
+DMAcnt *
+.align 4
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part:
+.include "spart.dat"
+.EndUnpack
+MSCAL 0
+
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part1:
+.include "spart.dat"
+.EndUnpack
+MSCNT
+
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+; ----------- Particle Shadow 2 -------------
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part_pole2:
+.include "spart.dat"
+.EndUnpack
+MSCNT
+
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part1_pole2:
+.include "spart.dat"
+.EndUnpack
+MSCNT
+
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+
+; ----------- Particle Shadow 3 -------------
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part_pole3:
+.include "spart.dat"
+.EndUnpack
+MSCNT
+
+unpack[r] 4, 4, V4_32, 0, *
+iwzyx 0x00000004, 0x24242421, 0x902a4000, 0x00008004
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+My_shadow_part1_pole3:
+.include "spart.dat"
+.EndUnpack
+MSCNT
+
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+.include "spart1.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+.include "spart10.dsm"
+.include "spart10.dsm"
+
+
+
+.EndDmaData
+DMAend
+
+

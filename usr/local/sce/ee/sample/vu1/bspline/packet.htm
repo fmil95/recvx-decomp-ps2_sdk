@@ -1,0 +1,311 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=x-sjis">
+<meta name="GENERATOR" content="Microsoft FrontPage 3.0">
+<title>Packet</title>
+
+
+<meta name="Microsoft Theme" content="none, default"><meta name="Microsoft Border" content="none, default"></head>
+
+<body bgcolor="#000000" text="#FFFFFF">
+
+<p><big><big><strong><font face="Arial">Packet</font></strong></big></big></p>
+
+<p>B-Spline描画用VU1マイクロコードに転送するパケットの構成について説明する。</p>
+
+<p>マイクロコードは4x4=16個のコントロールポイント単位で、三角形分割、照度計算の処理を行い、XGKICKによってVUmemからGIFに転送する。<br>
+実際にはパケットはスクラッチパッドに置かれ、変形などによって最終的な位置が決定した後、スクラッチパッド上でダブルバッファリングされVU1転送される。</p>
+
+<p>パケットの構成について以下に示す（b_data.dsm）。</p>
+
+<p><font color="#FFFF00">; <font size="3">マイクロコードの初期化</font>。</font><br>
+<font face="FixedSys" size="3">My_dma_setting:<br>
+.DmaPackVif 0<br>
+<br>
+DMAcnt *<br>
+STCYCL 4, 4<br>
+STMASK 0<br>
+STMOD 0<br>
+.EndDmaData</font><font face="Terminal"><br>
+<big><br>
+</big></font><font face="ＭＳ ゴシック" size="3"><font color="#FFFF00">; 
+マイクロコードをVU1microMemに転送する</font><br>
+</font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; b.vsmは処理理解用のマイクロコード、b_opt.vsmは最適化されたマイクロコードである。</font><big><font face="Terminal"><br>
+</font></big><font face="FixedSys" size="3">DMAcnt *<br>
+MPG 0,*<br>
+;.include &quot;b.vsm&quot;<br>
+.include &quot;b_opt.vsm&quot;<br>
+.EndMPG<br>
+.EndDmaData<br>
+DMAend</font><br>
+</p>
+
+<p><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+透視変換マトリクス、平行光源、ブレンディング係数等が設定された部分。<br>
+; フレームに一度、VU1に転送される。</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">.align 4<br>
+My_dma_start1:<br>
+DMAcnt *<br>
+;------------------------------------------------------------<br>
+unpack 4, 4, V4_32, 0, * </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+透視変換＋座標変換マトリクス。</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">B_matrix:<br>
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483<br>
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000<br>
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002<br>
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000<br>
+.EndUnpack<br>
+;------------------------------------------------------------<br>
+unpack 4, 4, V4_32, 4, * ; COLOR RGBA.<br>
+fxyzw 220.0, 220.0, 190.0, 127.0 </font><font face="ＭＳ ゴシック" size="3"><font color="#FFFF00">; 曲面のマテリアル(RGBA)</font><br>
+</font><font face="FixedSys" size="3">My_light:<br>
+fxyzw 1.25, 0.0, 0.0, 0.0</font><font face="Terminal" size="4"> </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 平行光源のベクトル(x1, x2, 
+x3)</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fxyzw 1.25, 0.0, 0.0, 0.0 </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 平行光源のベクトル(y1, y2, 
+y3)</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fxyzw 0.0, 0.0, 0.0, 0.0&nbsp;</font><font face="Terminal" size="4"> </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+平行光源のベクトル(z1, z2, z3)</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fxyzw 40.0, 40.0, 40.0, 127.0&nbsp;&nbsp;</font><font face="Terminal" size="4">&nbsp; </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 色の最小値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fxyzw 255.0, 255.0, 255.0, 127.0</font><font face="Terminal" size="4"> </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+色の最大値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">.EndUnpack</font><font face="Terminal" size="4"><br>
+</font></p>
+
+<p><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 4x4のコントロールポイントの組より、パッチは以下のような１８個の<br>
+; 三角形に分割される</font><br>
+<font face="Terminal" size="4"><br>
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="patch.jpg" alt="patch.jpg (33040 バイト)" WIDTH="300" HEIGHT="309"> </font></p>
+
+<p><font color="#FFFF00" face="ＭＳ ゴシック" size="3">以下のパケットにはこの０～２３番の分割後の点の位置、法線を<br>
+計算するためのそれぞれのブレンディング関数とその導関数の値、<br>
+(0, 0)の点からのSTのオフセット値が設定される<br>
+実際の値のセットは前処理として、SetBlendingCoeff()(main.c)で行われる</font></p>
+
+<p><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">unpack 4, 4, V4_32, 10, *</font><font face="Terminal" size="4"> </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+ブレンディング係数</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">B_blending:<br>
+<font color="#FFFF00">; (0, 0)</font></font><font face="Terminal" size="3"><br>
+</font><font face="FixedSys" size="3">fwzyx 0.000000, 0.000000, 0.000000, 0.0000000</font><font face="Terminal" size="4"> </font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 
+U 方向の blending 関数の値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fwzyx 0.000000, 0.000000, 0.000000, 0.0000000</font><font face="Terminal" size="4"> </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; 
+U 方向の blending 関数の一次導関数の値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fwzyx 0.000000, 0.000000, 0.000000, 0.0000000</font><font face="Terminal" size="4"> </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; 
+V 方向の blending 関数の値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fwzyx 0.000000, 0.000000, 0.000000, 0.0000000</font><font face="Terminal" size="4"> </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; 
+V 方向の blending 関数の一次導関数の値</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">fwzyx 0.000000, 0.000000, 0.000000, 0.0000000 </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; STの(0, 0)からのオフセット</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3"><font color="#FFFF00">; (0, 1)</font><br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000 <br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+<font color="#FFFF00">; (1, 0)</font><br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000 <br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+fwzyx 0.000000, 0.000000, 0.000000, 0.0000000<br>
+.EndUnpack<br>
+.EndDmaData<br>
+DMAend</font><font face="Terminal" size="4"><br>
+</font></p>
+
+<p><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; 
+ここから実際の描画のためのDMAが起動される</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">My_dma_start2:<br>
+.align 4<br>
+DMAcnt *<br>
+BASE 130<br>
+OFFSET 420&nbsp;&nbsp;&nbsp; ; sets the vif1 offset register<br>
+MSCAL 0&nbsp;&nbsp;&nbsp;&nbsp; <br>
+<br>
+.EndDmaData<br>
+<br>
+My_reftag:</font><font face="Terminal" size="4"><br>
+</font><font color="#FFFF00" face="ＭＳ ゴシック" size="3">; 実行時、このreftagの先はスクラッチパッドであり<br>
+; ダブルバッファリングされる</font><font face="Terminal" size="4"><br>
+</font><font face="FixedSys" size="3">DMARef *, splinedata1 <br>
+DMAend</font></p>
+
+<p><font face="ＭＳ ゴシック" size="3" color="#FFFF00">　</font></p>
+
+<p><font face="ＭＳ ゴシック" size="3" color="#FFFF00">; 
+以下のデータはスクラッチパッドにコピーされ、適当なパケットがセットされ、VU1に転送される<br>
+; STと4x8個のコントロールポイントが一度にマイクロコードで処理される<br>
+; 0-15で１パッチ、4-19で１パッチ、8-23で１パッチ、という形で一回のマイクロコード起動で最大５パッチ生成される<br>
+; </font><font face="Terminal" size="3"><br>
+</font><font face="FixedSys" size="3">;---------------------------------------------------<br>
+.align 4<br>
+My_bspline_start:<br>
+.DmaData splinedata1<br>
+<font color="#FFFF00">; GIF tag</font><br>
+unpack[r] 4, 4, V4_32, 0, *<br>
+<font color="#FFFF00">;iwzyx 0x00000000, 0x00000421, 0x30014000, 0x00008078 ; line-strip</font><br>
+iwzyx 0x00000000, 0x00000421, 0x300e4000, 0x00008078 ; triangle-strip with texture<br>
+<font color="#FFFF00">;iwzyx 0x00000000, 0x00000421, 0x30064000, 0x00008078 ; 
+triangle-strip without texture</font><br>
+.EndUnpack<br>
+unpack[r] 4, 4, V4_32, 1, *<br>
+fxyzw 1.0000, 2.0000, 3.0000, 4.0000 ;</font><font face="Terminal" size="3"> </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">(0, 0)におけるSTの値</font><font face="Terminal" size="3"><br>
+<br>
+</font><font face="FixedSys" size="3">fxyzw 0.0000, 0.0000, 0.0000, 1.0000 ;</font><font face="Terminal" size="3"> </font><font face="ＭＳ ゴシック" size="3" color="#FFFF00">描画しようとするコントロールポイント</font><font face="Terminal" size="3"><br>
+</font><font face="FixedSys" size="3">fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+fxyzw 0.0000, 0.0000, 0.0000, 1.0000<br>
+<br>
+.EndUnpack<br>
+MSCNT&nbsp;&nbsp;&nbsp;&nbsp; <br>
+<br>
+.EndDmaData<br>
+My_bspline_end:<br>
+DMAend<br>
+</font></p>
+
+<p><font face="FixedSys" size="3"><br>
+</font></p>
+</body>
+</html>

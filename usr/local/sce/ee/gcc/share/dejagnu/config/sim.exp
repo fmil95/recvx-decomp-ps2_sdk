@@ -98,10 +98,10 @@ proc sim_load { dest prog args } {
     set state [remote_wait target $sim_time_limit];
     set status [lindex $state 0];
     set output [lindex $state 1];
-    verbose "Output is $output, status $status";
+    verbose "Output is $output";
 
     set status2 [check_for_board_status output];
-    if { $status2 >= 0 || [target_info needs_status_wrapper]!=""} {
+    if { $status2 >= 0 } {
 	set status $status2
     }
 

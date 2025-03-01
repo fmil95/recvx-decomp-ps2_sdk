@@ -1,0 +1,181 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>admo501</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm320.htm">[前]</A> <A HREF="admo502.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><A NAME="anchor2281135"></A><FONT COLOR="#ff0000">Addressing
+Mode 5</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <A NAME="anchor2145630"></A><B>Immediate offset</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">[Rn, #+/-(&lt;8_bit_offset&gt;*4)]</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>このアドレッシング・モードは一連の連続アドレスを生成します。</P>
+  <P>最初のアドレスはベース・レジスタRnの値にイミディエイト・オフセットの値×4を加算するか、ベース・レジスタRnの値から、イミディエイト・オフセットの値×4を減算して計算されます。以降の連続したアドレスは、コプロセッサが命令終了を通知するまで、前のアドレスを4ずつインクリメントして生成されます。これによって、コプロセッサはコプロセッサ定義サイズのデータにアクセスすることができます。</P>
+  <P>コプロセッサに16ワードを超えるデータ転送を要求してはなりません。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1035227"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035229"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035231"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035233"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035235"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035237"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035239"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035241"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035243"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035245"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035247"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035249"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035251"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035253"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035255"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035257"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035259"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035261"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035263"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035265"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035267"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035269"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035271"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035273"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035275"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035277"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035279"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035281"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035283"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035285"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035287"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035289"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035291"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035299"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035301"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035303"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035305"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035307"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035309"></A><BR>
+    N</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035311"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035313"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035315"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035323"></A><BR>
+    CRd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035331"></A><BR>
+    cp_num</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="8">
+    <P><CENTER><A NAME="1035339"></A><BR>
+    8_bit_offset</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <BLOCKQUOTE>
+    <BLOCKQUOTE>
+      <PRE>if ConditionPassed(&lt;cond&gt;) then
+        if U == 1 then
+                &lt;address&gt; = Rn + &lt;8_bit_offset&gt; * 4
+        else /* U == 0 */
+                &lt;address&gt; = Rn - &lt;8_bit_offset&gt; * 4
+        &lt;start_address&gt; = &lt;address&gt;
+        while (NotFinished(coprocessor[&lt;cp_num&gt;]))
+                &lt;address&gt; = &lt;address&gt; + 4</PRE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Nビット：</B>このビットはコプロセッサに依存します。</P>
+  <P><B>Lビット：</B>ロード命令(L==1)とストア命令(L==0)を区別します。</P>
+  <P><B>R15の使用：</B>レジスタRnとしてR15を指定した場合、使用される値は命令のアドレスに8を加算した値です。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm321.htm">[前]</A> <A HREF="admo502.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

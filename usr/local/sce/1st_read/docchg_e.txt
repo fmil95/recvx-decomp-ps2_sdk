@@ -1,0 +1,527 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+                                                               Aug. 2000
+
+                                       Document Changes and New Addition 
+========================================================================
+This file contains brief descriptions of the changes and additions to 
+the documents.  For details, refer to the respective documents.  
+
+In the reference, only the implemented functions are described.  
+
+Caution)
+
+1. Note that the following files are available only in the formats below.
+   No files other than the English version of eetips and deci2 have been
+   updated since Release 1.5.
+
+   Files released in TEXT format only
+      text/general/eetips.txt
+      text/deci2/english/*_e.txt
+      text/ee/libref/librspu2.txt
+      text/iop/libref/libspu2.txt
+
+   Files released in WORD format only
+      word/tool/sky_sim.doc
+      word/tool/mipsinst.doc (newly added)
+
+   A file released in PowerPoint format only
+      word/general/*.ppt
+
+2. Documents in both the TEXT and HTML formats have been converted from 
+   the WORD version.  Therefore, figures in the WORD version are not 
+   reflected in the TEXT version. 
+
+3. Please refer to the WORD version documents in Word 97 or a later 
+   environment, or use Word Viewer 97 on this disc.
+
+4. Since the HTML version documents have been created with JavaScript, 
+   be sure to enable JavaScript of the browser.  
+   It is enabled in default setting.
+
+The following documents have been added, deleted, and changed since 
+Release 1.6.
+
+Documents Added
+------------------------------------------------------------------------
+- The system configuration library documents have been added.
+ 	doc/word/ee/overview/libscf.doc
+        doc/word/ee/libref/scf_rf.doc
+
+- The PDA library documents have been added.
+	doc/word/ee/overview/libmcx.doc
+        doc/word/ee/libref/mcx_rf.doc
+
+- The standard IOP service overview has been added.
+	doc/word/ee/overview/libiserv.doc
+
+- The i.LINK driver library overview has been added.
+	doc/word/iop/overview/iLink.doc
+
+- The simple thread monitor document has been added.
+        doc/word/tool/thmon.doc
+
+- Information on MIPS synthetic instructions has been added as a 
+  supplementary document to the EE Simulator User's Guide.
+        doc/word/tool/mipsinst.doc
+
+- PDA-related documents have been added. (WORD and HTML formats only)
+	doc/word/pdadoc/pda/fat.doc
+	doc/word/pdadoc/pda/kernel.doc
+	doc/word/pdadoc/pda/pdaspec1.doc
+	doc/word/pdadoc/pda/pdaspec2.doc
+	doc/word/pdadoc/pda/pdaspec3.doc
+	doc/word/pdadoc/arm/*.doc
+
+- The technical information on the SCE-NET has been added.
+        doc/sce_net/
+
+
+Documents Changed
+------------------------------------------------------------------------
+System Overview (sysov)
+------------------------------------------------------------------------
+- Due to the addition of the PDA library (libmcx), descriptions have been 
+  added to "3. OS (Kernel)" and "4. Library".  
+
+- Due to the addition of the system configuration library (libscf), a 
+  description has been added to "4. Library".
+
+------------------------------------------------------------------------
+SIF System (sif)
+------------------------------------------------------------------------
+- In the items "4.3 Operating Procedure" and "4.4 Standard Service 
+  Functions (IOPService)" in the "4. SIF RPC API" section, the descriptions
+  have been changed.
+
+- The "5. Notes on RPC Reentry" section has been added.
+
+- The "6.3 Prioritization of IOP Module Threads" item has been added.
+
+------------------------------------------------------------------------
+DECI2 Library 
+------------------------------------------------------------------------
+- DECI2 library reference (d2_rf) has been added as it had not been 
+  included in the release 1.6 by mistake.
+
+[iloadp]
+
+- The following correction has been made in "2.1. ILOADP_CMD_START".
+  [Wrong]   MODS_LOADED, MODS_RUNNING
+  [Correct] ILOADP_STAT_LOADED, ILOADP_STAT_RUNNING
+
+------------------------------------------------------------------------
+EE Kernel Library 
+------------------------------------------------------------------------
+[eekernel]
+- In the "2. Description" section, a description of memory access has 
+  been added.
+
+- In the "2. Description" section, the "Pseudo-Expansion of Scratchpad" 
+  item has been added.
+
+- In "Description of Interrupt Handler" in the "3. Caution" section, the 
+  description has been changed.
+
+[ekrnl_rf]
+- Descriptions of the following functions have been added.
+	ExpandScratchPad()
+        InitThread()
+
+- To avoid causing thread scheduling problems, descriptions restricting 
+  the use of iWakeupThread() and iRotateThreadReadyQueue() have been 
+  added.
+
+- In the "Remarks" section of AddDmacHandler(), AddDmacHandler2(), 
+  AddIntcHandler(), AddIntcHandler2(), and AddSbusIntcHandler(), 
+  description of the interrupt handler has been added.  
+
+------------------------------------------------------------------------
+SIF DMA (sdma_rf)
+------------------------------------------------------------------------
+- In the "Member" section of sceSifDmaData(), a description has been added.
+
+------------------------------------------------------------------------
+SIF Command (scmd_rf)
+------------------------------------------------------------------------
+- The "Remarks" section has been added to sceSifAddCmdHandler().
+
+------------------------------------------------------------------------
+SIF Remote Procedure Call (srpc_rf)
+------------------------------------------------------------------------
+- In the "Remarks" section of sceSifCallRpc(), a description has been 
+  added.
+
+------------------------------------------------------------------------
+CD(DVD)-ROM Library
+------------------------------------------------------------------------
+[libcdvd]
+
+- The composition of the document has been changed extensively by adding 
+  "2. CD(DVD)-ROM Specification", "3. Access to CD(DVD)-ROM", and "4. 
+   Caution" sections.
+
+- The "Sector Size" and "Spinning Speed and Data Transfer" items have been
+  added to the "2. CD(DVD)-ROM Specification" section.
+
+- The "Use of Callback" item has been added to the "3. Access to 
+  CD(DVD)-ROM" section.
+
+- The "Speed of Reading Effective Data" and "Notes on Reentry" items have 
+  been added to the "4. Caution" section. 
+
+[cdvd_rf]
+- Descriptions of the following functions have been added.
+	sceCdChangeThreadPriority()
+	sceCdMmode()
+
+- In the "Description" section of sceCdCallback(), a description of 
+  cautions in using the interrupt handlers and callback functions has 
+  been added.
+
+- In the "Return value" and "Remarks" sections of sceCdInit(), descriptions
+  have been added.
+
+- In the "Return value" section of sceCdIntToPos(), sceCdSearchFile(), and
+  sceCdStatus(), descriptions have been added.
+
+- In the "Argument" and "Description" sections of sceCdSync(), descriptions 
+  of the mode have been added.
+
+- In the "Argument" and "Description" sections of sceCdTrayReq(), 
+  descriptions have been added.
+
+------------------------------------------------------------------------
+GS Basic Library
+------------------------------------------------------------------------
+[graph_rf]
+
+- In the "Remarks" section of sceGsSetDefDispEnv(), an error has been 
+  corrected.
+
+- In the "Remarks" section of sceGsSyncVCallback(), a description of 
+  interrupt handler has been added.
+
+[libgraph]
+
+- The "Support for PAL Mode" item has been added to the "2. Handling 
+  Precautions" section.
+------------------------------------------------------------------------
+Controller Library
+------------------------------------------------------------------------
+[libpad]
+
+- The composition of the document has been changed extensively by adding 
+  "2. Operating Procedure", "3. Library Operation", and "4. Caution".
+  
+- The "About Port/Slot" and "Procedure for Changing Thread Priorities" 
+  items have been added to the "2. Operating Procedure" section.
+
+- A description of "Procedure to use Analog Controller (DUALSHOCK 2) in 
+  Pressure-Sensitive Mode" has been added to the "2. Operating Procedure" 
+  section.
+
+- The "Notes on RPC Reentry" and "About Output Message" items have been 
+  added in the "4. Caution" section.
+
+[pad_rf]
+
+- In the "Return value" and "Description" sections of scePadInfoMode(), 
+  descriptions of controller mode ID has been added.
+
+- In the "Description" section of scePadSetActDirect(), a description has 
+  been added.
+
+- In the "Argument" section of scePadSetMainMode(), a description has been
+  added.
+
+------------------------------------------------------------------------
+Memory Card Library
+------------------------------------------------------------------------
+[libmc]
+
+- The composition of the document has been changed extensively.  The 
+  following items have been newly added.
+
+- The "Sample Program" item has been added to the "1. Library Overview".
+
+- The items "File Entry", "File Attributes", "Structure of Hierarchical 
+  Directory", and "Calculation of Required Capacity" have been added to 
+  the "2. File System Overview" section.
+
+- The "7. Caution" section consisting of the items "Notes on RPC Reentry"
+  and "Changing Thread Priorities" has been added.
+
+[mc_rf]
+
+- Descriptions of the following functions have been added.
+	sceMcChangeThreadPriority()
+	sceMcGetSlotMax()
+
+- In the "Description" section of sceMcSync(), a description has been 
+  added.
+
+------------------------------------------------------------------------
+Multitap Library
+------------------------------------------------------------------------
+[libmtap]
+
+- The composition of the document has been changed extensively by adding 
+  "2. Operating Procedure" and "3. Caution".
+
+- The "Ports and Slots" and "Changing Thread Priorities" items have been 
+  added to the "2. Operating Procedure" section.
+
+- The "Port Open and Load Imposed on System" and "Notes on RPC Reentry" 
+  items have been added to the "3. Caution" section.
+
+[mtap_rf]
+
+- A description of the following function has been added.
+	sceMtapChangeThreadPriority()
+
+- In the "Argument" and "Description" sections of sceMtapPortClose() and 
+  sceMtapPortOpen(), descriptions have been added.
+
+------------------------------------------------------------------------
+Low-Level Sound Library
+------------------------------------------------------------------------
+[libsdr]
+- The "Changing Thread Priorities" item has been added to the "2. 
+  Description of Features" section.
+
+- In the "3. Caution" section, the descriptions of calls from multiple 
+  threads and memory allocation of transfer data have been changed.  
+
+[sdr_rf]
+- In the "Remarks" section of sceSdCallBack(), a description of interrupt 
+  handlers has been added.
+
+- In the "Description" section of sceSdRemote(), the description has been 
+  changed.
+
+------------------------------------------------------------------------
+CSL Software Synthesizer
+------------------------------------------------------------------------
+[libssyn]
+
+- The "MIDI Message Filter Callback" item has been added to the "2. Usage"
+  section.
+
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+[essyn_rf]
+
+- A description of the following function has been added.
+	sceSSyn_SetTvaEnvMode()
+
+------------------------------------------------------------------------
+CSL Line-Out (liblout)
+------------------------------------------------------------------------
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+------------------------------------------------------------------------
+CSL MIDI Stream Generation (libmsin)
+------------------------------------------------------------------------
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+------------------------------------------------------------------------
+I/O Service
+------------------------------------------------------------------------
+[libio]
+- The "Notes on RPC Reentry" item has been added to the "1. Library 
+  Overview" section.
+
+[io_rf]
+- In the "Return value" section of sceOpen(), a description has been 
+  added.
+
+------------------------------------------------------------------------
+Standard IOP Service (iserv_rf)
+------------------------------------------------------------------------
+- In the "Return value" section of the following functions, descriptions 
+  have been added.
+	sceSifLoadModule()
+	sceSifLoadElf()
+	sceSifLoadElfPart()
+
+------------------------------------------------------------------------
+IOP Kernel Library (ikrnl_rf)
+------------------------------------------------------------------------
+- The "Remarks" section has been added to AllocSysMemory() and 
+  FreeSysMemory().
+
+- In the "Argument" section of the following functions, descriptions have 
+  been added.
+	ChangeThreadPriority()/iChangeThreadPriority()
+	ReferThreadStatus()/iReferThreadStatus()
+	CreateSema()
+	WaitEventFlag()/PollEventFlag()
+	CreateMbx()
+	ReceiveMbx()/PollMbx()
+	SendMbx()/iSendMbx()
+	DisableIntr()
+	EnableIntr()
+	RegisterIntrHandler()
+
+- In the "Return value" section of DisableIntr(), a description has been 
+  added.
+
+------------------------------------------------------------------------
+Low-Level Sound Library Operating on the IOP
+------------------------------------------------------------------------
+[libsd]
+
+- The "2.4 Changing Thread Priorities" item has been added to the 
+  "2. Description of Features" section.
+
+[sd_rf]
+
+- A description of the following function has been added.
+	sceSdTransIntrHandler()
+
+- In the "Description" section of the following functions, descriptions 
+  have been added.
+	sceSdBatch()
+	sceSdBlockTrans()
+	sceSdGetCoreAttr()
+	sceSdInit()
+	sceSdProcBatch()
+	sceSdProcBatchEx()
+	sceSdSetCoreAttr()
+
+- In the "Remarks" section of the following functions, descriptions have 
+  been added.
+	sceSdSetIRQCallback()
+	sceSdSetSpu2IntrHandler()
+	sceSdSetTransCallback()
+	sceSdSetTransIntrHandler()
+ 
+-  The description of sceSdTransIntrHandler() has been deleted.
+
+------------------------------------------------------------------------
+CSL Software Synthesizer (modssyn)
+------------------------------------------------------------------------
+
+- A description has been added to the "1. Overview" section.
+
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+- The "3. Overview of Features" section has been deleted.
+
+------------------------------------------------------------------------
+CSL MIDI Delay (moddelay)
+------------------------------------------------------------------------
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+------------------------------------------------------------------------
+CSL MIDI Monophonic (modmono)
+------------------------------------------------------------------------
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+------------------------------------------------------------------------
+CSL MIDI Stream Generation (modmsin)
+------------------------------------------------------------------------
+- In the "2. Usage" section, the description of the buffer structure has 
+  been changed.
+
+------------------------------------------------------------------------
+CSL MIDI Sequencer
+------------------------------------------------------------------------
+[modmidi]
+
+- The descriptions in the sections "1. Overview", "2. Usage", and "3. 
+  Overview of Features" have been changed.
+ 
+- The "2.2. MIDI Message Filter Callback" item has been added to "2. 
+  Usage".
+
+[midi_rf]
+- In the "Description" section of chMsgCallBack() and excMsgCallBack(),
+  the descriptions have been changed.
+
+- In the "Argument" port_number of the following functions, the words,
+  output port number have been corrected to input port number.
+	sceMidi_GetEnv()
+	sceMidi_isDataEnd()
+	sceMidi_isInPlay()
+	sceMidi_Load()
+	sceMidi_MidiGetAbsoluteTempo()
+	sceMidi_MidiGetRelativeTempo()
+	sceMidi_MidiPlaySwitch()
+	sceMidi_MidiSetAbsoluteTempo()
+	sceMidi_MidiSetLocation()
+	sceMidi_MidiSetRelativeTempo()
+	sceMidi_MidiSetVolume()
+	sceMidi_MidiVolumeChange()
+	sceMidi_SelectSong()
+	sceMidi_SongPlaySwitch()
+	sceMidi_SongSetAbsoluteTempo()
+	sceMidi_SongSetLocation()
+	sceMidi_SongSetVolume()
+	sceMidi_SongVolumeChange()
+
+------------------------------------------------------------------------
+CSL MIDI Stream Generation (imsin_rf)
+------------------------------------------------------------------------
+- The following term has been changed.
+  output stream -> output port buffer
+
+------------------------------------------------------------------------
+i.LINK Driver Library (iL_rf)
+------------------------------------------------------------------------
+- In the "Description" section of sce1394TrDataInd(), a description has 
+  been added.
+
+------------------------------------------------------------------------
+i.LINK Socket Driver Library
+------------------------------------------------------------------------
+[iLsocket]
+- In the "1.3 Caution" item in the "1. Library Overview" section, the 
+  description has been changed.
+
+- The "2. Protocol" section has been added.
+
+[iLskt_rf]
+- In the "Description" section of sceILsocketSend() and sceILsocketSendTo(),
+  a description has been added.
+
+------------------------------------------------------------------------
+USB Driver Library (usbd_rf)
+------------------------------------------------------------------------
+- A description of the following function has been added.
+	sceUsdbChangeThreadPriority()
+
+- The function section has been divided into "2. LDD Functions" and "3. 
+  USBD Functions".
+
+- In the "Description" section of xxxProbe(), xxxAttach(), xxxDetach(), 
+  and sceUsbdUnregisterLdd(), the descriptions have been changed.
+
+- The description of sceUsbdScanStaticDescriptor() has been changed.
+
+- In the "Remarks" section of sceUsbdTransferPipe(), a description has 
+  been added.
+
+- In the "4. Completion and Error Code List", a description has been added.
+
+------------------------------------------------------------------------
+Compiling IOP Programs (compile)
+------------------------------------------------------------------------
+- In the "3.1 File Format Defining Library Entries" item, the description 
+  has been changed.
+ 
+========================================================================
+Changes since Release 1.6
+========================================================================
+- A document describing the method of monitoring IOP thread condition has 
+  been added.
+

@@ -1,0 +1,275 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                                   Aug. 2000
+
+ILOADP (DECI2 IOP Load Protocol) Specification
+=======================================================
+
+  This document describes ILOADP, one of the higher level protocols of 
+  the DECI2.
+
+
+Contents
+=========
+1. Overview
+2. Message Format
+3. Messages
+3.1 ILOADP_CMD_START
+3.2 ILOADP_CMD_REMOVE
+3.3 ILOADP_CMD_LIST
+3.4 ILOADP_CMD_INFO
+3.5 ILOADP_CMD_WATCH
+3.6 ILOADP_CMD_REPORT
+
+1. Overview
+=============
+  The ILOADP protocol controls the load manager on the IOP. 
+  The protocol number of ILOADP is 0x0150.
+
+2. Message Format
+===================
+  ILOADP messages are transmitted by using a basic DECI2 header. 
+  The ILOADP header below follows the DECI2 header.  Data comes next as 
+  necessary.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      Stamp    |     Result    |     Action    |      Cmd      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         Module_ID                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+  Cmd Code
+    Cmd Code shows types of commands and replies.  It has 5 types of 
+    commands and the replies to them as follows:
+
+
+    ILOADP_CMD_START   (0),  ILOADP_CMD_STARTR   (1)
+    ILOADP_CMD_REMOVE  (2),  ILOADP_CMD_REMOVER  (3)
+    ILOADP_CMD_LIST    (4),  ILOADP_CMD_LISTR    (5)
+    ILOADP_CMD_INFO    (6),  ILOADP_CMD_INFOR    (7)
+    ILOADP_CMD_WATCH   (8),  ILOADP_CMD_WATCHR   (9)
+
+    In addition, the following notification is issued from the IOP to the HOST.
+
+    ILOADP_CMD_REPORT        (16)
+
+  Module information in the following format is occasionally added to 
+  the return values of some commands.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |             flags             |            version            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                      module top address                       |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                      test segment size                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                      data segment size                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                      bss segment size                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         reserved                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         reserved                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         reserved                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                         module name string  ...    |
+                                       -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    
+3. Messages
+============
+
+3.1 ILOADP_CMD_START
+---------------------
+  ILOADP_CMD_START and ILOADP_CMD_STARTR are used for loading and executing 
+  modules.
+
+  The ILOADP_CMD_START command directs the IOP to load and execute modules.  
+  To execute this command, set the ILOADP header as follows:
+ 
+    Cmd    = ILOADP_CMD_START
+    Stamp  = Any value (IOP has nothing to do with this value.)
+    Action = Following bit flags:
+           #define ILOADP_ACT_LOAD  0x01  Requests the IOP to load modules.
+           #define ILOADP_ACT_START 0x02  Requests the IOP to start executing 
+					  the loaded modules.
+           #define ILOADP_ACT_INFO  0x04  Requests the IOP to add module 
+					  information when returning 
+					  the ILOADP_CMD_STARTR reply.
+           #define ILOADP_ACT_WATCH 0x08  Requests the IOP to watch the loaded 
+					  modules.
+                                         (See the ILOADP_CMD_WATCH command 
+					  described later.)
+    Module_ID = ID of the module to be executed (when ILOADP_ACT_START is 
+		selected). 
+    Set the remaining field to 0.
+
+  When ILOADP_ACT_LOAD was specified in Action, place a null-terminated 
+  character string representing the name of the file to be loaded, next to 
+  the ILOADP header.
+
+  When ILOADP_ACT_START was specified in Action, place character strings for 
+  each argument after the ILOADP header and the filename.  Each argument is a 
+  null-terminated character string.  
+
+  Add a filename character string even when specifying ILOADP_ACT_START 
+  alone.  A dummy filename is acceptable at this time. 
+ 
+  When ILOADP_ACT_WATCH is specified in Action, the module becomes 
+  the watching target after loading the module or starting its execution. 
+  Therefore, the ILOADP_STAT_LOADED/ILOADP_STAT_RUNNING status is never 
+  reported. 
+
+  The total size of the character strings of a filename and arguments is 160 
+  bytes at the maximum including the null character.  
+
+  The following are specifiable combinations of ILOADP_ACT_LOAD and 
+  ILOADP_ACT_START:
+ 
+        ILOADP_ACT_LOAD | ILOADP_ACT_START
+        ILOADP_ACT_LOAD
+        ILOADP_ACT_START
+
+  ILOADP_CMD_STARTR is returned when loading is completed. 
+  The following information is returned to the ILOADP header of 
+  the ILOADP_CMD_STARTR reply.
+
+    Cmd    = ILOADP_CMD_STARTR
+    Action = The value same as the one specified for the command
+    Stamp  = The value same as the one specified for the command
+    Result = Result code
+         #define ILOADP_RESULT_OK       0  Normal termination
+         #define ILOADP_RESULT_LINKERR  1  Link failure
+         #define ILOADP_RESULT_NOMEM    2  Insufficient memory
+         #define ILOADP_RESULT_OBJERR   3  Illegal object file format
+         #define ILOADP_RESULT_NOMOD    4  Specified module is not found.
+         #define ILOADP_RESULT_ILLCMD   5  Illegal command specification
+                                           (e.g. neither ILOADP_ACT_LOAD nor 
+                                           ILOADP_ACT_START is specified in 
+					   Action)
+         #define ILOADP_RESULT_BUSY     6  Next command appeared while loading.
+         #define ILOADP_RESULT_NOFILE   7  File is not found.
+         #define ILOADP_RESULT_FILEERR  8  Error occurred while reading a file.
+         #define ILOADP_RESULT_MEMINUSE 9  Specified address is already in use.
+
+    Module_ID = ID No. of loaded modules
+
+    In addition, when ILOADP_ACT_INFO is specified in Action, module 
+    information comes next to the ILOADP header.
+
+  If ILOADP_ACT_START is specified after the ILOADP_CMD_STARTR reply is sent, 
+  execution of the module is started.
+           
+3.2 ILOADP_CMD_REMOVE
+---------------------
+  ILOADP_CMD_REMOVE is not defined in the current status.
+
+
+3.3 ILOADP_CMD_LIST
+-------------------
+
+  The ILOADP_CMD_LIST command gives directions to obtain the module ID list on 
+  the IOP. 
+ 
+  To execute the ILOADP_CMD_LIST command, set the ILOADP header as follows:
+ 
+    Cmd    = ILOADP_CMD_LIST
+    Stamp  = Any value
+    Set the remaining fields to 0.
+
+  The following information is returned to the ILOADP header of 
+  the ILOADP_CMD_LISTR reply.
+
+    Cmd    = ILOADP_CMD_LISTR
+    Stamp  = The value same as the one specified for the command
+    Result = Result code
+             #define ILOADP_RESULT_OK       0   Normal termination
+
+  All ID's of the existing modules are returned following the ILOADP header.
+
+3.4 ILOADP_CMD_INFO
+--------------------
+
+  ILOADP_CMD_INFO obtains information on specific modules.
+
+  To execute the ILOADP_CMD_INFO command, set the ILOADP header as follows:
+
+    Cmd    = ILOADP_CMD_INFO
+    Stamp  = Any value
+    Module_ID = ID of the module whose information is required
+    Other fields are set to 0.
+
+  The following information is returned to the ILOADP header of 
+  the ILOADP_CMD_INFOR reply.
+
+    Cmd    = ILOADP_CMD_INFO
+    Stamp  = The value same as the one specified for the command
+    Module_ID = The value same as the one specified for the command
+    Result = Result code
+         #define ILOADP_RESULT_OK       0   Normal termination
+         #define ILOADP_RESULT_NOMOD    4   Specified module is not found.
+
+  Module information comes next to the ILOADP header.
+
+
+3.5 ILOADP_CMD_WATCH
+---------------------
+
+  The ILOADP_CMD_WATCH command requests the IOP to watch module status changes.
+  The status changes are reported via Module Status Report messages described 
+  in the following section. 
+
+  To execute the ILOADP_CMD_WATCH command, set the ILOADP header as follows:
+
+    Cmd    = ILOADP_CMD_WATCH
+    Stamp  = Any value
+    Module_ID = ID of the module whose status change is watched
+    Action = Either of the following:
+             ILOADP_ACT_WATCH_START (1)   Watch start
+             ILOADP_ACT_WATCH_END   (0)   Watch end
+    Other fields are set to 0.
+
+   The following information is returned to the ILOADP header of 
+   the ILOADP_CMD_WATCHR reply.
+
+    Cmd    = ILOADP_CMD_WATCHR
+    Stamp  = The value same as the one specified for the command
+    Module_ID = The value same as the one specified for the command
+    Action = The value same as the one specified for the command
+    Result = Result code
+         #define ILOADP_RESULT_OK       0   Normal termination
+         #define ILOADP_RESULT_NOMOD    4   Specified module is not found.
+
+  When the watch start is specified, the Module Status Report message 
+  reporting the current state of the module is returned following the 
+  ILOADP_CMD_WATCHR reply.
+
+
+3.6 ILOADP_CMD_REPORT
+----------------------
+  Module status changes are reported in the following format:
+
+    Cmd    = ILOADP_CMD_REPORT
+    Module_ID = ID of the module whose status has been changed
+    Stamp  = Always 0
+    Result = Module status
+         #define ILOADP_STAT_LOADED         1   Not yet executed
+                                                The status in which only load 
+						has been specified and start 
+						has not been specified yet.
+         #define ILOADP_STAT_RUNNING        2   In execution
+         #define ILOADP_STAT_DONE_REMOVE    3   End of execution, deleted from 
+						memory
+         #define ILOADP_STAT_DONE_RESIDENT  4   End of execution, resident in 
+						memory
+
+  A one-word return value of the module's entry function follows the ILOADP 
+  header.  This return value is effective only when Result is set to 3 or 4, 
+  and the return value of the module's entry function is entered.  In other 
+  cases, 0 is returned.

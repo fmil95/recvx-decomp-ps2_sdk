@@ -1,0 +1,2021 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> コントローラライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>コントローラライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#scePadEnd>scePadEnd </A><BR>
+</TD><TD> </TD>
+<TD>コントローラライブラリの終了</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadEnterPressMode>scePadEnterPressMode </A><BR>
+</TD><TD> </TD>
+<TD>コントローラを感圧モードにする</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadExitPressMode>scePadExitPressMode </A><BR>
+</TD><TD> </TD>
+<TD>感圧モードから抜ける</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadGetReqState>scePadGetReqState </A><BR>
+</TD><TD> </TD>
+<TD>非同期系関数の実行結果を取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadGetSlotMax>scePadGetSlotMax </A><BR>
+</TD><TD> </TD>
+<TD>コントローラポートの最大スロット数を取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadGetState>scePadGetState </A><BR>
+</TD><TD> </TD>
+<TD>コントローラの接続状態取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadInfoAct>scePadInfoAct </A><BR>
+</TD><TD> </TD>
+<TD>アクチュエータ情報の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadInfoComb>scePadInfoComb </A><BR>
+</TD><TD> </TD>
+<TD>同時に操作できるアクチュエータの組み合わせ情報の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadInfoMode>scePadInfoMode </A><BR>
+</TD><TD> </TD>
+<TD>コントローラモードに関する情報取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadInfoPressMode>scePadInfoPressMode </A><BR>
+</TD><TD> </TD>
+<TD>接続されているコントローラが感圧対応かどうかを取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadInit>scePadInit </A><BR>
+</TD><TD> </TD>
+<TD>コントローラライブラリを初期化する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadPortClose>scePadPortClose </A><BR>
+</TD><TD> </TD>
+<TD>コントローラとの通信停止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadPortOpen>scePadPortOpen </A><BR>
+</TD><TD> </TD>
+<TD>コントローラとの通信開始</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadRead>scePadRead </A><BR>
+</TD><TD> </TD>
+<TD>ボタン情報の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadReqIntToStr>scePadReqIntToStr </A><BR>
+</TD><TD> </TD>
+<TD>非同期系関数の実行結果に対応する文字列を得る（デバッグ用）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadSetActAlign>scePadSetActAlign </A><BR>
+</TD><TD> </TD>
+<TD>コントローラに送信するアクチュエータパラメータの内訳設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadSetActDirect>scePadSetActDirect </A><BR>
+</TD><TD> </TD>
+<TD>コントローラにアクチュエータパラメータを送信する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadSetMainMode>scePadSetMainMode </A><BR>
+</TD><TD> </TD>
+<TD>コントローラモード切り替え／切り替えスイッチのロック</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePadStateIntToStr>scePadStateIntToStr </A><BR>
+</TD><TD> </TD>
+<TD>コントローラの状態に対応する文字列を得る（デバッグ用）</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+<A name=scePadEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラライブラリの終了
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadEnd</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：成功 <BR>
+    1以外：失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コントローラライブラリを終了します。 <BR>
+    IOP側で動作していた全てのスレッドを終了しリソースを開放します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadInit">scePadInit</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadEnterPressMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadEnterPressMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラを感圧モードにする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadEnterPressMode</B>( 
+	int <I>port</I>, 
+	int <I>slot</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は0固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストは受理された <BR>
+    1以外：リクエストは受理されなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定ポートのコントローラを感圧モードにします。 <BR>
+    実際にコントローラが感圧モードに移行するためには数フレームを要し、非同期に行われます。 <BR>
+    処理の終了はscePadGetState()で監視しするか、scePadGetReqState()で判定してください。 <BR>
+    感圧モードに入るとコントローラＩＤが0x79に変化します。 <BR>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadExitPressMode">scePadExitPressMode</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadExitPressMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadExitPressMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        感圧モードから抜ける
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadExitPressMode</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は0固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストは受理された <BR>
+    1以外：リクエストは受理されなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    既に感圧モードにある指定ポートのコントローラを感圧モードから抜けさせます。 <BR>
+    実際にコントローラが感圧モードから抜けるには数フレームを要し、非同期に行われます。 <BR>
+    処理の終了はscePadGetState()で監視しするか、scePadGetReqState()で判定してください。 <BR>
+    感圧モードから抜けるとコントローラＩＤが0x73に戻ります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadEnterPressMode">scePadEnterPressMode</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadGetReqState>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadGetReqState
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        非同期系関数の実行結果を取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadGetReqState </B>( 
+	int <I>port</I>, 
+	int <I>slot</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は0固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadReqStateBusy</TD>
+<TD valign="TOP">実行中</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadReqStateFaild</TD>
+<TD valign="TOP">何ら理由により処理が失敗した</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadReqStateComplete</TD>
+<TD valign="TOP">関数は正常に終了した</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非同期系関数を実行したあと、その成否を調べるために用います。非同期系関数とは関数自体は即時終了するが、IOP側でコントローラとの通信に数フレームを要するもので、以下の関数が挙げられます。 <BR>
+<BR>
+    <B>scePadSetMainMode()</B> <BR>
+    <B>scePadSetActAlign()</B> <BR>
+    <B>scePadEnterPressMode()</B> <BR>
+    <B>scePadExitPressMode()</B> <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadSetMainMode">scePadSetMainMode</a>(), <a href="./pad_rf.htm#scePadSetActAlign">scePadSetActAlign</a>(), <a href="./pad_rf.htm#scePadEnterPressMode">scePadEnterPressMode</a>(), <a href="./pad_rf.htm#scePadExitPressMode">scePadExitPressMode</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadGetSlotMax>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadGetSlotMax
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラポートの最大スロット数を取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>scePadGetSlotMax</B> ( 
+	int <I>port</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号（０または１）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたコントローラポートに接続されているマルチタップの最大スロット数を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMtapPortOpen()でオープンしたポートに接続されたマルチタップの最大スロット数を調べるための関数です。 <BR>
+    マルチタップが接続されていない場合は1を返します。マルチタップが接続されていても、sceMtapPortOpen()でオープンされていない場合は１を返します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadGetState>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadGetState
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラの接続状態取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadGetState</B>(
+	int <I>port</I>, 
+	int <I>slot</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コントローラの接続状態 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateDiscon</TD>
+<TD valign="TOP">コントローラは接続されていない</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateFindPad</TD>
+<TD valign="TOP">コントローラが見つかった（処理は継続中）</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateFindCTP1</TD>
+<TD valign="TOP">CTP1.0のコントローラを検出</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateExecCmd</TD>
+<TD valign="TOP">コントローラと通信中</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateStable</TD>
+<TD valign="TOP">CTP2.0のコントローラを検出</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadStateError</TD>
+<TD valign="TOP">通信エラー中</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    上記の状態のうち、ボタンの状態を得たり、アプリケーションからの <BR>
+    リクエストが可能なのはscePadStateFindCTP1およびscePadStateStableです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンしたポートの、コントローラの接続状態を取得します。 <BR>
+    ポートをオープンすると、IOPのpadman.irxは独自にコントローラの接続を監視し、接続されたコントローラの情報を取得します。また、コントローラの状態を変更するには数回通信を行う必要があり、終了までに数フレームの時間を要します。 <BR>
+    この間はボタンの状態を得ることができず、またアプリケーションからのリクエストを受け付けることができません。アプリケーションはscePadGetState()を使用してpadman.irxの処理の状態を調べることができます。scePadGetState()がscePadStateStable か scePadStateFindCTP1 であれば、コントローラからのボタン情報の取得ができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadInfoAct>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadInfoAct
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アクチュエータ情報の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadInfoAct</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	int <I>actno</I>, 
+	int <I>term</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>actno</I>	アクチュエータ番号（０～アクチュエータの総数-1、
+	1：アクチュエータの総数を得る）
+<I>term</I>	項目（返り値参照、<I>actno </I>= -1では意味を持たない）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数<I>term</I>と返り値の関係は以下の通り。 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Term</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値の内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoActFunc</TD>
+<TD valign="TOP">機能番号（１：連続回転型振動）</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoActSub</TD>
+<TD valign="TOP">サブ機能番号（１：低速回転、２：高速回転）</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoActSize</TD>
+<TD valign="TOP">パラメータのデータ長（０：１ビット（ON/OFFのみ）、<BR>１以上：バイト数）</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoActCurr</TD>
+<TD valign="TOP">消費電流容量 （10mA単位）</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    また、<I>actno</I>に-1を指定した場合は返り値にアクチュエータの総数が返ります。 <BR>
+    その場合は<I>term</I>の値は無視されます。 <BR>
+    コントローラがREADY状態でないなど、何らかの理由で <BR>
+    エラーがあった場合は0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コントローラに搭載されているアクチュエータの詳細を取得します。また、actno=-1でアクチュエータの総数を得ることもできます。 <BR>
+    この関数は、scePadGetState()がscePadStateStableの時のみ有効となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadInfoComb>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadInfoComb
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        同時に操作できるアクチュエータの組み合わせ情報の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadInfoComb</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	int <I>listno</I>, 
+	int <I>offs</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>listno</I>	組み合わせリストのリスト番号
+       （０～組み合わせリスト総数-1、-1：リストの総数を得る）
+offs	組み合わせリスト内のオフセット
+       （０～リストに含まれるアクチュエータ総数-1、
+         -1：リスト内のアクチュエータ総数を得る）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>listno</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>offs</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-1</TD>
+<TD valign="TOP">×</TD>
+<TD valign="TOP">組み合わせリストの総数(n)</TD>
+</TR>
+<TR>
+<TD valign="TOP">０～n -1</TD>
+<TD valign="TOP">-1</TD>
+<TD valign="TOP">リストに含まれるアクチュエータの総数(m)</TD>
+</TR>
+<TR>
+<TD valign="TOP">０～n -1</TD>
+<TD valign="TOP">０～m -1</TD>
+<TD valign="TOP">リスト番号listnoのリストのオフセットoffsに<BR>格納されているアクチュエータ番号</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    コントローラがREADY状態でないなど、何らかの理由で <BR>
+    エラーがあった場合は0を返します。 <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アクチュエータの物理的な配置などによって制限される、同時に操作できるアクチュエータの組み合わせを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadInfoMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadInfoMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラモードに関する情報取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadInfoMode</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	int <I>term</I>, 
+	int <I>offs</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>term</I>	調査する項目
+<I>offs</I>	調査するコントローラモードIDが入っている
+	コントローラモードIDテーブル内のオフセット
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>term</I>の値に対する返り値の内容は以下の通り。 <BR>
+<BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Term</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Offs</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoModeCurID</TD>
+<TD valign="TOP">×</TD>
+<TD valign="TOP">現在動作中のコントローラモードID<BR>有効桁数4ビット<BR>（ボタン情報の端末種別の値と同じ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoModeCurExID</TD>
+<TD valign="TOP">×</TD>
+<TD valign="TOP">振動機能つきコントローラで現在動作中の<BR>コントローラモードID有効桁数16ビット<BR>(SCPH-1150または振動機能非対応の場合<BR>は０)</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoModeCurExOffs</TD>
+<TD valign="TOP">×</TD>
+<TD valign="TOP">現在動作中のコントローラモードIDが<BR>格納されているコントローラモードID<BR>テーブル内オフセット<BR>(SCPH-1150または振動機能非対応の場合<BR>は０)</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoModeIdTable</TD>
+<TD valign="TOP">-1</TD>
+<TD valign="TOP">コントローラモードＩＤの総数(n)</TD>
+</TR>
+<TR>
+<TD valign="TOP">InfoModeIdTable</TD>
+<TD valign="TOP">0～n-1</TD>
+<TD valign="TOP">コントローラモードIDテーブルの中で<BR>offsによって指定されたオフセットに格納<BR>されているコントローラモードID<BR>(SCPH-1150または振動機能非対応の場合<BR>は０)</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    コントローラがREADY状態でない場合、または何らかの理由で <BR>
+    エラーがあった場合は0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現在動作中のコントローラモードID、振動機能対応／非対応のコントローラの識別、振動機能つきコントローラのコントローラモードIDを調べることができます（SCPH-1150は例外的に振動機能なしコントローラとして扱われます）。 <BR>
+<BR>
+    InfoModeCurIDは、PSCTP1.0のコントローラに対しても機能します。それ以外の<I>term</I> は <BR>
+    PSCTP2.0のコントローラに対してのみ有効です。 <BR>
+<BR>
+    コントローラモードIDテーブル内のモードIDの順列はコントローラの種類によって異なります。DUALSHOCK2のコントローラモードIDテーブルは以下のようになっています。 <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コントローラモードID</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">4</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">7</TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadInfoPressMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadInfoPressMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        接続されているコントローラが感圧対応かどうかを取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadInfoPressMode</B>( 
+	int <I>port</I>, 
+	int <I>slot</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：感圧対応 <BR>
+    1以外：感圧対応していない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定ポートに接続されているコントローラが感圧対応かどうかを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラライブラリを初期化する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadInit</B>( 
+	int <I>mode</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	初期化モード（現在は0固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    １：正常終了 <BR>
+    １以外：初期化失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コントローラライブラリlibpadを初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadEnd">scePadEnd</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadPortClose>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadPortClose
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラとの通信停止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadPortClose</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：成功 <BR>
+    1以外：失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    scePadPortOpen()でオープンしたポートをクローズします。 <BR>
+    クローズされたポートは、以降一切の通信は行われなくなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadPortOpen">scePadPortOpen</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadPortOpen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadPortOpen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラとの通信開始
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadPortOpen</B> ( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	u_long128* <I>data</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号（０または１）
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>data</I>	作業用バッファ、64バイトアラインで確保すること。
+（必要サイズはscePadDmaBufferMax定数で定義）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    １：リクエストは受理された <BR>
+    １以外：リクエストは受理されない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    使用するコントローラポートをオープンします。 <BR>
+    コントローラポートをオープンすると、padman.irxがコントローラの接続を監視し、接続された場合はコントローラの情報を自動的に取得します。また、ボタン情報を取得することができるようになります。 <BR>
+    コントローラポートをオープンしてからボタン情報を取得できるようになるまで数フレームの時間を要します。ボタン情報を取得できるかどうかはscePadGetState()で監視してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./pad_rf.htm#scePadPortClose">scePadPortClose</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ボタン情報の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadRead</B>(
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	unsigned char* <I>data</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号（０または１）
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>data</I>	ボタン情報を格納するバッファのポインタバッファは３２バイト必要
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ０：取得失敗 <BR>
+    ０以外：取得したデータ長（現在は３２固定） <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EEに送られてきた最新のボタン情報を取得します。ボタン情報は、オープンされたポートのみ送られてきます。 <BR>
+    データ配列は以下の通りです。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x4<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x7<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">アナログスティック右（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">アナログスティック右（Y方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">アナログスティック左（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">アナログスティック左（Y方向）</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x5<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">アナログスティック右（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">アナログスティック右（Y方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">アナログスティック左（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">アナログスティック左（Y方向）</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x2<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">回転部アナログデータ</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">Ⅰボタンアナログデータ</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">Ⅱボタンアナログデータ</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">Lボタンアナログデータ</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x6<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">位置X方向 下位バイト</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">位置X方向 上位バイト</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">位置Y方向 下位バイト</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">位置Y方向 上位バイト</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オフセット（byte）</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">通信成功時は０、それ以外は0xff</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">上位４ビット：0x7<BR>下位４ビット：データ長÷２</TD>
+</TR>
+<TR>
+<TD valign="TOP">2,3</TD>
+<TD valign="TOP">デジタルボタン状態<BR>（１：リリース、０：プッシュ）</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">アナログスティック右（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">アナログスティック右（Y方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">アナログスティック左（X方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">アナログスティック左（Y方向）</TD>
+</TR>
+<TR>
+<TD valign="TOP">8</TD>
+<TD valign="TOP">感圧情報(→)</TD>
+</TR>
+<TR>
+<TD valign="TOP">9</TD>
+<TD valign="TOP">感圧情報(←)</TD>
+</TR>
+<TR>
+<TD valign="TOP">10</TD>
+<TD valign="TOP">感圧情報(↑)</TD>
+</TR>
+<TR>
+<TD valign="TOP">11</TD>
+<TD valign="TOP">感圧情報(↓)</TD>
+</TR>
+<TR>
+<TD valign="TOP">12</TD>
+<TD valign="TOP">感圧情報(△)</TD>
+</TR>
+<TR>
+<TD valign="TOP">13</TD>
+<TD valign="TOP">感圧情報(○)</TD>
+</TR>
+<TR>
+<TD valign="TOP">14</TD>
+<TD valign="TOP">感圧情報(×)</TD>
+</TR>
+<TR>
+<TD valign="TOP">15</TD>
+<TD valign="TOP">感圧情報(□)</TD>
+</TR>
+<TR>
+<TD valign="TOP">16</TD>
+<TD valign="TOP">感圧情報(L1)</TD>
+</TR>
+<TR>
+<TD valign="TOP">17</TD>
+<TD valign="TOP">感圧情報(R1)</TD>
+</TR>
+<TR>
+<TD valign="TOP">18</TD>
+<TD valign="TOP">感圧情報(L2)</TD>
+</TR>
+<TR>
+<TD valign="TOP">19</TD>
+<TD valign="TOP">感圧情報(R2)</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ビットオフセット</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>7</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>6</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>5</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>4</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>3</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>2</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>1</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>0</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">デジタルコントローラ</TD>
+<TD valign="TOP"><DIV align=center>←</DIV></TD>
+<TD valign="TOP"><DIV align=center>↓</DIV></TD>
+<TD valign="TOP"><DIV align=center>→</DIV></TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+<TD valign="TOP"><DIV align=center>ST</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center>SEL</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">DUALSHOCK</TD>
+<TD valign="TOP"><DIV align=center>←</DIV></TD>
+<TD valign="TOP"><DIV align=center>↓</DIV></TD>
+<TD valign="TOP"><DIV align=center>→</DIV></TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+<TD valign="TOP"><DIV align=center>ST</DIV></TD>
+<TD valign="TOP"><DIV align=center>R3</DIV></TD>
+<TD valign="TOP"><DIV align=center>L3</DIV></TD>
+<TD valign="TOP"><DIV align=center>SEL</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">アナログジョイスティック</TD>
+<TD valign="TOP"><DIV align=center>←</DIV></TD>
+<TD valign="TOP"><DIV align=center>↓</DIV></TD>
+<TD valign="TOP"><DIV align=center>→</DIV></TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+<TD valign="TOP"><DIV align=center>ST</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center>SEL</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ネジコン</TD>
+<TD valign="TOP"><DIV align=center>←</DIV></TD>
+<TD valign="TOP"><DIV align=center>↓</DIV></TD>
+<TD valign="TOP"><DIV align=center>→</DIV></TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+<TD valign="TOP"><DIV align=center>ST</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ナムコ製ガンコントローラ</TD>
+<TD valign="TOP"><DIV align=center>←</DIV></TD>
+<TD valign="TOP"><DIV align=center>↓</DIV></TD>
+<TD valign="TOP"><DIV align=center>→</DIV></TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+        <BLOCKQUOTE>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ビットオフセット</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>7</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>6</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>5</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>4</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>3</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>2</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>1</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>0</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">デジタルコントローラ</TD>
+<TD valign="TOP"><DIV align=center>□</DIV></TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>△</DIV></TD>
+<TD valign="TOP"><DIV align=center>R1</DIV></TD>
+<TD valign="TOP"><DIV align=center>L1</DIV></TD>
+<TD valign="TOP"><DIV align=center>R2</DIV></TD>
+<TD valign="TOP"><DIV align=center>L2</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">DUALSHOCK</TD>
+<TD valign="TOP"><DIV align=center>□</DIV></TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>△</DIV></TD>
+<TD valign="TOP"><DIV align=center>R1</DIV></TD>
+<TD valign="TOP"><DIV align=center>L1</DIV></TD>
+<TD valign="TOP"><DIV align=center>R2</DIV></TD>
+<TD valign="TOP"><DIV align=center>L2</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">アナログジョイスティック</TD>
+<TD valign="TOP"><DIV align=center>□</DIV></TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>△</DIV></TD>
+<TD valign="TOP"><DIV align=center>R1</DIV></TD>
+<TD valign="TOP"><DIV align=center>L1</DIV></TD>
+<TD valign="TOP"><DIV align=center>R2</DIV></TD>
+<TD valign="TOP"><DIV align=center>L2</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ネジコン</TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center>A</DIV></TD>
+<TD valign="TOP"><DIV align=center>B</DIV></TD>
+<TD valign="TOP"><DIV align=center>R</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ナムコ製ガンコントローラ</TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center>B</DIV></TD>
+<TD valign="TOP"><DIV align=center>TRG</DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+<TD valign="TOP"><DIV align=center></DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+
+</DIV>
+</blockquote>
+<A name=scePadReqIntToStr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadReqIntToStr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        非同期系関数の実行結果に対応する文字列を得る（デバッグ用）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>scePadReqIntToStr</B> ( 
+	int <I>state</I>, 
+	unsigned char* <I>str</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>state</I>	実行結果コード
+<I>str</I>	文字列格納用バッファへのポインタ(必要サイズは最大16バイト)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    scePadGetReqState()で得られる、非同期系関数の実行/結果コードを文字列に変換します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadSetActAlign>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadSetActAlign
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラに送信するアクチュエータパラメータの内訳設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadSetActAlign</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	unsigned char* <I>data</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>data</I>	アクチュエータパラメータの送信内訳（６バイト）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストが受理された <BR>
+    1以外：リクエストは受理されない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    送信バッファの中でアクチュエータパラメータを設定する位置を、６バイト配列の中にアクチュエータ番号を書き込むことでコントローラに通知します。 <BR>
+    送信バッファのオフセット０をアクチュエータ番号０に、オフセット１をアクチュエータ番号１に使い、そのほかのデータは使わないときの設定例は、以下のようになります（送信したい場所にアクチュエータ番号を、使わない場所には0xffを設定します）。 <BR>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">オフセット</TD>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">3</TD>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">5</TD>
+</TR>
+<TR>
+<TD valign="TOP">dataの内容</TD>
+<TD valign="TOP">0x00</TD>
+<TD valign="TOP">0x01</TD>
+<TD valign="TOP">0xFF</TD>
+<TD valign="TOP">0xFF</TD>
+<TD valign="TOP">0xFF</TD>
+<TD valign="TOP">0xFF</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+    この関数を実行するとコントローラと通信を行うため、数フレームの間、他のリクエストは受け付けられません。 <BR>
+    処理の終了はscePadGetState()で監視しするか、scePadGetReqState()の結果で判定してください。 <BR>
+    この関数で設定したアクチュエータパラメータ内訳は、コントローラが抜かれるか、コントローラモードが変更されると無効になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadSetActDirect>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadSetActDirect
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラにアクチュエータパラメータを送信する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadSetActDirect</B> (
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	unsigned char* <I>data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>data</I>	送信データの先頭アドレス
+	送信データは６バイト用意してください
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    １：転送成功 <BR>
+    １以外：失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アクチュエータを動作させるための送信データをIOPに転送します。転送された送信データは、次のVBlank割り込みでコントローラに送信されます。 <BR>
+    アクチュエータを制御する場合は<B>scePadSetActDirect()</B>で送信バッファを指定するだけでなく、<B>scePadSetActAlign()</B>を用いて、送信バッファのどのオフセットにあるデータをアクチュエータパラメータとして認識すべきなのかをコントローラに対して通知しておく必要があります。 <BR>
+    アクチュエータが受け付けられるデータ長はscePadInfoAct()によって調べることができ、DUALSHOCK2の場合アクチュエータ番号0,1のデータ長はそれぞれ1ビットと1バイトであることが分かります。従ってscePadSetActAlign()によって送信バッファのオフセット0にアクチュエータ番号0のパラメータを、オフセット1にアクチュエータ番号1のパラメータを送信する設定をしたとするとオフセット0には0または1、オフセット1には0?255の値を送ることによってアクチュエータを制御できることになります。  <BR>
+    なおアクチュエータの動作はパラメータの値が0のとき停止状態で、値が大きくなるほど回転が速くなります。 <BR>
+<DIV align="center">
+    DUALSHOCK2のアクチュエータ設定値 <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">小モータ</TD>
+<TD valign="TOP">0=停止, 1=回転</TD>
+</TR>
+<TR>
+<TD valign="TOP">大モータ</TD>
+<TD valign="TOP">0～255  数値が大きいほど回転数が速い</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadSetMainMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadSetMainMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラモード切り替え／切り替えスイッチのロック
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>scePadSetMainMode</B>( 
+	int <I>port</I>, 
+	int <I>slot</I>, 
+	int <I>offs</I>, 
+	int <I>lock</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	コントローラポート番号
+<I>slot</I>	スロット番号（マルチタップ使用時以外は０固定）
+<I>offs</I>	切り替えるコントローラモードが入っている
+	コントローラモードIDテーブル内のオフセット
+<I>lock</I>	アナログ切り替えスイッチのLock/Unlock指定
+	0, 1：切り替えスイッチのLock/Unlockは現状維持
+	2：Unlock
+	3：Lock
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1：リクエストは受理された <BR>
+    1以外：リクエストは受理されなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コントローラモードの切り替え、およびコントローラ本体についているモード切り替えボタンのロック／アンロックを切り替えます。 <BR>
+    この関数を実行すると、コントローラと通信を行うため数フレームの間は他のリクエストは受け付けられません。処理の終了はscePadGetState()で監視しするか、scePadGetReqState()の結果で判定してください。また、コントローラモードが切り替えられると、以前に設定していたアクチュエータ設定は無効となります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePadStateIntToStr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePadStateIntToStr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コントローラの状態に対応する文字列を得る（デバッグ用）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>scePadStateIntToStr</B> ( 
+	int <I>state</I>, 
+	unsigned char* <I>str</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>state</I>	状態コード
+<I>str</I>	文字列格納用バッファへのポインタ(必要サイズは最大16バイト)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    scePadGetState()で得られる、コントローラの状態コードを文字列に変換します。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

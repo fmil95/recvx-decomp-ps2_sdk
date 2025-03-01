@@ -33,13 +33,6 @@
 #     returns: a list of dirs or NULL
 #
 proc getdirs { args } {
-    if { [lindex $args 0] == "-all" } {
-	set alldirs 1
-	set args [lrange $args 1 end]
-    } else {
-	set alldirs 0
-    }
-
     set path [lindex $args 0]
     if { [llength $args] > 1} {
 	set pattern [lindex $args 1]
@@ -65,14 +58,11 @@ proc getdirs { args } {
 			if [file readable $i] {
 			    verbose "Found directory [file tail $i]" 3
 			    lappend dirs $i
-			    if { $alldirs } {
-				eval lappend dirs [getdirs -all $i $pattern]
-			    }
 			}
 		    }
 		}
 	    }
-	}
+	}	
     } else {
 	perror "$tmp"
 	return ""

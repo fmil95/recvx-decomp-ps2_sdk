@@ -32,4 +32,3 @@ run: all
 	dsifilesv -c "\
 	dsreset 0 2;\
 	dsistart -nf $(PROGNAME)"
-#	dsistart -nf ../../../modules/cdvdman.irx;\

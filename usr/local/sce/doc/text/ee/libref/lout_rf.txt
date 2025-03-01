@@ -1,0 +1,112 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                             CSLラインアウト
+                            ================
+
+    
+
+ 1 構造体
+==========
+
+=========================================================================
+sceLoutConf                                                      [構造体]
+=========================================================================
+                                                             初期化データ
+[構造]
+        typedef struct {
+        	unsigned char	attrib;
+        	unsigned char	lineAssign[sceLoutMaxLine];
+        	unsigned int	iopBufSize;
+        	void*		iopBuf[2];
+        	unsigned int	nDmaBuf;
+        	sceSifDmaData	dma[0];
+        } sceLoutConf;
+        
+[メンバ]
+        attrib		アトリビュート
+        		sceLoutDmaPreWait を指定する。
+        		sceLoutDmaPreWait: DMA 転送開始後その終了を待たない。（次回 DMA
+        		転送起動時に終了しているか調べ、動作中の場合終了まで待つ。）
+        lineAssign	SPU2 の出力に対する入力バッファの割り当て
+        		以下のように、各チャンネルに対応する入力バッファ番号を設定する。
+        		使用しない場合は、sceLoutNoOutPut とする。
+        			lineAssign[0]	CH 0 L
+        			lineAssign[1]	CH 0 R
+        			lineAssign[2]	CH 1 L
+        			lineAssign[3]	CH 1 R
+        iopBufSize	IOP 上に取得した SPU2 へのデータ転送用バッファのサイズ
+        		用意するバッファのサイズは入力 PCM バッファのサイズの４倍以上必
+        要
+        		でかつsceLoutInputUnit の整数倍でなければならない。
+        		（チャンネル毎に L/R の出力を行なうために２倍更にダブルバッファ
+        とし
+        		  て動作させるために２倍計４倍のサイズが必要となる。）
+        iopBuf:		IOP 上のSPU2 へのデータ転送用バッファアドレス
+        			iopBuf[0]:	CH 0 用
+        			iopBuf[1]:	CH 1 用
+        		バッファが用意されない(NULL)のチャンネルへの出力は行なわない。
+        		バッファのサイズは iopBufSize でなければならない。
+        nDmaBuf	DMA Operation 用バッファ dma 配列の数
+        		ATick()時には複数回の DMA転送が発生するため一回の sceSifSetDma()
+        
+        		でキューに積む要求の上限をここで設定する。1 以上の値を設定しな
+        ければ
+        		ならない。
+        		sceLoutDmaPreWait が設定されていない場合、1 で十分である。
+        		sceLoutDmaPreWait が設定されている場合、大きな値を設定するほう
+        が待
+        		ち時間が少なくなる。上限は sifdma を参照のこと。
+        dma		DMA Operation 用バッファ
+        		nDmaBuf 個の配列でなければならない。
+        
+[解説]
+        liblout の初期化用構造体です。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceLout_Atick                                                      [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceLout_ATick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP 側にバッファの空きがあれば、PCM Stream Data をIOP 上のバッフ
+        ァに DMA 転送す
+        る。
+        
+
+=========================================================================
+sceLout_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceLout_Init(
+        	sceCslCtx *module_context,
+        	unsigned int interval
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        interval		ATick() が呼び出される周期をマイクロ秒で表したもの
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        内部変数を初期化し、librsd の autoDma 転送を開始する。

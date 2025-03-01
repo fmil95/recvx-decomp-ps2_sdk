@@ -1,0 +1,1577 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> MPEGライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>MPEGライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMpeg>sceMpeg </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegCbData>sceMpegCbData </A><BR>
+</TD><TD> </TD>
+<TD>MPEGコールバックデータ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegCbDataError>sceMpegCbDataError </A><BR>
+</TD><TD> </TD>
+<TD>MPEG エラーコールバック</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegCbDataStr>sceMpegCbDataStr </A><BR>
+</TD><TD> </TD>
+<TD>MPEG ストリームコールバックデータ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegCbDataTimeStamp>sceMpegCbDataTimeStamp </A><BR>
+</TD><TD> </TD>
+<TD>MPEG タイムスタンプコールバックデータ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegAddBs>sceMpegAddBs </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダに入力ビットストリームを加える</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegAddCallback>sceMpegAddCallback </A><BR>
+</TD><TD> </TD>
+<TD>コールバック関数を設定する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegAddStrCallback>sceMpegAddStrCallback </A><BR>
+</TD><TD> </TD>
+<TD>ストリームコールバックを設定する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegCreate>sceMpegCreate </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダの生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegDelete>sceMpegDelete </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダの消去</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegDemuxPss>sceMpegDemuxPss </A><BR>
+</TD><TD> </TD>
+<TD>PSS の非多重化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegDemuxPssRing>sceMpegDemuxPssRing </A><BR>
+</TD><TD> </TD>
+<TD>リングバッファ上の PSS の非多重化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegGetDecodeMode>sceMpegGetDecodeMode </A><BR>
+</TD><TD> </TD>
+<TD>デコードモードを取得する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegGetPicture>sceMpegGetPicture </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダで 1 ピクチャ分デコードする(RGB32)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegGetPictureRAW8>sceMpegGetPictureRAW8 </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダで 1 ピクチャ分デコードする(RAW8)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegInit>sceMpegInit </A><BR>
+</TD><TD> </TD>
+<TD>libmpeg の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegIsEnd>sceMpegIsEnd </A><BR>
+</TD><TD> </TD>
+<TD>MPEG ビットストリームの終了をチェック</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegIsRefBuffEmpty>sceMpegIsRefBuffEmpty </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダ内部の参照画像バッファが空かどうかを判断</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegReset>sceMpegReset </A><BR>
+</TD><TD> </TD>
+<TD>MPEG デコーダの再初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMpegSetDecodeMode>sceMpegSetDecodeMode </A><BR>
+</TD><TD> </TD>
+<TD>デコードモードを設定する</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceMpeg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpeg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+    int <I>width</I>;
+    int <I>height</I>;
+    int <I>frameCount</I>;
+    long <I>pts</I>;
+    long <I>dts</I>;
+    u_long <I>flags</I>;
+    long <I>pts2nd</I>;
+    long <I>dts2nd</I>;
+    u_long <I>flags2nd</I>;
+    void *<I>sys</I>;
+} <B>sceMpeg</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>width</I>		デコード画像の幅(最初のピクチャデコード後に設定)
+<I>height	</I>	デコード画像の高さ(最初のピクチャデコード後に設定)
+<I>frameCount</I>	デコード画像のフレーム番号(デコードに従って変化)
+<I>pts</I>		Presentation Time Stamp; デコードされた画像を表示すべき時間を表す
+<I>dts</I>		Decoding Time Stamp; 画像をデコードすべき 時間を表す
+flags		デコードに関連するフラグ
+<P>
+<IMG SRC ="gif/mpegrn1.gif" border=0>
+<P>
+&lt;pic&gt;: picture_coding_type
+	000: Reserved
+	001: I picture
+	010: P picture
+	011: B picture
+	100: D picture (mpeg1)
+	101: Reserved
+	110: Reserved
+	111: Reserved
+&lt;pstr&gt;: picture_structure
+	00: reserved
+	01: Top Field
+	10: Bottom Field
+	11: Frame Picture
+&lt;rff&gt;: repeat_first_field
+&lt;tff&gt;: top_field_first
+&lt;pfrm&gt;: progressive_frame
+&lt;pseq&gt;: progressive_sequence
+<I>pts2nd</I>		将来のために予約
+<I>dts2nd</I>		将来のために予約
+<I>flags2nd	</I>	将来のために予約
+<I>sys</I>		システムデータ(デコーダが内部で使用)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpeg 構造体は MPEG デコーダを実現する構造体です。width, heightの各メンバは、最初のピクチャがデコードされた時点で設定されます。 <BR>
+    frameCount は、直前にデコードされたピクチャの先頭からの通し番号です。ピクチャのデコードが進むに従って変化します。 <BR>
+    pts は、直前にデコードされたピクチャの PTS(Presentation Time Stamp) を示します。dts は直前にデコードされたピクチャの DTS(Decoding Time Stamp)を示します。PTS および DTS は、MPEG2 で定義されたタイムスタンプで、表示およびデコードのタイミングを特定するために用いられます。これらの値は 90KHz で動く仮想的なクロック上の値を示します。すなわち、 <BR>
+    <blockquote>
+    	1sec = 90000 tick <BR>
+    </blockquote>
+    となります。 flags は、デコードシーケンスおよびデコードした画像の各種属性を保持します。sys は、デコード時にシステムが使用するデータです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegCbData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegCbData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEGコールバックデータ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef union {
+    sceMpegCbType <I>type</I>;
+    sceMpegCbDataError <I>error</I>;
+    sceMpegCbDataTimeStamp <I>ts</I>;
+    sceMpegCbDataStr <I>str</I>;
+} <B>sceMpegCbData</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>		コールバックタイプ
+<I>error</I>		sceMpegCbError に対応する構造体
+<I>ts</I>		sceMpegCbTimeStamp に対応する構造体
+<I>str</I>		sceMpegCbStr に対応する構造体
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegCbData は上記した構造体をメンバに持つ共用体です。すべてのメンバは、第１メンバに type を持つので、これを見ることによりどのタイプのコールバックであるか判断することができます。sceMpegCbData が使われるのは、特別な構造体が定義されないタイプのコールバッック関数が呼ばれたときです。その際、sceMpegCbData は関数の第２引数として渡されます。 <BR>
+<BR>
+    &lt;コールバック関数の例&gt; <BR>
+    <blockquote>
+    	int mpegNodata(sceMpeg *mp, <BR>
+    </blockquote>
+    <blockquote>
+    		sceMpegCbData *cbdata, void *anyData) { <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	    ... // get next data and send it to IPU <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	    return 1; <BR>
+    </blockquote>
+    <blockquote>
+    	} <BR>
+    </blockquote>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegCbDataError>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegCbDataError
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG エラーコールバック
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+    sceMpegCbType <I>type</I>;
+    char *<I>errMessage</I>;
+} <B>sceMpegCbDataError</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>		コールバックタイプ(sceMpegCbError)
+<I>errMessage</I>	エラーメッセージ
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegCbDataError は sceMpegCbError に対応するコールバックデータ構造体です。sceMpegCbError に対応するコールバック関数が呼ばれたときコールバック関数の第２引数として渡されます。 <BR>
+    sceMpegCbError コールバック関数が呼ばれるのは、デコーダが何らかのエラーに遭遇した場合です。errMessage には、エラーメッセージが格納されます。 <BR>
+<BR>
+    &lt;コールバック関数の例&gt; <BR>
+    <blockquote>
+    	int mpegError(sceMpeg *mp, <BR>
+    </blockquote>
+    <blockquote>
+    		sceMpegCbDataError *cberror, void *anyData) { <BR>
+    </blockquote>
+    <blockquote>
+    	   printf("%s\n", cberror-&gt;errMessage); <BR>
+    </blockquote>
+    <blockquote>
+    	   return 1; <BR>
+    </blockquote>
+    <blockquote>
+    	} <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegCbDataStr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegCbDataStr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG ストリームコールバックデータ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+    sceMpegCbType <I>type</I>;
+    u_char *<I>header</I>;
+    u_char *<I>data</I>;
+    u_int  <I>len</I>;
+    long   <I>pts</I>;		// PTS value; valid only when pts &gt;= 0
+    long   <I>dts</I>;		// DTS value; valid only when dts &gt;= 0
+} <B>sceMpegCbDataStr</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>		コールバックタイプ(sceMpegCbStr)
+<I>header</I>		パケットヘッダの先頭
+<I>data</I>		パケットデータの先頭
+<I>len</I>		パケットデータのサイズ
+<I>pts</I>		PTS (Presentation time stamp)
+<I>dts</I>		DTS (Decoding time stamp)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegCbDataStr は sceMpegCbStr に対応するコールバックデータ構造体です。sceMpegCbStr に対応するコールバック関数が呼ばれたときコールバック関数の第２引数として渡されます。 <BR>
+<BR>
+    sceMpegCbStr コールバック関数が呼ばれるのは、PSS データを非多重化中にあらかじめ登録されたストリームデータ見つけたときです。header にはPES パケットの先頭位置、data には PES パケット中のデータ開始位置、len にはデータの大きさ、pts/dts にはそれぞれ PTS/DTS が格納されます。 <BR>
+    コールバック関数は data、len よりデータ部分を切りだし、別領域に保存します。このとき、後の処理のためにデータ位置と pts/dts を何らかの方法で関連づけておく必要があります。また、コールバック関数は、非多重化処理を中止させたい場合は 0 を、それ以外の場合は 1 を返すようにします。 <BR>
+<BR>
+    &lt;コールバック関数の例&gt; <BR>
+    <blockquote>
+    	int func() { <BR>
+    </blockquote>
+    <blockquote>
+    	    sceMpeg theMepg; <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	    // choose MPEG video 0 <BR>
+    </blockquote>
+    <blockquote>
+    	    sceMpegAddStrCallback(&theMpeg, <BR>
+    </blockquote>
+    <blockquote>
+    	    	sceMpegStrM2V,	// MPEG2 video stream <BR>
+    </blockquote>
+    <blockquote>
+    		0,		// stream number 0 <BR>
+    </blockquote>
+    <blockquote>
+    		videoCallback,	// callback function; see below <BR>
+    </blockquote>
+    <blockquote>
+    		NULL <BR>
+    </blockquote>
+    <blockquote>
+    	    ); <BR>
+    </blockquote>
+    <blockquote>
+    	} <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	// callback function for sceMpegCbStr <BR>
+    </blockquote>
+    <blockquote>
+    	int videoCallback(sceMpeg *mp, <BR>
+    </blockquote>
+    <blockquote>
+    		sceMpegCbDataStr *cbstr, void *anyData) { <BR>
+    </blockquote>
+    <blockquote>
+    		     <BR>
+    </blockquote>
+    <blockquote>
+    	    if (/* video input buff is not full*/) { <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    		... // copy (cbstr-&gt;data, cbstr-&gt;len) <BR>
+    </blockquote>
+    <blockquote>
+    		... // to video input buffer <BR>
+    </blockquote>
+    <blockquote>
+    		... // save cbstr-&gt;pts/cbstr-&gt;dts value <BR>
+    </blockquote>
+    <blockquote>
+    		return 1; <BR>
+    </blockquote>
+    <blockquote>
+    	    } <BR>
+    </blockquote>
+    <blockquote>
+    	    return 0; <BR>
+    </blockquote>
+    <blockquote>
+    	} <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegCbDataTimeStamp>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegCbDataTimeStamp
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG タイムスタンプコールバックデータ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+    sceMpegCbType <I>type</I>;
+    long <I>pts</I>;		// PTS value; valid only when pts &gt;= 0
+    long <I>dts</I>;		// DTS value; valid only when dts &gt;= 0
+} <B>sceMpegCbDataTimeStamp</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>	コールバックタイプ(sceMpegCbTimeStamp)
+<I>pts</I>	PTS (Presentation time stamp)
+<I>dts</I>	DTS (Decoding time stamp)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegCbDataTimeStamp は sceMpegCbTimeStamp に対応するコールバックデータ構造体です。sceMpegCbTimeStamp に対応するコールバック関数が呼ばれたときコールバック関数の第２引数として渡されます。 <BR>
+<BR>
+    sceMpegCbTimeStamp コールバック関数が呼ばれるのは、デコーダがその時点でデコード中のデータに対応する PTS, DTS を知りたいときです。コールバック関数側では、D4_MADR, IPU_CTRL, IPU_BP 等から、デコード中のデータ位置を解析し、その位置に対応する PTS/DTS を返す必要があります。 <BR>
+    このとき メンバ pts および dts を使用します。 <BR>
+<BR>
+    &lt;コールバック関数の例&gt; <BR>
+    <blockquote>
+    	int mpegTimeStamp(sceMpeg *mp, <BR>
+    </blockquote>
+    <blockquote>
+    	    sceMpegCbDataTimeStamp *cbts, void *anyData) { <BR>
+    </blockquote>
+    <blockquote>
+    	    long pts_value, dts_value; <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	    pts_value = .... <BR>
+    </blockquote>
+    <blockquote>
+    	    dts_value = .... <BR>
+    </blockquote>
+<BR>
+    <blockquote>
+    	    cbts-&gt;pts = pts_value; <BR>
+    </blockquote>
+    <blockquote>
+    	    cbts-&gt;dts = dts_value; <BR>
+    </blockquote>
+    <blockquote>
+    	    return 1; <BR>
+    </blockquote>
+    <blockquote>
+    	} <BR>
+    </blockquote>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceMpegAddBs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegAddBs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダに入力ビットストリームを加える
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegAddBs</B>(
+	sceMpeg *<I>mp</I>,
+	u_long128 *<I>bs</I>,
+	int <I>bs_size</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>	MPEG デコーダ
+<I>bs</I>	デコードするビットストリーム
+<I>bs_size</I>	デコードするビットストリームの大きさ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    デコードする MPEG2/MPEG1 ビットストリームをデコーダに設定します。 <BR>
+    デコーダは内部で DMA ch4 の設定をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegAddCallback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegAddCallback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コールバック関数を設定する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceMpegCallback <B>sceMpegAddCallback</B>(
+	sceMpeg *<I>mp</I>,
+	sceMpegCbType <I>type</I>,
+	sceMpegCallback <I>callback</I>,
+	void *<I>anyData</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>type</I>		コールバックタイプ	
+<I>callback</I>		登録するコールバック関数
+<I>anyData	</I>	任意データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    すでに登録されているコールバック <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MPEG デコーダにコールバック関数を登録します。type は、登録するコールバックのタイプ、callback は登録するコールバック関数を示します。 <BR>
+    anyData は、任意のデータで、コールバック関数の第３引数として渡されます。 <BR>
+    anyData は、アプリケーションで自由に使うことができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegAddStrCallback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegAddStrCallback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリームコールバックを設定する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceMpegCallback <B>sceMpegAddStrCallback</B>(
+	sceMpeg *mp,
+	sceMpegStrType strType,
+	int strNumber,
+	sceMpegCallback callback,
+	void *anyData
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>strType	</I>	ストリームタイプ	
+<I>strNumber</I>	ストリーム番号
+<I>callback</I>		登録するコールバック関数
+<I>anyData	</I>	任意データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    すでに登録されているコールバック <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MPEG デコーダにコールバック関数を登録します。コールバックのタイプは、sceMpegCbStr です。関数は、ストリームの種類ごとに登録することができます。ストリームの種類は、strType と strNumber で特定します。 <BR>
+    callback は登録するコールバック関数を示します。 anyData は、任意のデータで、コールバック関数の第３引数として渡されます。 anyData は、アプリケーションで自由に使うことができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegCreate>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegCreate
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダの生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegCreate</B>(
+	sceMpeg *<I>mp</I>,
+	u_char *<I>work_area</I>,
+	int <I>work_area_size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		作成するデコーダに関連する構造体
+<I>work_area</I>	デコーダのワークエリア
+<I>work_area_size</I>	デコーダのワークエリアサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegCreate() は、MPEG デコーダを生成します。引数 mp には、アプリケーションで割り当てた sceMpeg 構造体へのポインタを渡します。 <BR>
+    引数 work_area および work_area_size には MPEG デコード用のワークエリアとそのサイズを指定します。ワークエリアはアプリケーション側で割り当てる必要があります。ワークエリアのサイズはマクロ、 <BR>
+    <blockquote>
+    	SCE_MPEG_BUFFER_SIZE(w, h)    // w: max_width, h: max_height <BR>
+    </blockquote>
+    を用いて知ることができます。 <BR>
+<BR>
+    sceMpegCreate() によってデコーダが生成された後は、アプリケーションはmp に指定した sceMpeg 構造体によって MPEG デコーダを識別します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+     現在のインプリメントでは MPEG デコーダはアプリケーションで一つしか生成できません。複数生成した場合の動作は保証されません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegDelete>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegDelete
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダの消去
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegDelete</B>(
+	sceMpeg *<I>mp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>	MPEG デコーダ
+        
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された MPEG デコーダを消去します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegDemuxPss>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegDemuxPss
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PSS の非多重化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegDemuxPss</B>(
+	sceMpeg *<I>mp</I>,
+	u_char *<I>pss</I>,
+	int <I>pss_size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+pss		PSS データへのポインタ	
+<I>pss_size	</I>	PSS データのサイズ	
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    処理したデータ長(バイト) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    pss, pss_size で与えられたデータ領域を解析し、登録されたストリームデータを見つけた際には、それに対応するコールバック関数を呼び出します。目的のストリームとそれに対応するコールバック関数はあらかじめ sceMpegAddStrCallback() を使って登録されている必要があります。sceMpegDemuxPss() は、通常 PSS を非多重化するために用いられます。 <BR>
+<BR>
+    sceMpegDemuxPss() は、指定された領域の最後に達するか、または、途中で呼ばれたコールバック関数が 0 を返すまで処理を続けます。 <BR>
+    返り値は、処理したデータの大きさをバイト単位で表したものです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegDemuxPssRing>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegDemuxPssRing
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        リングバッファ上の PSS の非多重化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegDemuxPssRing</B>(
+	sceMpeg *<I>mp</I>,
+	u_char *<I>pss</I>,
+	int <I>pss_size</I>,
+	u_char *<I>buf_top</I>,
+	int <I>buf_size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>pss</I>		PSS データへのポインタ	
+<I>pss_size</I>		PSS データのサイズ	
+<I>buf_top</I>		リングバッファの先頭ポインタ
+<I>buf_size</I>		リングバッファのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    処理したデータ長(バイト) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    pss, pss_size, buf_top, buf_size で与えられたデータ領域を解析し、登録されたストリームデータを見つけた際には、それに対応するコールバック関数を呼び出します。データは buf_top, <BR>
+    buf_size で指定されるリングバッファ上に置かれていることを想定します。すなわち、buf_top + buf_size - 1 の位置にあるデータを処理した後は、buf_top に戻って処理を続けます。目的のストリームとそれに対応するコールバック関数はあらかじめsceMpegAddStrCallback() を使って登録されている必要があります。 <BR>
+    sceMpegDemuxPssRing() は、通常 PSS を非多重化するために用いられます。 <BR>
+<BR>
+    sceMpegDemuxPssRing() は、指定された領域の最後に達するか、または、途中で呼ばれたコールバック関数が 0 を返すまで処理を続けます。返り値は、処理したデータの大きさをバイト単位で表したものです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegGetDecodeMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegGetDecodeMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デコードモードを取得する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMpegGetDecodeMode</B>(
+	sceMpeg *<I>mp</I>,
+	int *<I>ni</I>,
+	int *<I>np</I>,
+	int *<I>nb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>ni</I>		1 GOP 中で再生する I-picture の数を格納する領域
+<I>np</I>		1 GOP 中で再生する P-picture の数を格納する領域
+<I>nb</I>		1 GOP 中で再生する B-picture の数を格納する領域
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし	 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    デコードモードを取得します。デコードモードに関してはsceMpegeSetDecodeMode() の解説を参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegGetPicture>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegGetPicture
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダで 1 ピクチャ分デコードする(RGB32)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegGetPicture</B>(
+	sceMpeg *<I>mp</I>,
+	sceIpuRGB32 *<I>rgb32</I>,
+	int <I>mbcount</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>rgb32</I>		デコードされたピクチャデータを格納する領域
+<I>mbcount	</I>	デコードされたピクチャデータを格納する領域の大きさ
+		(単位: sceIpuRGB32 の数 = マクロブロック数)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正数または 0	正常終了 <BR>
+    負数		異常終了 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegGetPicture() は、1 ピクチャ分のデコードを行います。デコードされたピクチャは sceIpuRGB32 フォーマットのデータ系列としてメモリ上に格納されます。データを格納する領域は、引数 rgb32 で指定します。 <BR>
+    格納される sceIpuRGB32 のメモリ上の順番とそれに対応するマクロブロックの画像上の順番は以下の関係を持ちます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<B>ex.128x96 の場合</B>
+        <BLOCKQUOTE>
+<BR>
+    &lt;メモリ上の順番&gt; <BR>
+<P>
+<IMG SRC ="gif/mpegrn2.gif" border=0>
+<P>
+<BR>
+    &lt;画像上のマクロブロックの順番&gt; <BR>
+<P>
+<IMG SRC ="gif/mpegrn3.gif" border=0>
+<P>
+        </BLOCKQUOTE>
+        <BLOCKQUOTE>
+<BR>
+    デコードされたピクチャデータを正しく表示するためには、Source Chain DMA を用いて正しく並べ直す必要があります。sceIpuRGB32 自体のフォーマットに関しては libipu のドキュメントを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegGetPictureRAW8>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegGetPictureRAW8
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダで 1 ピクチャ分デコードする(RAW8)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegGetPictureRAW8</B>(
+	sceMpeg *<I>mp</I>,
+	sceIpuRAW8 *<I>raw8</I>,
+	int <I>mbcount</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>raw8</I>		デコードされたピクチャデータを格納する領域
+<I>mbcount	</I>	デコードされたピクチャデータを格納する領域の大きさ
+		(単位: sceIpuRAW8 の数 = マクロブロック数)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正数または 0	正常終了 <BR>
+    負数		異常終了 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMpegGetPictureRAW8() は、1 ピクチャ分のデコードを行います。デコードされたピクチャは sceIpuRAW8 フォーマットのデータ系列としてメモリ上に格納されます。データを格納する領域は、引数 raw8 で指定します。 <BR>
+    格納される sceIpuRAW8 のメモリ上の順番とそれに対応するマクロブロックの画像上の順番は sceMpegGetPicture() の sceIpuRGB32 の並びと同じです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        libmpeg の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegInit</B>(void);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MPEG ライブラリを初期化します。 <BR>
+    DMA ch3, ch4 を初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegIsEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegIsEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG ビットストリームの終了をチェック
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegIsEnd</B>(
+	sceMpeg *<I>mp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非0:	ビットストームの最後までデコードし終わった <BR>
+    0:	ビットストームの最後までデコードし終わっていない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ビットストリームを最後(sequence_end_code)までデコードしたかどうかを判断します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegIsRefBuffEmpty>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegIsRefBuffEmpty
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダ内部の参照画像バッファが空かどうかを判断
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegIsRefBuffEmpty</B>(
+	sceMpeg *<I>mp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非0:	参照画像バッファが空 <BR>
+    0:	参照画像バッファが空でない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MPEG デコーダ内部の参照画像バッファが空かどうかを判断します。 <BR>
+    MPEG デコーダは、デコードの際に使用される参照画像を内部の参照画像バッファに保持しています。デコードが開始される前、およびデコードが完了しすべての画像が出力された後に参照画像バッファは空になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MPEG デコーダの再初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMpegReset</B>(
+	sceMpeg *<I>mp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>	MPEG デコーダ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された MPEG デコーダを再初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMpegSetDecodeMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMpegSetDecodeMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デコードモードを設定する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMpegSetDecodeMode</B>(
+	sceMpeg *<I>mp</I>,
+	int <I>ni</I>,
+	int <I>np</I>,
+	int <I>nb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mp</I>		MPEG デコーダ
+<I>ni</I>		1 GOP 中で再生する I-picture の数
+		定数 SCE_MPEG_DECODE_ALL または 0
+<I>np</I>		1 GOP 中で再生する P-picture の数
+		定数 SCE_MPEG_DECODE_ALL または 0 以上の数
+<I>nb</I>		1 GOP 中で再生する B-picture の数
+		定数 SCE_MPEG_DECODE_ALL または 0 以上の数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    デコードモードを設定します。デコードモードは 1 GOP 中の I/P/Bの各ピクチャをそれぞれ何枚再生するかを決定するモードです。 <BR>
+    通常の再生では、ni, np, nb ともに定数 SCE_MPEG_DECODE_ALLを指定してください。sceMpegSetDecodeMode() を呼ばなければ、デコーダのデフォルト値はこの値になります。 <BR>
+    早送り再生するときには、例えば次のように設定すると、途中の画像のデコードをスキップすることができます。 <BR>
+<BR>
+    &lt; B-picture をスキップ &gt; <BR>
+    <blockquote>
+    	ni = SCE_MPEG_DECODE_ALL <BR>
+    </blockquote>
+    <blockquote>
+    	np = SCE_MPEG_DECODE_ALL <BR>
+    </blockquote>
+    <blockquote>
+    	nb = 0 <BR>
+    </blockquote>
+<BR>
+    &lt; B-picture をスキップ, P-picture を 2 枚だけデコード &gt; <BR>
+    <blockquote>
+    	ni = SCE_MPEG_DECODE_ALL <BR>
+    </blockquote>
+    <blockquote>
+    	np = 2 <BR>
+    </blockquote>
+    <blockquote>
+    	nb = 0 <BR>
+    </blockquote>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

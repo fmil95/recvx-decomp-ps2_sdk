@@ -1,0 +1,430 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+                                                               Aug. 2000 
+
+
+graphics framework
+
+# Overview
+
+  The Graphics Framework structures a graphics environment.  It has 
+  been created with the aim of working in practical modeling and scene 
+  structures as
+  - a framework which provides high degree of effectiveness of both 
+    processing and development based on the "PlayStation 2" architecture
+  - a basis for enabling the user to start creating game programs
+  - a sample program which enables the user to develop their own 
+    architecture
+  - a viewer that displays model data easily.
+  
+  The production policy and features of the Graphics Framework in brief 
+  are to
+  - have high drawing performance
+  - secure paths from the data output from the authoring tool
+  - secure readability and reusability of both the data and programs.
+
+  To realize the above production policy and features, the Graphics 
+  Framework has been programmed by
+  - specifying a flexible model data format with high-degree abstraction, 
+    with consideration given to practical drawing, and providing a tool 
+    for converting data output from the authoring tool via the eS 
+    intermediate file format
+  - creating a manager for controlling model data and texture data
+  - specifying the usage of VU1 (memory format of VU-Mem) in order to 
+    improve the efficiency in reusing microprograms without damaging 
+    VU1's ability to process data at a high speed
+  - providing DMA & VIF command manager which controls the flow of data 
+    computed in VU1 and transferred to the GS.  
+
+# Elements
+
+  The following are provided as elements of the Graphics Framework.
+
+		Documents
+		Sample programs
+		Sample VU1 microprograms
+		Sample model data
+
+# Workflow
+
+  The following workflow is recommended.
+  Terms enclosed in quotations are file names.
+
+  3D Tool -> "HMD" -> hmd2es -> "eS(eSTD)" -> es2raw -> ".s" -> framework 
+
+  For HMD exporters, refer to each company's documents.
+  For eS and converter, refer to the documents of eS package. 
+
+# Data Structure
+
+  	The following structures are framework supported in the standard 
+	namespace eSTD. 
+
+	Shape
+		Structure containing the information on shape and appearance 
+	Geometry
+		Geometric structure  
+
+	Material
+		Structure of material information 
+
+	Texture
+		Structure of texture information 
+
+	Share
+		Shared structure 
+
+	Hierarchy
+		Hierarchical structure 
+
+	Animation
+		Structure of key frame animations
+
+	Note 
+	es2raw internally sorts geometry in units of material to reduce 
+	texture transfers in the PlayStation 2 console.  Frequent texture 
+	transfers extremely lower the drawing performance, due to the 
+	reduction of calculation efficiency resulting from VU1 suspension 
+	required.
+        To avoid this, the relation is established as Material > Geometry.  
+	The relation in eSTD is as Material < Geometry.  Consequently, 
+	the internal structure of Shape for eSTD is not the same as that for 
+	es2raw.
+
+        For details of the data format, see doc/es2raw.txt in the eS package.
+
+# Processing Flow
+
+  The following is overall processing in the Graphics Framework.
+
+	Initialization
+	Data Flow List Creation				[Data Flow Manager]
+	Registration to Data Flow List			[Data Flow Manager]
+	  |
+	(every frame)
+	Processing according to Controller Input	[CPU]
+	Matrix Calculation of Camera etc.		[VU0+CPU]
+	  |
+	(every frame, each model)
+	Animation Calculation				[VU0+CPU]
+	Matrix Calculation of Hierarchical Coordinates	[VU0+CPU]
+	Vertex Calculation of Shared Polygons		[VU0+CPU]
+	  |
+	(every frame)
+	Data Flow List Passing to DMAC
+	  |
+	(every frame)
+	Microprogram Transfer to VU1			[DMAC]
+	Transfer of Data in GF-VU1 Format to VUMEM1	[DMAC/PATH2]
+		(every material)
+		Texture Transfer to GS			[DMAC]
+		(a) Polygon data transfer to VUMEM1	[DMAC]
+		(b) Polygon data calculation		[VU1]
+		(c) Polygon drawing to GS		[PATH1]
+
+# Data Manager
+
+  Although most data are passed to the DMAC as  they are, and are just 
+  transferred and drawn, a standard data format has  been specified for 
+  them.  It facilitates data processing which requires setting and 
+  referencing within the program at runtime.
+  These structures are in the format enabling the contained data to be 
+  transferred without any changes most of the time.
+  A list is shown below.
+
+  MICRO_FRAME 
+
+  This structure maintains data per scene.  
+  It contains the following data.
+    - "MICEO_FRAME parameters" in the standard GF-VU1 format
+      (Maintained in a transferable form)
+    - Data used to transfer VU1 microprograms
+    - Data used when DMA & VIF command manager creates a transfer packet.
+    - Data used by the programmer in scene units, e.g. an ID number on 
+      MICRO_FRAME
+
+  SHAPE_FRAME 
+
+  The structure maintains shape-related data.
+  A Shape is drawn when providing one instance per Shape, setting data 
+  required for drawing the appropriate Shape, and registering the Shape 
+  in the DMA & VIF command manager.  
+  It contains the following data.
+    - "SHAPE_FRAME parameters" in the standard GF-VU1 format
+      (Maintained in a transferable form)
+    - Data used when DMA & VIF command manager creates a transfer packet.
+    - Data used by the programmer in Shape units, e.g. an ID number on a 
+      Shape
+
+  TEXTURE_FRAME 
+
+  This structure maintains texture-related data.
+  It totally manages texture data transfer.  
+  It contains the following data. 
+    - Data (e.g. GIFtag and GS register settings) used for Host-Local 
+      transfer of texture (texel and CLUT)
+      (Maintained in a transferable form)
+    - Data necessary to draw an image using the texture 
+      (Written to Tex01 register.  Maintained in a transferable form.)
+    - Resident/transient texture flag
+      Resident texture:  Texture is transferred for the first time only.  
+		         Always occupies GS local memory.
+      Transient texture: Texture is transferred every time.  
+		         Temporarily occupies GS local memory.
+    - Other data in texture units
+    - Other data used by the programmer
+    - Total Host-Local transfer size in one-time drawing (for performance 
+      checking)
+
+  HIERARCHY_FRAME
+
+  This structure maintains data of hierarchical structure.
+  It contains the following data. 
+    - Number of hierarchical structures
+    - Coordinate transformation information
+    - Shape information
+    - Shared information
+    - Generated matrix
+
+# Data Flow Management
+
+  A powerful and high-speed data flow management mechanism is necessary for 
+  data to flow into the VU1-GS rendering engine under the control of double 
+  buffering.  The Graphics Framework provides a mechanism which can manage 
+  the entire graphic data flow with main memory/VU1 memory/GS local memory 
+  combined, by unifying DMA & VIF commands. 
+
+# Data Flow Management Strategy
+
+  The data flow of the Graphics Framework is managed based on the following 
+  data structure (actual model data expressions require some other processes.)
+
+      Order Table (MainMem)
+      +---------+----------+
+      |   NOP   |  DMAcall |---> Model Data Flow List
+      |   NOP   |  DMAcall |---> Model Data Flow List
+      |   NOP   |  DMAcall |->+
+      |    .    |     .    |  |
+      |         |  DMAend  |  |                           Texture (MainMem)
+      +--------------------+  |                              +------------+
+     128       64          0  |                           +--|texture_head|
+                              |                           |  +------------+
+                              |                           |  |texture_data|
+                              | Model Data Flow List      |  |            |
+                              | (MainMem)                 |  +------------+
+     +---------+              +--------------------+      |
+     |         |<-------------|VIFdirect|  DMAref  |<-----+    Raw Data
+     |GSreg&mem|    +---------|VIFunpack|  DMAref  |<------+   (MainMem)
+     |         |    | +-------|VIFunpack|  DMAref  |<----+ | +------------+
+     +---------+    | | +-----|VIFunpack|  DMAref  |<--+ | +-|   vertex   |
+                    | | |     |    .    |     .    |   | |   +------------+
+        +--------+  VIF1      |    .    |     .    |   | +---|   normal   |
+        |        |<-+ | |     |         |  DMAret  |   |     +------------+
+        |        |    | |     +--------------------+   +-----|     ST     |
+        | VUmem1 |<---+ |    128        64         0         +------------+
+        |        |      |                                    |    color   |
+        |        |<-----+                                    +------------+
+        +--------+
+
+  An array of VIF commands and DMA tags (Model Data Flow List) at the center 
+  of the above figure is the essential part, and manages data flow from main 
+  memory to VU1-GS per object.  It is structured with sets of a DMAref showing 
+  texture/polygon data in main memory and a VIF command showing each 
+  destination address.
+
+  The DMAcall array (Order Table) at the upper left of the figure manages 
+  such model data flow lists.  Since objects in the Order Table are drawn in 
+  the registered order, changing the registered order enables object drawing 
+  in different order.
+
+# Generation of Data Flow List at Runtime
+
+  The model data flow list and order table can be provided along with model 
+  data at the authoring stage in advance.  The Graphics Framework, however, 
+  employs a policy to generate a data flow list at runtime, by creating the 
+  model data flow list and order table with a function and calling it as an 
+  initialization process after the model data has been loaded.
+
+  The above is to improve the independence of data and to facilitate the 
+  customization of the data format which suits the needs of the user, along 
+  with the open source strategy.  The user can construct their own drawing 
+  data flow adjusting to their model data features.
+
+# Standard GF-VU1 Memory Format
+
+  The Graphics Framework standardizes VUMem1 format, i.e. the format of 
+  data processed in VU1.
+  Standardizing the data format greatly improves the independency between 
+  data and VU1 microprograms, increases reusability of both of them, and 
+  improves development efficiency.  At the same time, VU1 microprogram 
+  replacement facilitated by the standard format makes it possible to design 
+  simply designed special-purpose microprograms.  This directly increases 
+  readability of programs, and produces an effect of increasing the 
+  processing speed with optimization to a sufficient degree, in addition 
+  to improvement in development efficiency. 
+  On the other hand, data not in the standard format has a disadvantage of 
+  having to be preprocessed by CPU+VU0.  This, however, definitely allocates 
+  roles as a rendering engine to VU1-GS and as a geometry engine to CPU+VU0, 
+  keeps the entire game processes in order, and leads to the improvement of 
+  the development efficiency. 
+
+# Details of Standard GF-VU1 Memory Format
+
+  The following is an outline of the standard GF-VU1 memory format.  The 
+  addresses are allocated in qword units.
+
+Address
+     0 +----------------------------+
+       |SHAPE_FRAME parameters      |Transferred from SHAPE_FRAME structure
+    16 |----------------------------|
+       |MICRO_FRAME parameters      |Transferred from MICRO_FRAME structure
+    68 |----------------------------|
+       |          work area         |Generated with VU1 microprograms
+   100 |----------------------------|
+       |          free area         |
+   120 |----------------------------|
+       |Double buffer 0             |
+       |          GIFtag etc.       |Generated from model data, and transferred
+       |         Vertex data        |Transferred from model data
+       |        XGKICK Buffer       |Calculation results with VU1 microprograms
+       |----------------------------|
+       |Double buffer 1             |
+       |          GIFtag etc.       |Generated from model data, and transferred
+       |         Vertex data        |Transferred from model data
+       |        XGKICK Buffer       |Calculation results with VU1 microprograms
+       |----------------------------|
+       |          user area         |
+  1024 +----------------------------+
+
+  Detailed descriptions of each part are as follows:
+
+  - SHAPE_FRAME Parameters
+  Parameters transferred from SHAPE_FRAME structure per Shape.
+
+    0  +------------------------+
+       |local_world             | local_world matrix
+    4  |----------------------- |
+       |light_rotation          | light_rotation matrix
+    8  |----------------------- |   (local_world without scale and trans)
+       |gif&prim                | Stores GIFtag and prim information
+    12 |----------------------- |
+       |calc_data(free use)     | Calculation coefficient
+    16 |----------------------- |
+
+  - MICRO_FRAME Parameters
+  Parameters transferred from MICRO_FRAME structure per scene.
+
+    16 |----------------------- |
+       |world_screen            | world_screen matrix
+    20 |----------------------- |
+       |world_clip              | world_clip matrix
+    24 |----------------------- |
+       |clip_screen             | clip_screen matrix
+    28 |----------------------- |
+       |micro_init(free use)    | calculation coefficient
+    32 |----------------------- |
+       |light_color0            | light_color0 matrix
+       |light_vect0             | light_vector0 matrix
+       |light_point0            | light_point0 matrix
+    44 |----------------------- |
+       |light_color1            | light_color1 matrix
+       |light_vect1             | light_vector1 matrix
+       |light_point1            | light_point1 matrix
+    56 |----------------------- |
+       |light_color2            | light_color2 matrix
+       |light_vect2             | light_vect2 matrix
+       |light_point2            | light_point2 matrix
+    68 |----------------------- |
+
+  - Work Area
+  Parameters calculated by VU1 microprograms.
+
+    68 |----------------------- |
+       |local_screen            | local_screen matrix
+    72 |----------------------- |
+       |local_clip              | local_clip matrix
+    76 |----------------------- |
+       |local_lightvect0        | local_lightvect0 matrix
+       |local_lightpoint0       | local_lightpoint0 matrix
+    84 |----------------------- |
+       |local_lightvect1        | local_lightvect1
+       |local_lightpoint1       | local_lightpoint1
+    92 |----------------------- |
+       |local_lightvect2        | local_lightvect2
+       |local_lightpoint2       | local_lightpoint2
+    100|----------------------- |
+
+  - Double Buffers
+  Accepts vertex data from main memory, stores the calculation results in VU1, 
+  and transfers them to the GS.  Further details are described later.
+
+    120|----------------------- |
+       |  giftag&etc0(4qword)   | GIFtag and others (4 qwords in total)
+       |   ---------------      |
+       | Vu1_calc_data_buffer0  | Vertex data
+       |   ---------------      |
+       |    XGKICK_buffer0      | Calculation results transferred to GS via 
+       |                        | XGKICK
+    572|----------------------- |<-- 120 + (1024-120- user area)/2
+       |  giftag&etc1(4qword)   | GIFtag and others (4 qwords in total)
+       |    ---------------     |
+       | Vu1_calc_data_buffer1  | Vertex data
+       |    ---------------     |
+       |    XGKICK_buffer1      | Calculation results transferred to GS via 
+       |                        | XGKICK
+   user|----------------------- |
+
+
+  - User Area
+  VU1 microprograms can freely use this area.  The size of this area can 
+  also be set freely, when creating model data flow list in the program.
+
+   user+------------------------+
+       |        user area	|
+       |                        |
+   1024+------------------------+
+
+# Vertex Data Format in Double Buffers
+
+  Details of the data format in the double buffers are as follows:
+
+     |-------------------|  buffer0_start
+     |giftag&etc0(4qword)|    GIFtag and others generated according to 
+     | ----------------- |    the model data
+     |   vertex          |
+     |   normal          |    Vertex data transferred from the model data
+     |   st              |    Interleaved structure assigning vertex, normal, 
+     |   color           |    st, and color to each vertex
+     |  ---------------  |
+     |         :         |
+     |         :         |
+     |-------------------| XGKICK addr
+     |   giftag          |    Copy of the above GIFtag
+     | ----------------- |
+     |    STQ            |    GS primitive data calculated by
+     |    rgba           |    microprograms
+     |    xyzf2          |
+     | ----------------- |
+     |         :         |
+     |         :         |
+     |-------------------| buffer0_end (buffer1_start)
+
+  In addition, special information can be included in each vertex, using 
+  w field of vertex, w field of normal, and z and w fields of st.  For 
+  example, XYZF3 values for the first 2 vertices are necessary when 
+  TriangleStrip is stopped at one place and restarted at another place, 
+  but this process can be replaced with a process to write the XYZF3 values 
+  to the w field. 
+
+# View in the Future
+
+  Functional additions and corrections will be phased in to the Graphics 
+  Framework.  The following features are scheduled to be added in the near 
+  future.
+
+    - GS local memory manager
+    - Management of camera and light source 
+    - Diversification of light source (e.g. point lighting)
+    - Support of Triangle Strip

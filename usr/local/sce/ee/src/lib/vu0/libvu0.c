@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
@@ -199,8 +199,6 @@ void sceVu0Normalize(sceVu0FVECTOR v0, sceVu0FVECTOR v1)
         vsqrt Q,vf5x
         vwaitq
         vaddq.x vf5x,vf0x,Q
-        vnop
-        vnop
         vdiv    Q,vf0w,vf5x
         vsub.xyzw vf6,vf0,vf0           #vf6.xyzw=0;
         vwaitq

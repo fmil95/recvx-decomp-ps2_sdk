@@ -1,0 +1,269 @@
+<HTML>
+<HEAD>
+<TITLE> ソケットライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="iLsocket.htm" SELECTED> ソケットライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+ソケットライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_2"> ソケット通信の手順概略<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 注意事項<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 プロトコル<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> コンフィグレーションROMの構成<BR></A><BR>
+    <A HREF="#Heading4_2_2"> トランザクション<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ソケットライブラリは、i.LINKドライバの上位階層に位置し、i.LINKでのソケット通信を実現するAPIです。これを使用することにより、アプリケーションプログラマは、<BR>
+<UL>
+         <LI> バスリセットによるノード番号の変更<BR>
+         <LI> トランザクションに関わる処理<BR>
+</UL>
+    等の煩雑な処理を意識することなく、パケット単位での通信を行なうことができます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iLson1.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    ソケットライブラリを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">ilink.h ilsock.h<BR>ilsocksf.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOPモジュール</TD>
+<TD valign="TOP">ilink.irx<BR>ilsock.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>ソケット通信の手順概略</B>
+</A>
+</H3>
+<blockquote>
+    ソケットライブラリを使用して行なう通信処理の手順はおおよそ次のようになります。<BR>
+    <OL>
+         <LI VALUE= 1> ライブラリの初期化<BR>sceILsockInit()を用いて、ソケットライブラリを初期化します。このとき、同時に作成するソケットの最大個数を指定します。<BR>
+         <LI VALUE= 2> ソケットの作成<BR>sceILsockOpen()を用いて、ソケットを必要なだけ作成します。ソケットを表すディスクリプタが返されるので、以後の処理ではそのディスクリプタを用いてソケットを指定します。<BR>
+         <LI VALUE= 3> アドレス設定<BR>sceILsockBind()を用いて、ソケットにアドレス情報（ノードIDとポート番号の組）を設定します。この情報は送信元を表すデータとして、そのソケットから送信するパケットに付加されます。<BR>
+         <LI VALUE= 4> 通信相手の設定<BR>sceILsockConnect()を用いて、通信相手のアドレス情報を設定します。この処理は省いてもかまいません。<BR>
+         <LI VALUE= 5> データ送受信<BR>sceILsockSend() / sceILsockRecv()を用いて、あらかじめ設定してある相手先とデータの送受信を行います。また、sceILsockSendTo() / sceILsockRecvFrom()を用いて、そのつど指定する相手先との送受信を行うこともできます。<BR>
+         <LI VALUE= 6> 終了時の処理<BR>ソケットが不要になったときは、sceILsockClose()を用いて処分することができます。また、ソケット通信処理が不要になったときは、sceILsockReset()を用いてライブラリの動作を停止することができます。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>注意事項</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> このソケットライブラリは<B>パケットの到達性を保証していません</B>。パケットが到達しないことが稀にあり得るという前提でアプリケーションプログラムを作成してください。
+         <LI VALUE= 2> ディスクリプタに関する処理は再入可能ではありません。複数のスレッドが同じソケットを共有する場合は排他制御を行う必要があります。<BR>
+         <LI VALUE= 3> データ受信はブロッキング処理です。関数が呼び出された時点で受信済みデータがなければ、データを受信するまで処理が戻りません。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>プロトコル</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ここではi.LINKソケットライブラリの内部プロトコルについて説明します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>コンフィグレーションROMの構成</B>
+</A>
+</H3>
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_1">
+(1) <B>Root_Directory</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コンフィグレーションROMのRoot_Directoryには、以下のエントリを含んだUnit_Directoryがただ一つだけ存在しなければなりません。<BR>
+      <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>key(hex)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>value</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Unit_Spec_ID(0x12)</TD>
+<TD valign="TOP">0x080046</TD>
+</TR>
+<TR>
+<TD valign="TOP">Unit_Sw_Version(0x13)</TD>
+<TD valign="TOP">0x1a0000</TD>
+</TR>
+<TR>
+<TD valign="TOP">Unit_Location(0x95)</TD>
+<TD valign="TOP">(offset to leaf)</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+      <BR>
+      Unit_Spec_IDエントリはUnit_Directoryの先頭に、Unit_Sw_VersionエントリはUnit_Spec_IDの直後になければなりません。<BR>
+      Unit_Locationは複数存在してはなりません。<BR>
+      <BR>
+      これらのエントリを検索するときには出現位置・順序は無視しなければなりません。また、複数のUnit_Locationエントリを検出した場合には、2番目以降は無視しなければなりません。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_2">
+(2) <B>Unit_Location leaf</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      Unit_Location leafはそのノードの受信用FIFO領域を指定します。データ構造は次のとおりです。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iLson2.gif">
+<P>
+      <BR>
+</DIV>
+      base addressは受信用FIFO領域の先頭アドレスで、4 byte alignでなければなりません。<BR>
+      bound addressは、受信用FIFO領域に含まれる最大アドレスに +1 した値となります。<BR>
+      受信用FIFO領域のサイズは最大パケットサイズ（512 byte）以上必要です。<BR>
+      アドレスの上位16 bitは必ず0です。<BR>
+      tagは必ず0x01です。読み出すときにはtagの値は無視しなければなりません。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>トランザクション</B>
+</A>
+</H3>
+<blockquote>
+    すべてのデータグラムは、受信用FIFO領域に対する"async write request for data block"トランザクションによって転送されます。<BR>
+    ブロードキャストは対応するすべてのノードへのユニキャストによって実現されます。<BR>
+    パケットのdestination offsetが受信用FIFO領域の先頭アドレスと一致しないリクエストを受信したときは、無視するかアドレスエラーを返さなければなりません。<BR>
+    パケットのdestination EUI-64が自ノードのBus_Info_BlockのEUI-64と一致せず、かつブロードキャストアドレス（0xffffffff:ffffffff）とも一致しないリクエストを受信したときは、無視しなければなりません。<BR>
+    transaction_timeout, ack_missingを検出しても、これに対してリトライを行なってはなりません。その場合でもパケットが到達している可能性を完全には否定できず、安易にリトライするとパケットが重複する可能性があるためです。この制約のため、ソケットライブラリは到達性を保証できません。<BR>
+    ack_busy, ack_data_errに対するリトライは行なってかまいません。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_1">
+(1) <B>destination ID</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      データグラムの送信先となる1394 destination IDは、ソケットドライバが自動的にコンフィグレーションROMをスキャンした結果によって決定されます。得られたマッピング情報はキャッシュしてかまいません。<BR>
+      Bus_Info_BlockのEUI-64とdestination EUI-64が一致していても規定されたUnit_Directoryを持たないノードは、存在しないものとして扱わなければなりません。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_2">
+(2) <B>packet format</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      実際にデータグラムを転送するasync write request for data blockパケットの形式は次のとおりです。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iLson3.gif">
+<P>
+      <BR>
+</DIV>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

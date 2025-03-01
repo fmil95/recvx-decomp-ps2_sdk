@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
@@ -43,7 +43,7 @@ void sceDevVu1PutDBit(int bit);
 
 void sceDevVu1PutTBit(int bit);
 
-int sceDevVu1GetDBit(void);
+int sceDevVu1GetDbit(void);
 
 int sceDevVu1GetTBit(void);
 

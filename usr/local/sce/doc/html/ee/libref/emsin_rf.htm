@@ -1,0 +1,1462 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CSL MIDI stream生成</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CSL MIDI stream生成</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMSInHsMsg>sceMSInHsMsg </A><BR>
+</TD><TD> </TD>
+<TD>拡張MIDIメッセージ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_Init>sceMSIn_Init </A><BR>
+</TD><TD> </TD>
+<TD>初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsExpression>sceMSIn_MakeHsExpression </A><BR>
+</TD><TD> </TD>
+<TD>拡張 Expression作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsMsg1>sceMSIn_MakeHsMsg1 </A><BR>
+</TD><TD> </TD>
+<TD>拡張Pre Voice Control Message作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsMsg2>sceMSIn_MakeHsMsg2 </A><BR>
+</TD><TD> </TD>
+<TD>拡張Voice Control Message作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsNoteOff>sceMSIn_MakeHsNoteOff </A><BR>
+</TD><TD> </TD>
+<TD>拡張 Note Off作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsNoteOn>sceMSIn_MakeHsNoteOn </A><BR>
+</TD><TD> </TD>
+<TD>拡張 Note On作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsPanpot>sceMSIn_MakeHsPanpot </A><BR>
+</TD><TD> </TD>
+<TD>拡張 Panpot作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsPitchBend>sceMSIn_MakeHsPitchBend </A><BR>
+</TD><TD> </TD>
+<TD>拡張 Pitch Bend作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsPreExpression>sceMSIn_MakeHsPreExpression </A><BR>
+</TD><TD> </TD>
+<TD>拡張Pre Expression作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsPrePanpot>sceMSIn_MakeHsPrePanpot </A><BR>
+</TD><TD> </TD>
+<TD>拡張Pre Panpot作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeHsPrePitchBend>sceMSIn_MakeHsPrePitchBend </A><BR>
+</TD><TD> </TD>
+<TD>拡張Pre PitchBend作成(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeMsg / 3>sceMSIn_MakeMsg / 3 </A><BR>
+</TD><TD> </TD>
+<TD>MIDI メッセージを unsigned int にパック(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_MakeMsg2>sceMSIn_MakeMsg2 </A><BR>
+</TD><TD> </TD>
+<TD>MIDI メッセージを unsigned int にパック(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_NoteOff>sceMSIn_NoteOff </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにノートオフメッセージを書き込む(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_NoteOn>sceMSIn_NoteOn </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにノートオンメッセージを書き込む(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_NoteOnEx>sceMSIn_NoteOnEx </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにノートオンメッセージを書き込む(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_ProgramChange>sceMSIn_ProgramChange </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにプログラムチェンジメッセージを書き込む(MACRO)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_PutExcMsg>sceMSIn_PutExcMsg </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにエクスクルーシブメッセージを書き込む</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_PutHsMsg>sceMSIn_PutHsMsg </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームに拡張MIDIメッセージを書き込む</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMSIn_PutMsg>sceMSIn_PutMsg </A><BR>
+</TD><TD> </TD>
+<TD>出力ストリームにMIDIメッセージを書き込む</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceMSInHsMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSInHsMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張MIDIメッセージ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char	<I>d</I>[7];
+} <B>sceMSInHsMsg</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張MIDIメッセージ用構造体。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceMSIn_Init>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_Init
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_Init</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    module context の正当性の検査のみを行なう。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsExpression>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsExpression
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張 Expression作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsExpression</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>,
+	unsigned char <I>expression</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+<I>expression	</I>Expression Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張 Voice Control Message の Expression Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsMsg1>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsMsg1
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張Pre Voice Control Message作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsMsg1</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>op_code</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>1st_data</I>,
+	unsigned char <I>2nd_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>op_code		</I>命令コード
+<I>ch		</I>チャンネル
+<I>1st_data		</I>命令依存データ
+<I>2nd_data	</I>命令依存データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張Pre Voice Control Message 作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsMsg2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsMsg2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張Voice Control Message作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsMsg2</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>op_code</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>,
+	unsigned char <I>1st_data</I>,
+	unsigned char <I>2nd_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>op_code		</I>命令コード
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+<I>1st_data		</I>命令依存データ
+<I>2nd_data	</I>命令依存データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張Voice Control Message 作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsNoteOff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsNoteOff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張 Note Off作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsNoteOff</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張 Voice Control Message の Note Off Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsNoteOn>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsNoteOn
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張 Note On作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsNoteOn</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>,
+	unsigned char <I>velocity</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+<I>velocity		</I>velocity Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張 Voice Control Message の Note On Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsPanpot>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsPanpot
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張 Panpot作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsPanpot</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>,
+	unsigned char <I>panpot</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+<I>panpot		</I>Panpot Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張 Voice Control Message の Panpot Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsPitchBend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsPitchBend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張 Pitch Bend作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsPitchBend</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>key</I>,
+	unsigned char <I>id</I>,
+	unsigned char <I>lsb_data</I>,
+	unsigned char <I>msb_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>key		</I>キー番号
+<I>id		</I>ＩＤ番号
+<I>lsb_data		</I>Pitch Bend LSB Data
+<I>msb_data</I>	Pitch Bend MSB Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張 Voice Control Message の PitchBend Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsPreExpression>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsPreExpression
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張Pre Expression作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsPreExpression</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>expression</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>expression	</I>Expression Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張Pre Voice Control Message の Expression Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsPrePanpot>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsPrePanpot
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張Pre Panpot作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsPrePanpot</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>panpot</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>panpot		</I>Panpot Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張Pre Voice Control Message の Panpot Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeHsPrePitchBend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeHsPrePitchBend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        拡張Pre PitchBend作成(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceMSIn_MakeHsPrePitchBend</B>(
+	sceMSInHsMsg *<I>hs_message</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>lsb_data</I>,
+	unsigned char <I>msb_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>hs_message	</I>拡張MIDIメッセージのアドレス
+<I>ch		</I>チャンネル
+<I>lsb_data		</I>Pitch Bend LSB Data
+<I>msb_data</I>	Pitch Bend MSB Data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    拡張Pre Voice Control Message の Pitch Bend Message作成用マクロ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeMsg / 3>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeMsg / 3
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI メッセージを unsigned int にパック(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceMSIn_MakeMsg</B>(
+	unsigned int <I>status</I>,
+	unsigned int <I>1st_data_byte</I>,
+	unsigned int <I>2nd_data_byte</I>
+);
+unsigned int <B>sceMSIn_MakeMsg3</B>(
+	unsigned int <I>status</I>,
+	unsigned int <I>1st_data_byte</I>,
+	unsigned int <I>2nd_data_byte</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>status		</I>MIDI ステータス
+<I>1st_data_byte</I>	MIDI 1st data byte
+<I>2nd_data_byte</I>	MIDI 2nd data byte
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パックされた MIDI メッセージ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MIDI メッセージを unsigned int にパックする。 <BR>
+    返り値を sceMSIn_MakeMsg の引数として使用する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_MakeMsg2>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_MakeMsg2
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI メッセージを unsigned int にパック(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceMSIn_MakeMsg2</B>(
+	unsigned int <I>status</I>,
+	unsigned int <I>1st_data_byte</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>status		</I>MIDI ステータス
+<I>1st_data_byte</I>	MIDI 1st data byte
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パックされた MIDI メッセージ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MIDI メッセージを unsigned int にパックする。 <BR>
+    返り値を sceMSIn_MakeMsg の引数として使用する。 <BR>
+    2nd data byte を持たない MIDI メッセージ用でsceMSIn_MakeMsg または <BR>
+    sceMSIn_MakeMsg3 の2nd_data_byte == 0 の場合と結果は同じ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_NoteOff>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_NoteOff
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにノートオフメッセージを書き込む(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_NoteOff</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_ch</I>,
+	unsigned int <I>key_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>midi_ch		</I>MIDI チャンネル
+<I>key_number	</I>ノート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにノートオフメッセージを書き込む。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_NoteOn>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_NoteOn
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにノートオンメッセージを書き込む(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_NoteOn</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_ch</I>,
+	unsigned int <I>key_number</I>,
+	unsigned int <I>velocity</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>midi_ch		</I>MIDI チャンネル
+<I>key_number	</I>ノート番号
+<I>velocity		</I>ベロシティ（打鍵強度）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにノートオンメッセージを書き込む。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_NoteOnEx>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_NoteOnEx
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにノートオンメッセージを書き込む(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_NoteOnEx</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_ch</I>,
+	unsigned int <I>key_number</I>,
+	unsigned int <I>velocity</I>,
+	unsigned int <I>prg_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>midi_ch		</I>MIDI チャンネル
+<I>key_number	</I>ノート番号
+<I>velocity		</I>ベロシティ（打鍵強度）
+<I>prg_number	</I>プログラム番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにプログラムチェンジメッセージとノートオンメッセージを書 <BR>
+    き込む。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_ProgramChange>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_ProgramChange
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにプログラムチェンジメッセージを書き込む(MACRO)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_ProgramChange</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_ch</I>,
+	unsigned int <I>prg_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>midi_ch		</I>MIDI チャンネル
+<I>prg_number	</I>プログラム番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにプログラムチェンジメッセージを書き込む。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_PutExcMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_PutExcMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにエクスクルーシブメッセージを書き込む
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_PutExcMsg</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char *<I>exc_data_addr</I>,
+	unsigned int <I>exc_data_length</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>exc_data_addr	</I>エクスクルーシブデータのアドレス
+<I>exc_data_length	</I>エクスクルーシブデータのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにエクスクルーシブメッセージを書き込む。 <BR>
+    エクスクルーシブデータは 0xF0 から始まり 0xF7 で終わらなければならない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_PutHsMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_PutHsMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームに拡張MIDIメッセージを書き込む
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_PutHsMsg</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	sceMSInHsMsg *<I>hs_message</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>hs_message	</I>拡張MIDIメッセージのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファに拡張MIDIメッセージを書き込む。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMSIn_PutMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMSIn_PutMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力ストリームにMIDIメッセージを書き込む
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMSIn_PutMsg</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_message</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number	</I>出力ポート番号
+<I>midi_message:	</I>MIDI メッセージ
+			bit 0-7: status
+			bit 8-15: 1st data byte
+			bit 16-23: 2nd data byte
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された出力ポートバッファにMIDIメッセージを書き込む。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *			   i.LINK Library
@@ -16,7 +16,6 @@
  *	1.0		2000/04/07	hig	v1.7
  *	3.11		2000/06/13	hig	v3.11
  *	3.13		2000/07/28	hig	v3.13
- *	3.13.1		2000/11/08	sim	v3.13.1
  */
 
 #if defined(_LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
@@ -139,9 +138,9 @@ typedef int	(*sce1394TrDataIndProc)(int pb, void *arg);
 
 extern int	sce1394TrDataInd(
 				int offH, u_int offL, u_int size,
-				sce1394TrDataIndProc wFunc, void *wArg,
-				sce1394TrDataIndProc rFunc, void *rArg,
-				sce1394TrDataIndProc lFunc, void *lArg
+				sce1394TrDataIndProc write, void *wArg,
+				sce1394TrDataIndProc read, void *rArg,
+				sce1394TrDataIndProc lock, void *lArg
 				);
 
 extern Sce1394ErrorCode	sce1394TrDataUnInd(int id);
@@ -246,9 +245,9 @@ extern int		sce1394TrSet(int tc, int member, int value); // System used
 #define sce1394TrGetDest(tc)		sce1394TrGet(tc, SCE1394TR_DEST)
 #define sce1394TrGetSpeed(tc)		sce1394TrGet(tc, SCE1394TR_SPEED)
 #define sce1394TrGetBlockSize(tc)	sce1394TrGet(tc, SCE1394TR_BSIZE)
-#define sce1394TrGetMode(tc)		sce1394TrGet(tc, SCE1394TR_MODE) // System used
+#define sce1394TrGetMode(tc)		sce1394TrGet(tc, SCE1394TR_MODE)
 #define sce1394TrGetStatus(tc, rCode)	\
-			sce1394TrGet(tc, SCE1394TR_STATUS,	(int *)rCode) // System used
+			sce1394TrGet(tc, SCE1394TR_STATUS,	(int *)rCode)
 #define sce1394TrStatus			sce1394TrGetStatus
 #define sce1394TrGetExtension(tc, ext)	\
 			sce1394TrGet(tc, SCE1394TR_EXTENSION,	(void **)ext)
@@ -262,7 +261,7 @@ extern int		sce1394TrSet(int tc, int member, int value); // System used
 #define sce1394TrSetBlockSize(tc, size)		\
 			sce1394TrSet(tc, SCE1394TR_BSIZE,	size)
 #define sce1394TrSetMode(tc, mode)		\
-			sce1394TrSet(tc, SCE1394TR_MODE,	mode) // System used
+			sce1394TrSet(tc, SCE1394TR_MODE,	mode)
 #define sce1394TrSetExtension(tc, ext)		\
 			sce1394TrSet(tc, SCE1394TR_EXTENSION,	(int)ext)
 

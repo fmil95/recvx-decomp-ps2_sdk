@@ -1,0 +1,827 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> SIF Command</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>SIF Command</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifCmdData>sceSifCmdData </A><BR>
+</TD><TD> </TD>
+<TD>コマンド関数登録データ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifCmdHandler>sceSifCmdHandler </A><BR>
+</TD><TD> </TD>
+<TD>コマンド関数</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifCmdHdr>sceSifCmdHdr </A><BR>
+</TD><TD> </TD>
+<TD>コマンドパケットヘッダ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifCmdSRData>sceSifCmdSRData </A><BR>
+</TD><TD> </TD>
+<TD>ソフトウェアレジスタ変更パケット</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifAddCmdHandler>sceSifAddCmdHandler </A><BR>
+</TD><TD> </TD>
+<TD>コマンド関数の登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifExitCmd>sceSifExitCmd </A><BR>
+</TD><TD> </TD>
+<TD>SIF Command API の終了</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifGetSreg>sceSifGetSreg </A><BR>
+</TD><TD> </TD>
+<TD>ソフトウェアレジスタの内容の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifInitCmd>sceSifInitCmd </A><BR>
+</TD><TD> </TD>
+<TD>SIF Command API の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifRemoveCmdHandler>sceSifRemoveCmdHandler </A><BR>
+</TD><TD> </TD>
+<TD>コマンド関数の削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSendCmd>sceSifSendCmd </A><BR>
+</TD><TD> </TD>
+<TD>コマンドパケットの送出</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSetCmdBuffer>sceSifSetCmdBuffer </A><BR>
+</TD><TD> </TD>
+<TD>コマンド関数用バッファの登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSetSreg>sceSifSetSreg </A><BR>
+</TD><TD> </TD>
+<TD>ソフトウェアレジスタの内容の設定</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceSifCmdData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifCmdData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンド関数登録データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceSifCmdHandler	<I>func</I>;
+	void	<I>*data</I>;
+}<B> sceSifCmdData</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>func</I>	コマンド関数
+<I>data</I>	関数が実行時に引数として渡されるデータのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド関数を登録する際のデータ構造です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifCmdHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifCmdHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンド関数
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef void (* <B>sceSifCmdHandler</B>)(void *<I>pkt</I>,	void *<I>data</I>)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pkt</I>	sceSifSendCmd() で指定されたコマンドパケットのコピーのアドレス
+<I>data</I>	sceSifAddCmdHandler でコマンド関数とともに登録したデータアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、sceSifSendCmd() によって起される DMA 割り込み内で実行されるものです。その際、送り手のコマンドパケットと受け手の指定データのアドレスが引数として渡されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifCmdHdr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifCmdHdr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンドパケットヘッダ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef  struct {
+	unsigned int	<I>psize</I>:8;
+	unsigned int	<I>dsize</I>:24;
+	unsigned int	<I>daddr</I>;
+  	unsigned int	<I>fcode</I>;
+	unsigned int	<I>opt</I>;
+} <B>sceSifCmdHdr</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>psize</I>	このヘッダを含むコマンドパケットのサイズ(16以上112以下)
+<I>dsize</I>	パケットといっしょに送る、付随データの大きさ
+<I>daddr</I>	付随データのアドレス
+<I>fcode</I>	呼び出されるコマンド関数の番号
+<I>opt</I>	プログラマが使用してよいデータ領域
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンドパケットは、このデータ構造を先頭に持つ最大112バイトのデータです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifCmdSRData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifCmdSRData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ソフトウェアレジスタ変更パケット
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	sceSifCmdHdr	<I>chdr</I>;
+	int		<I>rno</I>;
+	unsigned int	<I>value</I>;
+} <B>sceSifCmdSRData</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>chdr</I>	コマンドパケットヘッダ
+<I>rno</I>	ソフトウェアレジスタ番号(0～31)
+<I>value</I>	設定値
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SIF Command API システムは32bit×32個の配列（ソフトウェアレジスタ）を持っています。0～7番はシステム用ですが、残りはユーザプログラムで使用することができ、そのための関数もデフォルトで登録されています。 <BR>
+    相手側のソフトウェアレジスタを設定する際には、この構造体を使って次のようにします（相手側の31番レジスタを0xffに設定する例）。 <BR>
+<BR>
+    sceSifCmdSRData d; <BR>
+<BR>
+    d.rno = 31; <BR>
+    d.value = 0xff; <BR>
+    sceSifSendData(SIF_CMDC_SET_SREG,&d,sizeof(d),0,0,0); <BR>
+<BR>
+    なお、自分側のソフトウェアレジスタの値を取得・設定するためには、sceSifGetSreg()/sceSifSetSreg() を使用します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./scmd_rf.htm#sceSifGetSreg">sceSifGetSreg</a>(),<a href="./scmd_rf.htm#sceSifSetSreg">sceSifSetSreg</a>()
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceSifAddCmdHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifAddCmdHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンド関数の登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void  <B>sceSifAddCmdHandler</B>(
+	unsigned int   <I>pos</I>,
+	sceSifCmdHandler  <I>f</I>,
+	void   <I>*data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pos</I>	コマンド関数を登録するバッファの位置
+<I>f</I>	登録するコマンド関数
+<I>data</I>	コマンド関数f に渡されるデータのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSifSetCmdBuffer() で登録したバッファに、コマンドパケット呼出時に呼び出される関数（コマンド関数）を登録します。 <BR>
+    この関数は、割り込み禁止領域で呼んでください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド関数は割り込みハンドラとして実行されるため、プログラミングに際していくつか特別な注意が必要です。割り込みハンドラの記述について、\overview\eekernelに注意事項が記載されていますので参照してください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifExitCmd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifExitCmd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SIF Command API の終了
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void  <B>sceSifExitCmd</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSifInitCmd() で登録した割り込み関数をはずします。 <BR>
+    EE でオブジェクトの遷移を行い、その先で SIF Command API を使用する場合は、この関数で割り込み関数をはずし、遷移先で新たにsceSifInitCmd() を呼ばなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifGetSreg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifGetSreg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ソフトウェアレジスタの内容の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int 	<B>sceSifGetSreg</B>(int <I>no</I>)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>no</I>	レジスタ番号（0～31）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    レジスタの内容 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自分側のソフトウェアレジスタの値を取得します。 <BR>
+    <blockquote>
+    	ソフトウェアレジスタの初期値は0です。 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifInitCmd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifInitCmd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SIF Command API の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void  <B>sceSifInitCmd</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SIF Command API の初期化を行います。内部変数の初期化と、コマンドを処理するための割り込み関数の登録を行います。 <BR>
+    最初に呼ばれる sceSifInitCmd() は、EE/IOP 相互に同期をとるため、相手側で呼ばれるまでこの関数内で待ちに入ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifRemoveCmdHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifRemoveCmdHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンド関数の削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void  <B>sceSifRemoveCmdHandler</B>(unsigned int  <I>pos</I>)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pos</I>	削除するバッファの位置
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    pos に登録された関数を削除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSendCmd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSendCmd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンドパケットの送出
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int  <B>sceSifSendCmd</B>(
+	unsigned int  <I>pos</I>,
+	void  <I>*cp</I>,
+	int  <I>ps</I>,
+	void  <I>*src</I>,
+	void <I>*dest</I>,
+	int  <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pos</I>	呼び出す関数の位置(sceSifAddCmdHandler()で登録した位置)
+<I>cp</I>	コマンド(コマンドパケット)のアドレス
+<I>ps</I>	コマンドパケットのサイズ(byte)(16以上112バイト以下)
+<I>src</I>	一緒に送るデータ（付随データ）のアドレス
+<I>dest</I>	付随データを送る相手側のアドレス
+<I>size</I>	付随データのサイズ(byte)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    使用した sceSifSetDma() のキューイング識別子 <BR>
+    0	キューイング失敗 <BR>
+    0以外	キューイング識別子 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSifSetDma()を用いてコマンドパケットを送り、相手側の pos の位置に	登録されているコマンド関数を呼び出します。 <BR>
+    コマンドが相手側に届いたかどうかは、返値と sceSifDmaStat() によって	判断できます。 <BR>
+    cp/src/dest は、EE 側は 16バイト、IOP側は 4バイトでアラインされたアドレスに置いてください。size は、EE の場合16バイト、IOPの場合4 バイトの倍数です。 <BR>
+    EE の場合、cp は キャッシュ上にあれば write-back されますが、srcはされませんので、プログラマの責任でキャッシュ上から吐き出して	おいてください。 <BR>
+    割り込み関数内では、isceSendCmd() を呼んでください(EE/IOPとも)。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    size の上限は、１回で送れる DMA の上限 1Mbyte - 16byte です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSetCmdBuffer>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSetCmdBuffer
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンド関数用バッファの登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceSifCmdData * <B>sceSifSetCmdBuffer</B>(
+	sceSifCmdData <I>*db</I>,
+	int   <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>db</I>	バッファの先頭アドレス
+<I>size</I>	バッファのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    以前に登録されていた、バッファのアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SIF Command API によって起動する関数（コマンド関数）を登録するためのバッファを設定します。初期状態では、バッファの設定はありません。 <BR>
+    この関数は、割り込み禁止領域で呼んでください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSetSreg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSetSreg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ソフトウェアレジスタの内容の設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int 	<B>sceSifSetSreg</B>(
+	 int 	<I>no</I>,
+	unsigned int 	<I>value</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>no</I>	レジスタ番号（0～31）
+<I>value</I>	レジスタに設定する値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    設定した値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自分側のソフトウェアレジスタに指定値を設定します。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

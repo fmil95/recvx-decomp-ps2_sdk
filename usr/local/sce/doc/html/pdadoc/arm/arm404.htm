@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm404</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm403.htm">[前]</A> <A HREF="arm405.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.4 <A NAME="anchor2970959"></A>ロードおよびストア・マルチプル命令</H3>
+
+<BLOCKQUOTE>
+  <P>ロードおよびストア・マルチプル命令は、データ・ブロックを最も効率的に操作する方法です。</P>
+  <P></P>
+</BLOCKQUOTE>
+
+<H4>4.4.1 <A NAME="anchor1666932"></A>単純ブロック・コピー</H4>
+
+<BLOCKQUOTE>
+  <P>このコードは、非常に簡単なブロックのコピーを行い、一度に48バイトをコピーし、特定のマシンの最大処理量に近づきます。ソースとデスティネーションでワードを整列させ、48バイト以下のオブジェクトを個別に処理しなければなりません。</P>
+  <PRE>; Simple block copy function
+; R12 points to the start of the source block
+; R13 points to the start of the destination block
+; R14 points to the end of the source block
+loop    LDMIA   R12!, (R0-R11}  ; load 48 bytes
+         STMIA   R13!, {R0-R11} ; store 48 bytes
+         CMP     R12, R14       ; reached the end yet?
+         BLO     loop           ; branch to the top of the loop</PRE>
+</BLOCKQUOTE>
+
+<H4>4.4.2 <A NAME="anchor1862601"></A>プロシージャの入口と出口</H4>
+
+<BLOCKQUOTE>
+  <P>このコードは、ロードおよびストア・マルチプル命令を使用して、プロシージャ実行中にプロセッサの状態を保持したりリストアします。このコードでは、レジスタr0からr3は関数の呼び出し側で保持される引数レジスタであるので、保持する必要はないと仮定しています。また、R13は完全な降順スタックを指すものと仮定しています。</P>
+  <PRE>   function
+        STMFD    R13!, {R4 - R12, R14} ; preserve all the local registers
+                                       ; and the return address, and
+                                       ; update the stack pointer.
+  ; function body
+        LDMFD    R13!, {R4 - R12, PC}  ; restore the local register, load
+                                       ; the PC from the saved return
+                                       ; update the stack pointer.</PRE>
+  <P>このコードは、セーブされたレジスタをすべてリストアし、スタック・ポインタを更新して、（PC値をロードすることによって）呼び出し元に戻るという操作を、すべて1つの命令で行います。これにより、プロシージャから非常に効率的に復帰することができます
+  (比較命令で条件をチェックし、ロード・マルチプルを条件付きで実行します)。</P>
+</BLOCKQUOTE>
+
+<P><BR>
+<HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm403.htm">[前]</A> <A HREF="arm405.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

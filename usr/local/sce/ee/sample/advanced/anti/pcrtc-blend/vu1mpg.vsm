@@ -1,0 +1,174 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ */
+
+;
+;	RotTransPers+Lighting
+;
+.equ ADCBUF,		20
+;
+main: 	NOP   	 				NOP   
+	NOP					IADDIU VI01, VI00, 1		;
+	NOP   	 				IAND VI13, VI13, VI01		;VI13=LSB(VI13) Dual Buffer Flg(toggle)
+	NOP			  	 	IADDIU VI14, VI00, 1024		; VI14=MAX of VUMEM
+
+	NOP   	 				LQ.xyzw VF20, 4(VI00) 		;[VF20,VF21,VF22,VF23]=[PRIM/LOCAL]=[P/L]
+	NOP   	 				LQ.xyzw VF21, 5(VI00) 
+	NOP   	 				LQ.xyzw VF22, 6(VI00) 
+	NOP   	 				LQ.xyzw VF23, 7(VI00) 
+;
+	NOP   	 				LQ.xyzw VF24, 12(VI00) 		;[VF24,VF25,VF26]=[Light/LOCAL]=[L/L]
+	NOP   	 				LQ.xyzw VF25, 13(VI00) 
+	NOP   	 				LQ.xyzw VF26, 14(VI00) 
+;
+	NOP   	 				LQ.xyzw VF27, 8(VI00) 		;[VF27,VF28,VF29,VF30]=[Light Color]=[LC]
+	NOP   	 				LQ.xyzw VF28, 9(VI00) 
+	NOP   	 				LQ.xyzw VF29, 10(VI00) 
+	NOP   	 				LQ.xyzw VF30, 11(VI00) 		
+;
+START_P:NOP   	 				XTOP VI10 			;VI10->TOPS 
+	NOP   	 				ILW.x VI02, 0(VI10) 		;VI02->GIFtag
+	NOP   	 				IADDIU VI03, VI00, 0x7fff
+	NOP					LOI 255.0			;max color 255 
+	ADDi.xyz   VF19, VF00, I		NOP   				;VF19xyz max color 255
+	NOP   	 				IAND VI11, VI02, VI03		;VI11=NLOOP
+;
+	NOP   	 				IADDIU VI06, VI10, 1		;VI06->pXYZ,NxNyNz,UV,RGBA:(TOPS+1)
+	NOP   	 				IBNE VI13, VI00, START
+	NOP   	 				ILW.w VI12, ADCBUF(VI00)	;VI12->outbuf1 
+;	
+	NOP   	 				ILW.z VI12, ADCBUF(VI00) 	;VI12->outbuf0
+;
+START:	NOP   	 				LQ.xyzw VF31, 0(VI10)		;load GIFtag from @TOPS 
+	NOP   	 				LQ.xyzw VF12, 16(VI00)		;CLIP:load Clip(LeftTopNear) 
+	NOP   	 				LQ.xyzw VF13, 17(VI00)		;CLIP:load Clip(RightBottomFar) 
+	NOP   	 				IADDIU  VI05,VI00,0 		;CLIP:ClipCounterClear 
+	NOP   	 				SQ.xyzw VF31, 0(VI12) 		;store GIFtag to @(outbuf) 
+	MULw.xyzw   VF17, VF00, VF00		IADD  VI10, VI12, VI00	 	;VF17=(1,0,0,0), VI12 (outbuf)->VI10(GIFADR)
+
+/* no enroll with CLIP */
+;
+;PROLOG
+LOOP:	NOP   	 				LQI.xyzw   VF01, (VI06++)	;VF01=Pv
+	NOP   	 				NOP
+	NOP   	 				NOP   
+	NOP					NOP 				
+	MULAx.xyzw  ACC, VF20, VF01x		LQI.xyzw   VF02, (VI06++) 	; M00*x, M01*x, M02*x, M03*x,[P/L]*Pv,VF02=Nv   
+	MADDAy.xyzw ACC, VF21, VF01y		NOP				;+M10*y,+M11*y,+M12*y,+M13*y,
+	MADDAz.xyzw ACC, VF22, VF01z		NOP				;+M20*z,+M21*z,+M22*z,+M23*z,   
+	MADDw.xyzw  VF15,VF23, VF01w		NOP			   	;+M30*w,+M31*w,+M32*w,+M33*w,
+	MULAx.xyz   ACC, VF24, VF02x		NOP   				; L00*nx, L01*nx, L02*nx,    [L/L]*Nv
+	MADDAy.xyz  ACC, VF25, VF02y		NOP			   	;+L10*ny,+L11*ny,+L12*ny,
+	MADDz.xyz   VF17,VF26, VF02z		NOP				;+L20*nz,+L21*nz,+L22*nz   
+	NOP					DIV 	  Q, VF00w, VF15w	;Q=1/Z
+	NOP					NOP   
+	NOP					NOP   
+	MAXx.xyzw   VF17,VF17, VF00x		NOP   				;0-limiter
+	NOP   	 				LQI.xyzw  VF03, (VI06++)   	;VF03=UV
+	NOP   	 				NOP				;
+	NOP					NOP				;
+	MULq.xyz    VF15,VF15, Q 		NOP				;(x,y,z)*Q:SXSYBZ
+	MULq.xyz    VF16,VF03, Q		NOP				;(u,v,1)*Q:STQ
+	MULAx.xyzw  ACC, VF27, VF17x		NOP				; LR1*L1, LG1*L1, LB1*L1, LA1*L1,[LC]*Lv
+	MADDw.xyzw  VF14,VF30, VF17w		NOP				;+LRBK  ,+LGBK  ,+LBBK  ,+LABK
+	SUB.xyw     VF11,VF12,VF15		NOP				;(CLIPltn)-(z,ZBz,PPy,PPx)
+	SUB.xyw     VF11,VF15,VF13		NOP			 	;(z,ZBz,PPy,PPx)-(CLIPrbf)
+	NOP					IADDIU VI02,VI00,0x00d0		; FlagMask
+	NOP					ILW.y	VI04,ADCBUF(VI00)	;VI04=0x8000 Set ADCBIT
+	NOP					FMAND	VI01,VI02		;if(z<1.0||PPy<0||PPx<0)?
+	NOP					FMAND	VI01,VI01		;if(z>Zmax||PPy>Ymax||PPx>Xmax)?
+	NOP					IBNE   VI01,VI02,CLIP		;if(z<1.0||PPy<0||PPx<0)
+	NOP					NOP				;or if(z>Zmax||PPy>Ymax||PPx>Xmax) clip
+	NOP					IBGTZ  VI05,CONTNU		;if(vertex_clip_flag>0) clip triangle
+	NOP					NOP			
+	NOP					B	CONTNU			;NO CLIP
+	NOP					ISUB	VI04,VI04,VI04		;VI04=0	 Clear ADCBIT
+;
+CLIP:	NOP					IADDIU VI05,VI00,3              ;triangle clip counter=3
+;
+CONTNU:	NOP					ISUBIU	  VI05,VI05,1		;triangle clip counter
+	FTOI4.xyzw VF15, VF15			LQI.xyzw   VF04, (VI06++)  	;VF04=RGBA ixyz
+	NOP					NOP			   	;
+	NOP					NOP			   	;
+	NOP					NOP   				;
+	MUL.xyzw   VF14, VF14, VF04		MFIR.w		VF15w,VI04   	; Set FLG(ADC)
+	NOP					NOP   				;
+	NOP   	 				IADDIU    VI12, VI12, 3		;outbuf +=3
+	NOP   	 				SQ.xyzw   VF16, -2(VI12)  	;STQ to @(outbuf+1)
+	MINI.xyzw  VF14, VF14, VF19		SQ.xyzw   VF15, 0(VI12) 	;255-limiter XYZ to @(outbuf+3)
+	NOP					IADDI     VI11, VI11, -1	;nloop--
+	NOP					NOP				;
+	NOP 					NOP				;
+	FTOI0.xyzw VF14, VF14 			NOP				;iRGBA
+	NOP   	 				NOP				;
+	NOP   	 				NOP  				;
+	NOP   	 				IBNE      VI11, VI00, LOOP	;
+	NOP   	 				SQ.xyzw   VF14, -1(VI12) 	;RGBA to @(outbuf+2)
+;
+	NOP   	 				NOP   
+	NOP   	 				NOP   
+	NOP   	 				NOP   
+	NOP   	 				XGKICK VI10 			;XGKICK: GIF start  
+	NOP   	 				IADDIU VI01, VI00, 1		;
+	NOP   	 				ISUB VI13, VI01, VI13		;toggle{ SWAP(0/1)=1-SWAP(0/1)}
+	NOP   	 				NOP   
+	NOP[e]   	 			NOP				; Ebit STop	
+	NOP   	 				NOP   
+	NOP   	 				B START_P  
+	NOP   	 				NOP   
+;
+;Integer Register
+;		VI00	: 0
+;		VI01	: tmp_ilp
+;		VI02	: tmp_il
+;		VI03	: tmp_ip
+;		VI04	: ADCBIT
+;		VI05	: Triangle Clip Counter
+;		VI06	: pXYZ,NxNyNz,UV,RGB
+;		VI07	: 
+;		VI08	: 
+;		VI09	: 
+;		VI10	: @TOPS->@GIFtag
+;		VI11	: NLOOP
+;		VI12	: pOUTBUF
+;		VI13	: Dual Buffer toggle Flag(LSB)
+;		VI14	: for Stack Pointer(1024)
+;		VI15	: for Link
+;
+;Float Vector Register
+;		VF00	: 0,0,0,1
+;		VF01	: vXYZ
+;		VF02	: vNxNyNz
+;		VF03	: vUV
+;		VF04	: vRGB
+;		VF05	: 
+;		VF06	: 
+;		VF07	: 
+;		VF08	: 
+;		VF09	: 
+;		VF10	: 
+;		VF11	: Clip:tmp_l
+;		VF12	: Clip(LeftTopNear) 
+;		VF13	: Clip(RightBottomFar)
+;		VF14	: RGB->limited RGB->iRGB
+;		VF15	: SXSYSZ->iSXSYSZ
+;		VF16	: STQ:tmp_l
+;		VF17	: 0,0,0,1->L1(L2)(L3)
+;		VF18	: 
+;		VF19	: MaxColor 255.0
+;		VF20	: PRIM/LOCAL Matrix(plmtx)
+;		VF21	: (plmtx)
+;		VF22	: (plmtx)
+;		VF23	: (plmtx)
+;		VF24	: Local Light Matrix(llmtx)
+;		VF25	: (llmtx)
+;		VF26	: (llmtx)
+;		VF27	: Light Color(lcmtx)
+;		VF28	: (lcmtx)
+;		VF29	: (lcmtx)
+;		VF30	: (lcmtx)
+;		VF31	: GIFtag(126):tmp_i

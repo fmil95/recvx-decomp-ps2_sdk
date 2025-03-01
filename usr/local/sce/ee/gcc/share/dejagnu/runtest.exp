@@ -366,9 +366,9 @@ proc usage { } {
 
     send_user "USAGE: runtest \[options...\]\n"
     send_user "\t--all (-a)\t\tPrint all test output to screen\n"
-    send_user "\t--build \[string\]\tThe canonical config name of the build machine\n"
+    send_user "\t--build \[string\]\t\tThe canonical config name of the build machine\n"
     send_user "\t--host \[string\]\t\tThe canonical config name of the host machine\n"
-    send_user "\t--host_board \[name\]\tThe host board to use\n"
+    send_user "\t--host_board \[name\]\t\tThe host board to use\n"
     send_user "\t--target \[string\]\tThe canonical config name of the target board\n"
     send_user "\t--debug (-de)\t\tSet expect debugging ON\n"
     send_user "\t--help (-he)\t\tPrint help text\n"
@@ -378,11 +378,10 @@ proc usage { } {
     send_user "\t--reboot \[name\]\t\tReboot the target (if supported)\n"
     send_user "\t--srcdir \[name\]\t\tThe test suite source code directory\n"
     send_user "\t--strace \[number\]\tSet expect tracing ON\n"
-    send_user "\t--target_board \[name(s)\] The list of target boards to run tests on\n"
+    send_user "\t--target_board \[name(s)\]\t\tThe list of target boards to run tests on\n"
     send_user "\t--tool\[name(s)\]\t\tRun tests on these tools\n"
-    send_user "\t--tool_exec \[name\]\tThe path to the tool executable to test\n"
-    send_user "\t--tool_opts \[options\]\tA list of additional options to pass to the tool\n"
-    send_user "\t--directory (-di) name\tRun only the tests in directory 'name'\n"
+    send_user "\t--tool_exec \[name\]\t\tThe path to the tool executable to test\n"
+    send_user "\t--tool_opts \[options\]\t\tA list of additional options to pass to the tool\n"
     send_user "\t--verbose (-v)\t\tEmit verbose output\n"
     send_user "\t--version (-V)\t\tEmit all version numbers\n"
     send_user "\t--D\[0-1\]\t\tTcl debugger\n"
@@ -437,7 +436,6 @@ for { set i 0 } { $i < $argc } { incr i } {
 	"--sr*" -
 	"--st*" -
         "--ta*" -
-	"--di*" -
 	"--to*" {
 	    incr i
 	    set optarg [lindex $argv $i]
@@ -500,13 +498,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    set comm_line_tool $optarg;
 	    continue
         }
-
-	"--di*" {
-	    set cmdline_dir_to_run $optarg
-	    puts "cmdline_dir_to_run = $cmdline_dir_to_run"
-	    continue
-	}
-
+		
 	"--v" -
 	"--verb*" {			# (--verbose) verbose output
 	    incr verbose
@@ -662,9 +654,9 @@ if [expr  { $build_triplet == ""  &&  $host_triplet == ""} ] {
     # find config.guess
     foreach dir "$libdir $libdir/.. $srcdir/.. $srcdir/../.." {
 	verbose "Looking for ${dir}/config.guess" 2
-	if [file exists ${dir}/config.guess] {
-	    set config_guess ${dir}/config.guess
-	    verbose "Found ${dir}/config.guess"
+	if [file exists ${dir}/libexec/config.guess] {
+	    set config_guess ${dir}/libexec/config.guess
+	    verbose "Found ${dir}/libexec/config.guess"
 	    break
 	}
     }
@@ -980,8 +972,8 @@ for { set i 0 } { $i < $argc } { incr i } {
 	"--ou*" -
 	"--sr*" -
 	"--st*" -
+
         "--ta*" -
-	"--di*" -
 	"--to*" {
 	    incr i
 	    set optarg [lindex $argv $i]
@@ -1029,14 +1021,8 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    continue
 	}
 	
-	"--di*" {
-	    # Already parsed (and don't set again).  Let $DEJAGNU rename it.
-	    # set cmdline_dir_to_run $optarg
-	    continue
-	}
-
 	
-	"--de*" {			# (--debug) expect internal debugging
+	"--d*" {			# (--debug) expect internal debugging
 	    if [file exists ./dbg.log] {
 		catch "exec rm -f ./dbg.log"
 	    }
@@ -1600,44 +1586,14 @@ foreach current_target $target_list {
 # "{ name var1=value1 ... }" where `name' is a generic name for the pass and
 # currently has no other meaning.
 
-    global env
-
     if { [info exists MULTIPASS] } {
 	set multipass $MULTIPASS
-    } elseif {[info exists env(MULTIPASS)]} {
-	set multipass $env(MULTIPASS)
     }
     if { $multipass == "" } {
 	set multipass { "" }
     }
 
-# If PASS is specified, either as a TCL variable or in environment, we
-# want to run only the tests specified. Its value should be a number
-# or a list of numbers that specify the passes that we want to run.
-    if [info exists PASS] {
-	set pass $PASS
-    } elseif [info exists env(PASS)] {
-	set pass $env(PASS)
-    } else {
-	set pass ""
-    }
-
-    if {$pass != ""} {
-	set passes [list]
-	foreach p $pass {
-	    foreach multipass_elem $multipass {
-		set multipass_name [lindex $multipass_elem 0]
-		if {$p == $multipass_name} {
-	    	    lappend passes $multipass_elem
-		    break;
-		}
-	    }
-	}
-	set multipass $passes
-    }
-
     foreach pass $multipass {
-
 	# multipass_name is set for `record_test' to use (see framework.exp).
 	if { [lindex $pass 0] != "" } {
 	    set multipass_name [lindex $pass 0]
@@ -1665,7 +1621,7 @@ foreach current_target $target_list {
 	# look for the top level testsuites. if $tool doesn't
 	# exist and there are no subdirectories in $srcdir, then
 	# we default to srcdir.
-	set test_top_dirs [lsort [getdirs -all ${srcdir} "${tool}*"]]
+	set test_top_dirs [lsort [getdirs ${srcdir} "${tool}*"]]
 	if { ${test_top_dirs} == "" } {
 	    set test_top_dirs ${srcdir}
 	}
@@ -1715,40 +1671,6 @@ foreach current_target $target_list {
 	    #
 	    foreach dir "${test_top_dirs}" {
 		if { ${dir} != ${srcdir} } {
-		    # Ignore this directory if is a directory to be
-		    # ignored.
-		    if {[info exists ignoredirs] && $ignoredirs != ""} {
-			set found 0
-			foreach directory $ignoredirs {
-			    if [string match "*${directory}*" $dir] {
-				set found 1
-				break
-			    }
-			}
-			if {$found} {
-			    continue
-			}
-		    }
-
-		    # Run the test if dir_to_run was specified as a
-		    # value (for example in MULTIPASS) and the test
-		    # directory matches that directory.
-		    if {[info exists dir_to_run] && $dir_to_run != ""} {
-			if ![string match "*${dir_to_run}*" $dir] {
-			    continue
-			}
-		    }
-
-		    # Run the test if cmdline_dir_to_run was specified
-		    # by the user using --directory and the test
-		    # directory matches that directory
-		    if {[info exists cmdline_dir_to_run] \
-			    && $cmdline_dir_to_run != ""} {
-			if ![string match "*${cmdline_dir_to_run}*" $dir] {
-			    continue
-			}
-		    }
-
 		    foreach test_name [lsort [find ${dir} *.exp]] {
 			if { ${test_name} == "" } {
 			    continue
@@ -1759,9 +1681,7 @@ foreach current_target $target_list {
 				continue
 			    }
 			}
-
-			# Get the path after the $srcdir so we know
-			# the subdir we're in.
+			# Get the path after the $srcdir so we know the subdir we're in.
 			set subdir [file dirname $test_name]
 			# We used to do
 			# regsub $srcdir [file dirname $test_name] "" subdir

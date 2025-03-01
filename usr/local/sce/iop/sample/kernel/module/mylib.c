@@ -1,10 +1,9 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
- *		I/O Processor Library Sample Program
- *
- *			-- Module --
+ *                      Emotion Engine Library
+ *                          Version 0.1.0
  *
  *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
@@ -14,7 +13,7 @@
  *
  *       Version        Date            Design      Log
  *  --------------------------------------------------------------------
- *       2.3.0          May,19,2001     isii
+ *       0.1.0
  */
 
 #include <stdio.h>
@@ -23,8 +22,7 @@
 /* メモリに常駐するモジュールは, 以下のようにモジュール名と
  * モジュールバージョンを付けておくと便利です。
  */
-#define MYNAME "mylib"
-ModuleInfo Module = { MYNAME, 0x0101 };
+ModuleInfo Module = {"My_Memory_Resident_Lib", 0x0101 };
 
 /* ================================================================
  * 	常駐ライブラリとしての初期化エントリ
@@ -32,27 +30,16 @@ ModuleInfo Module = { MYNAME, 0x0101 };
 
 int MyLibInit()
 {
-    int err, oldei;
     /* mylib.tblから, ユーティリティ loplibgen によってエントリテーブルが
      * 生成されます。エントリテーブルのラベル名には, 'ライブラリ名_entry' が
      *  つけられます。
      */
     extern libhead mylib_entry; /* ライブラリ名_entry を参照 */
 
-    printf("'%s' Start\n", MYNAME);
-    /* モジュールの常駐のための初期化、登録などを行う。*/
-    CpuSuspendIntr(&oldei);
-    err = RegisterLibraryEntries(&mylib_entry);
-    CpuResumeIntr(oldei);
-    if( err == KE_LIBRARY_FOUND ) {
+    if( RegisterLibraryEntries(&mylib_entry) != 0 ) {
 	/* 既に同名の常駐ライブラリがいるので登録に失敗 */
-	printf("'%s' already exist. no resident\n", MYNAME);
-	return NO_RESIDENT_END; /* 終了してメモリから退去 */
-    } else if( err != KE_OK ) {
-	printf("'%s' What happen ?\n", MYNAME);
 	return NO_RESIDENT_END; /* 終了してメモリから退去 */
     }
-    printf("'%s' resident\n", MYNAME);
     return RESIDENT_END; /* 終了して常駐する */
 }
 
@@ -77,22 +64,23 @@ int MyLibInit()
       (下記のコーディングは gcc系統のコンパイラを使用した場合の例です。)
  */
 
-void libentry1(char *name)
+void libentry1(int i)
 {
     unsigned long oldgp;
     asm volatile( "  move %0, $gp; la  $gp, _gp" : "=r" (oldgp));
 
-    printf("        %s --> %s:libentry1()\n", name, MYNAME);
+    printf("mylib: libentry1(%d)\n", i);
 
     asm volatile( "  move $gp, %0"  : : "r" (oldgp));
 }
 
-void internal_libentry2(char *name)
+void internal_libentry2(int i)
 {
     unsigned long oldgp;
     asm volatile( "  move %0, $gp; la  $gp, _gp" : "=r" (oldgp));
 
-    printf("        %s --> %s:libentry2()\n", name, MYNAME);
+    printf("mylib: libentry2(%d)\n", i);
 
     asm volatile( "  move $gp, %0"  : : "r" (oldgp));
 }
+

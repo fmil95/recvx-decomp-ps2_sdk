@@ -1,0 +1,1988 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> メモリーカードライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>メモリーカードライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMcIconSys>sceMcIconSys </A><BR>
+</TD><TD> </TD>
+<TD>icon.sys を生成するための構造体</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcTblGetDir>sceMcTblGetDir </A><BR>
+</TD><TD> </TD>
+<TD>ファイル一覧の結果を格納するための構造体</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMcChangeThreadPriority>sceMcChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>IOPモジュール(mcserv.irx)のスレッドプライオリティ設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcChdir>sceMcChdir </A><BR>
+</TD><TD> </TD>
+<TD>カレントディレクトリ移動／カレントディレクトリ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcClose>sceMcClose </A><BR>
+</TD><TD> </TD>
+<TD>ファイルを閉じる</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcDelete>sceMcDelete </A><BR>
+</TD><TD> </TD>
+<TD>ファイル削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcFlush>sceMcFlush </A><BR>
+</TD><TD> </TD>
+<TD>ファイルキャッシュの即時確定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcFormat>sceMcFormat </A><BR>
+</TD><TD> </TD>
+<TD>メモリーカードの論理フォーマット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcGetDir>sceMcGetDir </A><BR>
+</TD><TD> </TD>
+<TD>メモリーカードファイル一覧の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcGetEntSpace>sceMcGetEntSpace </A><BR>
+</TD><TD> </TD>
+<TD>エントリ情報格納領域の空きを調査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcGetInfo>sceMcGetInfo </A><BR>
+</TD><TD> </TD>
+<TD>メモリーカード状態の調査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcGetSlotMax>sceMcGetSlotMax </A><BR>
+</TD><TD> </TD>
+<TD>スロット数調査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcInit>sceMcInit </A><BR>
+</TD><TD> </TD>
+<TD>メモリーカード環境の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcMkdir>sceMcMkdir </A><BR>
+</TD><TD> </TD>
+<TD>サブディレクトリ生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcOpen>sceMcOpen </A><BR>
+</TD><TD> </TD>
+<TD>ファイルを開く</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcRead>sceMcRead </A><BR>
+</TD><TD> </TD>
+<TD>ファイルの読み込み</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcRename>sceMcRename </A><BR>
+</TD><TD> </TD>
+<TD>ファイル名、ディレクトリ名の変更</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcSeek>sceMcSeek </A><BR>
+</TD><TD> </TD>
+<TD>ファイルポインタの移動</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcSetFileInfo>sceMcSetFileInfo </A><BR>
+</TD><TD> </TD>
+<TD>ファイル情報更新</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcSync>sceMcSync </A><BR>
+</TD><TD> </TD>
+<TD>登録済み処理完了待ち</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcUnformat>sceMcUnformat </A><BR>
+</TD><TD> </TD>
+<TD>メモリーカードのフォーマット消去</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcWrite>sceMcWrite </A><BR>
+</TD><TD> </TD>
+<TD>ファイルへの書き込み</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceMcIconSys>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcIconSys
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        icon.sys を生成するための構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef 	struct {
+	unsigned char <I>Head </I>[4];
+	unsigned short <I>Reserv1</I>;
+	unsigned short <I>OffsLF</I>;
+	unsigned <I>Reserv2</I>;
+	unsigned <I>TransRate</I>;
+	<I>_iconVu0IVECTOR</I> <I>BgColor </I>[4];
+	<I>_iconVu0FVECTOR</I> <I>LightDir </I>[3];
+	<I>_iconVu0FVECTOR</I> <I>LightColor </I>[3];
+	<I>_iconVu0FVECTOR</I> <I>Ambient</I>;
+	unsigned char <I>TitleName </I>[68];
+	unsigned char <I>FnameView </I>[64];
+	unsigned char <I>FnameCopy </I>[64];
+	unsigned char <I>FnameDel </I>[64];
+	unsigned char <I>Reserve3 </I>[512];
+} <B>sceMcIconSys</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>Head</I>		'P','S','2','D'
+<I>OffsLF</I>		タイトル名改行位置
+<I>TransRate</I>	背景透過率
+<I>BgColor</I>		背景色(4点分)
+<I>LightDir</I>		光源方向(3光源分)
+<I>LightColor</I>	光源色(3光源分)
+<I>Ambient</I>		アンビエント
+<I>TitleName</I>	タイトル名
+<I>FnameView</I>	一覧用アイコンファイル名
+<I>FnameCopy</I>	コピー時用アイコンファイル名
+<I>FnameDel</I>	削除時用アイコンファイル名
+<I>Reserve1</I>		予約領域、すべて00で埋めなくてはなりません。
+<I>Reserve2</I>		予約領域、すべて00で埋めなくてはなりません。
+<I>Reserve3</I>		予約領域、すべて00で埋めなくてはなりません。
+<I>_iconVu0IVECTOR</I>	libvu0.hのsceVu0IVECTORと構造は同じでアラインメントの
+			宣言が付かない型
+<I>_iconVu0FVECTOR</I>	libvu0.hのsceVu0FVECTORと構造は同じでアラインメントの
+			宣言が付かない型
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    icon.sys を生成するための構造体です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcTblGetDir>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcTblGetDir
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイル一覧の結果を格納するための構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef	struct {
+	struct {
+		unsigned char Resv2,Sec,Min,Hour;
+		unsigned char Day,Month;
+		unsigned short Year;
+	} _Create;
+	struct {
+		unsigned char Resv2,Sec,Min,Hour;
+		unsigned char Day,Month;
+		unsigned short Year;
+	} _Modify;
+	unsigned <I>FileSizeByte</I>;
+	unsigned short <I>AttrFile</I>;
+	unsigned short Reserve1;
+	unsigned Reserve2[2];
+	unsigned char <I>EntryName</I>[32];
+} <B>sceMcTblGetDir</B> __attribute__((aligned (64)));
+#define <I>CSec</I>	_Create.Sec
+#define <I>CMin</I>	_Create.Min
+#define <I>CHour</I>	_Create.Hour
+#define <I>CDay</I>	_Create.Day
+#define <I>CMonth</I>	_Create.Month
+#define <I>CYear</I>	_Create.Year
+#define <I>MSec</I>	_Modify.Sec
+#define <I>MMin</I>	_Modify.Min
+#define <I>MHour</I>	_Modify.Hour
+#define <I>MDay</I>	_Modify.Day
+#define <I>MMonth</I>	_Modify.Month
+#define <I>MYear</I>	_Modify.Year
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>CSec</I>		エントリ生成日時(秒)
+<I>CMin</I>		エントリ生成日時(分)
+<I>CHour</I>		エントリ生成日時(時)
+<I>CDay</I>		エントリ生成日時(日)
+<I>CMonth</I>		エントリ生成日時(月)
+<I>CYear</I>		エントリ生成日時(年)
+<I>MSec</I>		エントリ修正日時(秒)
+<I>MMin</I>		エントリ修正日時(分)
+<I>MHour</I>		エントリ修正日時(時)
+<I>MDay</I>		エントリ修正日時(日)
+<I>MMonth</I>		エントリ修正日時(月)
+<I>MYear</I>		エントリ修正日時(年)
+<I>FileSizeByte</I>	ファイルサイズ(バイト)
+		ディレクトリエントリの場合は0
+<I>AttrFile	</I>	ファイル属性
+<I>EntryName</I>	エントリ名
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイル一覧の結果を格納するための構造体です。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceMcChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPモジュール(mcserv.irx)のスレッドプライオリティ設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcChangeThreadPriority</B>(
+	int <I>level</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>level</I>	スレッドプライオリティ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAライブラリのIOP側モジュールであるmcserv.irxのスレッドプライオリティを変更します。設定可能なプライオリティは thread.h に定義されているUSER_HIGHEST_PRIORITY ～ USER_LOWEST_PRIORITY の間の値です(両端の値含む)。mcserv.irxモージュールのスレッドプライオリティ初期値は104です。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:		成功(kerror.h:KE_OK) <BR>
+    -403:	スレッドプライオリティの値が設定可能な範囲を超えています。(kerror.h:KE_ILLEGAL_PRIORITY) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スレッドプライオリティはsceSifLoadModule()でmcserv.irxをロードする際にも指定することが出来ます。例えば次のようにして mcserv.irxをロードするとスレッドプライオリティの初期値が100になります。 <BR>
+<BR>
+    unsigned char *param = "thpri=100"; <BR>
+    sceSifLoadModule( "host0:/usr/local/sce/iop/modules/mcserv.irx", strlen(param)+1, param); <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcChdir>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcChdir
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        カレントディレクトリ移動／カレントディレクトリ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcChdir</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>path</I>,
+	char *<I>pwd</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>path</I>	移動先のサブディレクトリパス
+<I>pwd</I>	カレントディレクトリを格納するバッファのポインタ。
+	不要の場合は0を送ります
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    カレントディレクトリを移動します。 <BR>
+    移動先サブディレクトリの指定は、絶対パスでもカレントディレクトリからの相対パスでも構いません。 <BR>
+    ディレクトリ名で"."はカレントディレクトリ".."はカレントディレクトリの親ディレクトリを意味します。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -4:	指定されたパスが存在しませんでした <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultが負の値になる場合には、操作を行おうとしていたポートのカレントディレクトリは強制的にroot (/)に移動されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcClose>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcClose
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルを閉じる
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcClose</B>(
+	int <I>fd</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	閉じるファイルのファイルハンドラ番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイルを閉じます。ファイルキャッシュにメモリーカードへの書き込みデータが未更新のまま(sceMcFlushされずに)残っている場合は、メモリーカード上に確定させます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -4:	オープンされていないファイルハンドラです <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcDelete>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcDelete
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイル削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcDelete</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>name</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>name</I>	削除するファイル名。パスは絶対／相対パスどちらでも構いません
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカード上のファイルを削除します。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	削除 <BR>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -4:	存在しないファイル名、削除済みファイルを削除しようとした <BR>
+    -5:	使用中のファイルを消去しようとしました。または消そうとしたファイルにwriteable <BR>
+    <blockquote>
+    	属性がありません <BR>
+    </blockquote>
+    -6:	サブディレクトリの中にエントリが残っています <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcFlush>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcFlush
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルキャッシュの即時確定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcFlush</B>(
+	int <I>fd</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	確定させたいファイルのファイルハンドラ番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイル書き込みの後、ファイルキャッシュに残ったままのデータをメモリーカード上に確定させます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -4:	オープンされていないファイルハンドラです <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultが負の値になる場合には、操作を行おうとしていたファイルは強制的にcloseされます。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcFormat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcFormat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリーカードの論理フォーマット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcFormat</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカードを論理フォーマットします。メモリーカードに対してファイルアクセスを行うときは、メモリーカードが論理フォーマットされていなければなりません。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    0未満:	フォーマットできませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcGetDir>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcGetDir
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリーカードファイル一覧の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcGetDir</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>name</I>,
+	unsigned <I>mode</I>,
+	int <I>maxent</I>,
+	sceMcTblGetDir *<I>table</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>name</I>	絶対パスでもカレントディレクトリからの相対パスでも構いません。
+	ファイル一覧を取得したいファイルのパス名を指定します。
+	ワイルドカード付きで、エントリ名指定して、ヒットする
+	エントリ名のみの一覧が取得できます
+<I>mode</I>	0: 初回の呼び出し
+	0以外: 初回の呼び出しで取得した分の次のファイル一覧を要求します
+<I>maxent</I>	１回の呼び出しでtableに書き込んでもよいファイルエントリ数の上限
+<I>table</I>	取得したファイル一覧が書き込まれるバッファ。
+	バッファの実体は64バイトアラインメントに配置してください
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカード上にあるファイルの一覧を取得します。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0以上:	取得したファイルエントリ数。maxentよりも小さな値が返って来たときは <BR>
+    <blockquote>
+    	それ以上のファイルエントリがないことを意味します <BR>
+    </blockquote>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -4:	存在しないパスが指定されました <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+    tableに格納されるデータの内容は次のようになっています。 <BR>
+<BR>
+<P>
+<IMG SRC ="gif/mcrn1.gif" border=0>
+<P>
+    ファイル属性で有効なビット： <BR>
+    libmc.h: <BR>
+    読み出し許可		sceMcFileAttrReadable		0x0001 <BR>
+    書き込み許可		sceMcFileAttrWriteable		0x0002 <BR>
+    実行許可			sceMcFileAttrExecutable		0x0004 <BR>
+    コピー禁止		sceMcFileAttrDupProhibit		0x0008 <BR>
+    サブディレクトリ		sceMcFileAttrSubdir		0x0020 <BR>
+    保存完了ファイル		sceMcFileAttrClosed		0x0080 <BR>
+    PDAアプリケーション	sceMcFileAttrPDAExec		0x0800 <BR>
+    (PDAダウンロード第一世代) <BR>
+    PS1形式のデータ		sceMcFileAttrPS1			0x1000 <BR>
+    (SCE_STM_***の定義はsifdev.hの中にあります) <BR>
+<BR>
+    ワイルドカードの使用法： <BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> nameとして"player01.score.0304"を送ると"player01.score.0304"というエントリだけにヒットします。
+         <LI> nameの一部に"?"を入れると?の部分は任意の１文字にヒットします。例えば"player??.score.????"を送ると"player01.score.0304","player02.score.1203","player03.score."のいずれもヒットします。
+</UL>
+    ?が文字列の途中にあるときは何か文字がないとヒットしませんが、文字列の最後にあるときはその手前で終っているエントリにもヒットします。 <BR>
+<UL>
+         <LI> nameの一部に"*"を入れると"*"の部分は任意長の任意の文字列にヒットします。例えばnameが"*"の場合は"."で始まるエントリも含めて全てのエントリにヒットします。
+         <LI> "*"は文字列の中に複数入れることも可能です。例えば"*score*"を送ると"player01.score.0304","1-score1203","score"がいずれもヒットします。
+         <LI> "*","?"を組み合わせることも可能です。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcFileAttrClosedはsceMcWrite() を実行してからsceMcClose() またはsceMcFlush()するまでの間にメモリーカードが抜かれることがなく、書き込み内容をメモリーカード上に反映させる作業が完了したファイルであることを示す属性です。この属性はsceMcOpen() のあとsceMcWrite() なしでsceMcClose() されても変化しません。 <BR>
+<BR>
+    逆にこの属性がないファイルは書き込みの途中にカードが抜かれたか何らかのエラーの発生によりデータが完全にカード上に反映されていない可能性があることになります。 <BR>
+<BR>
+    また、この属性はリリース1.4.6以降で有効です。1.4.6よりも前のライブラリを使って書き込まれたファイルにはこの属性はありませんのでこの属性を調べて書き込み処理の完了を確認することはできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcGetEntSpace>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcGetEntSpace
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        エントリ情報格納領域の空きを調査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcGetEntSpace</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>path</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>path</I>	調べたいパス名
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultに返る値 <BR>
+    0以上:	空きエントリ個数(成功) <BR>
+    -2:	未フォーマットのメモリーカードです。 <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+    あるディレクトリにエントリを生成するとき、新たにメモリーカード容量を消費することなく生成できるエントリの個数を調べます。 <BR>
+    エントリを生成することによって消費するメモリーカード容量を計算したい場合などに使います。 <BR>
+    エントリ情報はエントリ2つにつき1クラスタ(1kB)のメモリーカード容量を消費します。 <BR>
+    既存のディレクトリに存在するエントリが奇数個の場合、最後のクラスタの後半512バイトが空いていますので、エントリ情報格納領域は一つ分空いていることになります。 <BR>
+<BR>
+    エントリが偶数個の場合で、削除されたエントリが一つもない場合はエントリ情報格納領域はちょうど必要な分だけしか確保されていませんので、空き個数は0となり、新たなエントリを生成するには1クラスタ必要です。 <BR>
+<BR>
+    エントリ情報格納領域は一旦確保されると、そのエントリ情報を管理しているディレクトリが削除されるまではサイズは減りません。したがって今空きが0個のディレクトリでエントリを5個消去したとすると、空き個数はその時点で5個に増えます。 <BR>
+<BR>
+    例えばエントリ情報格納領域にf個の空きがあるディレクトリにc個の新たなエントリを生成しようとすると、エントリ情報のために新たに消費されるメモリーカード容量は切り上げ( (c - f) / 2 )個となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcGetInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcGetInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリーカード状態の調査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcGetInfo</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	int *<I>type</I>,
+	int *<I>free</I>,
+	int *<I>format</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>type</I>	メモリーカードのタイプを書き込むためのポインタ
+<I>free</I>	空きクラスタ数を書き込むためのポインタ
+<I>format</I>	フォーマットの有無を書き込むためのポインタ
+（*format==1:フォーマット済み、0:未フォーマット）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカードが接続されているかどうかを調べます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	前回のsceMcGetInfo() 呼出し後から同じメモリーカードが継続して接続されています <BR>
+    -1:	フォーマット済みのメモリーカードに差し替えられました <BR>
+    -2:	未フォーマットのメモリーカードに差し替えられました <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+    typeに返る値 <BR>
+    <blockquote>
+    	1: メモリーカード(PlayStation用) <BR>
+    </blockquote>
+    <blockquote>
+    	2: メモリーカード8MB(PlayStaion2専用) <BR>
+    </blockquote>
+    <blockquote>
+    	3: Pocket Station <BR>
+    </blockquote>
+    <blockquote>
+    	0: いずれもつながっていない <BR>
+    </blockquote>
+    freeに返る値 <BR>
+    <blockquote>
+    	空きクラスタ数。メモリーカードが接続されていない場合は0が返ります。 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数type, free, formatのうち、必要としない情報の箇所を0にして呼び出すと、処理完了までの時間が短くなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcGetSlotMax>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcGetSlotMax
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スロット数調査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcGetSlotMax</B>(
+	int <I>port</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0以上:	あるポートにおいて使用可能なスロット数 <BR>
+    -1～-100:	エラーが発生してスロット数を調べられませんでした <BR>
+    -100以下:[-100-(実行中の関数番号(sceMcFuncNo.....))]が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcGetSlotMax() 自体は同期関数ですが、libmcのほかの関数と同じIOP呼び出し口を利用しているため他の非同期関数実行中はスロット数を調べることは出来ません。 <BR>
+<BR>
+    スロット番号を必要とする関数に対して 0～スロット数－1 までの値をスロット番号として与えることが出来ます。マルチタップSCPH-10090のスロットA～D はそれぞれスロット番号0～3に対応します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリーカード環境の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcInit</B>(
+	void
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	成功 <BR>
+    -101:	初期化失敗 <BR>
+    -120:	mcserv.irxのバージョンが古い <BR>
+    -121:	mcman.irxのバージョンが古い <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカードライブラリで使う内部変数の初期化を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcMkdir>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcMkdir
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        サブディレクトリ生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcMkdir</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>name</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>name</I>	新たに生成したいサブディレクトリ名
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    サブディレクトリを生成します。 <BR>
+    サブディレクトリの指定は絶対パスでも、カレントディレクトリからの相対パスでも構いません。絶対パスの場合、生成したいサブディレクトリより上のサブディレクトリがすでに存在していなければなりません。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -3:	メモリーカードの容量不足でディレクトリが生成できませんでした <BR>
+    -4:	同名のエントリが既に存在しているか、絶対パス指定で途中のパスが存在しませんでした <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcOpen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcOpen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルを開く
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcOpen</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>name</I>,
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号 (0/1)
+<I>slot</I>	スロット番号
+<I>name</I>	ファイル名
+<I>mode</I>	読み込み許可:1,書き込み許可:2,新規作成:0x200
+	(各モードのうち必要なものをORして渡します)
+	これらはsifdev.hに
+	SCE_RDONLY	0x0001
+	SCE_WRONLY	0x0002
+	SCE_RDWR	0x0003
+	SCE_CREAT	0x0200
+	として登録されています。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイルを開き、ファイルディスクリプタを返します。 <BR>
+    同時に開けるファイルはポート全部で３つまでです。 <BR>
+    nameにはパスを含めることができますが、パスを除いたファイル名本体部分の長さは31文字までです。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0以上:	ファイルディスクリプタ <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -3:	空き容量不足でファイルが開けませんでした <BR>
+    -4:	ファイル名が不正です。または、Createモードでないのにファイルが存在しませんでした <BR>
+    -5:	既にwriteableモードで開かれているので、さらにwriteableモードで開くことができませんでした。または、readable, writeable属性がないので開くことができませんでした <BR>
+    -7:	同時に開けるファイル数を越えているので開けません <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルの読み込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcRead</B>(
+	int <I>fd</I>,
+	void *<I>buff</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	ファイルハンドラ番号
+<I>buff</I>	読み込んだデータを書き込むバッファへのポインタ
+<I>size</I>	読み込むサイズ(単位バイト)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカード上のファイルからデータを読み込みます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0以上:	(成功)実際に読み込んだバイト数 <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -3:	ファイルが壊れていて読めませんでした。 <BR>
+    -4:	オープンされていないファイルハンドラです <BR>
+    -5:	読み出しモードでオープンされていないファイルハンドラです <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultが負の値になる場合には、操作を行おうとしていたファイルは強制的にcloseされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcRename>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcRename
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイル名、ディレクトリ名の変更
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcRename</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>org</I>,
+	char *<I>new</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>org</I>	変更したいファイル／ディレクトリ
+<I>new</I>	変更後の名称
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイル名、ディレクトリ名を書き換えます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -4:	変更前のファイル／ディレクトリがありませんでした。 <BR>
+    <blockquote>
+    	または同名のエントリが既に存在しています。 <BR>
+    </blockquote>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は名称を変更するためのものであり、Linuxのmvコマンドのような異るディレクトリへの移動はできません。 <BR>
+    また変更後の名称には新しいエントリ名だけを指定してください、パス付きの名称は指定できません。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcSeek>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcSeek
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルポインタの移動
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcSeek</B>(
+	int <I>fd</I>,
+	int <I>offset</I>,
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	ファイルハンドラ番号
+<I>offset</I>	modeで指示された起点からのオフセット値
+<I>mode</I>	更新するファイルポインタの起点
+	0:ファイルの先頭
+	1:現在のファイルポインタ
+	2:ファイルの最後 +1 (ファイルサイズ)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているファイルのファイルポインタを移動させます。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0以上:	移動後のファイルポインタ(成功) <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -4:	オープンされていないファイルハンドラです <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultが負の値になる場合には、操作を行おうとしていたファイルは強制的にcloseされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcSetFileInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcSetFileInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイル情報更新
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcSetFileInfo</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	char *<I>name</I>,
+	unsigned char *<I>info</I>
+	unsigned <I>valid</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>name</I>	ファイル名
+<I>valid</I>	設定したい情報に相当するbitを1にします。
+	作成日時：	McFileInfoCreate		0x01
+	修正日時：	McFileInfoModify		0x02
+	ファイル属性：	McFileInfoAttr		0x04
+<I>info</I>	書き込むファイル情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイルのシステム情報を書き換えます。 <BR>
+<BR>
+    infoに格納するデータの内容は次のようになっています <BR>
+    (sceMcTblGetDir の前半と同じ型です) <BR>
+<BR>
+<P>
+<IMG SRC ="gif/mcrn2.gif" border=0>
+<P>
+<BR>
+    ファイル属性で有効なビット： <BR>
+    libmc.h: <BR>
+    読み出し許可		sceMcFileAttrReadable		0x0001 <BR>
+    書き込み許可		sceMcFileAttrWriteable		0x0002 <BR>
+    実行許可			sceMcFileAttrExecutable		0x0004 <BR>
+    コピー禁止		sceMcFileAttrDupProhibit		0x0008 <BR>
+    PDAアプリケーション	sceMcFileAttrPDAExec		0x0800 <BR>
+    (PDAダウンロード第一世代) <BR>
+    PS1形式のデータ		sceMcFileAttrPS1			0x1000 <BR>
+    (SCE_STM_***の定義はsifdev.hの中にあります) <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    -2:	未フォーマットのメモリーカードです <BR>
+    -4:	指定されたエントリが存在しませんでした <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcSync>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcSync
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        登録済み処理完了待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcSync</B>(
+	int <I>mode</I>,
+	int *<I>cmd</I>,
+	int *<I>result</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	0: 登録された非同期関数の終了を待つ
+	1: 非同期関数の状態を調べてすぐに返る
+<I>cmd</I>	登録されている非同期関数の関数番号を格納する変数へのポインタ
+<I>result</I>	非同期関数の実行結果を格納する変数へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	非同期関数実行中 <BR>
+    1:	非同期関数終了 <BR>
+    -1:	登録無し <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非同期関数の終了を調べます。 <BR>
+<BR>
+    関数番号はlibmc.hで定義されています。 <BR>
+<BR>
+    sceMcFuncNoCardInfo	1 <BR>
+    sceMcFuncNoOpen	2 <BR>
+    sceMcFuncNoClose	3 <BR>
+    sceMcFuncNoSeek	4 <BR>
+    sceMcFuncNoRead	5 <BR>
+    sceMcFuncNoWrite	6 <BR>
+    sceMcFuncNoFlush	10 <BR>
+    sceMcFuncNoMkdir	11 <BR>
+    sceMcFuncNoChDir	12 <BR>
+    sceMcFuncNoGetDir	13 <BR>
+    sceMcFuncNoFileInfo	14 <BR>
+    sceMcFuncNoDelete	15 <BR>
+    sceMcFuncNoFormat	16 <BR>
+    sceMcFuncNoUnformat	17 <BR>
+    sceMcFuncNoEntSpace	18 <BR>
+    sceMcFuncNoRename	19 <BR>
+    sceMcFuncChgPrior	20 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcUnformat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcUnformat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリーカードのフォーマット消去
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcUnformat</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカードを未フォーマット状態にします。 <BR>
+    この関数はデバッグ用です。 <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0:	成功 <BR>
+    0未満:	アンフォーマットできませんでした <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    フォーマット済みのメモリーカードに対してアンフォーマットを実行した場合は3秒程度で終了しますが、未フォーマットのメモリーカードに対して更にアンフォーマットを実行した場合は処理完了まで20秒ほどかかります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcWrite>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcWrite
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルへの書き込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcWrite</B>(
+	int <I>fd</I>,
+	void *<I>buff</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	ファイルハンドラ番号
+<I>buff</I>	書き込むデータが格納されているバッファへのポインタ
+<I>size</I>	書き込むサイズ(単位バイト)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メモリーカード上のファイルへデータを書き込みます。 <BR>
+    書き込み内容がファイルキャッシュで保持できるサイズにおさまっているあいだは、書き込み内容はファイルキャッシュに残るだけで、メモリーカード上には反映されません。すぐにメモリーカード上に反映させたい場合はsceMcFlush() を呼んでください。 <BR>
+    (ファイルキャッシュサイズは24kByteあります) <BR>
+<BR>
+    sceMcSync() のresultに返る値： <BR>
+    0以上:	(成功)実際に書き込んだバイト数 <BR>
+    -2:	メモリーカードが未フォーマットです <BR>
+    -3:	空き容量不足のため書き込めませんでした <BR>
+    -4:	オープンされていないファイルハンドラです <BR>
+    -5:	書き込みモードでオープンされていないファイルハンドラです <BR>
+    -8:  書き込みに失敗した際に代替領域を使用しようとしましたが、その代替領域への書き込み <BR>
+    　　にも失敗し続け最終的に書き込めませんでした。 <BR>
+    -10未満:	メモリーカードが検出できませんでした <BR>
+    (-11～-19,-40～-49,-50～-59,-70～-79が返ることがあります) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcSync() のresultが負の値になる場合には、操作を行おうとしていたファイルは強制的にcloseされます。 <BR>
+    書き込みに失敗した場合、書こうとしていたデータがメモリーカード上に反映されているかどうかは保証されません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

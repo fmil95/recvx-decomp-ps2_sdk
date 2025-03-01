@@ -1,0 +1,320 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                   All Rights Reserved
+                                                             Aug. 2000
+======================================================================
+
+DTL-T10000 ソフトウェアセットアップガイド
+----------------------------------------------------------------------
+
+ここでは、サンプルプログラムのコンパイル、実行手順を説明します。
+以下の作業はユーザアカウントで作業可能です。
+以下で説明されていますターゲット名には、DTL-T10000 のホスト名を指定
+してください。
+
+----------------------------------------------------------------------
+フラッシュのアップデート
+----------------------------------------------------------------------
+
+t10000-relxx.bin を開発マシン上の適当なディレクトリにコピーしてください。
+
+	t10000-relxx.bin を /tmp にコピーした場合、
+	
+	$ dsflash /tmp/t10000-relxx.bin
+
+	画面に以下のように表示されればアップデートは正常に終了して
+	います。
+	
+	:
+	romflash Revision: x.xx  quick mode (pos=c, sig=a4) on native kernel
+
+	inputfile: t10000-relxx.bin size: ...
+	:
+	Sector Clear (8-11) oooo
+	Reading [offset:0x80000] ...
+	Writing  ...
+	Verify flash memory
+	Wrote flash memory
+
+	Complete !
+
+注意）
+ 1. SCE 供給のヘッダファイル、スタティックライブラリは標準のディレクトリ
+    から検索されるようになりましたので、sce/iop/install/include を 
+   /usr/local/sce/iop/gcc/mipsel-scei-elfl/include へ、sce/iop/install/lib 
+    を /usr/local/sce/iop/gcc/mipsel-scei-elfl/lib へコピーしてください。
+
+ 2．sce/common/include 下のヘッダファイルをサンプルで使用する場合は
+    Makefile 内で sce/common/include ディレクトリをインクルードして下さい。
+
+
+======================================================================
+
+EE サンプルプログラムのコンパイル、実行
+----------------------------------------------------------------------
+
+sce/ee/sample の下で
+
+	$ make
+
+とするだけで全サンプルのコンパイルが可能です。個別にコンパイルする場合
+には各サンプルディレクトリ下で make してください。
+
+	$ make run 
+
+でサンプルの実行が可能です。
+
+注意：
+サンプルによっては make run では実行できません。
+各サンプルの readme_j.txt を参照ください。
+
+また dsedb コマンドを使用することも可能です。dsedb コマンドは本来デバッガ
+ですが、プログラム実行のためだけにも使用します。例えば実行形式ファイルが
+sample.elf の場合、以下の様に入力してください。
+
+	$ dsedb -d ターゲット名（または IPアドレス）-r run sample.elf
+
+デバッガを起動して実行させたい場合は、以下の様に入力します。
+
+	$ dsedb -d ターゲット名（または IPアドレス）
+	dsedb (Version x.x.xx ....................)
+	*** Resetting...
+	(type `help' for getting help or 'help help' for getting help of help)
+
+	dsedb > run sample.elf
+
+デバッガなど各種コマンドの詳しい操作方法に関しましては、doc/tool 
+以下のドキュメントを参照して下さい。
+
+プログラムのコンパイル方法などに関しては、サンプルディレクトリの Makefile 
+を参考にしてください。今回は、リンクコマンドファイルには、app.cmd、
+スタートアップファイルには、crt0.s を必ず使用して下さい。
+
+======================================================================
+
+IOP プログラムのロードの準備
+----------------------------------------------------------------------
+
+セットアップが終了したら、次のコマンドを実行してください。
+
+        $ dsreset -d ターゲット名（または IPアドレス）0 2
+
+これにより、デフォルトで起動する EE からのコントローラ・ファイルのリク
+エストを受け付けるプログラムの起動を抑制します。
+以後、システムをリセットしてもこの設定が有効となりますので、システムで
+EE のプログラムの実行を行う際は、
+
+        $ dsreset -d ターゲット名（または IPアドレス）0 0
+
+を行ってください。
+
+dsreset コマンドの詳細については、sce/doc/tool/reset_j.txt を参照して
+ください。
+
+----------------------------------------------------------------------
+IOP サンプルプログラムのコンパイル、実行
+----------------------------------------------------------------------
+
+各サンプルディレクトリ下で make してください。
+
+        $ make run
+
+でサンプルの実行が可能です。
+
+注意：
+サンプルによっては make run では実行できません。
+各サンプルの readme_j.txt を参照ください。
+
+コマンドラインからプログラムを実行することも可能です。この場合は、
+dsistart コマンドを使用してください。例えば実行形式ファイルが hello の
+場合、以下の様に入力してください。
+
+        $ dsistart -d ターゲット名（または IPアドレス） hello
+
+また dsidb コマンドを使用することも可能です。dsidb コマンドは dsedb と
+同様に、プログラム実行・デバッグを行うためのアプリケーションです。
+デバッガを起動して実行させたい場合は、以下の様に入力します。
+
+        $ dsidb -d ターゲット名（または IPアドレス）
+        dsidb (Version 0.1.70 Tue Apr 25 17:23:41 JST 2000)
+        *** Resetting...
+
+        *** DBGP Version 3.00
+                :
+                :
+        dsidb > mstart hello
+
+
+プログラムのコンパイル方法などに関しては、サンプルディレクトリの Makefile
+を参考にしてください。
+
+======================================================================
+
+ee 側から iop モジュールをロードする方法
+----------------------------------------------------------------------
+
+Release 1.2 で iop モジュールのロード方法が変更されました。ee 側から
+iop モジュールをロードする際にはアプリケーション内で以下のように
+指定してください。各サンプルプログラムも参照ください。
+
+例） main() の次辺りで以下のように指定
+
+#define SIO2MAN "host0:/usr/local/sce/iop/modules/sio2man.irx"
+#define PADMAN "host0:/usr/local/sce/iop/modules/padman.irx"
+	
+	sceSifInitRpc(0);
+	if (sceSifLoadModule(SIO2MAN, 0, "") < 0) {
+		printf("cant Load Module %s", SIO2MAN);
+		exit(0);
+	}	
+	if (sceSifLoadModule(PADMAN, 0, "") < 0) {
+		printf("cant Load Module %s", PADMAN); 
+		exit(0);
+
+----------------------------------------------------------------------
+iop 側で iop モジュールをロードする方法（暫定）
+----------------------------------------------------------------------
+
+Release 1.3 では dsfilesv が機能強化されたため Makefile の記述方法が
+変更になりました。
+各サンプルプログラムの Makefile も参照ください。
+
+この記述方法は暫定的なものであり、プログラム内でロードする方法に将来的
+には対応する予定です。
+
+例） Makefile の run ターゲット
+
+run: all 
+	dsifilesv -c "\
+	dsreset 0 2;\
+	dsistart -nf ../../../modules/libsd.irx;\
+	dsistart -nf main.irx"
+
+----------------------------------------------------------------------
+IOP プログラムの Makefile （ Release 1.1 以降）
+----------------------------------------------------------------------
+
+iop-gcc のオプションに以下の二つのオプションが追加されました。
+
+	-startfiles
+	-noiopilb
+
+-ilb= オプションに指定したファイル名にディレクトリ名が含まれない場合は
+-L オプションで指定される検索パス、および標準の検索パスから検索される
+ようになりました。オプションの詳細は sce/doc/iop/tool/compile.htm を参照
+してください。
+なお、Makefile の変更点は以下のとおりです。
+
+1) crt0.o をリンクする場合は、-startfiles を使用します。
+
+  リンカーに crt0.o を入力ファイルとして指定している場合は、この部分
+  を削除して、かわりに -startfiles をつけてください。
+
+2) iop.ilb ライブラリは、指定する必要がなくなりました。
+
+  iop.ilb は標準のディレクトリ (/usr/local/sce/iop/gcc/mipsel-scei-elfl/lib)
+  から自動で読み込まれるように変更されました。
+  iop.ilbライブラリを読み込むためにつけていた -ilb=$(TOP)lib/iop.ilb
+  オプションは不要ですので、削除してください。
+
+3) SCE 供給のスタティックライブラリは標準のディレクトリから検索されるように
+  なりました。 (/usr/local/sce/iop/gcc/mipsel-scei-elfl/lib/)
+  SCE 供給のライブラリを検索するためにつけていた -L$(TOP)lib オプションは
+  不要ですので削除してください。
+
+4) SCE 供給のヘッダファイルは標準のディレクトリから検索されるようになり
+  ました。 (/usr/local/sce/iop/gcc/mipsel-scei-elfl/include/)
+  SCE 供給のヘッダを検索するためにつけていた -I$(TOP)include オプションは
+  不要ですので削除してください。
+
+5) IOP 用コンパイラのパスを検索するスクリプト iop-path-setup が追加され
+  ました。 (/usr/local/sce/bin/iop-path-setup)
+  Makefile の先頭で、以下のように利用します。
+
+	ifeq ($(wildcard PathDefs),)
+	PathDefs:
+	        iop-path-setup > PathDefs || (rm -f PathDefs ; exit 1)
+	        $(MAKE) all
+	else
+	include PathDefs
+	endif
+
+  sce/iop/sample 下の各サンプルの Makefile も参照してください。
+
+----------------------------------------------------------------------
+DTL-T10000 上での CD アクセス（ Release 1.3.4 以降）
+----------------------------------------------------------------------
+システムリセット時に CD ドライブは自動的にディスクチェックを行いますが、
+このチェックが終了する前に sceOpen() 等で CD アクセスを行うと、カーネルの
+仕様変更によりエラーが返るようになりました。
+この問題はデバッギングステーション及び実機では発生しませんが、互換性
+の観点から以下の対策をとってください。
+
+
+良い例１）
+
+    int main(){
+        sceCdInit(SCECdINIT);
+        sceSifInitRpc(0);
+        while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+                :
+                :
+
+
+良い例２）
+
+    int main(){
+        sceSifInitRpc(0);
+        while ( sceSifLoadModule("host0:/usr/local/sce/iop/modules/sio2man.irx",        0, NULL) < 0);
+                :
+        sceCdInit(SCECdINIT);
+          fd = sceOpen(filename, SCE_RDONLY);
+              :
+
+
+良くない例１）
+
+    int main(){
+        sceCdInit(SCECdINoD);
+        sceSifInitRpc(0);
+        while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+                :
+                :
+
+
+良くない例２）
+
+    int main(){
+        sceSifInitRpc(0);
+        while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+                :
+        sceCdInit(SCECdINIT);
+                :
+
+----------------------------------------------------------------------
+iop のメモリの空き領域を求める方法
+----------------------------------------------------------------------
+以下のコードを利用して、iop のメモリの空き容量を算出することが可能です。
+
+例）
+/*
+ compile
+    iop-elf-gcc iopmem.c -o ipmem.irx
+ */
+
+#include <kernel.h>
+#include <stdio.h>
+
+int start()
+{
+    int freesize, maxblock;
+
+    maxblock = QueryMaxFreeMemSize();
+    freesize = QueryTotalFreeMemSize();
+    printf("IOP system memory  0x%x(%d) byte free, Max free block size 0x%x\n",
+	   freesize, freesize, maxblock);
+    return NO_RESIDENT_END;
+}
+
+

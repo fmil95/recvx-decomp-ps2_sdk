@@ -1,0 +1,305 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>t_ldm</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]
+</A><A HREF="t_eor.htm">[前]</A> <A HREF="t_ldr1.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">LDM</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>Load multiple increment after</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">LDMIA Rn!, &lt;register_list&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>LDM命令はブロック・ロード命令として有用です。STM（store multiple）と組み合わせると、効率的なブロック・コピーが可能です。</P>
+  <P>LDMIA（Load Multiple Increment After）命令は、シーケンシャル・メモリ・ロケーションから汎用レジスタのサブセット（または完全なセット）をロードします。これらのレジスタは、以下の順序でロードされます。</P>
+  <UL>
+    <LI>最小番号のレジスタを先頭に、最下位メモリ・アドレス（&lt;start_address&gt;）から
+    <LI>最大番号のレジスタを最後に、最上位メモリ・アドレス（&lt;end_address&gt;）から
+  </UL>
+  <P>&lt;start_address&gt;はベース・レジスタRnの値です。</P>
+  <P>これ以降のアドレスは、前のアドレスを4ずつインクリメントして形成されます。&lt;register_list&gt;で指定された各レジスタに対して、1つのアドレスが生成されます。</P>
+  <P>&lt;end_address&gt;の値は、ベース・レジスタの値と&lt;register_list&gt;で指定したレジスタ数×4の合計から4を引いたものになります。</P>
+  <P>最後に、ベース・レジスタRnを、&lt;register_list&gt;のレジスタ数×4だけインクリメントします。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="999031"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999033"></A><B>14</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999035"></A><B>13</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999037"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999039"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999041"></A><B>10</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999043"></A></TD>
+    <TD VALIGN="TOP">
+    <A NAME="999045"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999047"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999049"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999051"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999053"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999055"></A></TD>
+    <TD VALIGN="TOP">
+    <A NAME="999057"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999059"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="999061"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999063"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999065"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999067"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999069"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999071"></A><BR>
+    1</TD> 
+    <TD COLSPAN="3" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999073"></A><BR>
+    Rn</TD>
+     
+    <TD COLSPAN="8" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="999079"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>&lt;start_address&gt; = Rn
+&lt;end_address&gt; = Rn + (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4) - 4
+&lt;address&gt; = &lt;start_address&gt;
+for i = 0 to 7
+	if &lt;register_list&gt;[i] == 1
+		Ri = Memory[&lt;address&gt;,4]
+		&lt;address&gt; = &lt;address&gt; + 4
+assert &lt;end_address&gt; == &lt;address&gt; - 4
+Rn = Rn + (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>データ・アボート</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>レジスタRn：</B>&lt;addressing_mode&gt;で使用したベース・レジスタを指定します。</P>
+  <P><B>オペランドの制限：</B>ベース・レジスタRnが&lt;register_list&gt;で指定されている場合、Rnの最終値はロードされた値（書き戻された値ではない）になります。</P>
+  <P><B>データ・アボート：</B>データ・アボートが通知された場合、Rnに残った値はインプリメンテーションで定義されますが、（&lt;register_list&gt;でRnが指定されていた場合でも）元のベース・レジスタ値または更新されたベース・レジスタ値のいずれかです。</P>
+  <P><B>ワードに整列していないアドレス：</B>ロード・マルチプル命令は、&lt;address&gt;の最下位2ビットを無視します（ワードはLoad
+  Wordのようにローテートされません）。</P>
+  <P><B>アラインメント：</B>インプリメンテーションに、システム・コントロール・コプロセッサ（英文リファレンスマニュアル第7章「システム・アーキテクチャとシステム・コントロール・コプロセッサ」を参照）が含まれており、アラインメント・チェックがイネーブルされている場合、ビット[1:0]!=0b00のアドレスによって、アラインメント例外が発生します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>同等なARM構文とエンコーディング</H4>
+
+<BLOCKQUOTE>
+  <H3><FONT COLOR="#009999">LDMIA Rn！, &lt;register_list&gt;</FONT></H3>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999099"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999101"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999103"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999105"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999107"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999109"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999111"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999113"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999115"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999117"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999119"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999121"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999123"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999125"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999127"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999129"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999131"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999133"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999135"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999137"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999139"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999141"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999143"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999145"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999147"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999149"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999151"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999153"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999155"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999157"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999159"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999161"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999163"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999165"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999167"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999169"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999171"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999173"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999175"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999177"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999179"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999181"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999183"></A><BR>
+    W</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999185"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="999187"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999195"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999197"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999199"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999201"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999203"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999205"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999207"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999209"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="999211"></A><BR>
+    register_list</TD>
+     
+  </TR>
+</TABLE><BR>
+</P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次] </A><A
+HREF="t_eor.htm">[前]</A> <A HREF="t_ldr1.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

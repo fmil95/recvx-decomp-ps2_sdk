@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1047 +36,1054 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Sending Patches,  Prev: gccbug,  Up: Bugs
+File: gcc.info,  Node: RTL Declarations,  Next: Side Effects,  Prev: Conversions,  Up: RTL
 
-Sending Patches for GCC
+Declarations
+============
+
+   Declaration expression codes do not represent arithmetic operations
+but rather state assertions about their operands.
+
+`(strict_low_part (subreg:M (reg:N R) 0))'
+     This expression code is used in only one context: as the
+     destination operand of a `set' expression.  In addition, the
+     operand of this expression must be a non-paradoxical `subreg'
+     expression.
+
+     The presence of `strict_low_part' says that the part of the
+     register which is meaningful in mode N, but is not part of mode M,
+     is not to be altered.  Normally, an assignment to such a subreg is
+     allowed to have undefined effects on the rest of the register when
+     M is less than a word.
+
+
+File: gcc.info,  Node: Side Effects,  Next: Incdec,  Prev: RTL Declarations,  Up: RTL
+
+Side Effect Expressions
 =======================
 
-   If you would like to write bug fixes or improvements for the GNU C
-compiler, that is very helpful.  Send suggested fixes to the patches
-mailing list, `gcc-patches@gcc.gnu.org'.
+   The expression codes described so far represent values, not actions.
+But machine instructions never produce values; they are meaningful only
+for their side effects on the state of the machine.  Special expression
+codes are used to represent side effects.
 
-   Please follow these guidelines so we can study your patches
-efficiently.  If you don't follow these guidelines, your information
-might still be useful, but using it will take extra work.  Maintaining
-GNU C is a lot of work in the best of circumstances, and we can't keep
-up unless you do your best to help.
+   The body of an instruction is always one of these side effect codes;
+the codes described above, which represent values, appear only as the
+operands of these.
 
-   * Send an explanation with your changes of what problem they fix or
-     what improvement they bring about.  For a bug fix, just include a
-     copy of the bug report, and explain why the change fixes the bug.
+`(set LVAL X)'
+     Represents the action of storing the value of X into the place
+     represented by LVAL.  LVAL must be an expression representing a
+     place that can be stored in: `reg' (or `subreg' or
+     `strict_low_part'), `mem', `pc' or `cc0'.
 
-     (Referring to a bug report is not as good as including it, because
-     then we will have to look it up, and we have probably already
-     deleted it if we've already fixed the bug.)
+     If LVAL is a `reg', `subreg' or `mem', it has a machine mode; then
+     X must be valid for that mode.
 
-   * Always include a proper bug report for the problem you think you
-     have fixed.  We need to convince ourselves that the change is
-     right before installing it.  Even if it is right, we might have
-     trouble judging it if we don't have a way to reproduce the problem.
+     If LVAL is a `reg' whose machine mode is less than the full width
+     of the register, then it means that the part of the register
+     specified by the machine mode is given the specified value and the
+     rest of the register receives an undefined value.  Likewise, if
+     LVAL is a `subreg' whose machine mode is narrower than the mode of
+     the register, the rest of the register can be changed in an
+     undefined way.
 
-   * Include all the comments that are appropriate to help people
-     reading the source in the future understand why this change was
-     needed.
+     If LVAL is a `strict_low_part' of a `subreg', then the part of the
+     register specified by the machine mode of the `subreg' is given
+     the value X and the rest of the register is not changed.
 
-   * Don't mix together changes made for different reasons.  Send them
-     *individually*.
+     If LVAL is `(cc0)', it has no machine mode, and X may be either a
+     `compare' expression or a value that may have any mode.  The
+     latter case represents a "test" instruction.  The expression `(set
+     (cc0) (reg:M N))' is equivalent to `(set (cc0) (compare (reg:M N)
+     (const_int 0)))'.  Use the former expression to save space during
+     the compilation.
 
-     If you make two changes for separate reasons, then we might not
-     want to install them both.  We might want to install just one.  If
-     you send them all jumbled together in a single set of diffs, we
-     have to do extra work to disentangle them--to figure out which
-     parts of the change serve which purpose.  If we don't have time
-     for this, we might have to ignore your changes entirely.
+     If LVAL is `(pc)', we have a jump instruction, and the
+     possibilities for X are very limited.  It may be a `label_ref'
+     expression (unconditional jump).  It may be an `if_then_else'
+     (conditional jump), in which case either the second or the third
+     operand must be `(pc)' (for the case which does not jump) and the
+     other of the two must be a `label_ref' (for the case which does
+     jump).  X may also be a `mem' or `(plus:SI (pc) Y)', where Y may
+     be a `reg' or a `mem'; these unusual patterns are used to
+     represent jumps through branch tables.
 
-     If you send each change as soon as you have written it, with its
-     own explanation, then the two changes never get tangled up, and we
-     can consider each one properly without any extra work to
-     disentangle them.
+     If LVAL is neither `(cc0)' nor `(pc)', the mode of LVAL must not
+     be `VOIDmode' and the mode of X must be valid for the mode of LVAL.
 
-     Ideally, each change you send should be impossible to subdivide
-     into parts that we might want to consider separately, because each
-     of its parts gets its motivation from the other parts.
+     LVAL is customarily accessed with the `SET_DEST' macro and X with
+     the `SET_SRC' macro.
 
-   * Send each change as soon as that change is finished.  Sometimes
-     people think they are helping us by accumulating many changes to
-     send them all together.  As explained above, this is absolutely
-     the worst thing you could do.
+`(return)'
+     As the sole expression in a pattern, represents a return from the
+     current function, on machines where this can be done with one
+     instruction, such as Vaxes.  On machines where a multi-instruction
+     "epilogue" must be executed in order to return from the function,
+     returning is done by jumping to a label which precedes the
+     epilogue, and the `return' expression code is never used.
 
-     Since you should send each change separately, you might as well
-     send it right away.  That gives us the option of installing it
-     immediately if it is important.
+     Inside an `if_then_else' expression, represents the value to be
+     placed in `pc' to return to the caller.
 
-   * Use `diff -c' to make your diffs.  Diffs without context are hard
-     for us to install reliably.  More than that, they make it hard for
-     us to study the diffs to decide whether we want to install them.
-     Unidiff format is better than contextless diffs, but not as easy
-     to read as `-c' format.
+     Note that an insn pattern of `(return)' is logically equivalent to
+     `(set (pc) (return))', but the latter form is never used.
 
-     If you have GNU diff, use `diff -cp', which shows the name of the
-     function that each change occurs in.
+`(call FUNCTION NARGS)'
+     Represents a function call.  FUNCTION is a `mem' expression whose
+     address is the address of the function to be called.  NARGS is an
+     expression which can be used for two purposes: on some machines it
+     represents the number of bytes of stack argument; on others, it
+     represents the number of argument registers.
 
-   * Write the change log entries for your changes.  We get lots of
-     changes, and we don't have time to do all the change log writing
-     ourselves.
+     Each machine has a standard machine mode which FUNCTION must have.
+     The machine description defines macro `FUNCTION_MODE' to expand
+     into the requisite mode name.  The purpose of this mode is to
+     specify what kind of addressing is allowed, on machines where the
+     allowed kinds of addressing depend on the machine mode being
+     addressed.
 
-     Read the `ChangeLog' file to see what sorts of information to put
-     in, and to learn the style that we use.  The purpose of the change
-     log is to show people where to find what was changed.  So you need
-     to be specific about what functions you changed; in large
-     functions, it's often helpful to indicate where within the
-     function the change was.
+`(clobber X)'
+     Represents the storing or possible storing of an unpredictable,
+     undescribed value into X, which must be a `reg', `scratch' or
+     `mem' expression.
 
-     On the other hand, once you have shown people where to find the
-     change, you need not explain its purpose.  Thus, if you add a new
-     function, all you need to say about it is that it is new.  If you
-     feel that the purpose needs explaining, it probably does--but the
-     explanation will be much more useful if you put it in comments in
-     the code.
+     One place this is used is in string instructions that store
+     standard values into particular hard registers.  It may not be
+     worth the trouble to describe the values that are stored, but it
+     is essential to inform the compiler that the registers will be
+     altered, lest it attempt to keep data in them across the string
+     instruction.
 
-     If you would like your name to appear in the header line for who
-     made the change, send us the header line.
+     If X is `(mem:BLK (const_int 0))', it means that all memory
+     locations must be presumed clobbered.
 
-   * When you write the fix, keep in mind that we can't install a
-     change that would break other systems.
+     Note that the machine description classifies certain hard
+     registers as "call-clobbered".  All function call instructions are
+     assumed by default to clobber these registers, so there is no need
+     to use `clobber' expressions to indicate this fact.  Also, each
+     function call is assumed to have the potential to alter any memory
+     location, unless the function is declared `const'.
 
-     People often suggest fixing a problem by changing
-     machine-independent files such as `toplev.c' to do something
-     special that a particular system needs.  Sometimes it is totally
-     obvious that such changes would break GCC for almost all users.
-     We can't possibly make a change like that.  At best it might tell
-     us how to write another patch that would solve the problem
-     acceptably.
+     If the last group of expressions in a `parallel' are each a
+     `clobber' expression whose arguments are `reg' or `match_scratch'
+     (*note RTL Template::.) expressions, the combiner phase can add
+     the appropriate `clobber' expressions to an insn it has
+     constructed when doing so will cause a pattern to be matched.
 
-     Sometimes people send fixes that *might* be an improvement in
-     general--but it is hard to be sure of this.  It's hard to install
-     such changes because we have to study them very carefully.  Of
-     course, a good explanation of the reasoning by which you concluded
-     the change was correct can help convince us.
+     This feature can be used, for example, on a machine that whose
+     multiply and add instructions don't use an MQ register but which
+     has an add-accumulate instruction that does clobber the MQ
+     register.  Similarly, a combined instruction might require a
+     temporary register while the constituent instructions might not.
 
-     The safest changes are changes to the configuration files for a
-     particular machine.  These are safe because they can't create new
-     bugs on other machines.
+     When a `clobber' expression for a register appears inside a
+     `parallel' with other side effects, the register allocator
+     guarantees that the register is unoccupied both before and after
+     that insn.  However, the reload phase may allocate a register used
+     for one of the inputs unless the `&' constraint is specified for
+     the selected alternative (*note Modifiers::.).  You can clobber
+     either a specific hard register, a pseudo register, or a `scratch'
+     expression; in the latter two cases, GNU CC will allocate a hard
+     register that is available there for use as a temporary.
 
-     Please help us keep up with the workload by designing the patch in
-     a form that is good to install.
+     For instructions that require a temporary register, you should use
+     `scratch' instead of a pseudo-register because this will allow the
+     combiner phase to add the `clobber' when required.  You do this by
+     coding (`clobber' (`match_scratch' ...)).  If you do clobber a
+     pseudo register, use one which appears nowhere else--generate a
+     new one each time.  Otherwise, you may confuse CSE.
+
+     There is one other known use for clobbering a pseudo register in a
+     `parallel': when one of the input operands of the insn is also
+     clobbered by the insn.  In this case, using the same pseudo
+     register in the clobber and elsewhere in the insn produces the
+     expected results.
+
+`(use X)'
+     Represents the use of the value of X.  It indicates that the value
+     in X at this point in the program is needed, even though it may
+     not be apparent why this is so.  Therefore, the compiler will not
+     attempt to delete previous instructions whose only effect is to
+     store a value in X.  X must be a `reg' expression.
+
+     During the reload phase, an insn that has a `use' as pattern can
+     carry a reg_equal note.  These `use' insns will be deleted before
+     the reload phase exits.
+
+     During the delayed branch scheduling phase, X may be an insn.
+     This indicates that X previously was located at this place in the
+     code and its data dependencies need to be taken into account.
+     These `use' insns will be deleted before the delayed branch
+     scheduling phase exits.
+
+`(parallel [X0 X1 ...])'
+     Represents several side effects performed in parallel.  The square
+     brackets stand for a vector; the operand of `parallel' is a vector
+     of expressions.  X0, X1 and so on are individual side effect
+     expressions--expressions of code `set', `call', `return',
+     `clobber' or `use'.
+
+     "In parallel" means that first all the values used in the
+     individual side-effects are computed, and second all the actual
+     side-effects are performed.  For example,
+
+          (parallel [(set (reg:SI 1) (mem:SI (reg:SI 1)))
+                     (set (mem:SI (reg:SI 1)) (reg:SI 1))])
+
+     says unambiguously that the values of hard register 1 and the
+     memory location addressed by it are interchanged.  In both places
+     where `(reg:SI 1)' appears as a memory address it refers to the
+     value in register 1 *before* the execution of the insn.
+
+     It follows that it is *incorrect* to use `parallel' and expect the
+     result of one `set' to be available for the next one.  For
+     example, people sometimes attempt to represent a jump-if-zero
+     instruction this way:
+
+          (parallel [(set (cc0) (reg:SI 34))
+                     (set (pc) (if_then_else
+                                  (eq (cc0) (const_int 0))
+                                  (label_ref ...)
+                                  (pc)))])
+
+     But this is incorrect, because it says that the jump condition
+     depends on the condition code value *before* this instruction, not
+     on the new value that is set by this instruction.
+
+     Peephole optimization, which takes place together with final
+     assembly code output, can produce insns whose patterns consist of
+     a `parallel' whose elements are the operands needed to output the
+     resulting assembler code--often `reg', `mem' or constant
+     expressions.  This would not be well-formed RTL at any other stage
+     in compilation, but it is ok then because no further optimization
+     remains to be done.  However, the definition of the macro
+     `NOTICE_UPDATE_CC', if any, must deal with such insns if you
+     define any peephole optimizations.
+
+`(sequence [INSNS ...])'
+     Represents a sequence of insns.  Each of the INSNS that appears in
+     the vector is suitable for appearing in the chain of insns, so it
+     must be an `insn', `jump_insn', `call_insn', `code_label',
+     `barrier' or `note'.
+
+     A `sequence' RTX is never placed in an actual insn during RTL
+     generation.  It represents the sequence of insns that result from a
+     `define_expand' *before* those insns are passed to `emit_insn' to
+     insert them in the chain of insns.  When actually inserted, the
+     individual sub-insns are separated out and the `sequence' is
+     forgotten.
+
+     After delay-slot scheduling is completed, an insn and all the
+     insns that reside in its delay slots are grouped together into a
+     `sequence'.  The insn requiring the delay slot is the first insn
+     in the vector; subsequent insns are to be placed in the delay slot.
+
+     `INSN_ANNULLED_BRANCH_P' is set on an insn in a delay slot to
+     indicate that a branch insn should be used that will conditionally
+     annul the effect of the insns in the delay slots.  In such a case,
+     `INSN_FROM_TARGET_P' indicates that the insn is from the target of
+     the branch and should be executed only if the branch is taken;
+     otherwise the insn should be executed only if the branch is not
+     taken.  *Note Delay Slots::.
+
+   These expression codes appear in place of a side effect, as the body
+of an insn, though strictly speaking they do not always describe side
+effects as such:
+
+`(asm_input S)'
+     Represents literal assembler code as described by the string S.
+
+`(unspec [OPERANDS ...] INDEX)'
+`(unspec_volatile [OPERANDS ...] INDEX)'
+     Represents a machine-specific operation on OPERANDS.  INDEX
+     selects between multiple machine-specific operations.
+     `unspec_volatile' is used for volatile operations and operations
+     that may trap; `unspec' is used for other operations.
+
+     These codes may appear inside a `pattern' of an insn, inside a
+     `parallel', or inside an expression.
+
+`(addr_vec:M [LR0 LR1 ...])'
+     Represents a table of jump addresses.  The vector elements LR0,
+     etc., are `label_ref' expressions.  The mode M specifies how much
+     space is given to each address; normally M would be `Pmode'.
+
+`(addr_diff_vec:M BASE [LR0 LR1 ...] MIN MAX FLAGS)'
+     Represents a table of jump addresses expressed as offsets from
+     BASE.  The vector elements LR0, etc., are `label_ref' expressions
+     and so is BASE.  The mode M specifies how much space is given to
+     each address-difference.  MIN and MAX are set up by branch
+     shortening and hold a label with a minimum and a maximum address,
+     respectively.  FLAGS indicates the relative position of BASE, MIN
+     and MAX to the cointaining insn and of MIN and MAX to BASE.  See
+     rtl.def for details.
 
 
-File: gcc.info,  Node: Service,  Next: Contributing,  Prev: Bugs,  Up: Top
+File: gcc.info,  Node: Incdec,  Next: Assembler,  Prev: Side Effects,  Up: RTL
 
-How To Get Help with GCC
-************************
+Embedded Side-Effects on Addresses
+==================================
 
-   If you need help installing, using or changing GCC, there are two
-ways to find it:
+   Six special side-effect expression codes appear as memory addresses.
 
-   * Send a message to a suitable network mailing list.  First try
-     `gcc-bugs@gcc.gnu.org' or `bug-gcc@gnu.org', and if that brings no
-     response, try `gcc@gcc.gnu.org'.
+`(pre_dec:M X)'
+     Represents the side effect of decrementing X by a standard amount
+     and represents also the value that X has after being decremented.
+     X must be a `reg' or `mem', but most machines allow only a `reg'.
+     M must be the machine mode for pointers on the machine in use.
+     The amount X is decremented by is the length in bytes of the
+     machine mode of the containing memory reference of which this
+     expression serves as the address.  Here is an example of its use:
 
-   * Look in the service directory for someone who might help you for a
-     fee.  The service directory is found in the file named `SERVICE'
-     in the GCC distribution.
+          (mem:DF (pre_dec:SI (reg:SI 39)))
 
-
-File: gcc.info,  Node: Contributing,  Next: VMS,  Prev: Service,  Up: Top
+     This says to decrement pseudo register 39 by the length of a
+     `DFmode' value and use the result to address a `DFmode' value.
 
-Contributing to GCC Development
-*******************************
+`(pre_inc:M X)'
+     Similar, but specifies incrementing X instead of decrementing it.
 
-   If you would like to help pretest GCC releases to assure they work
-well, or if you would like to work on improving GCC, please contact the
-maintainers at `gcc@gcc.gnu.org'.  A pretester should be willing to try
-to investigate bugs as well as report them.
+`(post_dec:M X)'
+     Represents the same side effect as `pre_dec' but a different
+     value.  The value represented here is the value X has before being
+     decremented.
 
-   If you'd like to work on improvements, please ask for suggested
-projects or suggest your own ideas.  If you have already written an
-improvement, please tell us about it.  If you have not yet started
-work, it is useful to contact `gcc@gcc.gnu.org' before you start; the
-maintainers may be able to suggest ways to make your extension fit in
-better with the rest of GCC and with other development plans.
+`(post_inc:M X)'
+     Similar, but specifies incrementing X instead of decrementing it.
 
-
-File: gcc.info,  Node: VMS,  Next: Portability,  Prev: Contributing,  Up: Top
+`(post_modify:M X Y)'
+     Represents the side effect of setting X to Y and represents X
+     before X is modified.  X must be a `reg' or `mem', but most
+     machines allow only a `reg'.  M must be the machine mode for
+     pointers on the machine in use.  The amount X is decremented by is
+     the length in bytes of the machine mode of the containing memory
+     reference of which this expression serves as the address.  Note
+     that this is not currently implemented.
 
-Using GCC on VMS
-****************
+     The expression Y must be one of three forms:
+          `(plus:M X Z)', `(minus:M X Z)', or `(plus:M X I)', where Z
+     is an index register and I is a constant.
 
-   Here is how to use GCC on VMS.
+     Here is an example of its use:
 
-* Menu:
+          (mem:SF (post_modify:SI (reg:SI 42) (plus (reg:SI 42) (reg:SI 48))))
 
-* Include Files and VMS::  Where the preprocessor looks for the include files.
-* Global Declarations::    How to do globaldef, globalref and globalvalue with
-                           GCC.
-* VMS Misc::		   Misc information.
+     This says to modify pseudo register 42 by adding the contents of
+     pseudo register 48 to it, after the use of what ever 42 points to.
 
-
-File: gcc.info,  Node: Include Files and VMS,  Next: Global Declarations,  Up: VMS
+`(pre_modify:M X EXPR)'
+     Similar except side effects happen before the use.
 
-Include Files and VMS
-=====================
+   These embedded side effect expressions must be used with care.
+Instruction patterns may not use them.  Until the `flow' pass of the
+compiler, they may occur only to represent pushes onto the stack.  The
+`flow' pass finds cases where registers are incremented or decremented
+in one instruction and used as an address shortly before or after;
+these cases are then transformed to use pre- or post-increment or
+-decrement.
 
-   Due to the differences between the filesystems of Unix and VMS, GCC
-attempts to translate file names in `#include' into names that VMS will
-understand.  The basic strategy is to prepend a prefix to the
-specification of the include file, convert the whole filename to a VMS
-filename, and then try to open the file.  GCC tries various prefixes
-one by one until one of them succeeds:
+   If a register used as the operand of these expressions is used in
+another address in an insn, the original value of the register is used.
+Uses of the register outside of an address are not permitted within the
+same insn as a use in an embedded side effect expression because such
+insns behave differently on different machines and hence must be treated
+as ambiguous and disallowed.
 
-  1. The first prefix is the `GNU_CC_INCLUDE:' logical name: this is
-     where GNU C header files are traditionally stored.  If you wish to
-     store header files in non-standard locations, then you can assign
-     the logical `GNU_CC_INCLUDE' to be a search list, where each
-     element of the list is suitable for use with a rooted logical.
-
-  2. The next prefix tried is `SYS$SYSROOT:[SYSLIB.]'.  This is where
-     VAX-C header files are traditionally stored.
-
-  3. If the include file specification by itself is a valid VMS
-     filename, the preprocessor then uses this name with no prefix in
-     an attempt to open the include file.
-
-  4. If the file specification is not a valid VMS filename (i.e. does
-     not contain a device or a directory specifier, and contains a `/'
-     character), the preprocessor tries to convert it from Unix syntax
-     to VMS syntax.
-
-     Conversion works like this: the first directory name becomes a
-     device, and the rest of the directories are converted into
-     VMS-format directory names.  For example, the name `X11/foobar.h'
-     is translated to `X11:[000000]foobar.h' or `X11:foobar.h',
-     whichever one can be opened.  This strategy allows you to assign a
-     logical name to point to the actual location of the header files.
-
-  5. If none of these strategies succeeds, the `#include' fails.
-
-   Include directives of the form:
-
-     #include foobar
-
-are a common source of incompatibility between VAX-C and GCC.  VAX-C
-treats this much like a standard `#include <foobar.h>' directive.  That
-is incompatible with the ANSI C behavior implemented by GCC: to expand
-the name `foobar' as a macro.  Macro expansion should eventually yield
-one of the two standard formats for `#include':
-
-     #include "FILE"
-     #include <FILE>
-
-   If you have this problem, the best solution is to modify the source
-to convert the `#include' directives to one of the two standard forms.
-That will work with either compiler.  If you want a quick and dirty fix,
-define the file names as macros with the proper expansion, like this:
-
-     #define stdio <stdio.h>
-
-This will work, as long as the name doesn't conflict with anything else
-in the program.
-
-   Another source of incompatibility is that VAX-C assumes that:
-
-     #include "foobar"
-
-is actually asking for the file `foobar.h'.  GCC does not make this
-assumption, and instead takes what you ask for literally; it tries to
-read the file `foobar'.  The best way to avoid this problem is to
-always specify the desired file extension in your include directives.
-
-   GCC for VMS is distributed with a set of include files that is
-sufficient to compile most general purpose programs.  Even though the
-GCC distribution does not contain header files to define constants and
-structures for some VMS system-specific functions, there is no reason
-why you cannot use GCC with any of these functions.  You first may have
-to generate or create header files, either by using the public domain
-utility `UNSDL' (which can be found on a DECUS tape), or by extracting
-the relevant modules from one of the system macro libraries, and using
-an editor to construct a C header file.
-
-   A `#include' file name cannot contain a DECNET node name.  The
-preprocessor reports an I/O error if you attempt to use a node name,
-whether explicitly, or implicitly via a logical name.
+   An instruction that can be represented with an embedded side effect
+could also be represented using `parallel' containing an additional
+`set' to describe how the address register is altered.  This is not
+done because machines that allow these operations at all typically
+allow them wherever a memory address is called for.  Describing them as
+additional parallel stores would require doubling the number of entries
+in the machine description.
 
 
-File: gcc.info,  Node: Global Declarations,  Next: VMS Misc,  Prev: Include Files and VMS,  Up: VMS
+File: gcc.info,  Node: Assembler,  Next: Insns,  Prev: Incdec,  Up: RTL
 
-Global Declarations and VMS
-===========================
+Assembler Instructions as Expressions
+=====================================
 
-   GCC does not provide the `globalref', `globaldef' and `globalvalue'
-keywords of VAX-C.  You can get the same effect with an obscure feature
-of GAS, the GNU assembler.  (This requires GAS version 1.39 or later.)
-The following macros allow you to use this feature in a fairly natural
-way:
+   The RTX code `asm_operands' represents a value produced by a
+user-specified assembler instruction.  It is used to represent an `asm'
+statement with arguments.  An `asm' statement with a single output
+operand, like this:
 
-     #ifdef __GNUC__
-     #define GLOBALREF(TYPE,NAME)                      \
-       TYPE NAME                                       \
-       asm ("_$$PsectAttributes_GLOBALSYMBOL$$" #NAME)
-     #define GLOBALDEF(TYPE,NAME,VALUE)                \
-       TYPE NAME                                       \
-       asm ("_$$PsectAttributes_GLOBALSYMBOL$$" #NAME) \
-         = VALUE
-     #define GLOBALVALUEREF(TYPE,NAME)                 \
-       const TYPE NAME[1]                              \
-       asm ("_$$PsectAttributes_GLOBALVALUE$$" #NAME)
-     #define GLOBALVALUEDEF(TYPE,NAME,VALUE)           \
-       const TYPE NAME[1]                              \
-       asm ("_$$PsectAttributes_GLOBALVALUE$$" #NAME)  \
-         = {VALUE}
-     #else
-     #define GLOBALREF(TYPE,NAME) \
-       globalref TYPE NAME
-     #define GLOBALDEF(TYPE,NAME,VALUE) \
-       globaldef TYPE NAME = VALUE
-     #define GLOBALVALUEDEF(TYPE,NAME,VALUE) \
-       globalvalue TYPE NAME = VALUE
-     #define GLOBALVALUEREF(TYPE,NAME) \
-       globalvalue TYPE NAME
-     #endif
+     asm ("foo %1,%2,%0" : "=a" (outputvar) : "g" (x + y), "di" (*z));
 
-(The `_$$PsectAttributes_GLOBALSYMBOL' prefix at the start of the name
-is removed by the assembler, after it has modified the attributes of
-the symbol).  These macros are provided in the VMS binaries
-distribution in a header file `GNU_HACKS.H'.  An example of the usage
-is:
+is represented using a single `asm_operands' RTX which represents the
+value that is stored in `outputvar':
 
-     GLOBALREF (int, ijk);
-     GLOBALDEF (int, jkl, 0);
+     (set RTX-FOR-OUTPUTVAR
+          (asm_operands "foo %1,%2,%0" "a" 0
+                        [RTX-FOR-ADDITION-RESULT RTX-FOR-*Z]
+                        [(asm_input:M1 "g")
+                         (asm_input:M2 "di")]))
 
-   The macros `GLOBALREF' and `GLOBALDEF' cannot be used
-straightforwardly for arrays, since there is no way to insert the array
-dimension into the declaration at the right place.  However, you can
-declare an array with these macros if you first define a typedef for the
-array type, like this:
+Here the operands of the `asm_operands' RTX are the assembler template
+string, the output-operand's constraint, the index-number of the output
+operand among the output operands specified, a vector of input operand
+RTX's, and a vector of input-operand modes and constraints.  The mode
+M1 is the mode of the sum `x+y'; M2 is that of `*z'.
 
-     typedef int intvector[10];
-     GLOBALREF (intvector, foo);
-
-   Array and structure initializers will also break the macros; you can
-define the initializer to be a macro of its own, or you can expand the
-`GLOBALDEF' macro by hand.  You may find a case where you wish to use
-the `GLOBALDEF' macro with a large array, but you are not interested in
-explicitly initializing each element of the array.  In such cases you
-can use an initializer like: `{0,}', which will initialize the entire
-array to `0'.
-
-   A shortcoming of this implementation is that a variable declared with
-`GLOBALVALUEREF' or `GLOBALVALUEDEF' is always an array.  For example,
-the declaration:
-
-     GLOBALVALUEREF(int, ijk);
-
-declares the variable `ijk' as an array of type `int [1]'.  This is
-done because a globalvalue is actually a constant; its "value" is what
-the linker would normally consider an address.  That is not how an
-integer value works in C, but it is how an array works.  So treating
-the symbol as an array name gives consistent results--with the
-exception that the value seems to have the wrong type.  *Don't try to
-access an element of the array.*  It doesn't have any elements.  The
-array "address" may not be the address of actual storage.
-
-   The fact that the symbol is an array may lead to warnings where the
-variable is used.  Insert type casts to avoid the warnings.  Here is an
-example; it takes advantage of the ANSI C feature allowing macros that
-expand to use the same name as the macro itself.
-
-     GLOBALVALUEREF (int, ss$_normal);
-     GLOBALVALUEDEF (int, xyzzy,123);
-     #ifdef __GNUC__
-     #define ss$_normal ((int) ss$_normal)
-     #define xyzzy ((int) xyzzy)
-     #endif
-
-   Don't use `globaldef' or `globalref' with a variable whose type is
-an enumeration type; this is not implemented.  Instead, make the
-variable an integer, and use a `globalvaluedef' for each of the
-enumeration values.  An example of this would be:
-
-     #ifdef __GNUC__
-     GLOBALDEF (int, color, 0);
-     GLOBALVALUEDEF (int, RED, 0);
-     GLOBALVALUEDEF (int, BLUE, 1);
-     GLOBALVALUEDEF (int, GREEN, 3);
-     #else
-     enum globaldef color {RED, BLUE, GREEN = 3};
-     #endif
+   When an `asm' statement has multiple output values, its insn has
+several such `set' RTX's inside of a `parallel'.  Each `set' contains a
+`asm_operands'; all of these share the same assembler template and
+vectors, but each contains the constraint for the respective output
+operand.  They are also distinguished by the output-operand index
+number, which is 0, 1, ... for successive output operands.
 
 
-File: gcc.info,  Node: VMS Misc,  Prev: Global Declarations,  Up: VMS
+File: gcc.info,  Node: Insns,  Next: Calls,  Prev: Assembler,  Up: RTL
 
-Other VMS Issues
-================
+Insns
+=====
 
-   GCC automatically arranges for `main' to return 1 by default if you
-fail to specify an explicit return value.  This will be interpreted by
-VMS as a status code indicating a normal successful completion.
-Version 1 of GCC did not provide this default.
+   The RTL representation of the code for a function is a doubly-linked
+chain of objects called "insns".  Insns are expressions with special
+codes that are used for no other purpose.  Some insns are actual
+instructions; others represent dispatch tables for `switch' statements;
+others represent labels to jump to or various sorts of declarative
+information.
 
-   GCC on VMS works only with the GNU assembler, GAS.  You need version
-1.37 or later of GAS in order to produce value debugging information for
-the VMS debugger.  Use the ordinary VMS linker with the object files
-produced by GAS.
+   In addition to its own specific data, each insn must have a unique
+id-number that distinguishes it from all other insns in the current
+function (after delayed branch scheduling, copies of an insn with the
+same id-number may be present in multiple places in a function, but
+these copies will always be identical and will only appear inside a
+`sequence'), and chain pointers to the preceding and following insns.
+These three fields occupy the same position in every insn, independent
+of the expression code of the insn.  They could be accessed with `XEXP'
+and `XINT', but instead three special macros are always used:
 
-   Under previous versions of GCC, the generated code would occasionally
-give strange results when linked to the sharable `VAXCRTL' library.
-Now this should work.
+`INSN_UID (I)'
+     Accesses the unique id of insn I.
 
-   A caveat for use of `const' global variables: the `const' modifier
-must be specified in every external declaration of the variable in all
-of the source files that use that variable.  Otherwise the linker will
-issue warnings about conflicting attributes for the variable.  Your
-program will still work despite the warnings, but the variable will be
-placed in writable storage.
+`PREV_INSN (I)'
+     Accesses the chain pointer to the insn preceding I.  If I is the
+     first insn, this is a null pointer.
 
-   Although the VMS linker does distinguish between upper and lower case
-letters in global symbols, most VMS compilers convert all such symbols
-into upper case and most run-time library routines also have upper case
-names.  To be able to reliably call such routines, GCC (by means of the
-assembler GAS) converts global symbols into upper case like other VMS
-compilers.  However, since the usual practice in C is to distinguish
-case, GCC (via GAS) tries to preserve usual C behavior by augmenting
-each name that is not all lower case.  This means truncating the name
-to at most 23 characters and then adding more characters at the end
-which encode the case pattern of those 23.   Names which contain at
-least one dollar sign are an exception; they are converted directly into
-upper case without augmentation.
+`NEXT_INSN (I)'
+     Accesses the chain pointer to the insn following I.  If I is the
+     last insn, this is a null pointer.
 
-   Name augmentation yields bad results for programs that use
-precompiled libraries (such as Xlib) which were generated by another
-compiler.  You can use the compiler option `/NOCASE_HACK' to inhibit
-augmentation; it makes external C functions and variables
-case-independent as is usual on VMS.  Alternatively, you could write
-all references to the functions and variables in such libraries using
-lower case; this will work on VMS, but is not portable to other
-systems.  The compiler option `/NAMES' also provides control over
-global name handling.
+   The first insn in the chain is obtained by calling `get_insns'; the
+last insn is the result of calling `get_last_insn'.  Within the chain
+delimited by these insns, the `NEXT_INSN' and `PREV_INSN' pointers must
+always correspond: if INSN is not the first insn,
 
-   Function and variable names are handled somewhat differently with GNU
-C++.  The GNU C++ compiler performs "name mangling" on function names,
-which means that it adds information to the function name to describe
-the data types of the arguments that the function takes.  One result of
-this is that the name of a function can become very long.  Since the
-VMS linker only recognizes the first 31 characters in a name, special
-action is taken to ensure that each function and variable has a unique
-name that can be represented in 31 characters.
+     NEXT_INSN (PREV_INSN (INSN)) == INSN
 
-   If the name (plus a name augmentation, if required) is less than 32
-characters in length, then no special action is performed.  If the name
-is longer than 31 characters, the assembler (GAS) will generate a hash
-string based upon the function name, truncate the function name to 23
-characters, and append the hash string to the truncated name.  If the
-`/VERBOSE' compiler option is used, the assembler will print both the
-full and truncated names of each symbol that is truncated.
+is always true and if INSN is not the last insn,
 
-   The `/NOCASE_HACK' compiler option should not be used when you are
-compiling programs that use libg++.  libg++ has several instances of
-objects (i.e.  `Filebuf' and `filebuf') which become indistinguishable
-in a case-insensitive environment.  This leads to cases where you need
-to inhibit augmentation selectively (if you were using libg++ and Xlib
-in the same program, for example).  There is no special feature for
-doing this, but you can get the result by defining a macro for each
-mixed case symbol for which you wish to inhibit augmentation.  The
-macro should expand into the lower case equivalent of itself.  For
-example:
+     PREV_INSN (NEXT_INSN (INSN)) == INSN
 
-     #define StuDlyCapS studlycaps
+is always true.
 
-   These macro definitions can be placed in a header file to minimize
-the number of changes to your source code.
+   After delay slot scheduling, some of the insns in the chain might be
+`sequence' expressions, which contain a vector of insns.  The value of
+`NEXT_INSN' in all but the last of these insns is the next insn in the
+vector; the value of `NEXT_INSN' of the last insn in the vector is the
+same as the value of `NEXT_INSN' for the `sequence' in which it is
+contained.  Similar rules apply for `PREV_INSN'.
+
+   This means that the above invariants are not necessarily true for
+insns inside `sequence' expressions.  Specifically, if INSN is the
+first insn in a `sequence', `NEXT_INSN (PREV_INSN (INSN))' is the insn
+containing the `sequence' expression, as is the value of `PREV_INSN
+(NEXT_INSN (INSN))' is INSN is the last insn in the `sequence'
+expression.  You can use these expressions to find the containing
+`sequence' expression.
+
+   Every insn has one of the following six expression codes:
+
+`insn'
+     The expression code `insn' is used for instructions that do not
+     jump and do not do function calls.  `sequence' expressions are
+     always contained in insns with code `insn' even if one of those
+     insns should jump or do function calls.
+
+     Insns with code `insn' have four additional fields beyond the three
+     mandatory ones listed above.  These four are described in a table
+     below.
+
+`jump_insn'
+     The expression code `jump_insn' is used for instructions that may
+     jump (or, more generally, may contain `label_ref' expressions).  If
+     there is an instruction to return from the current function, it is
+     recorded as a `jump_insn'.
+
+     `jump_insn' insns have the same extra fields as `insn' insns,
+     accessed in the same way and in addition contain a field
+     `JUMP_LABEL' which is defined once jump optimization has completed.
+
+     For simple conditional and unconditional jumps, this field
+     contains the `code_label' to which this insn will (possibly
+     conditionally) branch.  In a more complex jump, `JUMP_LABEL'
+     records one of the labels that the insn refers to; the only way to
+     find the others is to scan the entire body of the insn.
+
+     Return insns count as jumps, but since they do not refer to any
+     labels, they have zero in the `JUMP_LABEL' field.
+
+`call_insn'
+     The expression code `call_insn' is used for instructions that may
+     do function calls.  It is important to distinguish these
+     instructions because they imply that certain registers and memory
+     locations may be altered unpredictably.
+
+     `call_insn' insns have the same extra fields as `insn' insns,
+     accessed in the same way and in addition contain a field
+     `CALL_INSN_FUNCTION_USAGE', which contains a list (chain of
+     `expr_list' expressions) containing `use' and `clobber'
+     expressions that denote hard registers used or clobbered by the
+     called function.  A register specified in a `clobber' in this list
+     is modified *after* the execution of the `call_insn', while a
+     register in a `clobber' in the body of the `call_insn' is
+     clobbered before the insn completes execution.  `clobber'
+     expressions in this list augment registers specified in
+     `CALL_USED_REGISTERS' (*note Register Basics::.).
+
+`code_label'
+     A `code_label' insn represents a label that a jump insn can jump
+     to.  It contains two special fields of data in addition to the
+     three standard ones.  `CODE_LABEL_NUMBER' is used to hold the
+     "label number", a number that identifies this label uniquely among
+     all the labels in the compilation (not just in the current
+     function).  Ultimately, the label is represented in the assembler
+     output as an assembler label, usually of the form `LN' where N is
+     the label number.
+
+     When a `code_label' appears in an RTL expression, it normally
+     appears within a `label_ref' which represents the address of the
+     label, as a number.
+
+     The field `LABEL_NUSES' is only defined once the jump optimization
+     phase is completed and contains the number of times this label is
+     referenced in the current function.
+
+`barrier'
+     Barriers are placed in the instruction stream when control cannot
+     flow past them.  They are placed after unconditional jump
+     instructions to indicate that the jumps are unconditional and
+     after calls to `volatile' functions, which do not return (e.g.,
+     `exit').  They contain no information beyond the three standard
+     fields.
+
+`note'
+     `note' insns are used to represent additional debugging and
+     declarative information.  They contain two nonstandard fields, an
+     integer which is accessed with the macro `NOTE_LINE_NUMBER' and a
+     string accessed with `NOTE_SOURCE_FILE'.
+
+     If `NOTE_LINE_NUMBER' is positive, the note represents the
+     position of a source line and `NOTE_SOURCE_FILE' is the source
+     file name that the line came from.  These notes control generation
+     of line number data in the assembler output.
+
+     Otherwise, `NOTE_LINE_NUMBER' is not really a line number but a
+     code with one of the following values (and `NOTE_SOURCE_FILE' must
+     contain a null pointer):
+
+    `NOTE_INSN_DELETED'
+          Such a note is completely ignorable.  Some passes of the
+          compiler delete insns by altering them into notes of this
+          kind.
+
+    `NOTE_INSN_BLOCK_BEG'
+    `NOTE_INSN_BLOCK_END'
+          These types of notes indicate the position of the beginning
+          and end of a level of scoping of variable names.  They
+          control the output of debugging information.
+
+    `NOTE_INSN_EH_REGION_BEG'
+    `NOTE_INSN_EH_REGION_END'
+          These types of notes indicate the position of the beginning
+          and end of a level of scoping for exception handling.
+          `NOTE_BLOCK_NUMBER' identifies which `CODE_LABEL' is
+          associated with the given region.
+
+    `NOTE_INSN_LOOP_BEG'
+    `NOTE_INSN_LOOP_END'
+          These types of notes indicate the position of the beginning
+          and end of a `while' or `for' loop.  They enable the loop
+          optimizer to find loops quickly.
+
+    `NOTE_INSN_LOOP_CONT'
+          Appears at the place in a loop that `continue' statements
+          jump to.
+
+    `NOTE_INSN_LOOP_VTOP'
+          This note indicates the place in a loop where the exit test
+          begins for those loops in which the exit test has been
+          duplicated.  This position becomes another virtual start of
+          the loop when considering loop invariants.
+
+    `NOTE_INSN_FUNCTION_END'
+          Appears near the end of the function body, just before the
+          label that `return' statements jump to (on machine where a
+          single instruction does not suffice for returning).  This
+          note may be deleted by jump optimization.
+
+    `NOTE_INSN_SETJMP'
+          Appears following each call to `setjmp' or a related function.
+
+     These codes are printed symbolically when they appear in debugging
+     dumps.
+
+   The machine mode of an insn is normally `VOIDmode', but some phases
+use the mode for various purposes.
+
+   The common subexpression elimination pass sets the mode of an insn to
+`QImode' when it is the first insn in a block that has already been
+processed.
+
+   The second Haifa scheduling pass, for targets that can multiple
+issue, sets the mode of an insn to `TImode' when it is believed that the
+instruction begins an issue group.  That is, when the instruction
+cannot issue simultaneously with the previous.  This may be relied on
+by later passes, in particular machine-dependant reorg.
+
+   Here is a table of the extra fields of `insn', `jump_insn' and
+`call_insn' insns:
+
+`PATTERN (I)'
+     An expression for the side effect performed by this insn.  This
+     must be one of the following codes: `set', `call', `use',
+     `clobber', `return', `asm_input', `asm_output', `addr_vec',
+     `addr_diff_vec', `trap_if', `unspec', `unspec_volatile',
+     `parallel', or `sequence'.  If it is a `parallel', each element of
+     the `parallel' must be one these codes, except that `parallel'
+     expressions cannot be nested and `addr_vec' and `addr_diff_vec'
+     are not permitted inside a `parallel' expression.
+
+`INSN_CODE (I)'
+     An integer that says which pattern in the machine description
+     matches this insn, or -1 if the matching has not yet been
+     attempted.
+
+     Such matching is never attempted and this field remains -1 on an
+     insn whose pattern consists of a single `use', `clobber',
+     `asm_input', `addr_vec' or `addr_diff_vec' expression.
+
+     Matching is also never attempted on insns that result from an `asm'
+     statement.  These contain at least one `asm_operands' expression.
+     The function `asm_noperands' returns a non-negative value for such
+     insns.
+
+     In the debugging output, this field is printed as a number
+     followed by a symbolic representation that locates the pattern in
+     the `md' file as some small positive or negative offset from a
+     named pattern.
+
+`LOG_LINKS (I)'
+     A list (chain of `insn_list' expressions) giving information about
+     dependencies between instructions within a basic block.  Neither a
+     jump nor a label may come between the related insns.
+
+`REG_NOTES (I)'
+     A list (chain of `expr_list' and `insn_list' expressions) giving
+     miscellaneous information about the insn.  It is often information
+     pertaining to the registers used in this insn.
+
+   The `LOG_LINKS' field of an insn is a chain of `insn_list'
+expressions.  Each of these has two operands: the first is an insn, and
+the second is another `insn_list' expression (the next one in the
+chain).  The last `insn_list' in the chain has a null pointer as second
+operand.  The significant thing about the chain is which insns appear
+in it (as first operands of `insn_list' expressions).  Their order is
+not significant.
+
+   This list is originally set up by the flow analysis pass; it is a
+null pointer until then.  Flow only adds links for those data
+dependencies which can be used for instruction combination.  For each
+insn, the flow analysis pass adds a link to insns which store into
+registers values that are used for the first time in this insn.  The
+instruction scheduling pass adds extra links so that every dependence
+will be represented.  Links represent data dependencies,
+antidependencies and output dependencies; the machine mode of the link
+distinguishes these three types: antidependencies have mode
+`REG_DEP_ANTI', output dependencies have mode `REG_DEP_OUTPUT', and
+data dependencies have mode `VOIDmode'.
+
+   The `REG_NOTES' field of an insn is a chain similar to the
+`LOG_LINKS' field but it includes `expr_list' expressions in addition
+to `insn_list' expressions.  There are several kinds of register notes,
+which are distinguished by the machine mode, which in a register note
+is really understood as being an `enum reg_note'.  The first operand OP
+of the note is data whose meaning depends on the kind of note.
+
+   The macro `REG_NOTE_KIND (X)' returns the kind of register note.
+Its counterpart, the macro `PUT_REG_NOTE_KIND (X, NEWKIND)' sets the
+register note type of X to be NEWKIND.
+
+   Register notes are of three classes: They may say something about an
+input to an insn, they may say something about an output of an insn, or
+they may create a linkage between two insns.  There are also a set of
+values that are only used in `LOG_LINKS'.
+
+   These register notes annotate inputs to an insn:
+
+`REG_DEAD'
+     The value in OP dies in this insn; that is to say, altering the
+     value immediately after this insn would not affect the future
+     behavior of the program.
+
+     This does not necessarily mean that the register OP has no useful
+     value after this insn since it may also be an output of the insn.
+     In such a case, however, a `REG_DEAD' note would be redundant and
+     is usually not present until after the reload pass, but no code
+     relies on this fact.
+
+`REG_INC'
+     The register OP is incremented (or decremented; at this level
+     there is no distinction) by an embedded side effect inside this
+     insn.  This means it appears in a `post_inc', `pre_inc',
+     `post_dec' or `pre_dec' expression.
+
+`REG_NONNEG'
+     The register OP is known to have a nonnegative value when this
+     insn is reached.  This is used so that decrement and branch until
+     zero instructions, such as the m68k dbra, can be matched.
+
+     The `REG_NONNEG' note is added to insns only if the machine
+     description has a `decrement_and_branch_until_zero' pattern.
+
+`REG_NO_CONFLICT'
+     This insn does not cause a conflict between OP and the item being
+     set by this insn even though it might appear that it does.  In
+     other words, if the destination register and OP could otherwise be
+     assigned the same register, this insn does not prevent that
+     assignment.
+
+     Insns with this note are usually part of a block that begins with a
+     `clobber' insn specifying a multi-word pseudo register (which will
+     be the output of the block), a group of insns that each set one
+     word of the value and have the `REG_NO_CONFLICT' note attached,
+     and a final insn that copies the output to itself with an attached
+     `REG_EQUAL' note giving the expression being computed.  This block
+     is encapsulated with `REG_LIBCALL' and `REG_RETVAL' notes on the
+     first and last insns, respectively.
+
+`REG_LABEL'
+     This insn uses OP, a `code_label', but is not a `jump_insn'.  The
+     presence of this note allows jump optimization to be aware that OP
+     is, in fact, being used.
+
+   The following notes describe attributes of outputs of an insn:
+
+`REG_EQUIV'
+`REG_EQUAL'
+     This note is only valid on an insn that sets only one register and
+     indicates that that register will be equal to OP at run time; the
+     scope of this equivalence differs between the two types of notes.
+     The value which the insn explicitly copies into the register may
+     look different from OP, but they will be equal at run time.  If the
+     output of the single `set' is a `strict_low_part' expression, the
+     note refers to the register that is contained in `SUBREG_REG' of
+     the `subreg' expression.
+
+     For `REG_EQUIV', the register is equivalent to OP throughout the
+     entire function, and could validly be replaced in all its
+     occurrences by OP.  ("Validly" here refers to the data flow of the
+     program; simple replacement may make some insns invalid.)  For
+     example, when a constant is loaded into a register that is never
+     assigned any other value, this kind of note is used.
+
+     When a parameter is copied into a pseudo-register at entry to a
+     function, a note of this kind records that the register is
+     equivalent to the stack slot where the parameter was passed.
+     Although in this case the register may be set by other insns, it
+     is still valid to replace the register by the stack slot
+     throughout the function.
+
+     A `REG_EQUIV' note is also used on an instruction which copies a
+     register parameter into a pseudo-register at entry to a function,
+     if there is a stack slot where that parameter could be stored.
+     Although other insns may set the pseudo-register, it is valid for
+     the compiler to replace the pseudo-register by stack slot
+     throughout the function, provided the compiler ensures that the
+     stack slot is properly initialized by making the replacement in
+     the initial copy instruction as well.  This is used on machines
+     for which the calling convention allocates stack space for
+     register parameters.  See `REG_PARM_STACK_SPACE' in *Note Stack
+     Arguments::.
+
+     In the case of `REG_EQUAL', the register that is set by this insn
+     will be equal to OP at run time at the end of this insn but not
+     necessarily elsewhere in the function.  In this case, OP is
+     typically an arithmetic expression.  For example, when a sequence
+     of insns such as a library call is used to perform an arithmetic
+     operation, this kind of note is attached to the insn that produces
+     or copies the final value.
+
+     These two notes are used in different ways by the compiler passes.
+     `REG_EQUAL' is used by passes prior to register allocation (such as
+     common subexpression elimination and loop optimization) to tell
+     them how to think of that value.  `REG_EQUIV' notes are used by
+     register allocation to indicate that there is an available
+     substitute expression (either a constant or a `mem' expression for
+     the location of a parameter on the stack) that may be used in
+     place of a register if insufficient registers are available.
+
+     Except for stack homes for parameters, which are indicated by a
+     `REG_EQUIV' note and are not useful to the early optimization
+     passes and pseudo registers that are equivalent to a memory
+     location throughout there entire life, which is not detected until
+     later in the compilation, all equivalences are initially indicated
+     by an attached `REG_EQUAL' note.  In the early stages of register
+     allocation, a `REG_EQUAL' note is changed into a `REG_EQUIV' note
+     if OP is a constant and the insn represents the only set of its
+     destination register.
+
+     Thus, compiler passes prior to register allocation need only check
+     for `REG_EQUAL' notes and passes subsequent to register allocation
+     need only check for `REG_EQUIV' notes.
+
+`REG_UNUSED'
+     The register OP being set by this insn will not be used in a
+     subsequent insn.  This differs from a `REG_DEAD' note, which
+     indicates that the value in an input will not be used subsequently.
+     These two notes are independent; both may be present for the same
+     register.
+
+`REG_WAS_0'
+     The single output of this insn contained zero before this insn.
+     OP is the insn that set it to zero.  You can rely on this note if
+     it is present and OP has not been deleted or turned into a `note';
+     its absence implies nothing.
+
+   These notes describe linkages between insns.  They occur in pairs:
+one insn has one of a pair of notes that points to a second insn, which
+has the inverse note pointing back to the first insn.
+
+`REG_RETVAL'
+     This insn copies the value of a multi-insn sequence (for example, a
+     library call), and OP is the first insn of the sequence (for a
+     library call, the first insn that was generated to set up the
+     arguments for the library call).
+
+     Loop optimization uses this note to treat such a sequence as a
+     single operation for code motion purposes and flow analysis uses
+     this note to delete such sequences whose results are dead.
+
+     A `REG_EQUAL' note will also usually be attached to this insn to
+     provide the expression being computed by the sequence.
+
+     These notes will be deleted after reload, since they are no longer
+     accurate or useful.
+
+`REG_LIBCALL'
+     This is the inverse of `REG_RETVAL': it is placed on the first
+     insn of a multi-insn sequence, and it points to the last one.
+
+     These notes are deleted after reload, since they are no longer
+     useful or accurate.
+
+`REG_CC_SETTER'
+`REG_CC_USER'
+     On machines that use `cc0', the insns which set and use `cc0' set
+     and use `cc0' are adjacent.  However, when branch delay slot
+     filling is done, this may no longer be true.  In this case a
+     `REG_CC_USER' note will be placed on the insn setting `cc0' to
+     point to the insn using `cc0' and a `REG_CC_SETTER' note will be
+     placed on the insn using `cc0' to point to the insn setting `cc0'.
+
+   These values are only used in the `LOG_LINKS' field, and indicate
+the type of dependency that each link represents.  Links which indicate
+a data dependence (a read after write dependence) do not use any code,
+they simply have mode `VOIDmode', and are printed without any
+descriptive text.
+
+`REG_DEP_ANTI'
+     This indicates an anti dependence (a write after read dependence).
+
+`REG_DEP_OUTPUT'
+     This indicates an output dependence (a write after write
+     dependence).
+
+   These notes describe information gathered from gcov profile data.
+They are stored in the `REG_NOTES' field of an insn as an `expr_list'.
+
+`REG_EXEC_COUNT'
+     This is used to indicate the number of times a basic block was
+     executed according to the profile data.  The note is attached to
+     the first insn in the basic block.
+
+`REG_BR_PROB'
+     This is used to specify the ratio of branches to non-branches of a
+     branch insn according to the profile data.  The value is stored as
+     a value between 0 and REG_BR_PROB_BASE; larger values indicate a
+     higher probability that the branch will be taken.
+
+`REG_BR_PRED'
+     These notes are found in JUMP insns after delayed branch scheduling
+     has taken place.  They indicate both the direction and the
+     likelyhood of the JUMP.  The format is a bitmask of ATTR_FLAG_*
+     values.
+
+`REG_FRAME_RELATED_EXPR'
+     This is used on an RTX_FRAME_RELATED_P insn wherein the attached
+     expression is used in place of the actual insn pattern.  This is
+     done in cases where the pattern is either complex or misleading.
+
+   For convenience, the machine mode in an `insn_list' or `expr_list'
+is printed using these symbolic codes in debugging dumps.
+
+   The only difference between the expression codes `insn_list' and
+`expr_list' is that the first operand of an `insn_list' is assumed to
+be an insn and is printed in debugging dumps as the insn's unique id;
+the first operand of an `expr_list' is printed in the ordinary way as
+an expression.
 
 
-File: gcc.info,  Node: Portability,  Next: Interface,  Prev: VMS,  Up: Top
+File: gcc.info,  Node: Calls,  Next: Sharing,  Prev: Insns,  Up: RTL
 
-GCC and Portability
-*******************
+RTL Representation of Function-Call Insns
+=========================================
 
-   The main goal of GCC was to make a good, fast compiler for machines
-in the class that the GNU system aims to run on: 32-bit machines that
-address 8-bit bytes and have several general registers.  Elegance,
-theoretical power and simplicity are only secondary.
+   Insns that call subroutines have the RTL expression code `call_insn'.
+These insns must satisfy special rules, and their bodies must use a
+special RTL expression code, `call'.
 
-   GCC gets most of the information about the target machine from a
-machine description which gives an algebraic formula for each of the
-machine's instructions.  This is a very clean way to describe the
-target.  But when the compiler needs information that is difficult to
-express in this fashion, I have not hesitated to define an ad-hoc
-parameter to the machine description.  The purpose of portability is to
-reduce the total work needed on the compiler; it was not of interest
-for its own sake.
+   A `call' expression has two operands, as follows:
 
-   GCC does not contain machine dependent code, but it does contain code
-that depends on machine parameters such as endianness (whether the most
-significant byte has the highest or lowest address of the bytes in a
-word) and the availability of autoincrement addressing.  In the
-RTL-generation pass, it is often necessary to have multiple strategies
-for generating code for a particular kind of syntax tree, strategies
-that are usable for different combinations of parameters.  Often I have
-not tried to address all possible cases, but only the common ones or
-only the ones that I have encountered.  As a result, a new target may
-require additional strategies.  You will know if this happens because
-the compiler will call `abort'.  Fortunately, the new strategies can be
-added in a machine-independent fashion, and will affect only the target
-machines that need them.
+     (call (mem:FM ADDR) NBYTES)
 
-
-File: gcc.info,  Node: Interface,  Next: Passes,  Prev: Portability,  Up: Top
+Here NBYTES is an operand that represents the number of bytes of
+argument data being passed to the subroutine, FM is a machine mode
+(which must equal as the definition of the `FUNCTION_MODE' macro in the
+machine description) and ADDR represents the address of the subroutine.
 
-Interfacing to GCC Output
-*************************
+   For a subroutine that returns no value, the `call' expression as
+shown above is the entire body of the insn, except that the insn might
+also contain `use' or `clobber' expressions.
 
-   GCC is normally configured to use the same function calling
-convention normally in use on the target system.  This is done with the
-machine-description macros described (*note Target Macros::.).
+   For a subroutine that returns a value whose mode is not `BLKmode',
+the value is returned in a hard register.  If this register's number is
+R, then the body of the call insn looks like this:
 
-   However, returning of structure and union values is done differently
-on some target machines.  As a result, functions compiled with PCC
-returning such types cannot be called from code compiled with GCC, and
-vice versa.  This does not cause trouble often because few Unix library
-routines return structures or unions.
+     (set (reg:M R)
+          (call (mem:FM ADDR) NBYTES))
 
-   GCC code returns structures and unions that are 1, 2, 4 or 8 bytes
-long in the same registers used for `int' or `double' return values.
-(GCC typically allocates variables of such types in registers also.)
-Structures and unions of other sizes are returned by storing them into
-an address passed by the caller (usually in a register).  The
-machine-description macros `STRUCT_VALUE' and `STRUCT_INCOMING_VALUE'
-tell GCC where to pass this address.
+This RTL expression makes it clear (to the optimizer passes) that the
+appropriate register receives a useful value in this insn.
 
-   By contrast, PCC on most target machines returns structures and
-unions of any size by copying the data into an area of static storage,
-and then returning the address of that storage as if it were a pointer
-value.  The caller must copy the data from that memory area to the
-place where the value is wanted.  This is slower than the method used
-by GCC, and fails to be reentrant.
+   When a subroutine returns a `BLKmode' value, it is handled by
+passing to the subroutine the address of a place to store the value.
+So the call insn itself does not "return" any value, and it has the
+same RTL form as a call that returns nothing.
 
-   On some target machines, such as RISC machines and the 80386, the
-standard system convention is to pass to the subroutine the address of
-where to return the value.  On these machines, GCC has been configured
-to be compatible with the standard compiler, when this method is used.
-It may not be compatible for structures of 1, 2, 4 or 8 bytes.
+   On some machines, the call instruction itself clobbers some register,
+for example to contain the return address.  `call_insn' insns on these
+machines should have a body which is a `parallel' that contains both
+the `call' expression and `clobber' expressions that indicate which
+registers are destroyed.  Similarly, if the call instruction requires
+some register other than the stack pointer that is not explicitly
+mentioned it its RTL, a `use' subexpression should mention that
+register.
 
-   GCC uses the system's standard convention for passing arguments.  On
-some machines, the first few arguments are passed in registers; in
-others, all are passed on the stack.  It would be possible to use
-registers for argument passing on any machine, and this would probably
-result in a significant speedup.  But the result would be complete
-incompatibility with code that follows the standard convention.  So this
-change is practical only if you are switching to GCC as the sole C
-compiler for the system.  We may implement register argument passing on
-certain machines once we have a complete GNU system so that we can
-compile the libraries with GCC.
+   Functions that are called are assumed to modify all registers listed
+in the configuration macro `CALL_USED_REGISTERS' (*note Register
+Basics::.) and, with the exception of `const' functions and library
+calls, to modify all of memory.
 
-   On some machines (particularly the Sparc), certain types of arguments
-are passed "by invisible reference".  This means that the value is
-stored in memory, and the address of the memory location is passed to
-the subroutine.
-
-   If you use `longjmp', beware of automatic variables.  ANSI C says
-that automatic variables that are not declared `volatile' have undefined
-values after a `longjmp'.  And this is all GCC promises to do, because
-it is very difficult to restore register variables correctly, and one
-of GCC's features is that it can put variables in registers without
-your asking it to.
-
-   If you want a variable to be unaltered by `longjmp', and you don't
-want to write `volatile' because old C compilers don't accept it, just
-take the address of the variable.  If a variable's address is ever
-taken, even if just to compute it and ignore it, then the variable
-cannot go in a register:
-
-     {
-       int careful;
-       &careful;
-       ...
-     }
-
-   Code compiled with GCC may call certain library routines.  Most of
-them handle arithmetic for which there are no instructions.  This
-includes multiply and divide on some machines, and floating point
-operations on any machine for which floating point support is disabled
-with `-msoft-float'.  Some standard parts of the C library, such as
-`bcopy' or `memcpy', are also called automatically.  The usual function
-call interface is used for calling the library routines.
-
-   These library routines should be defined in the library `libgcc.a',
-which GCC automatically searches whenever it links a program.  On
-machines that have multiply and divide instructions, if hardware
-floating point is in use, normally `libgcc.a' is not needed, but it is
-searched just in case.
-
-   Each arithmetic function is defined in `libgcc1.c' to use the
-corresponding C arithmetic operator.  As long as the file is compiled
-with another C compiler, which supports all the C arithmetic operators,
-this file will work portably.  However, `libgcc1.c' does not work if
-compiled with GCC, because each arithmetic function would compile into
-a call to itself!
+   Insns containing just `use' expressions directly precede the
+`call_insn' insn to indicate which registers contain inputs to the
+function.  Similarly, if registers other than those in
+`CALL_USED_REGISTERS' are clobbered by the called function, insns
+containing a single `clobber' follow immediately after the call to
+indicate which registers.
 
 
-File: gcc.info,  Node: Passes,  Next: RTL,  Prev: Interface,  Up: Top
-
-Passes and Files of the Compiler
-********************************
-
-   The overall control structure of the compiler is in `toplev.c'.  This
-file is responsible for initialization, decoding arguments, opening and
-closing files, and sequencing the passes.
-
-   The parsing pass is invoked only once, to parse the entire input.
-The RTL intermediate code for a function is generated as the function
-is parsed, a statement at a time.  Each statement is read in as a
-syntax tree and then converted to RTL; then the storage for the tree
-for the statement is reclaimed.  Storage for types (and the expressions
-for their sizes), declarations, and a representation of the binding
-contours and how they nest, remain until the function is finished being
-compiled; these are all needed to output the debugging information.
-
-   Each time the parsing pass reads a complete function definition or
-top-level declaration, it calls either the function
-`rest_of_compilation', or the function `rest_of_decl_compilation' in
-`toplev.c', which are responsible for all further processing necessary,
-ending with output of the assembler language.  All other compiler
-passes run, in sequence, within `rest_of_compilation'.  When that
-function returns from compiling a function definition, the storage used
-for that function definition's compilation is entirely freed, unless it
-is an inline function (*note An Inline Function is As Fast As a Macro:
-Inline.).
-
-   Here is a list of all the passes of the compiler and their source
-files.  Also included is a description of where debugging dumps can be
-requested with `-d' options.
-
-   * Parsing.  This pass reads the entire text of a function definition,
-     constructing partial syntax trees.  This and RTL generation are no
-     longer truly separate passes (formerly they were), but it is
-     easier to think of them as separate.
-
-     The tree representation does not entirely follow C syntax, because
-     it is intended to support other languages as well.
-
-     Language-specific data type analysis is also done in this pass,
-     and every tree node that represents an expression has a data type
-     attached.  Variables are represented as declaration nodes.
-
-     Constant folding and some arithmetic simplifications are also done
-     during this pass.
-
-     The language-independent source files for parsing are
-     `stor-layout.c', `fold-const.c', and `tree.c'.  There are also
-     header files `tree.h' and `tree.def' which define the format of
-     the tree representation.
-
-     The source files to parse C are `c-parse.in', `c-decl.c',
-     `c-typeck.c', `c-aux-info.c', `c-convert.c', and `c-lang.c' along
-     with header files `c-lex.h', and `c-tree.h'.
-
-     The source files for parsing C++ are in `cp/'.  They are `parse.y',
-     `class.c',
-     `cvt.c', `decl.c', `decl2.c', `except.c',
-     `expr.c', `init.c', `lex.c', `method.c', `ptree.c',
-     `search.c', `tree.c', `typeck2.c', and `typeck.c', along with
-     header files `cp-tree.def', `cp-tree.h', and `decl.h'.
-
-     The special source files for parsing Objective C are in `objc/'.
-     They are `objc-parse.y', `objc-act.c', `objc-tree.def', and
-     `objc-act.h'.  Certain C-specific files are used for this as well.
-
-     The file `c-common.c' is also used for all of the above languages.
-
-   * RTL generation.  This is the conversion of syntax tree into RTL
-     code.  It is actually done statement-by-statement during parsing,
-     but for most purposes it can be thought of as a separate pass.
-
-     This is where the bulk of target-parameter-dependent code is found,
-     since often it is necessary for strategies to apply only when
-     certain standard kinds of instructions are available.  The purpose
-     of named instruction patterns is to provide this information to
-     the RTL generation pass.
-
-     Optimization is done in this pass for `if'-conditions that are
-     comparisons, boolean operations or conditional expressions.  Tail
-     recursion is detected at this time also.  Decisions are made about
-     how best to arrange loops and how to output `switch' statements.
-
-     The source files for RTL generation include `stmt.c', `calls.c',
-     `expr.c', `explow.c', `expmed.c', `function.c', `optabs.c' and
-     `emit-rtl.c'.  Also, the file `insn-emit.c', generated from the
-     machine description by the program `genemit', is used in this
-     pass.  The header file `expr.h' is used for communication within
-     this pass.
-
-     The header files `insn-flags.h' and `insn-codes.h', generated from
-     the machine description by the programs `genflags' and `gencodes',
-     tell this pass which standard names are available for use and
-     which patterns correspond to them.
-
-     Aside from debugging information output, none of the following
-     passes refers to the tree structure representation of the function
-     (only part of which is saved).
-
-     The decision of whether the function can and should be expanded
-     inline in its subsequent callers is made at the end of rtl
-     generation.  The function must meet certain criteria, currently
-     related to the size of the function and the types and number of
-     parameters it has.  Note that this function may contain loops,
-     recursive calls to itself (tail-recursive functions can be
-     inlined!), gotos, in short, all constructs supported by GCC.  The
-     file `integrate.c' contains the code to save a function's rtl for
-     later inlining and to inline that rtl when the function is called.
-     The header file `integrate.h' is also used for this purpose.
-
-     The option `-dr' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.rtl' to
-     the input file name.
-
-   * Jump optimization.  This pass simplifies jumps to the following
-     instruction, jumps across jumps, and jumps to jumps.  It deletes
-     unreferenced labels and unreachable code, except that unreachable
-     code that contains a loop is not recognized as unreachable in this
-     pass.  (Such loops are deleted later in the basic block analysis.)
-     It also converts some code originally written with jumps into
-     sequences of instructions that directly set values from the
-     results of comparisons, if the machine has such instructions.
-
-     Jump optimization is performed two or three times.  The first time
-     is immediately following RTL generation.  The second time is after
-     CSE, but only if CSE says repeated jump optimization is needed.
-     The last time is right before the final pass.  That time,
-     cross-jumping and deletion of no-op move instructions are done
-     together with the optimizations described above.
-
-     The source file of this pass is `jump.c'.
-
-     The option `-dj' causes a debugging dump of the RTL code after
-     this pass is run for the first time.  This dump file's name is
-     made by appending `.jump' to the input file name.
-
-   * Register scan.  This pass finds the first and last use of each
-     register, as a guide for common subexpression elimination.  Its
-     source is in `regclass.c'.
-
-   * Jump threading.  This pass detects a condition jump that branches
-     to an identical or inverse test.  Such jumps can be `threaded'
-     through the second conditional test.  The source code for this
-     pass is in `jump.c'.  This optimization is only performed if
-     `-fthread-jumps' is enabled.
-
-   * Common subexpression elimination.  This pass also does constant
-     propagation.  Its source file is `cse.c'.  If constant propagation
-     causes conditional jumps to become unconditional or to become
-     no-ops, jump optimization is run again when CSE is finished.
-
-     The option `-ds' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.cse' to
-     the input file name.
-
-   * Global common subexpression elimination.  This pass performs GCSE
-     using Morel-Renvoise Partial Redundancy Elimination, with the
-     exception that it does not try to move invariants out of loops -
-     that is left to the loop optimization pass.  This pass also
-     performs global constant and copy propagation.
-
-     The source file for this pass is gcse.c.
-
-     The option `-dG' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.gcse' to
-     the input file name.
-
-   * Loop optimization.  This pass moves constant expressions out of
-     loops, and optionally does strength-reduction and loop unrolling
-     as well.  Its source files are `loop.c' and `unroll.c', plus the
-     header `loop.h' used for communication between them.  Loop
-     unrolling uses some functions in `integrate.c' and the header
-     `integrate.h'.
-
-     The option `-dL' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.loop' to
-     the input file name.
-
-   * If `-frerun-cse-after-loop' was enabled, a second common
-     subexpression elimination pass is performed after the loop
-     optimization pass.  Jump threading is also done again at this time
-     if it was specified.
-
-     The option `-dt' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.cse2' to
-     the input file name.
-
-   * Data flow analysis (`flow.c').  This pass divides the program into
-     basic blocks (and in the process deletes unreachable loops); then
-     it computes which pseudo-registers are live at each point in the
-     program, and makes the first instruction that uses a value point at
-     the instruction that computed the value.
-
-     This pass also deletes computations whose results are never used,
-     and combines memory references with add or subtract instructions
-     to make autoincrement or autodecrement addressing.
-
-     The option `-df' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.flow' to
-     the input file name.  If stupid register allocation is in use, this
-     dump file reflects the full results of such allocation.
-
-   * Instruction combination (`combine.c').  This pass attempts to
-     combine groups of two or three instructions that are related by
-     data flow into single instructions.  It combines the RTL
-     expressions for the instructions by substitution, simplifies the
-     result using algebra, and then attempts to match the result
-     against the machine description.
-
-     The option `-dc' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.combine'
-     to the input file name.
-
-   * Register movement (`regmove.c'). This pass looks for cases where
-     matching constraints would force an instruction to need a reload,
-     and this reload would be a register to register move.  It then
-     attempts to change the registers used by the instruction to avoid
-     the move instruction.
-
-     The option `-dN' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.regmove'
-     to the input file name.
-
-   * Instruction scheduling (`sched.c').  This pass looks for
-     instructions whose output will not be available by the time that
-     it is used in subsequent instructions.  (Memory loads and floating
-     point instructions often have this behavior on RISC machines).  It
-     re-orders instructions within a basic block to try to separate the
-     definition and use of items that otherwise would cause pipeline
-     stalls.
-
-     Instruction scheduling is performed twice.  The first time is
-     immediately after instruction combination and the second is
-     immediately after reload.
-
-     The option `-dS' causes a debugging dump of the RTL code after this
-     pass is run for the first time.  The dump file's name is made by
-     appending `.sched' to the input file name.
-
-   * Register class preferencing.  The RTL code is scanned to find out
-     which register class is best for each pseudo register.  The source
-     file is `regclass.c'.
-
-   * Local register allocation (`local-alloc.c').  This pass allocates
-     hard registers to pseudo registers that are used only within one
-     basic block.  Because the basic block is linear, it can use fast
-     and powerful techniques to do a very good job.
-
-     The option `-dl' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.lreg' to
-     the input file name.
-
-   * Global register allocation (`global.c').  This pass allocates hard
-     registers for the remaining pseudo registers (those whose life
-     spans are not contained in one basic block).
-
-   * Reloading.  This pass renumbers pseudo registers with the hardware
-     registers numbers they were allocated.  Pseudo registers that did
-     not get hard registers are replaced with stack slots.  Then it
-     finds instructions that are invalid because a value has failed to
-     end up in a register, or has ended up in a register of the wrong
-     kind.  It fixes up these instructions by reloading the
-     problematical values temporarily into registers.  Additional
-     instructions are generated to do the copying.
-
-     The reload pass also optionally eliminates the frame pointer and
-     inserts instructions to save and restore call-clobbered registers
-     around calls.
-
-     Source files are `reload.c' and `reload1.c', plus the header
-     `reload.h' used for communication between them.
-
-     The option `-dg' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.greg' to
-     the input file name.
-
-   * Instruction scheduling is repeated here to try to avoid pipeline
-     stalls due to memory loads generated for spilled pseudo registers.
-
-     The option `-dR' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.sched2'
-     to the input file name.
-
-   * Jump optimization is repeated, this time including cross-jumping
-     and deletion of no-op move instructions.
-
-     The option `-dJ' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.jump2' to
-     the input file name.
-
-   * Delayed branch scheduling.  This optional pass attempts to find
-     instructions that can go into the delay slots of other
-     instructions, usually jumps and calls.  The source file name is
-     `reorg.c'.
-
-     The option `-dd' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.dbr' to
-     the input file name.
-
-   * Branch shortening.  On many RISC machines, branch instructions
-     have a limited range.  Thus, longer sequences of instructions must
-     be used for long branches.  In this pass, the compiler figures out
-     what how far each instruction will be from each other instruction,
-     and therefore whether the usual instructions, or the longer
-     sequences, must be used for each branch.
-
-   * Conversion from usage of some hard registers to usage of a register
-     stack may be done at this point.  Currently, this is supported only
-     for the floating-point registers of the Intel 80387 coprocessor.
-     The source file name is `reg-stack.c'.
-
-     The options `-dk' causes a debugging dump of the RTL code after
-     this pass.  This dump file's name is made by appending `.stack' to
-     the input file name.
-
-   * Final.  This pass outputs the assembler code for the function.  It
-     is also responsible for identifying spurious test and compare
-     instructions.  Machine-specific peephole optimizations are
-     performed at the same time.  The function entry and exit sequences
-     are generated directly as assembler code in this pass; they never
-     exist as RTL.
-
-     The source files are `final.c' plus `insn-output.c'; the latter is
-     generated automatically from the machine description by the tool
-     `genoutput'.  The header file `conditions.h' is used for
-     communication between these files.
-
-   * Debugging information output.  This is run after final because it
-     must output the stack slot offsets for pseudo registers that did
-     not get hard registers.  Source files are `dbxout.c' for DBX
-     symbol table format, `sdbout.c' for SDB symbol table format, and
-     `dwarfout.c' for DWARF symbol table format.
-
-   Some additional files are used by all or many passes:
-
-   * Every pass uses `machmode.def' and `machmode.h' which define the
-     machine modes.
-
-   * Several passes use `real.h', which defines the default
-     representation of floating point constants and how to operate on
-     them.
-
-   * All the passes that work with RTL use the header files `rtl.h' and
-     `rtl.def', and subroutines in file `rtl.c'.  The tools `gen*' also
-     use these files to read and work with the machine description RTL.
-
-   * Several passes refer to the header file `insn-config.h' which
-     contains a few parameters (C macro definitions) generated
-     automatically from the machine description RTL by the tool
-     `genconfig'.
-
-   * Several passes use the instruction recognizer, which consists of
-     `recog.c' and `recog.h', plus the files `insn-recog.c' and
-     `insn-extract.c' that are generated automatically from the machine
-     description by the tools `genrecog' and `genextract'.
-
-   * Several passes use the header files `regs.h' which defines the
-     information recorded about pseudo register usage, and
-     `basic-block.h' which defines the information recorded about basic
-     blocks.
-
-   * `hard-reg-set.h' defines the type `HARD_REG_SET', a bit-vector
-     with a bit for each hard register, and some macros to manipulate
-     it.  This type is just `int' if the machine has few enough hard
-     registers; otherwise it is an array of `int' and some of the
-     macros expand into loops.
-
-   * Several passes use instruction attributes.  A definition of the
-     attributes defined for a particular machine is in file
-     `insn-attr.h', which is generated from the machine description by
-     the program `genattr'.  The file `insn-attrtab.c' contains
-     subroutines to obtain the attribute values for insns.  It is
-     generated from the machine description by the program `genattrtab'.
+File: gcc.info,  Node: Sharing,  Next: Reading RTL,  Prev: Calls,  Up: RTL
+
+Structure Sharing Assumptions
+=============================
+
+   The compiler assumes that certain kinds of RTL expressions are
+unique; there do not exist two distinct objects representing the same
+value.  In other cases, it makes an opposite assumption: that no RTL
+expression object of a certain kind appears in more than one place in
+the containing structure.
+
+   These assumptions refer to a single function; except for the RTL
+objects that describe global variables and external functions, and a
+few standard objects such as small integer constants, no RTL objects
+are common to two functions.
+
+   * Each pseudo-register has only a single `reg' object to represent
+     it, and therefore only a single machine mode.
+
+   * For any symbolic label, there is only one `symbol_ref' object
+     referring to it.
+
+   * There is only one `const_int' expression with value 0, only one
+     with value 1, and only one with value -1.  Some other integer
+     values are also stored uniquely.
+
+   * There is only one `pc' expression.
+
+   * There is only one `cc0' expression.
+
+   * There is only one `const_double' expression with value 0 for each
+     floating point mode.  Likewise for values 1 and 2.
+
+   * No `label_ref' or `scratch' appears in more than one place in the
+     RTL structure; in other words, it is safe to do a tree-walk of all
+     the insns in the function and assume that each time a `label_ref'
+     or `scratch' is seen it is distinct from all others that are seen.
+
+   * Only one `mem' object is normally created for each static variable
+     or stack slot, so these objects are frequently shared in all the
+     places they appear.  However, separate but equal objects for these
+     variables are occasionally made.
+
+   * When a single `asm' statement has multiple output operands, a
+     distinct `asm_operands' expression is made for each output operand.
+     However, these all share the vector which contains the sequence of
+     input operands.  This sharing is used later on to test whether two
+     `asm_operands' expressions come from the same statement, so all
+     optimizations must carefully preserve the sharing if they copy the
+     vector at all.
+
+   * No RTL object appears in more than one place in the RTL structure
+     except as described above.  Many passes of the compiler rely on
+     this by assuming that they can modify RTL objects in place without
+     unwanted side-effects on other insns.
+
+   * During initial RTL generation, shared structure is freely
+     introduced.  After all the RTL for a function has been generated,
+     all shared structure is copied by `unshare_all_rtl' in
+     `emit-rtl.c', after which the above rules are guaranteed to be
+     followed.
+
+   * During the combiner pass, shared structure within an insn can exist
+     temporarily.  However, the shared structure is copied before the
+     combiner is finished with the insn.  This is done by calling
+     `copy_rtx_if_shared', which is a subroutine of `unshare_all_rtl'.
 
 
-File: gcc.info,  Node: RTL,  Next: Machine Desc,  Prev: Passes,  Up: Top
+File: gcc.info,  Node: Reading RTL,  Prev: Sharing,  Up: RTL
 
-RTL Representation
-******************
+Reading RTL
+===========
 
-   Most of the work of the compiler is done on an intermediate
-representation called register transfer language.  In this language,
-the instructions to be output are described, pretty much one by one, in
-an algebraic form that describes what the instruction does.
+   To read an RTL object from a file, call `read_rtx'.  It takes one
+argument, a stdio stream, and returns a single RTL object.
 
-   RTL is inspired by Lisp lists.  It has both an internal form, made
-up of structures that point at other structures, and a textual form
-that is used in the machine description and in printed debugging dumps.
-The textual form uses nested parentheses to indicate the pointers in
-the internal form.
+   Reading RTL from a file is very slow.  This is not currently a
+problem since reading RTL occurs only as part of building the compiler.
 
-* Menu:
+   People frequently have the idea of using RTL stored as text in a
+file as an interface between a language front end and the bulk of GNU
+CC.  This idea is not feasible.
 
-* RTL Objects::       Expressions vs vectors vs strings vs integers.
-* RTL Classes::       Categories of RTL expresion objects, and their structure.
-* Accessors::         Macros to access expression operands or vector elts.
-* Flags::             Other flags in an RTL expression.
-* Machine Modes::     Describing the size and format of a datum.
-* Constants::         Expressions with constant values.
-* Regs and Memory::   Expressions representing register contents or memory.
-* Arithmetic::        Expressions representing arithmetic on other expressions.
-* Comparisons::       Expressions representing comparison of expressions.
-* Bit Fields::        Expressions representing bitfields in memory or reg.
-* Vector Operations:: Expressions involving vector datatypes.
-* Conversions::       Extending, truncating, floating or fixing.
-* RTL Declarations::  Declaring volatility, constancy, etc.
-* Side Effects::      Expressions for storing in registers, etc.
-* Incdec::            Embedded side-effects for autoincrement addressing.
-* Assembler::         Representing `asm' with operands.
-* Insns::             Expression types for entire insns.
-* Calls::             RTL representation of function call insns.
-* Sharing::           Some expressions are unique; others *must* be copied.
-* Reading RTL::       Reading textual RTL from a file.
+   GNU CC was designed to use RTL internally only.  Correct RTL for a
+given program is very dependent on the particular target machine.  And
+the RTL does not contain all the information about the program.
 
-
-File: gcc.info,  Node: RTL Objects,  Next: RTL Classes,  Up: RTL
-
-RTL Object Types
-================
-
-   RTL uses five kinds of objects: expressions, integers, wide integers,
-strings and vectors.  Expressions are the most important ones.  An RTL
-expression ("RTX", for short) is a C structure, but it is usually
-referred to with a pointer; a type that is given the typedef name `rtx'.
-
-   An integer is simply an `int'; their written form uses decimal
-digits.  A wide integer is an integral object whose type is
-`HOST_WIDE_INT' (*note Config::.); their written form uses decimal
-digits.
-
-   A string is a sequence of characters.  In core it is represented as a
-`char *' in usual C fashion, and it is written in C syntax as well.
-However, strings in RTL may never be null.  If you write an empty
-string in a machine description, it is represented in core as a null
-pointer rather than as a pointer to a null character.  In certain
-contexts, these null pointers instead of strings are valid.  Within RTL
-code, strings are most commonly found inside `symbol_ref' expressions,
-but they appear in other contexts in the RTL expressions that make up
-machine descriptions.
-
-   A vector contains an arbitrary number of pointers to expressions.
-The number of elements in the vector is explicitly present in the
-vector.  The written form of a vector consists of square brackets
-(`[...]') surrounding the elements, in sequence and with whitespace
-separating them.  Vectors of length zero are not created; null pointers
-are used instead.
-
-   Expressions are classified by "expression codes" (also called RTX
-codes).  The expression code is a name defined in `rtl.def', which is
-also (in upper case) a C enumeration constant.  The possible expression
-codes and their meanings are machine-independent.  The code of an RTX
-can be extracted with the macro `GET_CODE (X)' and altered with
-`PUT_CODE (X, NEWCODE)'.
-
-   The expression code determines how many operands the expression
-contains, and what kinds of objects they are.  In RTL, unlike Lisp, you
-cannot tell by looking at an operand what kind of object it is.
-Instead, you must know from its context--from the expression code of
-the containing expression.  For example, in an expression of code
-`subreg', the first operand is to be regarded as an expression and the
-second operand as an integer.  In an expression of code `plus', there
-are two operands, both of which are to be regarded as expressions.  In
-a `symbol_ref' expression, there is one operand, which is to be
-regarded as a string.
-
-   Expressions are written as parentheses containing the name of the
-expression type, its flags and machine mode if any, and then the
-operands of the expression (separated by spaces).
-
-   Expression code names in the `md' file are written in lower case,
-but when they appear in C code they are written in upper case.  In this
-manual, they are shown as follows: `const_int'.
-
-   In a few contexts a null pointer is valid where an expression is
-normally wanted.  The written form of this is `(nil)'.
+   The proper way to interface GNU CC to a new language front end is
+with the "tree" data structure.  There is no manual for this data
+structure, but it is described in the files `tree.h' and `tree.def'.
 

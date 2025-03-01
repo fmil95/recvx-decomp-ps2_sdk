@@ -1,0 +1,264 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+NETMP Specification
+====================
+
+
+ 1 概要
+--------
+
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである 
+    NETMP について説明します。
+    NETMP は、ホスト上で dsnetm とアプリケーションの間でのみ使用されるプ
+    ロトコルです。したがって、DECI2 ヘッダの Source と Destination に指定
+    される Node ID は、双方ともに 'H' となります。NETMP のプロトコル番号
+    は、NETMP = 0x0400 です。
+    
+    NETMP は、アプリケーションから dsnetm へ以下のような要求を行う場合に
+    使用します。
+    
+         ・アプリケーションの登録
+         ・指定したプロトコルのパケットの配送要求
+         ・ターゲットシステムのリセット
+         ・ステータス情報管理
+         ・指定したプロトコルの強制解放
+    
+    パケットの配送要求は、受信に関してのみ必要で、送信に関しては要求する
+    必要はなく常に許可されています。
+
+  1.1 メッセージフォーマット
+
+    NETMP メッセージは、DECI2 ヘッダに引き続き、常に以下の NETMP ヘッダを
+    持ちます。
+    
+        図 1 NETMP メッセージヘッダ
+
+    
+    code は、メッセージの種別を表します。メッセージには要求と応答がありま
+    す。
+    メッセージの code には以下のようなものがあります。
+    
+      NETMP_CODE_CONNECT	0	// connect request
+      NETMP_CODE_CONNECTR	1	// connect reply
+      NETMP_CODE_RESET		2	// reset request
+      NETMP_CODE_RESETR		3	// reset reply
+      NETMP_CODE_MESSAGE	4	// message request
+      NETMP_CODE_MESSAGER	5	// message reply
+      NETMP_CODE_STATUS		6	// status request
+      NETMP_CODE_STATUSR		7	// status reply
+      NETMP_CODE_KILL		8	// kill request
+      NETMP_CODE_KILLR		9	// kill reply
+      NETMP_CODE_VERSION		10	// version request
+      NETMP_CODE_VERSIONR	11	// version reply
+    
+    result は、メッセージの結果を表します。要求メッセージの場合は常に 0 
+    で、応答メッセージの場合は、以下のいずれかになります。
+    
+      NETMP_ERR_OK		0	// good
+      NETMP_ERR_INVAL		1	// invalid request
+      NETMP_ERR_BUSY		2	// protocol busy
+      NETMP_ERR_NOTCONN		3	// can not connect
+      NETMP_ERR_ALREADYCONN	4	// already connect
+      NETMP_ERR_NOMEM		5	// no memory
+      NETMP_ERR_NOPROTO		6	// no protocol
+    
+
+ 2 メッセージ
+--------------
+
+
+  2.1 NETMP_CODE_CONNECT
+
+    NETMP_CODE_CONNECT は、アプリケーションから dsnetm に対する接続要求と
+    配送要求メッセージです。NETMP ヘッダに引き続いて以下の接続データが任
+    意個の繰り返しされた形式を持ちます。
+    
+        図 2 NETMP_CODE_CONNECT Data
+
+
+    priority
+
+      プロトコルに関する受信配送優先順位を指定します。
+      符号無し整数で、0 から 255 まで設定可能です。0 が最も低い優先順位と
+      なります。
+      
+      複数のアプリケーションが同じプロトコルを使用する場合、dsnetm はその
+      中で最も大きな priority を持つアプリケーションにパケットを配送しま
+      す。
+      ただし TTYP プロトコルに関しては、優先順位による配送制御は行なわれ
+      ず、すべてのアプリケーションへ配送が行なわれます。優先順位による制
+      御を行なう予定がない場合には 0x80 を設定しなければなりません。
+
+    unused
+
+      予約領域です。常に 0 を設定しなければなりません。
+
+    protocol
+
+      受信データの配送を要求するプロトコル番号です。
+      
+    このメッセージによる明示的な指定がなくとも、以下のメッセージは dsnetm
+     からアプリケーションに配送される場合があります。この配送が行なわれる
+    のはこのメッセージによって接続が成功した以降に限られます。
+    
+         ・DCMP のステータスメッセージ
+         ・DCMP のエラーメッセージ
+         ・NETMP のリセット完了通知(NETMP_CODE_RESETR)
+
+  2.2 NETMP_CODE_CONNECTR
+
+    NETMP_CODE_CONNECTR は、NETMP_CODE_CONNECT に対する dsnetm からアプリ
+    ケーションへの応答メッセージです。NETMP ヘッダ 2 byte のみで構成され
+    ます。
+    
+    結果コード (result) には以下のようなものがあります。
+    
+      NETMP_ERR_OK		接続成功
+      NETMP_ERR_BUSY 		既に同じ priority かつ同じ protocol で
+      				他のアプリケーションが接続済
+      NETMP_ERR_NOTCONN		接続失敗 (その他の原因)
+      NETMP_ERR_ALREADYCONN	既に接続済み
+      NETMP_ERR_NOMEM		メモリ不足
+
+  2.3 NETMP_CODE_RESET
+
+    NETMP_CODE_RESET は、アプリケーションから dsnetm に対するターゲットシ
+    ステムのリセット要求メッセージです。NETMP ヘッダおよび 2 byte の予約
+    領域に続く 2 word x 2 の初期化パラメータで構成されます、合計 20 byte。
+        図 3 NETMP_CODE_CONNECT メッセージ
+
+    Boot parameter の領域は dsnetm で保存され、dsnetm がターゲットに対し
+    て送信する DCMP_TYPE_CONNECT メッセージの Boot parameter データとして
+    使用されます。Boot parameter のビットがすべて 1 の場合は、dsnetm が保
+    存するデータを変更しません。
+
+  2.4 NETMP_CODE_RESETR
+
+    NETMP_CODE_RESETR は、dsnetm からアプリケーションに送られるリセット完
+    了通知です。NETMP ヘッダ 2 byte のみで構成されます。
+    このメッセージが送られるのは以下のいずれかの場合です。
+    
+         (1) そのアプリケーションからの NETMP_CODE_RESET によるリセット完
+             了時
+         (2) 他のアプリケーションからの NETMP_CODE_RESET によるリセット完
+             了時
+         (3) ターゲットのリセットスイッチや電源 ON 等によるリセット完了時
+    
+    このメッセージからリセットの原因を知ることはできません。
+    
+    結果コード (result) には以下のようなものがあります。
+    
+      NETMP_ERR_OK	リセット完了
+      NETMP_ERR_INVAL	ボードドライバがエラーを報告した
+      			(上記 1) の場合に、リセットを要求したアプリケーションにのみ送
+      			られます)
+
+  2.5 NETMP_CODE_MESSAGE
+
+    NETMP_CODE_MESSAGE は、アプリケーションから dsnetm に対する接続情報設
+    定メッセージです。NETMP ヘッダに続く任意長の ASCII データ (NUL ターミ
+    ネイトなし) で、"<user>@<host>,<prog>" の形式である必要があります。
+    NETMP_CODE_CONNECT メッセージの直後にこの接続情報を送る事を強く推奨し
+    ます。
+    アプリケーションは、このメッセージで送られた情報を NETMP_CODE_STATUS 
+    メッセージによって得ることができます。
+
+  2.6 NETMP_CODE_MESSAGER
+
+    NETMP_CODE_MESSAGER は、NETMP_CODE_MESSAGE に対して dsnetm からアプリ
+    ケーションに送られる接続情報設定完了メッセージです。NETMP ヘッダ 2 
+    byte のみで構成されます。
+    
+    結果コード (result) には以下のようなものがあります。
+    
+      NETMP_ERR_OK	設定完了
+      NETMP_ERR_NOMEM	メモリ不足
+
+  2.7 NETMP_CODE_STATUS
+
+    NETMP_CODE_STATUS は、dsnetm が管理するプロトコルごとの接続関連情報の
+    参照要求メッセージです。NETMP ヘッダ 2 byte のみで構成されます。
+
+  2.8 NETMP_CODE_STATUSR
+
+    NETMP_CODE_STATUSR は、NETMP_CODE_STATUS に対して dsnetm からアプリケ
+    ーションに送られる応答メッセージです。NETMP ヘッダおよび 2 byte の予
+    約領域に続く、ワードアラインされた接続関連情報の任意個の繰り返しで構
+    成され、 dsnetm が管理するすべてのプロトコルに関する接続関連情報を返
+    します。
+        図 4 NETMP_CODE_STATUSR メッセージ
+
+
+    connect-time
+
+      32bit の符号なしの秒数で、そのプロトコルに関する TCP レベルの接続が
+      開始されてからの経過時間を表します。
+
+    protocol / unused / priority
+
+      NETMP_CODE_CONNECT メッセージの該当するフィールドど同じ意味を持ちま
+      す。
+
+    "<user>@<host>,<prog>"
+
+      NETMP_CODE_MESSAGE によってアプリケーションから送られた接続情報です。
+      少なくとも 1 byte の NUL データでターミネイトされます。
+      さらに NETMP メッセージの先頭からワードアラインされるまで 0 から 3 
+      byte の NUL データでパディングされます。
+      
+      結果コード (result) には以下のようなものがあります。
+      
+      NETMP_ERR_OK	正常終了
+
+  2.9 NETMP_CODE_KILL
+
+    NETMP_CODE_KILL は、アプリケーションから dsnetm に対して、指定プロト
+    コルの強制解放を要求するメッセージです。NETMP ヘッダに引き続くプロト
+    コル番号を示す 2 byte のデータのみで構成されます。
+        図 5 NETMP_CODE_KILL メッセージ
+
+    dsnetm は指定された protocol でもっとも高い priority を持つアプリケー
+    ションとの TCP レベルのコネクションを無条件にクローズし、そのプロトコ
+    ルを解放します。
+    ひとつの protocol に対して複数の priority が存在する場合は、このメッ
+    セージをその priority の数だけ送信しなければ、その protocol をすべて
+    解放することはできません。
+    
+    逆にアプリケーションに複数の protocol が関連付けられている場合には、
+    ひとつの NETMP_CODE_KILL メッセージによって指定以外の protocol が解放
+    されることもあります。
+
+  2.10 NETMP_CODE_KILLR
+
+    NETMP_CODE_KILLR は、NETMP_CODE_KILL に対して dsnetm からアプリケーシ
+    ョンに送られる応答メッセージです。NETMP ヘッダ 2 byte のみで構成され
+    ます。
+    
+    結果コード (result) には以下のようなものがあります。
+    
+      NETMP_ERR_OK	強制解放完了
+      NETMP_ERR_NOPROTO	指定プロトコルの接続が存在しない
+
+  2.11 NETMP_CODE_VERSION
+
+    NETMP_CODE_VERSION は、アプリケーションから dsnetm に対するバージョン
+    情報要求メッセージです。NETMP ヘッダに続く任意長の ASCII データ (NUL 
+    ターミネイトなし) で、ASCII データの内容はアプリケーションのバージョ
+    ンを表す任意の文字列である必要があります。dsnetm ではこの情報はチェッ
+    ク対象としては参照しません。したがって、どのような文字列であっても構
+    いません。
+
+  2.12 NETMP_CODE_VERSIONR
+
+    NETMP_CODE_VERSIONR は、NETMP_CODE_VERSION に対して dsnetm からアプリ
+    ケーションに送られる応答メッセージです。NETMP ヘッダに続く任意長の 
+    ASCII データ (NUL ターミネイトなし) で、ASCII データの内容は dsnetm 
+    のバージョン情報です。バージョン情報の形式は、X、Y、Z はそれぞれ10 進
+    数で "X.Y.Z" となります。
+    
+    結果コード (result) には以下のようなものがあります。
+    
+      NETMP_ERR_OK	正常終了

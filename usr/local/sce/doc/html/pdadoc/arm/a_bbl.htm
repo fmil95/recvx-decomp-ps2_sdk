@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_bbl</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_and.htm">[前]</A> <A HREF="a_bic.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">B BL</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>分岐</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">B{L}{&lt;cond&gt;} &lt;target address&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>B（Branch）およびBL（Branch and Link）命令は、プログラム・フローに条件付き変更と無条件変更の両方を与えます。Branch
+  with Link命令は、<A NAME="anchor328270"></A>サブルーチン・コールに使用します。サブルーチンからのリターンは、LRをPCにコピーして行います。</P>
+  <P>BとBLによって、ターゲット・アドレスへの分岐が発生します。分岐先アドレスは以下の手順で計算されます。<BR>
+  1 24ビットの符号付き（2の補数）オフセットを左に2ビットシフトします。<BR>
+  2 この結果を32ビットに符号拡張します。<BR>
+  3 これをPCの内容（分岐命令のアドレス＋8が収められている）に加算します。</P>
+  <P>したがってこの命令は、+/-32メガバイトの分岐を指定することができます。</P>
+  <P>BL命令では、L（link）ビットがセットされ、分岐後の命令のアドレスがリンク・レジスタ（R14）にコピーされます。</P>
+  <P>この命令は、命令で指定された条件が、コンディション・コードのステータスと一致する場合にのみ実行されます。条件は<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385275"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385277"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385279"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385281"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385283"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385285"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385287"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385289"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385291"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385293"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385295"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385297"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385299"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385301"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385303"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385305"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385307"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385309"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385311"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385313"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385315"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385317"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385319"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385321"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385323"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385325"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385327"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385329"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385331"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385333"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385335"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385337"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385339"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385347"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385349"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385351"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385353"></A><BR>
+    L</TD> 
+    <TD COLSPAN="24" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385355"></A><BR>
+    24_bit_signed_offset</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        if L == 1 then
+                LR = address of the instruction after the branch instruction
+        PC = PC + (SignExtend(&lt;24_bit_signed_offset&gt;) &lt;&lt; 2)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード<BR>
+  L（Link）はLR（R14）レジスタにリターン・アドレスをストアします。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>オフセット計算：</B>アセンブラは、現在の命令のアドレスと分岐先アドレス（プログラム・ラベルとして与えられたもの）の差から8を減算して（PCは現在の命令のアドレス＋8を保持しているため）、分岐オフセットのアドレスを計算します。</P>
+  <P><B>メモリ境界：</B>ロケーション・ゼロを超えて後方に分岐したり、32ビット・アドレス空間の上限を超えて分岐した場合、結果は予測できません。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_and.htm">[前]</A> <A HREF="a_bic.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

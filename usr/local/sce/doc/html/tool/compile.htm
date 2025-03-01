@@ -1,0 +1,588 @@
+<HTML>
+<HEAD>
+<TITLE> IOPプログラムのコンパイル</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="compile.htm" SELECTED> IOPプログラムのコンパイル
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+IOPプログラムのコンパイル<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 コンパイルの手順<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> リロケータブルプログラムのコンパイル<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 常駐ライブラリのコンパイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 iopfixupユーティリティ<BR></A>
+<P><A HREF="#Heading3_3">  3 ioplibgenユーティリティ<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ライブラリエントリ定義ファイルの書式<BR></A><BR>
+    <A HREF="#Heading4_3_2"> ライブラリエントリ定義ファイルの例<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 ioplibldユーティリティ<BR></A>
+<P><A HREF="#Heading3_5">  5 ioplibdumpユーティリティ<BR></A>
+<P><A HREF="#Heading3_6">  6 iop-gcc<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> 使用例<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>コンパイルの手順</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>リロケータブルプログラムのコンパイル</B>
+</A>
+</H3>
+<blockquote>
+    リロケータブルプログラムとは、実行アドレスが可変のプログラム、つまりIOP kernel内のプログラムローダによってメモリの空き領域にリロケートしてロードされ実行されるプログラムです。<BR>
+    リロケータブルプログラムを作成するためには、伝統的なコンパイル・リンク手順の最後の段階でプログラムのアドレスを決定する代わりに、リンカのパーシャルリンク機能でオブジェクトを一つにまとめ、iopfixupユーティリティを用いてIOPリロケータブル実行形式へ変換するという手順を踏みます。<BR>
+<P>
+<IMG SRC ="gif/compn1.gif">
+<P>
+    <BR>
+
+     <H4><B>リロケータブルプログラムのコンパイル手順の例</B></H4>
+
+    リロケータブルプログラムをコンパイルする手順は、たとえば次のようになります。<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ iop-ld -r -dc -o xxxx.o xxx1.o xxx2.o -lyyy
+        $ iopfixup -o xxxx.irx xxxx.o
+</PRE>
+    <BR>
+    上記をもっと簡単に済ますには次のようにします。<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ iop-gcc -o xyz.irx xxx1.o xxx2.o -lyyy
+</PRE>
+    <BR>
+    さらに簡単にすると、次の１コマンドで済ませることができます。<BR>
+<PRE>        $ iop-gcc -o xyz.irx xxx1.c xxx2.c -lyyy
+</PRE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>常駐ライブラリのコンパイル</B>
+</A>
+</H3>
+<blockquote>
+    常駐ライブラリとは、プログラムコードの一部を他のモジュールからサブルーチンとして呼び出せるように提供しているモジュールです。<BR>
+    常駐ライブラリにはそのモジュールがどのようなサブルーチンを提供するかを示す構造体が必要です。また、常駐ライブラリが提供するサブルーチンを利用するモジュールには、どのモジュールのどのサブルーチンを利用するかを示す構造体が必要です。これらの構造体を生成しリンクするために、ioplibgenユーティリティとioplibldユーティリティが用意されています。<BR>
+    常駐ライブラリおよび常駐ライブラリを利用するモジュールのコンパイル・リンクの手順は下図のようになります。<BR>
+<P>
+<IMG SRC ="gif/compn2.gif">
+<P>
+    <BR>
+
+     <H4><B>常駐ライブラリモジュールのコンパイル手順例</B></H4>
+
+<PRE>        $ ioplibgen -d stubs.ilb -e entry.s entry.tbl
+        $ iop-as -o entry.o entry.s 
+        $ iop-gcc -c lll1.c
+        $ iop-gcc -c lll2.c
+        $ iop-ld -r -dc -o lmn.o lll1.o lll2.o entry.o
+        $ iopfixup -o lnm.irx lnm.o
+</PRE>
+
+     <H4><B>常駐ライブラリを利用するモジュールのコンパイル手順例</B></H4>
+
+    (a)スタティックライブラリをリンクしない場合<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ ioplibld -s stub.s xxx1.o xxx2.o : stubs.ilb
+        $ io-as -c stubs.o stubs.s
+        $ iop-ld -r -dc -o xyz.o xxx1.o xxx2.o stubs.o
+        $ iopfixup -o xyz.irx xyz.o
+</PRE>
+    もっと簡単に済ますには……<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ iop-gcc -o xyz.irx xxx1.o xxx2.o -ilb=stubs.ilb
+</PRE>
+    (b)スタティックライブラリをリンクする場合<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ ioplibld -s stub.s xxxall.o xxx1.o xxx2.o -lsss : stubs.ilb
+        $ io-as -c stubs.o stubs.s
+        $ iop-ld -r -dc -o xyz.o xxx1.o xxx2.o stubs.o -lsss
+        $ iopfixup -o xyz.irx xyz.o
+</PRE>
+    もっと簡単に済ますには……<BR>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ iop-gcc -o xyz.irx xxx1.o xxx2.o -lsss -ilb=stubs.ilb
+</PRE>
+    <BR>
+    なお、IOP kernelそのものも複数の常駐ライブラリモジュールから構成されています。そのためすべてのアプリケーションプログラムは、かならず「常駐ライブラリを利用するモジュール」として生成することになります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>iopfixupユーティリティ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    iopfixupは、elf形式のリロケータブルオブジェクトをIOPリロケータブル実行形式に変換するユーティリティです。<BR>
+    <BR>
+
+     <H4><B>形式</B></H4>
+
+<PRE>        iopfixup [options...] input_file
+</PRE>
+    <BR>
+    options...には以下のものを指定できます。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>option</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-o outfile</TD>
+<TD valign="TOP">変換結果の出力ファイル名</TD>
+</TR>
+<TR>
+<TD valign="TOP">-r outfile</TD>
+<TD valign="TOP">変換結果の出力ファイル名（シンボル情報つき）</TD>
+</TR>
+<TR>
+<TD valign="TOP">-e entry_symbol</TD>
+<TD valign="TOP">エントリポイントの指定</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    input_fileには、elf形式のリロケータブルオブジェクトファイルまたはIOPリロケータブル実行形式ファイルを指定できます。<BR>
+    <BR>
+
+     <H4><B>動作</B></H4>
+
+    iopfixupは入力ファイルを読み込んだのち、入力ファイルがelf形式のリロケータブルオブジェクトであったならば、以下の処理を行います。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> IOPリロケータブル実行形式に固有のセクションの生成<BR>
+         <LI VALUE= 2> セクションの再配置とセグメント範囲の決定<BR>
+         <LI VALUE= 3> 予約シンボルの値の決定<BR>
+         <LI VALUE= 4> 再配置情報をIOP用に変換<BR>
+         <LI VALUE= 5> -eオプションが与えられていれば、エントリポイントの設定<BR>
+    </OL>
+    <BR>
+    その後、-rオプションが与えられていれば指定された出力ファイルに出力し、-oオプションが与えられていればシンボル情報を削除してから指定された出力ファイルに出力します。<BR>
+    セグメントとセクションの配置は以下のようになります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>セグメント</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>含まれるセクションとその順番</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">TEXT</TD>
+<TD valign="TOP">.init, .text, .finit</TD>
+</TR>
+<TR>
+<TD valign="TOP">DATA</TD>
+<TD valign="TOP">.rodata, .rodata1, .data, .data1, sdata, .lit8, .lit4</TD>
+</TR>
+<TR>
+<TD valign="TOP">BSS</TD>
+<TD valign="TOP">.sbss, .bss</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    予約シンボルの名前と値は以下のようになります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>シンボル名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">_ftext TEXT</TD>
+<TD valign="TOP">セグメントの先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_etext TEXT</TD>
+<TD valign="TOP">セグメントの最後のbyteの次のアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_fdata DATA</TD>
+<TD valign="TOP">セグメントの先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_edata DATA</TD>
+<TD valign="TOP">セグメントの最後のbyteの次のアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_fbss BSS</TD>
+<TD valign="TOP">セグメントの先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_end BSS</TD>
+<TD valign="TOP">セグメントの最後のbyteの次のアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_gp gp</TD>
+<TD valign="TOP">レジスタの初期値</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>ioplibgenユーティリティ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ioplibgenは、ライブラリエントリ定義ファイルを読み込んで、常駐ライブラリ用のエントリテーブルのアセンブラソースおよびライブラリ使用者がリンク時に使用するデータファイル（拡張子.ilb）を生成するユーティリティです。<BR>
+    <BR>
+
+     <H4><B>形式</B></H4>
+
+      <BLOCKQUOTE>
+      ioplibgen [options...] input_file<BR>
+      </BLOCKQUOTE>
+    <BR>
+    options...には以下のものを指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>option</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-e entry_table_source</TD>
+<TD valign="TOP">エントリテーブルの出力ファイル名</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d stub_ilb_data</TD>
+<TD valign="TOP">データファイルの出力ファイル名</TD>
+</TR>
+<TR>
+<TD valign="TOP">-l openlevel</TD>
+<TD valign="TOP">データファイルに出力するエントリの<BR>公開レベル指定</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    input_fileには後述する書式のライブラリエントリ定義ファイルを指定します。<BR>
+
+     <H4><B>動作</B></H4>
+
+    -eオプションが与えられていると、以下説明するライブラリエントリ定義中で宣言されたライブラリ名に "_entry" を付加したラベルのついたエントリテーブルが作成されます。<BR>
+    エントリテーブルをリンクしたIOPプログラムモジュールは、このラベルを引数にしてIOP kernelのモジュールマネージャのRegisterLibraryEntries()関数を呼び出すことで、自身の持つ関数群を他のプログラムモジュールから利用可能にします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ライブラリエントリ定義ファイルの書式</B>
+</A>
+</H3>
+<blockquote>
+    ライブラリエントリ定義ファイルには以下の4種類の記述が入ります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_1_1">
+(1) <B>コメント</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      '#'で始まる行はコメント行になります。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_1_2">
+(2) <B>ライブラリ名宣言</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ライブラリ名（8文字以内）を以下のように宣言します。<BR>
+      </BLOCKQUOTE>
+<PRE>        Libname libname
+</PRE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_1_3">
+(3) <B>ライブラリバージョン宣言</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ライブラリのメジャーバージョン（8bit）とマイナーバージョン（8bit）を、 '.' で区切って10進数で以下のように指定します<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        Version MM.mm<BR>
+        </BLOCKQUOTE></UL>
+      <BLOCKQUOTE>
+      メジャーバージョンとマイナーバージョンは、1 以上 255 以下の数値を指定してください。0 はリザーブされています。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_1_4">
+(4) <B>エントリ宣言</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の書式で、ライブラリのエントリ関数名を複数宣言できます。<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        Entry/level entry_symbol [entry_internal_symbol]<BR>
+        Entry entry_symbol [entry_internal_symbol]<BR>
+        Entry -<BR>
+        </BLOCKQUOTE></UL>
+      <BLOCKQUOTE>
+      levelは、entry_symbolの公開レベルを1桁の数値で指定します。ioplibgenの-lオプションで公開レベルを指定すると、その数値より以下の公開レベルを持つentry_symbolのみがエントリテーブルファイルに出力されます。levelを省略すると公開レベルは0とみなされます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>ライブラリエントリ定義ファイルの例</B>
+</A>
+</H3>
+<blockquote>
+    ライブラリエントリ定義ファイルの例を次に示します。<BR>
+      <BLOCKQUOTE>
+      # まず最初にライブラリ名を宣言。この例では 'mylib' と宣言する。<BR>
+      Libname mylib<BR>
+      # versionの宣言。<BR>
+      Version 1.1<BR>
+      # ========= 常駐ライブラリの各エントリの宣言 =============<BR>
+      # 慣習として最初の四つのエントリはシステム用にリザーブしておく<BR>
+      # １番目は、初期化エントリ(通常モジュールのエントリポイントと同一)<BR>
+      # ２番目は、もしあれば、再初期化エントリ<BR>
+      # ３番目は、もしあれば、終了エントリ<BR>
+      # ４番目は、予約<BR>
+      Entry/2 mylibinit<BR>
+      Entry -<BR>
+      Entry -<BR>
+      Entry -<BR>
+      Entry AllocMemory<BR>
+      Entry ReAllocMemory<BR>
+      #	外部から呼ぶときの関数名と、実際の関数名は以下のように異っていてもよい<BR>
+      #	外部名			   内部名<BR>
+      Entry FreeMemory		mylib_free_memory<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>ioplibldユーティリティ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ioplibldは、elf形式のオブジェクトファイル内の未定義シンボルを探し出し、あらかじめioplibgen -dで作成してあるエントリデータファイルから未定義シンボルに対応するエントリを探し出してstubソースファイルを生成するユーティリティです。<BR>
+    <BR>
+
+     <H4><B>形式</B></H4>
+
+      <BLOCKQUOTE>
+      ioplibld [options...] object_file... : stub_ilb_data...<BR>
+      </BLOCKQUOTE>
+    <BR>
+    options...には以下のものを指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>option</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-s stub_source</TD>
+<TD valign="TOP">出力するstubソースファイル名の指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-llib</TD>
+<TD valign="TOP">リンク時に使用予定のスタティック<BR>ライブラリ名の指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-Ldir</TD>
+<TD valign="TOP">スタティックライブラリおよびilbファイル<BR>のサーチパス指定</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    object_file...には、リンクしてひとつのオブジェクトファイルになる予定のすべてのelf形式リロケータブルオブジェクトファイル名を指定します。<BR>
+    stub_ilb_data...には、ioplibgenユーティリティで生成したエントリデータファイル名を指定します。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>ioplibdumpユーティリティ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ioplibdumpは、IOPリロケータブル実行形式ファイルの中を調査し、どの常駐ライブラリのどのエントリを呼び出しているかを表示するユーティリティです。<BR>
+    <BR>
+
+     <H4><B>形式</B></H4>
+
+      <BLOCKQUOTE>
+      ioplibdump object_file... [: stub_ilb_data...]<BR>
+      </BLOCKQUOTE>
+    <BR>
+    object_file...には、IOPリロケータブル実行形式ファイル名を指定します。<BR>
+    stub_ilb_data...には、ioplibgenユーティリティで生成したエントリデータファイル名を指定します。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>iop-gcc</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    iop-gccは、GNU gccをもとに、IOPプログラムをコンパイルするために改造されたコンパイラです。以下に示すオプションが追加されているほか、リンク時にioplibld / iopfixupコマンドを適切な順番で呼び出すようになっています。これにより、常駐ライブラリを利用するIOPリロケータブル実行形式ファイルを簡単にリンクできるようになります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-ilb=stub_ilb_data</TD>
+<TD valign="TOP">ioplibgenユーティリティで生成したエントリ<BR>データファイルの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-startfiles</TD>
+<TD valign="TOP">crt0.oをリンクすることの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-noiopilb</TD>
+<TD valign="TOP">IOP kernelのエントリデータファイルiop.ilb<BR>の読み込み抑止<BR>通常は、iop.ilbは自動的に読み込まれます。</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    また、gcc本来のオプションのうち以下のものが、IOPのプログラムをコンパイルするうえで有用なことがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-e entry_symbol</TD>
+<TD valign="TOP">エントリポイントの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-t</TD>
+<TD valign="TOP">読み込むオブジェクトとライブラリのファイル名<BR>を表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-v</TD>
+<TD valign="TOP">コンパイル手順の詳細を表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nostdlib</TD>
+<TD valign="TOP">標準ライブラリのリンクを抑制する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-print-libgcc-file-name</TD>
+<TD valign="TOP">gccが参照するlibgcc.aのフルパスを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-print-file-name=file</TD>
+<TD valign="TOP">gccのサーチパスからfileを探してフルパスで<BR>表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-mstats</TD>
+<TD valign="TOP">コンパイル中の各関数のスタックサイズなどを<BR>表示する（MIPS固有のオプション）</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>使用例</B>
+</A>
+</H3>
+<blockquote>
+<PRE>        $ iop-gcc -c xxx1.c
+        $ iop-gcc -c xxx2.c
+        $ iop-gcc -o xyz.irx xxx1.o xxx2.o -ilb=stubs1.ilb -ilb=stubs2.ilb
+</PRE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

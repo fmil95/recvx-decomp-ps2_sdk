@@ -1,15 +1,15 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
-/* 
+/*
  *              Emotion Engine Library Sample Program
- * 
+ *
  *                         - CD/DVD -
- * 
- *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
- * 
- * 
+ *
+ *
  */
 
 #include <stdio.h>
@@ -26,19 +26,12 @@
  *
  * ================================================================ */
 
+#define BASE_priority   82
 
-#define BASE_priority   (82)    /* サンプルプログラムのプライオリティ */
-
-#define MEDIA_CD	/* 読み込みメディアは CD */
-
-unsigned char  ring_buf[2048 * 80] __attribute__((aligned (16)));
-			/* ストリーミングバッファ */
-unsigned char  bf[2048] __attribute__((aligned (16)));
-			/* 読み込みバッファ */
+#define MEDIA_CD
 
 int my_main(int arg);
 
-/* my_main()関数スレッドを作成するための関数 */
 int start( int argc, char *argv[] )
 {
         struct ThreadParam param;
@@ -59,7 +52,9 @@ int start( int argc, char *argv[] )
         }
 }
 
-/* メイン処理関数 */
+unsigned char  ring_buf[2048 * 80] __attribute__((aligned (16)));
+unsigned char  bf[2048] __attribute__((aligned (16)));
+
 int my_main(int arg)
 {
 	int	rfd, wfd, cnt0, ret, 
@@ -114,9 +109,8 @@ int my_main(int arg)
 
         /* ライブラリ関数でファイルを読む */
 	printf("Search Filename: %s\n",filename);
-        /* ファイルの格納位置を検索する */
 	ret= sceCdSearchFile(&fp, filename);
-			
+			/* ファイルの格納位置を検索する */
 	printf("data= %x\n",fp.date[4]);
 	if(!ret){
 		printf("sceCdSearchFile fail :%d\n",ret);
@@ -132,14 +126,14 @@ int my_main(int arg)
         }
 
         /* ストリーム関数でファイルを読む */
-        /* エラー発生時は２５５回リトライする。 */
         mode.trycount= 0;
-        /* エラー発生時は回転速度を落してリード */
+                        /* エラー発生時は２５５回リトライする。 */
         mode.spindlctrl= SCECdSpinNom;
-        /* データサイズは2048byte */
-	/* ストリーマはデータサイズ２０４８byteのみサポート */
+                        /* エラー発生時は回転速度を落してリード             */
         mode.datapattern= SCECdSecS2048;
-                       
+                        /* データサイズは2048byte                           */
+			/* ストリーマはデータサイズ２０４８byteのみサポート */
+
 	file_sec= fp.size / 2048; if(fp.size % 2048) file_sec++;
 	start_st= fp.lsn;
 	sceCdStStart(start_st , &mode);

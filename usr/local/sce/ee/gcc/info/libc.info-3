@@ -48,65 +48,6 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: libc.info,  Node: setvbuf,  Next: siprintf,  Prev: setbuf,  Up: Stdio
-
-`setvbuf'--specify file or stream buffering
-===========================================
-
-*Synopsis*
-     #include <stdio.h>
-     int setvbuf(FILE *FP, char *BUF,
-         int MODE, size_t SIZE);
-   *Description*
-Use `setvbuf' to specify what kind of buffering you want for the file
-or stream identified by FP, by using one of the following values (from
-`stdio.h') as the MODE argument:
-
-`_IONBF'
-     Do not use a buffer: send output directly to the host system for
-     the file or stream identified by FP.
-
-`_IOFBF'
-     Use full output buffering: output will be passed on to the host
-     system only when the buffer is full, or when an input operation
-     intervenes.
-
-`_IOLBF'
-     Use line buffering: pass on output to the host system at every
-     newline, as well as when the buffer is full, or when an input
-     operation intervenes.
-
-   Use the SIZE argument to specify how large a buffer you wish.  You
-can supply the buffer itself, if you wish, by passing a pointer to a
-suitable area of memory as BUF.  Otherwise, you may pass `NULL' as the
-BUF argument, and `setvbuf' will allocate the buffer.
-
-*Warnings*
-You may only use `setvbuf' before performing any file operation other
-than opening the file.
-
-   If you supply a non-null BUF, you must ensure that the associated
-storage continues to be available until you close the stream identified
-by FP.
-
-*Returns*
-A `0' result indicates success, `EOF' failure (invalid MODE or SIZE can
-cause failure).
-
-*Portability*
-Both ANSI C and the System V Interface Definition (Issue 2) require
-`setvbuf'. However, they differ on the meaning of a `NULL' buffer
-pointer: the SVID issue 2 specification says that a `NULL' buffer
-pointer requests unbuffered output.  For maximum portability, avoid
-`NULL' buffer pointers.
-
-   Both specifications describe the result on failure only as a nonzero
-value.
-
-   Supporting OS subroutines required: `close', `fstat', `isatty',
-`lseek', `read', `sbrk', `write'.
-
-
 File: libc.info,  Node: siprintf,  Next: printf,  Prev: setvbuf,  Up: Stdio
 
 `siprintf'--write formatted output (integer only)
@@ -136,8 +77,8 @@ of the format string is encountered.
 
 File: libc.info,  Node: printf,  Next: scanf,  Prev: siprintf,  Up: Stdio
 
-`printf', `fprintf', `sprintf', `snprintf'--format output
-=========================================================
+`printf', `fprintf', `sprintf'--format output
+=============================================
 
 *Synopsis*
      #include <stdio.h>
@@ -145,7 +86,6 @@ File: libc.info,  Node: printf,  Next: scanf,  Prev: siprintf,  Up: Stdio
      int printf(const char *FORMAT [, ARG, ...]);
      int fprintf(FILE *FD, const char *FORMAT [, ARG, ...]);
      int sprintf(char *STR, const char *FORMAT [, ARG, ...]);
-     int snprintf(char *STR, size_t SIZE, const char *FORMAT [, ARG, ...]);
    *Description*
 `printf' accepts a series of arguments, applies to each a format
 specifier from `*FORMAT', and writes the formatted data to `stdout',
@@ -154,16 +94,14 @@ undefined if there are not enough arguments for the format.  `printf'
 returns when it reaches the end of the format string.  If there are
 more arguments than the format requires, excess arguments are ignored.
 
-   `fprintf', `sprintf' and `snprintf' are identical to `printf', other
-than the destination of the formatted output: `fprintf' sends the
-output to a specified file FD, while `sprintf' stores the output in the
-specified char array STR and `snprintf' limits number of characters
-written to STR to at most SIZE (including terminating `0').  For
-`sprintf' and `snprintf', the behavior is also undefined if the output
-`*STR' overlaps with one of the arguments. FORMAT is a pointer to a
-charater string containing two types of objects: ordinary characters
-(other than `%'), which are copied unchanged to the output, and
-conversion specifications, each of which is introduced by `%'.  (To
+   `fprintf' and `sprintf' are identical to `printf', other than the
+destination of the formatted output: `fprintf' sends the output to a
+specified file FD, while `sprintf' stores the output in the specified
+char array STR.  For `sprintf', the behavior is also undefined if the
+output `*STR' overlaps with one of the arguments.  FORMAT is a pointer
+to a charater string containing two types of objects: ordinary
+characters (other than `%'), which are copied unchanged to the output,
+and conversion specifications, each of which is introduced by `%'.  (To
 include `%' in the output, use `%%' in the format string.)  A
 conversion specification has the following form:
 
@@ -731,7 +669,6 @@ File: libc.info,  Node: vprintf,  Prev: tmpnam,  Up: Stdio
      int vprintf(const char *FMT, va_list LIST);
      int vfprintf(FILE *FP, const char *FMT, va_list LIST);
      int vsprintf(char *STR, const char *FMT, va_list LIST);
-     int vsnprintf(char *STR, size_t SIZE, const char *FMT, va_list LIST);
      
      int _vprintf_r(void *REENT, const char *FMT,
          va_list LIST);
@@ -739,14 +676,12 @@ File: libc.info,  Node: vprintf,  Prev: tmpnam,  Up: Stdio
          va_list LIST);
      int _vsprintf_r(void *REENT, char *STR, const char *FMT,
          va_list LIST);
-     int _vsnprintf_r(void *REENT, char *STR, size_t SIZE, const char *FMT,
-         va_list LIST);
    *Description*
-`vprintf', `vfprintf', `vsprintf' and `vsnprintf' are (respectively)
-variants of `printf', `fprintf', `sprintf' and `snprintf'.  They differ
-only in allowing their caller to pass the variable argument list as a
-`va_list' object (initialized by `va_start') rather than directly
-accepting a variable number of arguments.
+`vprintf', `vfprintf', and `vsprintf' are (respectively) variants of
+`printf', `fprintf', and `sprintf'.  They differ only in allowing their
+caller to pass the variable argument list as a `va_list' object
+(initialized by `va_start') rather than directly accepting a variable
+number of arguments.
 
 *Returns*
 The return values are consistent with the corresponding functions:
@@ -804,7 +739,6 @@ managing areas of memory.  The corresponding declarations are in
 * strtok::      Get next token from a string
 * strupr::	Convert string to upper case
 * strxfrm::     Transform string
-* swab::        Swap adjacent bytes
 
 
 File: libc.info,  Node: bcmp,  Next: bcopy,  Up: Strings
@@ -1642,4 +1576,61 @@ the S1 is returned.
 `strstr' is ANSI C.
 
    `strstr' requires no supporting OS subroutines.
+
+
+File: libc.info,  Node: strtok,  Next: strupr,  Prev: strstr,  Up: Strings
+
+`strtok'--get next token from a string
+======================================
+
+*Synopsis*
+     #include <string.h>
+     char *strtok(char *SOURCE, const char *DELIMITERS)
+     char *strtok_r(char *SOURCE, const char *DELIMITERS,
+         char **LASTS)
+   *Description*
+The `strtok' function is used to isolate sequential tokens in a
+null-terminated string, `*SOURCE'. These tokens are delimited in the
+string by at least one of the characters in `*DELIMITERS'.  The first
+time that `strtok' is called, `*SOURCE' should be specified; subsequent
+calls, wishing to obtain further tokens from the same string, should
+pass a null pointer instead.  The separator string, `*DELIMITERS', must
+be supplied each time, and may change between calls.
+
+   The `strtok' function returns a pointer to the beginning of each
+subsequent token in the string, after replacing the separator character
+itself with a NUL character.  When no more tokens remain, a null
+pointer is returned.
+
+   The `strtok_r' function has the same behavior as `strtok', except a
+pointer to placeholder `*[lasts'> must be supplied by the caller.
+
+*Returns*
+`strtok' returns a pointer to the next token, or `NULL' if no more
+tokens can be found.
+
+*Portability*
+`strtok' is ANSI C.
+
+   `strtok' requires no supporting OS subroutines.
+
+
+File: libc.info,  Node: strupr,  Next: strxfrm,  Prev: strtok,  Up: Strings
+
+`strupr'--force string to uppercase
+===================================
+
+*Synopsis*
+     #include <string.h>
+     char *strupr(char *A);
+   *Description*
+`strupr' converts each characters in the string at A to upper case.
+
+*Returns*
+`strupr' returns its argument, A.
+
+*Portability*
+`strupr' is not widely portable.
+
+   `strupr' requires no supporting OS subroutines.
 

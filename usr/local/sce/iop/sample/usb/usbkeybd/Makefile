@@ -1,7 +1,7 @@
 #
 #  IOP usbmouse program Makefile
 #
-#  $Id: Makefile,v 1.3 2000/09/29 08:50:15 fukunaga Exp $
+#  $Id: Makefile,v 1.2 2000/04/21 05:28:35 xokano Exp $
 #
 ifeq ($(wildcard PathDefs),)
 PathDefs:
@@ -30,7 +30,7 @@ clean:
 run:	$(PROGNAME)
 	dsreset 0 0 ;\
 	dsistart /usr/local/sce/iop/modules/usbd.irx ;\
-	dsidb -nr -noexit mstart $(PROGNAME)
+	dsistart $(PROGNAME)
 
 $(PROGNAME:%.irx=%.o) : $(PROGNAME:%.irx=%.c) # add your local include file
 

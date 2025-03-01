@@ -1,9 +1,9 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
- *                          Version 2.2.1
+ *                          Version 0.01
  *                           Shift-JIS
  *
  *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
@@ -25,9 +25,6 @@
  *						    AddDmacHandler2
  *						    SetDebugHandler
  *	 2.0.0		Aug.17.2000	horikawa    ExpandScratchPad
- *	 2.2.0		Dec.12.2000	horikawa    DIntr/EIntr
- *	 2.2.1          Jan.23.2001	akiyuki     added void, const
- *                                                   and __asm__
  */
 
 #ifndef _eekernel_h_
@@ -42,35 +39,19 @@
 #define MAX_HANDLERS    	128
 #define MAX_ALARMS      	64
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-int EIntr(void);	/* System used */
-int DIntr(void);	/* System used */
-#ifdef __cplusplus
-}
-#endif
-
-#define	EI	EIntr
-#define	DI	DIntr
-
-#ifndef EI
-#define	EI()			__asm__ volatile("ei")
-#endif
-#ifndef DI
+#define	EI()			asm volatile("ei")
 #define	DI() \
 { \
       u_int stat; \
       do { \
-	__asm__ volatile (".p2align 3"); \
-	__asm__ volatile ("di"); \
-	__asm__ volatile ("sync.p"); \
-	__asm__ volatile ("mfc0	%0, $12" : "=r"(stat):); \
+        asm volatile (".p2align 3"); \
+	asm volatile ("di"); \
+	asm volatile ("sync.p"); \
+	asm volatile ("mfc0	%0, $12" : "=r"(stat):); \
       } while (stat & 0x00010000); \
 }
-#endif
 
-#define	ExitHandler()		__asm__ volatile("sync.l; ei")
+#define	ExitHandler()		asm volatile("sync.l; ei")
 
 #define INST_CACHE      	2
 #define DATA_CACHE      	1
@@ -139,7 +120,7 @@ extern "C" {
 
 struct ThreadParam {
     int     status;
-    void    (*entry)(void *);
+    void    *entry;
     void    *stack;
     int     stackSize;
     void    *gpReg;
@@ -230,7 +211,7 @@ int iReferSemaStatus(int, struct SemaParam *);
  */
 
 void SetVSyncCount(u_int *);	 /* old fashioned */
-void VSync(void);		 /* System Use */
+void VSync();			 /* System Use */
 
 /*
  * Interrupt
@@ -264,17 +245,16 @@ void *SetDebugHandler(
 	int,
 	void (*h)(u_int, u_int, u_int, u_int, u_int, u_long128 *)
 );
-void InitTLBFunctions(void);
 int ExpandScratchPad(u_int);
 
 /*
  * Others
  */
 
-void LoadExecPS2(const char *, int, char *[]);
+void LoadExecPS2(char *, int, char *[]);
 void Exit(int n);
 void ResetEE(u_int n);		/* System Use */
-int ExecPS2(void *, void *, int, char *[]); /* System Use */
+int ExecPS2(void *, void *, int, char **); /* System Use */
 void SetGsCrt(short, short, short); /* System Use */
 int MachineType(void);		/* System Use */
 int iMachineType(void);		/* System Use */

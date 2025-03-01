@@ -1,0 +1,6586 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> IOPカーネルライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>IOPカーネルライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>システムメモリ管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#AllocSysMemory>AllocSysMemory </A><BR>
+</TD><TD> </TD>
+<TD>メモリエリアの割り当て </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#FreeSysMemory>FreeSysMemory </A><BR>
+</TD><TD> </TD>
+<TD>メモリエリアの解放 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#QueryMaxFreeMemSize>QueryMaxFreeMemSize </A><BR>
+</TD><TD> </TD>
+<TD>割り当て可能最大メモリサイズの取得 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#QueryMemSize>QueryMemSize </A><BR>
+</TD><TD> </TD>
+<TD>全メモリサイズの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#QueryTotalFreeMemSize>QueryTotalFreeMemSize </A><BR>
+</TD><TD> </TD>
+<TD>割り当て可能メモリサイズ総計の取得 </TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>モジュール管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#LoadStartModule>LoadStartModule </A><BR>
+</TD><TD> </TD>
+<TD>プログラムモジュールをファイルからロードして起動する </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#RegisterLibraryEntries>RegisterLibraryEntries </A><BR>
+</TD><TD> </TD>
+<TD>常駐ライブラリのエントリテーブルを登録する </TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>スレッド管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#ChangeThreadPriority / iChangeThreadPriority>ChangeThreadPriority / iChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>スレッドの優先度変更 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CheckThreadStack>CheckThreadStack </A><BR>
+</TD><TD> </TD>
+<TD>スレッドのスタックの残り容量を取得 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CreateThread>CreateThread </A><BR>
+</TD><TD> </TD>
+<TD>スレッド生成 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteThread>DeleteThread </A><BR>
+</TD><TD> </TD>
+<TD>スレッド削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ExitThread>ExitThread </A><BR>
+</TD><TD> </TD>
+<TD>自スレッド終了 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetThreadId>GetThreadId </A><BR>
+</TD><TD> </TD>
+<TD>自スレッドのスレッドID参照 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferThreadStatus / iReferThreadStatus>ReferThreadStatus / iReferThreadStatus </A><BR>
+</TD><TD> </TD>
+<TD>スレッド状態参照 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReleaseWaitThread / iReleaseWaitThread>ReleaseWaitThread / iReleaseWaitThread </A><BR>
+</TD><TD> </TD>
+<TD>他スレッドのWAIT状態の強制解除	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#RotateThreadReadyQueue / iRotateThreadReadyQueue>RotateThreadReadyQueue / iRotateThreadReadyQueue </A><BR>
+</TD><TD> </TD>
+<TD>スレッドレディキュー回転 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#StartThread>StartThread </A><BR>
+</TD><TD> </TD>
+<TD>スレッド起動 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#StartThreadArgs>StartThreadArgs </A><BR>
+</TD><TD> </TD>
+<TD>スレッド起動 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#TerminateThread / iTerminateThread>TerminateThread / iTerminateThread </A><BR>
+</TD><TD> </TD>
+<TD>他スレッド強制終了	実装済、未テスト</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>スレッド直接同期関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#CancelWakeupThread / iCancelWakeupThread>CancelWakeupThread / iCancelWakeupThread </A><BR>
+</TD><TD> </TD>
+<TD>スレッドの起床要求を無効化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ResumeThread / iResumeThread>ResumeThread / iResumeThread </A><BR>
+</TD><TD> </TD>
+<TD>SUSPEND状態のスレッドの再開	未実装</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SleepThread>SleepThread </A><BR>
+</TD><TD> </TD>
+<TD>自スレッドを起床待ち状態へ移行 </TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SuspendThread / iSuspendThread>SuspendThread / iSuspendThread </A><BR>
+</TD><TD> </TD>
+<TD>他スレッドをSUSPEND状態へ移行	未実装</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WakeupThread / iWakeupThread>WakeupThread / iWakeupThread </A><BR>
+</TD><TD> </TD>
+<TD>他スレッドの起床</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>セマフォによる排他制御関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#CreateSema>CreateSema </A><BR>
+</TD><TD> </TD>
+<TD>セマフォ生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteSema>DeleteSema </A><BR>
+</TD><TD> </TD>
+<TD>セマフォ削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferSemaStatus / iReferSemaStatus>ReferSemaStatus / iReferSemaStatus </A><BR>
+</TD><TD> </TD>
+<TD>セマフォ状態参照</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SignalSema / iSignalSema>SignalSema / iSignalSema </A><BR>
+</TD><TD> </TD>
+<TD>セマフォ資源返却</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitSema / PollSema>WaitSema / PollSema </A><BR>
+</TD><TD> </TD>
+<TD>セマフォ資源獲得</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>イベントフラグによる<BR>同期管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#ClearEventFlag / iClearEventFlag>ClearEventFlag / iClearEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグのクリア</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CreateEventFlag>CreateEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグ生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteEventFlag>DeleteEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグ削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferEventFlagStatus / iReferEventFlagStatus>ReferEventFlagStatus / iReferEventFlagStatus </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグ状態参照</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetEventFlag / iSetEventFlag>SetEventFlag / iSetEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグのセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitEventFlag / PollEventFlag>WaitEventFlag / PollEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグ待ち</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>メッセージボックスによる通信関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#CreateMbx>CreateMbx </A><BR>
+</TD><TD> </TD>
+<TD>メッセージボックス生成	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteMbx>DeleteMbx </A><BR>
+</TD><TD> </TD>
+<TD>メッセージボックス削除	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReceiveMbx / PollMbx>ReceiveMbx / PollMbx </A><BR>
+</TD><TD> </TD>
+<TD>メッセージボックスから受信	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferMbxStatus / iReferMbxStatus>ReferMbxStatus / iReferMbxStatus </A><BR>
+</TD><TD> </TD>
+<TD>メッセージボックス状態参照	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SendMbx / iSendMbx>SendMbx / iSendMbx </A><BR>
+</TD><TD> </TD>
+<TD>メッセージボックスへ送信	実装済、未テスト</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>割り込み管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#CpuDisableIntr>CpuDisableIntr </A><BR>
+</TD><TD> </TD>
+<TD>割り込みとディスパッチの禁止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CpuEnableIntr>CpuEnableIntr </A><BR>
+</TD><TD> </TD>
+<TD>割り込みとディスパッチの許可</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CpuResumeIntr>CpuResumeIntr </A><BR>
+</TD><TD> </TD>
+<TD>割り込みとディスパッチの状態の復帰</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CpuSuspendIntr>CpuSuspendIntr </A><BR>
+</TD><TD> </TD>
+<TD>割り込みとディスパッチの状態保存と禁止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DisableIntr>DisableIntr </A><BR>
+</TD><TD> </TD>
+<TD>特定の割り込み要因の割り込み禁止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#EnableIntr>EnableIntr </A><BR>
+</TD><TD> </TD>
+<TD>特定の割り込み要因の割り込み許可</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#interrupthandler>interrupthandler </A><BR>
+</TD><TD> </TD>
+<TD>割り込みハンドラのプロトタイプ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#RegisterIntrHandler>RegisterIntrHandler </A><BR>
+</TD><TD> </TD>
+<TD>割込みハンドラ登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReleaseIntrHandler>ReleaseIntrHandler </A><BR>
+</TD><TD> </TD>
+<TD>割込みハンドラ削除</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>メモリプール管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#AllocateFpl / pAllocateFpl / ipAllocateFpl>AllocateFpl / pAllocateFpl / ipAllocateFpl </A><BR>
+</TD><TD> </TD>
+<TD>固定長メモリブロック獲得	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#AllocateVpl / pAllocateVpl / ipAllocateVpl>AllocateVpl / pAllocateVpl / ipAllocateVpl </A><BR>
+</TD><TD> </TD>
+<TD>可変長メモリブロック獲得	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CreateFpl>CreateFpl </A><BR>
+</TD><TD> </TD>
+<TD>固定長メモリプール生成	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CreateVpl>CreateVpl </A><BR>
+</TD><TD> </TD>
+<TD>可変長メモリプール生成	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteFpl>DeleteFpl </A><BR>
+</TD><TD> </TD>
+<TD>固定長メモリプール削除	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DeleteVpl>DeleteVpl </A><BR>
+</TD><TD> </TD>
+<TD>可変長メモリプール削除	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#FreeFpl>FreeFpl </A><BR>
+</TD><TD> </TD>
+<TD>固定長メモリブロック返却	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#FreeVpl>FreeVpl </A><BR>
+</TD><TD> </TD>
+<TD>可変長メモリブロック返却	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferFplStatus / iReferFplStatus>ReferFplStatus / iReferFplStatus </A><BR>
+</TD><TD> </TD>
+<TD>固定長メモリプール状態参照	実装済、未テスト</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferVplStatus / iReferVplStatus>ReferVplStatus / iReferVplStatus </A><BR>
+</TD><TD> </TD>
+<TD>可変長メモリプール状態参照	実装済、未テスト</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>時間/ソフトタイマ管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#alarmhandler>alarmhandler </A><BR>
+</TD><TD> </TD>
+<TD>アラームハンドラのプロトタイプ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#CancelAlarm / iCancelAlarm>CancelAlarm / iCancelAlarm </A><BR>
+</TD><TD> </TD>
+<TD>アラームハンドラの解除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#DelayThread>DelayThread </A><BR>
+</TD><TD> </TD>
+<TD>スレッド遅延</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetSystemTime>GetSystemTime </A><BR>
+</TD><TD> </TD>
+<TD>システム時刻参照</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetAlarm / iSetAlarm>SetAlarm / iSetAlarm </A><BR>
+</TD><TD> </TD>
+<TD>アラームハンドラの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SysClock2USec>SysClock2USec </A><BR>
+</TD><TD> </TD>
+<TD>システムクロック値を実時間に変換</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#USec2SysClock>USec2SysClock </A><BR>
+</TD><TD> </TD>
+<TD>マイクロ秒をシステムクロック値に変換</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>ハードウェアタイマ管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#AllocHardTimer>AllocHardTimer </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#FreeHardTimer>FreeHardTimer </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマの返却</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetHardTimerIntrCode>GetHardTimerIntrCode </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマの割り込み番号の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetHoldMode / iGetHoldMode>GetHoldMode / iGetHoldMode </A><BR>
+</TD><TD> </TD>
+<TD>ホールドモードレジスタを読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetHoldReg / iGetHoldReg>GetHoldReg / iGetHoldReg </A><BR>
+</TD><TD> </TD>
+<TD>ホールドレジスタを読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetTimerCompare / iGetTimerCompare>GetTimerCompare / iGetTimerCompare </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのコンペアレジスタを読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetTimerCounter / iGetTimerCounter>GetTimerCounter / iGetTimerCounter </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのカウンタレジスタを読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#GetTimerStatus / iGetTimerStatus>GetTimerStatus / iGetTimerStatus </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのステータスレジスタを読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReferHardTimer>ReferHardTimer </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマの参照目的での取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetHoldMode / iSetHoldMode>SetHoldMode / iSetHoldMode </A><BR>
+</TD><TD> </TD>
+<TD>ホールドモードレジスタの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetTimerCompare / iSetTimerCompare>SetTimerCompare / iSetTimerCompare </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのコンペアレジスタの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetTimerCounter / iSetTimerCounter>SetTimerCounter / iSetTimerCounter </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのカウンタレジスタの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#SetTimerMode / iSetTimerMode>SetTimerMode / iSetTimerMode </A><BR>
+</TD><TD> </TD>
+<TD>ハードウェアタイマのモードレジスタの設定</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>V-blank 管理関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#RegisterVblankHandler>RegisterVblankHandler </A><BR>
+</TD><TD> </TD>
+<TD>Vblank ハンドラ登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#ReleaseVblankHandler>ReleaseVblankHandler </A><BR>
+</TD><TD> </TD>
+<TD>Vblank ハンドラ削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#vblankhandler>vblankhandler </A><BR>
+</TD><TD> </TD>
+<TD>Vblank ハンドラのプロトタイプ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitNonVblank>WaitNonVblank </A><BR>
+</TD><TD> </TD>
+<TD>V-blank期間ではなくなるまで待つ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitVblank>WaitVblank </A><BR>
+</TD><TD> </TD>
+<TD>V-blank期間になるまで待つ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitVblankEnd>WaitVblankEnd </A><BR>
+</TD><TD> </TD>
+<TD>次の「V-blank期間終了」まで待つ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#WaitVblankStart>WaitVblankStart </A><BR>
+</TD><TD> </TD>
+<TD>次の「V-blank期間開始」まで待つ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>キャッシュ操作関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#FlushDcache>FlushDcache </A><BR>
+</TD><TD> </TD>
+<TD>データキャッシュのクリア</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#FlushIcache>FlushIcache </A><BR>
+</TD><TD> </TD>
+<TD>インストラクションキャッシュのクリア</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>システムメモリ管理関数</H2></U>
+</DIV>
+<A name=AllocSysMemory>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>AllocSysMemory
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリエリアの割り当て 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void * <B>AllocSysMemory</B>(int <I>type</I>, unsigned long <I>size</I>, void *<I>addr</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>	0,1,2 のいずれかを指定し、メモリの割り当て方針を指定します。
+<I>size</I>	割り当てメモリサイズを byte単位で指定します。
+<I>addr</I>	type==2 の時、アドレスを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非NULL		割り当てたメモリの先頭アドレス <BR>
+    NULL		割り当て失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>size</I> で指定した バイト数のメモリを割り当てます。 <BR>
+    <I>type</I> が 0 の場合は、メモリアドレスの若い方から空きエリアをさがして、割り当てます。 <BR>
+    <I>type</I> が 1 の場合は、メモリアドレスの大きい方から空きエリアをさがして、割り当てます。 <BR>
+    <I>type</I> が 2 の場合は、addrで指定したアドレスから割り当てます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込み禁止状態で呼んでください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=FreeSysMemory>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FreeSysMemory
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メモリエリアの解放 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>FreeSysMemory</B>(void *<I>area</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>area</I>	解放するメモリエリアの先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK		正常終了 <BR>
+    KE_ERROR	指定した <I>area</I> は割り当てられていなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>area </I>で指定したメモリエリアを解放します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込み禁止状態で呼んでください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=QueryMaxFreeMemSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>QueryMaxFreeMemSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り当て可能最大メモリサイズの取得 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned long <B>QueryMaxFreeMemSize()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;=0)	割り当て可能な最大メモリブロックのバイト数 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り当て可能なメモリブロックのうちもっとも大きなブロックのサイズを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=QueryMemSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>QueryMemSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        全メモリサイズの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned long <B>QueryMemSize()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)	管理対象のメモリ総バイト数 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムメモリマネージャの管理対象となるメモリのサイズを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=QueryTotalFreeMemSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>QueryTotalFreeMemSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り当て可能メモリサイズ総計の取得 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned long <B>QueryTotalFreeMemSize()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;=0)	割り当て可能なメモリの総バイト数 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り当て可能メモリサイズ総計を取得します。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>モジュール管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=LoadStartModule>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>LoadStartModule
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        プログラムモジュールをファイルからロードして起動する 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>LoadStartModule</B>(const char *<I>filename</I>,
+	int <I>args</I>,
+	const char *<I>argp</I>,
+	int *<I>result</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>filename</I>   プログラムモジュールの格納されたファイルの名称を指定します。
+           プログラムモジュールの argv[0] に渡される文字列としても使用されます。
+<I>args</I>    <I>argp</I> が指している文字配列の有効データ数を指定します。
+<I>argp</I>    引数文字列を格納した文字配列。
+        引数文字列は null terminate された複数の文字列を連続して格納します。
+<I>result</I>   モジュールの初期化ルーチンが返す戻り値を格納する変数へのポインタを指定
+         します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;=0)			ロードしたモジュールのID番号 <BR>
+    KE_ILLEGAL_OBJECT	オブジェクトファイルの形式が正しくない <BR>
+    KE_LINKERR		ロードしたモジュールが必要とする常駐ライブラリが存在しない <BR>
+    KE_NOFILE		指定したファイルが見つからない <BR>
+    KE_FILEERR		ファイルの読み込み時にエラー発生 <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    プログラムモジュールをファイルからロードして起動します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=RegisterLibraryEntries>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>RegisterLibraryEntries
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        常駐ライブラリのエントリテーブルを登録する 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>RegisterLibraryEntries</B>(libhead *<I>lib</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lib</I>	ユーティリティ loplibgen が生成したエントリテーブルへのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK		正常 <BR>
+    KE_ERROR	登録失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    常駐ライブラリのエントリテーブルをシステムに登録します。 <BR>
+    常駐するプログラムモジュールは、任意の個数のエントリテーブルを登録することができます。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>スレッド管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=ChangeThreadPriority / iChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ChangeThreadPriority / iChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッドの優先度変更 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ChangeThreadPriority</B>( int <I>thid</I>, int <I>priority</I> );
+int <B>iChangeThreadPriority</B>( int <I>thid</I>, int <I>priority</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>    優先度を変更するスレッドのスレッドIDを指定します。
+        TH_SELF(=0)で、自スレッドを指定できます。
+<I>priority</I>  変更後の優先度を指定します。
+        LOWEST_PRIORITY(=126)からHIGHEST_PRIORITY(=1)が指定可能で、
+        数の小さい方が高い優先度となります。
+        通常は、USER_LOWEST_PRIORITY(=123)から
+        USER_HIGHEST_PRIORITY(=9)の範囲を使用します。
+        TPRI_RUN(=0)を指定することにより、自スレッドの現在の優先度を
+        指定できます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_PRIORITY	優先度の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_DORMANT		対象のスレッドはDORMANT状態だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    thid で指定されたスレッドの優先度を priority に変更します。 <BR>
+<BR>
+    このサービスコールで変更した優先度は、再び変更しない限りスレッドが終了するまで有効です。 <BR>
+    スレッドが DORMANT状態になると、終了時のスレッドの優先度は捨てられて、次にスレッドが起動されたときの優先度はスレッド生成時に指定された起動時優先度(initPriority)になります。 <BR>
+<BR>
+    対象スレッドがレディキューや何らかの待ち行列につながれていた場合には、このサービスコールによって行列の順番が変ることがあります。 <BR>
+    レディキューの中のスレッド(RUN状態のスレッドも含む)または優先度順の待ち行列の中のスレッドに対して ChangeThreadPriority() が実行された場合、対象スレッドはキューの該当優先度の部分の最後尾に移動します。以前と同じ優先度を指定した場合も、同様にキューのその優先度の部分の最後尾に移動します。したがって、自スレッドを対象として現在と同じ優先度の ChangeThreadPriority()を発行することにより、実行権の放棄を行うことができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CheckThreadStack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CheckThreadStack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッドのスタックの残り容量を取得 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CheckThreadStack()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スレッドのスタックの残りサイズ  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自スレッドのスタックがあとどれくらい空いているかを計算します。 <BR>
+    この関数は、スレッドの必要スタックサイズを決定するための支援用の関数です。 <BR>
+    計算結果が、明らかにスタックオーバーフローを起こしている場合は、警告を表示した後、システムが停止します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CreateThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド生成 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateThread</B>( struct ThreadParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>param</I>   生成するスレッドの設定情報をもつ構造体変数への
+         ポインタを指定します。以下のメンバがあります。
+         int    <I>attr</I>;
+         void   *<I>entry</I>;
+         int   <I>initPriority</I>;
+         int   <I>stackSize</I>;
+         u_int   <I>option</I>;
+        各メンバの内容は以下の通りです。
+         <I>attr</I>   スレッドの記述言語を示す、TH_ASM または 
+                TH_C を指定します。
+                オプションとして TH_COP1, TH_COP2, TH_COP3 
+                を論理和で指定できます。
+                TH_COP1, TH_COP2, TH_COP3 は指定したコプロセッサを 
+                新規スレッドからアクセスできるようにすることを指定します。
+         <I>entry</I>  スレッドのエントリアドレスを指定します。
+                スレッドのエントリポイントとなる関数は引数を
+                ひとつ持つことができます。
+                引数は後述の StartThread() で与えられます。
+<I>        initPriority</I> スレッド起動時(StartThread())の優先度を指定します。
+                LOWEST_PRIORITY(=126)からHIGHEST_PRIORITY(=1)が
+                指定可能で、数の小さい方が高い優先度となります。
+                通常は、USER_LOWEST_PRIORITY(=123)から
+                USER_HIGHEST_PRIORITY(=9)の範囲を使用します。
+<I>        stackSize</I> スレッドの必要スタックサイズを byte 単位で指定します。
+                外部割り込み発生時にレジスタを待避するために 150byteの
+                スタックが使用されるので、この分の余裕を見込んで
+                スタックサイズを指定してください。
+                300 byte 以下のスタックサイズを指定した場合はエラーになります。
+<I>        option</I>   スレッドに関する付加情報。
+                 この値は、ReferThreadStatus()で参照できます。
+                 マルチスレッドマネージャはこの値を関知しません。
+                 起動されるスレッドに対する引数などに利用できます。
+                 後述の StartThread() の arg 引数との違いは、
+                 スレッドがDORMANT 状態になっても保持されることです。
+                 u_long に入りきらない情報を渡したいときは、別途メモリを確保
+                 してそのアドレスを渡してください。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)		スレッドのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_ATTR	attr の指定が不正 <BR>
+    KE_ILLEGAL_STACK_SIZE	スタックサイズの指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT		例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_PRIORITY		優先度の指定が不正 <BR>
+    KE_ILLEGAL_ENTRY		スレッドの entry アドレスが不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スレッドを生成します。 <BR>
+    生成するスレッドに対して スレッド管理領域を割り付けその初期設定を行い、スタック領域を確保します。 <BR>
+    生成するスレッドの情報を <I>param</I> で指定し、戻り値にスレッドのIDが返ってきます。 <BR>
+    生成されたスレッドは DORMANT状態になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	削除するスレッドの ID を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_CONTEXT 	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NOT_DORMANT	対象のスレッドはDORMANT状態ではなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定するスレッドを削除します。 <BR>
+    それにともない、スタック領域とスレッド管理領域を解放します。 <BR>
+    対象のスレッドは、DORMANT 状態でなければなりません。 <BR>
+    自スレッドが DORMANT 状態であることはありえないので、自スレッドを対象スレッドにすることはできません(KE_NOT_DORMANTエラーになります)。 <BR>
+    自スレッドを削除するには、ExitDeleteThread()を使います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ExitThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ExitThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        自スレッド終了 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ExitThread()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自スレッドを正常終了させ、DORMANT 状態へと移行させます。 <BR>
+    ExitThread()は、発行元のコンテキストに戻らないサービスコールです。 <BR>
+<BR>
+    終了するスレッドが獲得した資源(メモリ、セマフォ等)を自動的に開放するということはありません。 <BR>
+<BR>
+    終了したスレッドを StartThread() で再起動すると、スレッドの優先度などのスレッド管理領域に含まれている情報は再設定されます。 <BR>
+    終了時のものを継承することはありません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetThreadId>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetThreadId
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        自スレッドのスレッドID参照 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>GetThreadId</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			スレッドのID <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自スレッドのIDを得ます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReferThreadStatus / iReferThreadStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferThreadStatus / iReferThreadStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド状態参照 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferThreadStatus</B>( int <I>thid</I>, struct ThreadInfo *<I>info</I> );
+int <B>iReferThreadStatus</B>( int <I>thid</I>, struct ThreadInfo *<I>info</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>    参照するスレッドIDを指定します。
+        TH_SELF(=0)で、自スレッドを指定できます。
+<I>info</I>    スレッドの状態を受け取る構造体変数へのポインタを指定します。
+        以下のメンバがあります。
+        u_int    <I>attr</I>;
+        u_int    <I>option</I>;
+        int      <I>status</I>;
+        void     *<I>entry</I>;
+        void     *<I>stack</I>;
+        int      <I>stackSize</I>;
+        int      <I>initPriority</I>;
+        int      <I>currentPriority</I>;
+        int      <I>waitType</I>;
+        int      <I>waitId</I>;
+        int      <I>wakeupCount</I>;
+各メンバの内容は以下の通りです。
+      <I>attr</I>    CreateThread()で設定されたスレッド属性
+      <I>option</I>    CreateThread()で設定された付加情報。
+      <I>status</I>    スレッドの状態を以下のビットの合成であらわします。
+        0x01	THS_RUN	RUN状態
+        0x02	THS_READY	READY状態
+        0x04	THS_WAIT	WAIT状態
+        0x08	THS_SUSPEND	SUSEND状態
+        0x0c	THS_WAITSUSPEND	WAIT-SUSPEND状態
+        0x10	THS_DORMANT	DORMANT状態
+      <I>entry</I>        CreateThread()で設定されたエントリアドレス
+      <I>stackCreate</I>   Thread()実行時にカーネルが確保したスタックエリアの先頭
+                    アドレス
+      <I>stackSize</I>     CreateThread()で設定されたスタックサイズ。
+      <I>initPriority</I>   CreateThread()で設定されたスレッド起動時
+                   (StartThread())の優先度。
+      <I>currentPriority</I>   現在の優先度
+      <I>waitType</I>   スレッドが WAIT状態の時、どのような待ち状態であるかを
+                  示します。
+                  TSW_SLEEP   SleepThread()による待ち状態
+                  TSW_DELAY   DelayThread()による待ち状態
+                  TSW_SEMA   セマフォの待ち状態
+                  TSW_EVENTFLAG   イベントフラグの待ち状態
+                  TSW_MBX   メッセージボックスの待ち状態
+                  TSW_VPL   可変長メモリプール獲得の待ち状態
+                  TSW_FPL   固定長メモリブロック獲得の待ち状態
+      <I>waitId</I>     上記 <I>waitType</I> の待ち対象の ID(イベントフラグのIDなど)
+      <I>wakeupCount</I>    未処理の WakeupThread()の回数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スレッドの状態を参照します。このサービスコールは主にデバッグのために用意されています。デバッグ以外の目的で頻繁に使用する必要はないと思います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReleaseWaitThread / iReleaseWaitThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReleaseWaitThread / iReleaseWaitThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        他スレッドのWAIT状態の強制解除	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReleaseWaitThread</B>( int <I>thid</I> );
+int <B>iReleaseWaitThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	WAIT状態を強制解除するスレッドのスレッドIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_NOT_WAIT		対象のスレッドはWAIT状態ではなかった <BR>
+    KE_ILLEGAL_THID	対象スレッドは自スレッド だった <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定されたスレッドがWAIT状態にある場合にはそれを強制的に解除します。 <BR>
+    解除されたスレッドは、WAIT状態に入ったサービスコール（SleepThread(), WaitEventFlag(), WaitSEma() 等）から戻り、エラーコード KE_RELEASE_WAIT を受け取ります。 <BR>
+<BR>
+    ReleaseWaitThread()では、WAIT状態解除要求のキューイングは行いません。 <BR>
+    すなわち、thid で指定されたスレッドが既にWAIT状態であればそのWAIT状態を解除しますが、対象スレッドがWAIT状態でなければ発行元にエラー KE_NOT_WAITがかえります。 <BR>
+<BR>
+    ReleaseWaitThread()では、SUSPEND状態の解除は行いません。 <BR>
+    二重待ち状態(WAIT-SUSPEND)のスレッドを対象としてReleaseWaitThread()を発行すると、対象スレッドは SUSPEND状態になります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=RotateThreadReadyQueue / iRotateThreadReadyQueue>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>RotateThreadReadyQueue / iRotateThreadReadyQueue
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッドレディキュー回転 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>RotateThreadReadyQueue</B>( int <I>priority</I> );
+int <B>iRotateThreadReadyQueue</B>( int <I>priority</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>priority</I>    キュー回転の対象となる優先度を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_PRIORITY	優先度の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    レディキューの中で priority で指定された優先度の部分を回転します。 <BR>
+    指定された優先度のレディキューの先頭につながれているスレッドをレディキューの最後につなぎ替え、同一優先度のスレッドの実行を切り替えます。 <BR>
+    アプリケーションプログラムはこのサービスコールを一定時間間隔で発行することにより、ラウンドロビンスケジューリングを実現することが可能です。 <BR>
+<BR>
+    スレッド部から発行されるRotateReadyQueue()では、priority に TPRI_RUN(=0)を指定することにより、自スレッドのと同じ優先度のレディキューを回転させることができます。 <BR>
+<BR>
+    RotateReadyQueue()の priority に TPRI_RUN または 自スレッドの優先度を指定した場合には、自スレッドがそのレディキューの最後尾に回ることになります。すなわち自ら実行権を放棄するために、 RotateRadyQueue() を発行することができます。 <BR>
+    なおこのサービスコールの説明における「レディキュー」は、RUN状態のスレッドも含んだものと考えます。 <BR>
+<BR>
+    指定した優先度のレディキューにスレッドが無い場合は何も起きずエラーにもなりません。 <BR>
+<BR>
+    タイマハンドラなどのスレッド独立部から iRotateReadyQueue(TPRI_RUN)を発行することも可能で、その場合には、その時実行中のスレッドを含むレディキューまたはレディキュー中の最高優先度のスレッドを含むレディキューを回転させます。通常この二つは一致していますが、スレッドのディスパッチが遅延されている状態においては、一致しない場合があります。 <BR>
+    この場合、最高優先度のスレッドを含むレディキューを回転させます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=StartThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>StartThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド起動 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>StartThread</B>( int <I>thid</I>, u_long <I>arg </I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	起動するスレッドの ID を指定します。
+<I>arg</I>	スレッドのエントリ関数の引数を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_THID	TH_SELFは指定できない <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NOT_DORMANT	対象のスレッドはDORMANT状態ではなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定するスレッドの実行を開始し、READY状態にします。 <BR>
+    <I>arg</I> によって、スレッドに引数を渡すことが出来ます。 <BR>
+    対象スレッドの優先度は、生成時に指定した initPriorityの値になります。 <BR>
+    このサービスコールは起動要求のキューイングは行わないません。すなわち、対象スレッドが DORMANT状態でない場合は このサービスコールは無視され、発行スレッドにKE_NOT_DORMANTエラーが返ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=StartThreadArgs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>StartThreadArgs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド起動 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>StartThreadArgs</B>( int <I>thid</I>, int <I>args</I>, void *<I>argp</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	起動するスレッドの ID を指定します。
+<I>args</I>	スレッドのエントリ関数の引数ブロックのバイト数を指定します。
+<I>argp</I>	スレッドのエントリ関数の引数ブロックへのポインタを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_THID	TH_SELFは指定できない <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NOT_DORMANT	対象のスレッドはDORMANT状態ではなかった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定するスレッドの実行を開始し、READY状態にします。 <BR>
+    <I>args</I>, <I>argp</I> によって指定された引数ブロックは、スレッドのスタック上にコピーされ、<I>args</I> はそのままスレッドのエントリ関数の第一引数に渡され、エントリ関数の第二引数には、スタック上にコピーされた引数ブロックのアドレスが渡されます。 <BR>
+    対象スレッドの優先度は、生成時に指定した initPriorityの値になります。 <BR>
+    このサービスコールは起動要求のキューイングは行わないません。すなわち、対象スレッドが DORMANT状態でない場合は このサービスコールは無視され、発行スレッドに KE_NOT_DORMANTエラーが返ります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=TerminateThread / iTerminateThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>TerminateThread / iTerminateThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        他スレッド強制終了	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>TerminateThread</B>( int <I>thid</I> );
+int <B>iTerminateThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	強制終了するスレッドのスレッドID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない。 <BR>
+    KE_ILLEGAL_THID	対象スレッドは自スレッド だった <BR>
+    KE_DORMANT		対象のスレッドはDORMANT状態だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定した他スレッドを強制的に終了させ、DORMANT 状態へと移行させます。 <BR>
+    対象スレッドが WAIT状態（SUSPEND状態を含む）にあった場合でも、対象スレッドは待ち解除となって DORMANT 状態に移行します。 <BR>
+    また、対象スレッドがなんらかの待ち行列（セマフォ待ち等）につながれていた場合は、その待ち行列から削除されます。 <BR>
+    <I>thid</I>で自スレッドを指定することは許されず、エラーになります。 <BR>
+<BR>
+    終了するスレッドが獲得した資源(メモリ、セマフォ等)を自動的に開放するということはありません。 <BR>
+    終了させたスレッドを StartThread() で再起動すると、スレッドの優先度などのスレッド管理領域に含まれている情報は再設定されます。 <BR>
+    終了時のものを継承することはありません。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>スレッド直接同期関数</H2></U>
+</DIV>
+</blockquote>
+<A name=CancelWakeupThread / iCancelWakeupThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CancelWakeupThread / iCancelWakeupThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッドの起床要求を無効化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CancelWakeupThread</B>( int <I>thid</I> );
+int <B>iCancelWakeupThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>   起床要求を無効化するスレッドの ID を指定します。
+       TH_SELF(=0)で、自スレッドを指定できます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;=0)			起床要求回数 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid </I>で示されたスレッドの起床要求のカウントを読み出し、起床要求をすべて無効にします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ResumeThread / iResumeThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ResumeThread / iResumeThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SUSPEND状態のスレッドの再開	未実装
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ResumeThread</B>( int <I>thid</I> );
+int <B>iResumeThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>    SUSPEND状態を解除するスレッドのスレッドIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_NOT_SUSPEND	対象のスレッドはSUSPEND状態ではなかった <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> 定されたスレッドの SUSPEND状態を解除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SleepThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SleepThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        自スレッドを起床待ち状態へ移行 
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SleepThread()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_RELEASE_WAIT	ReleaseWait によって状態が解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自スレッドを起床待ち状態(WAIT状態)にします。 <BR>
+<BR>
+    起床待ちに入ったスレッドは、WakeupThread() または、ReleaseWaitThread() によって WAIT状態から戻ります。 <BR>
+<BR>
+    <B>SleepThread()</B> を発行したとき、既に他スレッドによってWakeupThread() が発行されていると、起床要求回数をカウントダウンするのみで WAIT状態に入ること無く <B>SleepThread()</B> から戻ります。詳しくは WakeupThread() の項を参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>SleepThread()</B> を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SuspendThread / iSuspendThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SuspendThread / iSuspendThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        他スレッドをSUSPEND状態へ移行	未実装
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SuspendThread</B>( int <I>thid </I>);
+int <B>iSuspendThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>    SUSPEND状態へ移行させるスレッドのスレッドIDを指定します。
+       自スレッドは指定できません。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_THID	対象スレッドは自スレッドだった <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定されたスレッドを SUSPEND状態に移し、スレッドの実行を中断させます。 <BR>
+    SUSPEND状態は、ResumeThread() によって解除されます。 <BR>
+<BR>
+    <B>SuspendThread()</B> の対象スレッドが既にWAIT状態にあった場合は、WAIT状態と SUSPEND状態が複合した、WAIT-SUSPEND状態になります。その後、このスレッドの WAIT解除の条件が満たされた場合は SUSPEND状態に移行します。 <BR>
+    一方、このWAIT-SUSPEND状態のスレッドに対して ResumeThread()が発行された場合は以前とおなじWAIT状態に戻ります。 <BR>
+<BR>
+    SUSPEND状態は、他スレッドの発行したサービスコールによる中断状態を意味するものなので、本サービスコールで自スレッドを指定することはできません。 <BR>
+<BR>
+    あるスレッドに対して複数回の <B>SuspendThread()</B> が発行された場合、2度目以降の<B>SuspendThread()</B> はエラーとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WakeupThread / iWakeupThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WakeupThread / iWakeupThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        他スレッドの起床
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WakeupThread</B>( int <I>thid</I> );
+int <B>iWakeupThread</B>( int <I>thid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>thid</I>	起床するスレッドの ID を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_UNKNOWN_THID	対象スレッドが存在しない <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>thid</I> で指定したスレッドの起床待ち状態を解除します。 <BR>
+    対象スレッドが WAIT状態になっていない場合すなわちSleepThread()を実行していない場合、<B>WakeupThread()</B> による起床要求の回数がカウントアップされます。 <BR>
+<BR>
+    対象スレッドが SleepThread() を発行しても、起床要求の回数分発行するまでは WAIT状態に移行することは無くなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、<B>WakeupThread()</B> を割り込み禁止状態で呼んだ場合、起床されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>セマフォによる排他制御関数</H2></U>
+</DIV>
+</blockquote>
+<A name=CreateSema>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateSema
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォ生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateSema</B>( struct SemaParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>param</I>   生成するセマフォの設定情報をもつ構造体変数へのポインタを指定します。
+         以下のメンバがあります。
+         u_int   <I>attr</I>;
+         int    <I>initCount</I>;
+         int    <I>maxCount</I>;
+         u_int   <I>option</I>;
+         各メンバの内容は以下の通りです。
+         <I>attr</I>  セマフォの属性を指定します。以下のどちらかを指定します。
+               SA_THFIFO   待ちスレッドのキューイングはFIFOで行う
+               SA_THPRI    待ちスレッドのキューイングはスレッドの優先度
+                             で行う。
+         <I>initCoun</I>t   セマフォの初期値
+         <I>maxCount</I>   セマフォの最大値
+         <I>option</I>    セマフォに関する付加情報。
+                   この値は、ReferSemaStatus()で参照できます。
+                   マルチスレッドマネージャはこの値を関知しません。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			セマフォのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_ATTR	<I>attr</I> の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    セマフォを生成します。戻り値にセマフォのIDが返ってきます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteSema>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteSema
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォ削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteSema</B>( int <I>semid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>semid</I>	削除するセマフォIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_SEMID	対象セマフォが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>semid</I> で示したセマフォを削除します。 <BR>
+    セマフォの待ちキューに登録されていたスレッドにはエラー(KE_WAIT_DELETE)が返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReferSemaStatus / iReferSemaStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferSemaStatus / iReferSemaStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォ状態参照
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferSemaStatus</B>( int <I>semid</I>, struct SemaInfo *<I>info</I> );
+int <B>iReferSemaStatus</B>( int <I>semid</I>, struct SemaInfo *<I>info</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>semid   参照するセマフォID
+info     セマフォの状態を受け取る構造体変数へのポインタを指定します。
+         以下のメンバがあります。
+         u_int   <I>attr</I>;
+         u_int   <I>option</I>;
+         int     <I>initCount</I>;
+         int     <I>currentCount</I>;
+         int     <I>maxCount</I>;
+         int     <I>numWaitThreads</I>;
+         各メンバの内容は以下の通りです。
+         <I>attr</I>    CreateSema()で設定されたセマフォ属性
+         <I>option</I>   CreateSema()で設定された付加情報
+         <I>initCount</I>    CreateSema()で設定されたセマフォの初期値
+         <I>currentCount</I>    セマフォの現在値
+         <I>maxCount</I>    CreateSema()で設定されたセマフォの最大値
+         <I>numWaitThreads</I>     セマフォ待ちをしているスレッド数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_SEMID	対象セマフォが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    セマフォの状態を参照します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SignalSema / iSignalSema>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SignalSema / iSignalSema
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォ資源返却
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SignalSema</B>( int <I>semid</I> );
+int <B>iSignalSema</B>( int <I>semid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>semid</I>	資源を返却するセマフォID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_SEMID	対象セマフォが存在しない <BR>
+    KE_SEMA_OVF		セマフォカウンタが最大値に達して更新できない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>semid</I> で示されたセマフォに対して、資源を一つ返却する操作を行います。 <BR>
+    具体的には、対象セマフォに対して既に待っているスレッドがあれば、待ち行列の先頭のスレッドを READY状態に移します。この場合そのセマフォのカウント値は不変です。一方、対象セマフォにたいして待っているスレッドがなければ、そのセマフォのカウント値を１つ増やします。 <BR>
+    ただし、カウンタが既に最大値に達しているときは、カウント値は変らずにエラー(KE_SEMA_OVF)になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、<B>SignalSema()</B> を割り込み禁止状態で呼んだ場合、 WAIT 状態を解除されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitSema / PollSema>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitSema / PollSema
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォ資源獲得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitSema</B>( int <I>semid</I> );
+int <B>PollSema</B>( int <I>semid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>semid</I>	資源を獲得するセマフォID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_SEMID	対象セマフォが存在しない <BR>
+    KE_SEMA_ZERO		セマフォの資源が獲得できない <BR>
+    KE_RELEASE_WAIT	WAIT状態は強制解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_WAIT_DELETE	WAIT対象のオブジェクトが削除された。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>semid</I> で示したセマフォから資源を一つ獲得する操作を行います。 <BR>
+    具体的には、対象セマフォのカウント値が 1 以上の場合セマフォのカウント値を１減らします。この場合本サービスコールを発行したスレッドはWAIT状態に入らず、実行を継続します。一方、対象セマフォのカウント値が 0 の場合、本サービスコールを発行したスレッドはWAIT状態に入り、そのセマフォの待ちキューにつながれます。 <BR>
+<BR>
+    PollSema サービスコールは、WaitSema から、WAIT状態にはいる機能を取り除いたサービスコールです。WaitSema と異なり対象セマフォのカウント値が 0 の場合、エラー KE_SEMA_ZERO で戻ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>WaitSema()</B> を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>イベントフラグによる<BR>同期管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=ClearEventFlag / iClearEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ClearEventFlag / iClearEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグのクリア
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ClearEventFlag</B>( int <I>evfid</I>, u_long <I>bitpattern</I> );
+int <B>iClearEventFlag</B>( int <I>evfid</I>, u_long <I>bitpattern</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>evfid</I>       操作するイベントフラグIDを指定します。
+<I>bitpattern</I>  <I>bitpattern</I> 中の値が 0 の ビットに該当するイベントフラグ値を
+           クリアします。
+           すなわち、イベントフラグ値と bitpattern の論理積を新たな
+           イベントフラグ値とします。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_EVFID	対象イベントフラグが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>evfid</I> でしめすイベントフラグのビットのクリアを行います。 <BR>
+    このサービスコールによってイベント待ちのスレッドのWAIT状態が解除されることはありません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CreateEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグ生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateEventFlag</B>( struct EventFlagParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>param</I>  生成するスレッドの設定情報をもつ構造体変数へのポインタを指定します。
+        以下のメンバがあります。
+        int     <I>attr</I>;
+        int     <I>initPattern</I>;
+        u_int   <I>option</I>;
+        各メンバの内容は以下の通りです。
+        <I>attr</I>   イベントフラグの属性を指定します。以下のどちらかを指定します。
+               EA_SINGLE   複数スレッドの待ちを許さない
+               EA_MULTI    複数スレッドの待ちを許す
+        <I>initPattern</I>     イベントフラグの初期値
+        <I>option</I>    イベントフラグに関する付加情報。
+                  この値は、ReferEventFlagStatus()で参照できます。
+                  マルチスレッドマネージャはこの値を関知しません。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			イベントフラグのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_ATTR	<I>attr</I> の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントフラグを生成し、イベントフラグの初期値を設定します。 <BR>
+    戻り値として、生成されたイベントフラグのIDを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグ削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteEventFlag</B>( int <I>evfid </I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>evfid</I>	削除するイベントフラグIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_EVFID	対象イベントフラグが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>evfid</I>で指定したイベントフラグを削除します。 <BR>
+    対象イベントフラグに対して条件成立待ちをしているスレッドにはエラー(KE_WAIT_DELETE)が返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReferEventFlagStatus / iReferEventFlagStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferEventFlagStatus / iReferEventFlagStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグ状態参照
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferEventFlagStatus</B>( 
+	int <I>evfid</I>,
+	struct EventFlagInfo *<I>info</I> 
+);
+int <B>iReferEventFlagStatus</B>(
+	int <I>evfid</I>,
+	struct EventFlagInfo *<I>info</I> 
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>evfid</I>   参照するイベントフラグID
+<I>info</I>   イベントフラグの状態を受け取る構造体変数へのポインタを指定します。
+       以下のメンバがあります。
+       u_int   <I>attr</I>;
+       u_int   <I>option</I>;
+       u_int   <I>initPattern</I>;
+       u_int   <I>currentPattern</I>;
+       int   <I>numWaitThreads</I>;
+       各メンバの内容は以下の通りです。
+       <I>attr</I>    CreateEventFlag()で設定されたイベントフラグ属性
+       <I>option</I>   CreateEventFlag()で設定された付加情報
+       <I>initPattern</I>   イベントフラグの初期値
+       <I>currentPattern</I>   イベントフラグの現在値
+       <I>numWaitThreads</I>  イベントフラグ待ちをしているスレッド数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK	正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_EVFID	対象イベントフラグが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントフラグの状態を参照します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SetEventFlag / iSetEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetEventFlag / iSetEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグのセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SetEventFlag</B>( int <I>evfid</I>, u_long <I>bitpattern</I> );
+int <B>iSetEventFlag</B>( int <I>evfid</I>, u_long <I>bitpattern </I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>evfid</I>   操作するイベントフラグIDを指定します。
+<I>bitpattern   bitpattern</I> で示すビットを イベントフラグ値にセットします。
+            すなわち、イベントフラグ値と <I>bitpattern</I> の論理和を
+            新たなイベントフラグ値とします。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_EVFID	対象イベントフラグが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>evfid</I> でしめすイベントフラグのビットのセットを行います。 <BR>
+    新しいイベントフラグ値によって、待ち条件を満たしたWAIT状態のスレッドは WAIT状態を解除されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、SetEventFlag() を割り込み禁止状態で呼んだ場合、 WAIT 状態を解除されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitEventFlag / PollEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitEventFlag / PollEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグ待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitEventFlag</B>(
+	int <I>evfid</I>,
+	u_long <I>bitpattern</I>,
+	int <I>waitmode</I>,
+	u_long *<I>resultpat</I> 
+);
+int <B>PollEventFlag</B>( 
+	int <I>evfid</I>,
+	u_long <I>bitpattern</I>,
+	int <I>waitmode</I>,
+	u_long *<I>resultpat</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>evfid</I>       操作するイベントフラグIDを指定します。
+<I>bitpattern</I>  イベントフラグとの比較値を指定します。
+<I>waitmode</I>   待ちモードを指定します。以下のどちらかを指定します。
+            EW_AND  AND待ち
+            EW_OR   OR待ち
+            また、オプションで、以下の指定を 論理和で追加できます。
+            EW_CLEAR	待ち条件成立後、クリア
+<I>resultpat</I>	    待ち解除時のイベントフラグ値を受け取る変数へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_EVFID	対象イベントフラグが存在しない <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_WAIT_DELETE	WAIT対象のオブジェクトが削除された。 <BR>
+    KE_RELEASE_WAIT	WAIT状態は強制解除された。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>WaitEventFlag()</B> は、<I>waitmode</I> で示される待ち解除の条件にしたがって、<I>evfid</I> で示されるイベントフラグがセットされるのを待つサービスコールです。 <BR>
+    <I>evfid</I> で示されるイベントフラグが、既に <I>waitmode</I> で示される待ち解除条件を満たしている場合には、発行スレッドは待ち状態に入らずに実行を続けます。 <BR>
+<BR>
+    <I>waitmode</I> に EW_AND を指定した場合、<I>bitpattern</I> で示されるすべてのビットが 1 になるまで待ちます。 <BR>
+    <I>waitmode</I> に EW_OR を指定した場合、<I>bitpattern</I> で示されるいずれかのビットが 1 になるまで待ちます。 <BR>
+    <I>waitmode</I> に EW_CLEAR が追加指定されている場合、解除条件が成立してこのスレッドが待ち解除になったときに、イベントフラグのすべてのビットは 0 クリアされます。 <BR>
+<BR>
+    <I>resultpat</I> には、待ち解除条件成立直後のイベントフラグ値(EW_CLEAR指定によるクリアの前の値)が返されます。 <BR>
+<BR>
+    <B>PollEventFlag()</B> は、<B>WaitEventFlag()</B> から待ち状態に入る機能を取り除いたサービスコールです。WaitEventFlag() とは異なり待ち解除条件が成立していない場合は直ちにエラー KE_EVF_COND で戻ります。この場合 EW_CLEAR指定は無視されます。 <BR>
+<BR>
+    既に待ちスレッドの存在する EA_SINGLE属性のイベントフラグに対して別のスレッドが <B>WaitEventFlag()</B>, <B>PollEventFlag()</B> を実行することはできません。 <BR>
+    この場合あとから <B>WaitEventFlag()</B>, <B>PollEventFlag()</B> を実行したスレッドへは直ちにエラーで戻ります。 <BR>
+<BR>
+    EA_MULTI属性のイベントフラグに対して複数のスレッドが待ちに入る場合はスレッドの待ち行列が作られます。この場合、一回の SetEventFlag()で複数のスレッドが待ち解除となることがあります。 <BR>
+<BR>
+    スレッドの待ち行列の順番は、先に待ちに入ったものが先頭になり待ちに入った順に並びます。 <BR>
+    待ち行列中に EW_CLEAR指定のスレッドがあり、そのスレッドの待ち解除条件が成立したときは、待ち解除と同時にイベントフラグがクリアされます。 <BR>
+    EW_CLEAR指定を行っていたスレッドよりも後ろにあったスレッドはクリアされた後のイベントフラグを見ることになるため、待ち解除になりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>WaitEventFlag()</B> を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>メッセージボックスによる通信関数</H2></U>
+</DIV>
+</blockquote>
+<A name=CreateMbx>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateMbx
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メッセージボックス生成	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateMbx</B>( struct MbxParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>param   生成するメッセージボックスの設定情報をもつ構造体変数への
+         ポインタを指定します。
+         以下のメンバがあります。
+         int      attr;
+         u_int   option;
+         各メンバの内容は以下の通りです。
+         attr    メッセージボックスの属性を指定します。
+                 以下のどちらかを指定します。
+                 MBA_THFIFO 待ちスレッドのキューイングはFIFOで行う
+                 MBA_THPRI  待ちスレッドのキューイングはスレッドの優先度
+                 	              で行う
+                 MBA_MSFIFO メッセージののキューイングはFIFOで行う
+                 MBA_MSPRI メッセージののキューイングはメッセージの優先度
+                               で行う
+         option  メッセージボックスに関する付加情報。
+                 この値は、ReferMbxStatus()で参照できます。
+                 マルチスレッドマネージャはこの値を関知しません。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			メッセージボックスのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_ATTR	attr の指定が不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メッセージボックスを生成します。 <BR>
+    戻り値に、生成されたメッセージボックスのIDを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteMbx>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteMbx
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メッセージボックス削除	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteMbx</B>( int <I>mbxid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mbxid</I>	削除するメッセージボックスのIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_MBXID	対象メッセージボックスが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>mbxid</I>で示めしたメッセージボックスを削除します。 <BR>
+<BR>
+    対象メッセージボックスにおいてメッセージを待っているスレッドがあった場合にも、本サービスコールは正常終了し、待ち状態にあったスレッドには、エラー(KE_WAIT_DELETE)が返されます。 <BR>
+<BR>
+    また、対象メッセージボックスの中にメッセージが残っている場合でも、エラーとはならずに、メッセージボックスの削除が行われ、中にあったメッセージは放置されたままになります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReceiveMbx / PollMbx>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReceiveMbx / PollMbx
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メッセージボックスから受信	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReceiveMbx</B>( struct MsgPacket **<I>recvmsg</I>, int <I>mbxid</I> );
+int <B>PollMbx</B>( struct MsgPacket **<I>recvmsg</I>, int <I>mbxid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>recvmsg</I>   受信メッセージパケットの先頭アドレスを受け取る変数への
+          ポインタを指定します。
+<I>mbxid</I>     受信メッセージボックスを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_MBXID	対象メッセージボックスが存在しない <BR>
+    KE_RELEASE_WAIT	WAIT状態は強制解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_WAIT_DELETE	WAIT対象のオブジェクトが削除された。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>ReceiveMbx</B> は、<I>mbxid</I> で示された対象メッセージボックスからメッセージを受信します。 <BR>
+    対象メッセージボックスにまだメッセージが送信されていない場合（メッセージボックスが空の場合）には、本サービスコールを発行したスレッドは WAIT状態となり、メッセージボックスのメッセージ到着待ち行列につながれます。 <BR>
+    一方、対象メッセージボックスに既にメッセージが入っている場合には、先頭にあるメッセージを一つ取り出して、それをリターンパラメータ recvmsg に格納して戻ります。 <BR>
+<BR>
+    PollMbx は、ReceiveMbxから、待ち行列にはいる機能を取り除いたサービスコールです。対象メッセージボックスにまだメッセージが送信されていない場合、エラー(KE_MBOX_NOMSG)終了することが ReceiveMbxと異なります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <B>ReceiveMbx()</B> を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+        </BLOCKQUOTE>
+<BR>
+</blockquote>
+<A name=ReferMbxStatus / iReferMbxStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferMbxStatus / iReferMbxStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メッセージボックス状態参照	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferMbxStatus</B>( int <I>mbxid</I>, struct MbxInfo *<I>info</I> );
+int <B>iReferMbxStatus</B>( int <I>mbxid</I>, struct MbxInfo *<I>info</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mbxid</I>	参照するメッセージボックスID
+<I>info</I>    メッセージボックスの状態を受け取る構造体変数へのポインタを指定します。
+        以下のメンバがあります。
+        u_int    attr;
+        u_int    option;
+        int    numWaitThreads;
+        int    numMessage;
+        struct    MsgPacket *topPacket;
+        各メンバの内容は以下の通りです。
+        <I>attr </I>    CreateMbx()で設定されたメッセージボックス属性
+        <I>option</I>    CreateMbx()で設定された付加情報
+        <I>numWaitThreads</I>    メッセージ待ちをしているスレッド数
+        <I>numMessage</I>     メッセージボックスに残っている受信待メッセージ数
+        <I>topPacket</I>    先頭の受信待メッセージ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_MBXID	対象メッセージボックスが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メッセージボックスの状態を参照します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SendMbx / iSendMbx>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SendMbx / iSendMbx
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メッセージボックスへ送信	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SendMbx</B>( int <I>mbxid</I>, struct MsgPacket *<I>sendmsg</I> );
+int <B>iSendMbx</B>( int <I>mbxid</I>, struct MsgPacket *<I>sendmsg</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mbxid</I>      送信先メッセージボックスを指定します。
+<I>sendmsg</I>    送信するメッセージパケットの先頭アドレスを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_MBXID	対象メッセージボックスが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>mbxid</I> で示された対象メッセージボックスに <I>sendmsg</I> を先頭アドレスとするメッセージパケットを送信します。メッセージパケットの内容はコピーされず、受信時には先頭アドレス（<I>sendmsg</I>の値）のみが渡されます。 <BR>
+<BR>
+    対象メッセージボックスで既にメッセージを待っているスレッドがあった場合には、待ち行列の先頭のスレッドのWAIT状態が解除され、SendMbx で指定した <I>sendmsg</I> がそのスレッドに送信されて、下記 ReceiveMbx の recvmsgのリターンパラメータとなります。 <BR>
+<BR>
+    一方、対象メッセージボックスでメッセージを待っているスレッドがなければ、送信されたメッセージはメッセージボックスの中のメッセージキューに入れられます。 <BR>
+    どちらの場合にも、SendMbxを発行したスレッドがWAIT状態になることはありません。 <BR>
+<BR>
+    メッセージパケットは、システム規定のメッセージヘッダとそれに連続してつづくアプリケーションプログラムがデータを格納するメッセージボディ部からなります。 <BR>
+<BR>
+    アプリケーションプログラムは必要に応じてメッセージヘッダ部の msgPriority を設定することができます。メッセージヘッダ部のその他の部分をアプリケーションプログラムが操作する必要はありません。 <BR>
+<BR>
+    マルチスレッドマネージャは、メッセージボディ部をまったく関知しません。 <BR>
+    メッセージボディ部をどのようなサイズにするか、そのサイズをどのようにスレッド間でやりとりするか（暗黙にサイズを規定するか、ボディ部にサイズを示す情報をのせるか等）はアプリケーションプログラムにまかされています。 <BR>
+<BR>
+    また、メッセージパケットを格納するメモリの管理もアプリケーションプログラムにまかされています。アプリケーションプログラムの送信スレッドは、マルチスレッドマネージャが提供するメモリプール管理機能を使用してメモリを確保したりプログラム中に宣言した配列変数からメモリを確保して、メッセージパケットのデータを格納し送信します。 <BR>
+<BR>
+    受信スレッドは受信したメッセージパケットのデータを処理したあと、メモリプール管理機能を使用してメモリを返却したり配列変数に返却したりします。 <BR>
+    送信スレッドと受信スレッドで一貫したメモリ管理をすることは、アプリケーションプログラムにまかされています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、SendMbx() を割り込み禁止状態で呼んだ場合、 WAIT 状態を解除されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>割り込み管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=CpuDisableIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CpuDisableIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みとディスパッチの禁止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CpuDisableIntr()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK		正常 <BR>
+    KE_CPUDI	既に割り込み禁止だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    すべての割り込みとスレッドのディスパッチを禁止します。 <BR>
+    これ以降、CpuEnableIntr() か CpuResumeIntr() が発行されて割り込みおよびディスパッチが許可されるまで、<B>CpuDisableIntr()</B> を発行したスレッドが他のスレッドにプリエンプトされることは無くなります。 <BR>
+<BR>
+    割り込み禁止は、CPU本体の割り込み禁止（またはそれに準ずるハード的な割り込み禁止）を行い、各割り込み要因個別の割り込み許可／禁止状態とは独立に行われます（すなわち、割り込みコントローラの要因別割り込みマスクレジスタは変更しません）。 <BR>
+<BR>
+    既に 割り込みとディスパッチが禁止された状態で、ふたたび<B>CpuDisableIntr()</B> を行うと KE_CPUDIエラーを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CpuEnableIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CpuEnableIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みとディスパッチの許可
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CpuEnableIntr()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みとディスパッチを許可します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CpuResumeIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CpuResumeIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みとディスパッチの状態の復帰
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CpuResumeIntr</B>(int <I>oldstat</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>oldstat</I>	CpuSuspendIntr で取得した前の状態を渡します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK	正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みとディスパッチの状態を復帰します。 <BR>
+    <B>CpuSuspendIntr</B> と対にして使います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CpuSuspendIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CpuSuspendIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みとディスパッチの状態保存と禁止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CpuSuspendIntr</B>(int *<I>oldstat</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>oldstat</I>	前の状態を返すための変数へのポインタを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK		正常 <BR>
+    KE_CPUDI	既に割り込み禁止だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CpuDisableIntr と同様に割り込みとスレッドのディスパッチを禁止します。 <BR>
+    CpuDisableIntr と異なる点は、禁止操作をする直前の状態を、<I>oldstat</I> で指し示す変数に格納する点です。 <BR>
+<BR>
+    既に割り込みとディスパッチが禁止された状態で、ふたたびCpuSuspendIntr を行うと KE_CPUDIエラーを返します。この場合でも*<I>oldstat</I> には適切な値が設定されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DisableIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DisableIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        特定の割り込み要因の割り込み禁止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DisableIntr</B>( int <I>intrcode</I>, int *<I>oldstat</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>intrcode</I> 割り込み要因を指定します。
+         指定できる割り込み要因は、RegisterIntrHandler()サービスコール
+         の<I>intrcode</I> 引数とおなじです。
+<I>oldsta   </I>指定した割り込み要因の変更前の状態を返すための変数へのポインタを
+        指定します。
+        割り込みが許可状態であったならば、割り込み要因番号が帰ってきます。
+        割り込みが禁止状態であったならば、KE_INTRDISABLE が帰ってきます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK				正常 <BR>
+    KE_INTRDISABLE		割り込みはすでに禁止状態だった <BR>
+    KE_ILLEGAL_INTRCODE		割り込み要因番号が不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    特定の割り込み要因の割り込みを禁止します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=EnableIntr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>EnableIntr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        特定の割り込み要因の割り込み許可
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>EnableIntr</B>( int <I>intrcode</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>intrcode</I> 割り込み要因を指定します。
+	指定できる割り込み要因については、RegisterIntrHandler
+	サービスコールのintrcode引数とおなじです。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK				正常 <BR>
+    KE_ILLEGAL_INTRCODE		割り込み要因番号が不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+<A name=interrupthandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>interrupthandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込みハンドラのプロトタイプ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>interrupthandler</B>(void *<I>common</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>common</I>     RegisterIntrHandler()で指定された <I>common</I> が渡されます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NEXT_ENABLE      担当割り込み要因を再び割り込み許可にする。(=1) <BR>
+    NEXT_DISABLE      担当割り込み要因を割り込み禁止にする。(=0) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みハンドラが呼ばれたとき、担当割り込み要因は一時的に割り込み禁止にされています。 <BR>
+    割り込みハンドラの戻り値は重要です。必ず適切な戻り値を返してください。 <BR>
+<BR>
+    割り込みハンドラの担当する割り込み要因のデバイス内でさらに細かく複数の割り込み要因を持つ場合は、以下のようにコーディングしてください。 <BR>
+    (割り込み要因の成立のタイミングによっては、割り込みハンドラが無駄に呼び出される場合がありえます。) <BR>
+<BR>
+        </BLOCKQUOTE>
+<PRE>    int intrhand(void *common)
+    {
+    	while( デバイス内の割り込み要因のどれかが成立している ) {
+    		割り込み要因に応じた処理;
+    	}
+    	return 次の割り込みの許可／不許可;
+    }
+</PRE>
+        <BLOCKQUOTE>
+<BR>
+    割り込みハンドラが呼ばれた時点で、以下の表の様にレジスタが待避されています。 <BR>
+    HTYPE_C を指定して、C言語で割り込みハンドラを記述する場合はレジスタの待避に関して特に留意しなくても問題ありません。 <BR>
+    HTYPE_ASM を指定した場合は、以下の表で待避レジスタとされていないレジスタ ('-'印)を割り込みハンドラで使用する場合は、レジスタの待避と復帰を割り込みハンドラ内で行なってください。 <BR>
+    (注意) <BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> 割り込みハンドラはスレッド独立部として実行されます。<BR>したがってシステムのサービスコールの利用には制限があります。<BR>「マルチスレッドマネージャ管理下でのシステム状態」の節の「スレッド独立部から発行するサービスコール」を参照してください。
+         <LI> システムのサービスコールは特に明記していない限り C の関数で記述されています。<BR>従って、アセンブラで記述した割り込みハンドラからシステムのサービスコールをコールするときは、レジスタの待避と復帰を呼出す側が行わなければいけません。
+</UL>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc">　</TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>HTYPE_FULL</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>HTYPE_ASM</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>HTYPE_C</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">zero</TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">at</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">v0-v1 (2)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">a0-a3 (4)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">t0-t7 (8)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">s0-s7 (8)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">t8-t9 (2)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">k0-k1 (2)</TD>
+<TD valign="TOP"><DIV align=center>never use</DIV></TD>
+<TD valign="TOP"><DIV align=center>never use</DIV></TD>
+<TD valign="TOP"><DIV align=center>never use</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">gp</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">sp</TD>
+<TD valign="TOP"><DIV align=center>○ (use)</DIV></TD>
+<TD valign="TOP"><DIV align=center>○ (use)</DIV></TD>
+<TD valign="TOP"><DIV align=center>○ (use)</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">fp</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>-</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ra</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">hi, lo (2)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">sr</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">epc</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">　</TD>
+<TD valign="TOP"><DIV align=center>34本</DIV></TD>
+<TD valign="TOP"><DIV align=center>14本</DIV></TD>
+<TD valign="TOP"><DIV align=center>26本</DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+</blockquote>
+<A name=RegisterIntrHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>RegisterIntrHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割込みハンドラ登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>RegisterIntrHandler</B>(
+	int <I>intrcode</I>,
+	int <I>type</I>,
+	int (*<I>handler</I>)(void*),
+	void *<I>common</I> 
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>intrcode</I>	割り込み要因を指定します。
+	以下のいずれかの指定ができます。
+	INUM_VBLANK	INUM_GM	INUM_CDROM	INUM_DMA
+	INUM_RTC0	INUM_RTC1	INUM_RTC2	INUM_SIO0
+	INUM_SIO1	INUM_SPU	INUM_PIO	INUM_EVBLANK
+	INUM_DVD	INUM_PCMCIA	INUM_RTC3	INUM_RTC4
+	INUM_RTC5	INUM_SIO2	INUM_HTR0	INUM_HTR1
+	INUM_HTR2	INUM_HTR3	INUM_USB	INUM_EXTR
+	IUNM_DMA_0	IUNM_DMA_1	IUNM_DMA_2	IUNM_DMA_3
+	IUNM_DMA_4	IUNM_DMA_5	IUNM_DMA_6	IUNM_DMA_7
+	IUNM_DMA_8	IUNM_DMA_9	IUNM_DMA_10	IUNM_DMA_11
+	IUNM_DMA_12
+<I>type</I>	割り込みハンドラのレジスタ待避タイプを指定します。
+	アセンブラなら HTYPE_ASM, C言語なら HTYPE_C を指定します。
+<I>handler</I>	割り込みハンドラのエントリポイント
+<I>common</I>	割り込みハンドラと一般ルーチンが共有するメモリへのポインタ。
+	割り込みハンドラは、グローバル変数、スタティック変数に陽にアクセスする
+	ことはできません。
+	割り込みハンドラが一般ルーチンに何らかの通知をするための
+	変数のアドレスは、この common 引数で受け渡します。
+	そのような変数が複数ある場合は、それらを構造体にまとめて
+	その構造体のアドレスを common 引数で受け渡します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_INTRCODE	割り込み要因番号が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_FOUND_HANDLER	ハンドラは登録済だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    外部割り込みハンドラを登録します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReleaseIntrHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReleaseIntrHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割込みハンドラ削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReleaseIntrHandler</B>( int <I>intrcode</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>intrcode</I>	割り込み要因を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK				正常 <BR>
+    KE_ILLEGAL_INTRCODE		割り込み要因番号が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだし	だった <BR>
+    KE_NOTFOUND_HANDLER	ハンドラは未登録 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    外部割り込みハンドラを削除します。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>メモリプール管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=AllocateFpl / pAllocateFpl / ipAllocateFpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>AllocateFpl / pAllocateFpl / ipAllocateFpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        固定長メモリブロック獲得	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void * <B>AllocateFpl</B>( int <I>fplid </I>);
+void * <B>pAllocateFpl</B>( int <I>fplid</I> );
+void * <B>ipAllocateFpl</B>( int <I>fplid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fplid</I>	メモリブロックを獲得するを固定長メモリプールIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			獲得したメモリブロックのアドレス <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_UNKNOWN_FPLID	対象固定長メモリプールが存在しない <BR>
+    KE_RELEASE_WAIT	WAIT状態は強制解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_WAIT_DELETE	WAIT対象のオブジェクトが削除された。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>fplid</I> で示した固定長メモリプールからメモリブロックを一つ獲得します。 <BR>
+    獲得するメモリブロックのサイズは、固定長メモリプール生成時に指定されたブロックサイズになります。 <BR>
+    獲得したメモリブロックの内容は不定です。 <BR>
+<BR>
+    AllocateFpl サービスコールの場合、指定したメモリプールからメモリブロックを獲得できなければ、AllocateFpl()を呼び出したスレッドはWAIT状態 (メモリ獲得待ち状態)になり、メモリを獲得できるようになるまで待ちます。 <BR>
+<BR>
+    pAllocateFpl サービスコールは、AllocateFpl サービスコールから WAIT状態にはいる機能を取り除いたサービスコールです。 <BR>
+    AllocateFpl と異なりメモリが獲得できない場合エラー(KE_NO_MEMORY)で戻ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    AllocateFpl() を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=AllocateVpl / pAllocateVpl / ipAllocateVpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>AllocateVpl / pAllocateVpl / ipAllocateVpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        可変長メモリブロック獲得	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void * <B>AllocateVpl</B>( int <I>vplid</I>, int <I>size</I> );
+void * <B>pAllocateVpl</B>( int <I>vplid</I>, int <I>size</I> );
+void * <B>ipAllocateVpl</B>( int <I>vplid</I>, int <I>size</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>vplid</I>	メモリブロックを獲得するを可変長メモリプールIDを指定します。
+<I>size</I>	メモリブロックサイズをバイト数で指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			獲得したメモリブロックのアドレス <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_UNKNOWN_VPLID	対象可変長メモリプールが存在しない <BR>
+    KE_RELEASE_WAIT	WAIT状態は強制解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+    KE_WAIT_DELETE	WAIT対象のオブジェクトが削除された。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>vplid</I> で示した可変長メモリプールから <I>size</I> バイトのメモリブロックを獲得します。 <BR>
+    獲得したメモリブロックの内容は不定です。 <BR>
+<BR>
+    AllocateVpl サービスコールの場合、指定したメモリプールからメモリブロックを獲得できなければ、AllocateVpl()を呼び出したスレッドはWAIT状態 (メモリ獲得待ち状態)になり、メモリを獲得できるようになるまで待ちます。 <BR>
+<BR>
+    pAllocateVpl サービスコールは、AllocateVpl サービスコールから WAIT状態にはいる機能を取り除いたサービスコールです。 <BR>
+    AllocateVpl と異なりメモリが獲得できない場合エラー(KE_NO_MEMORY)で戻ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    AllocateVpl() を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CreateFpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateFpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        固定長メモリプール生成	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateFpl</B>( struct FplParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>param</I>   生成する固定長メモリプールの設定情報をもつ構造体変数への
+         ポインタを指定します。
+         以下のメンバがあります。
+         u_int   <I>attr</I>;
+         u_int   <I>option</I>;
+         int    <I>blockSize</I>;
+         int    <I>numBlocks</I>;
+         各メンバの内容は以下の通りです。
+         <I>attr</I>   固定長メモリプールの属性を指定します。
+                以下のどちらかを指定する必要があります。
+            FA_THFIFO   待ちスレッドのキューイングはFIFOで行う
+            FA_THPRI   待ちスレッドのキューイングはスレッドの優先度
+                         で行う。また、オプションで、以下の指定を
+                         論理和で追加できる
+            FA_MEMBTM   メモリプールをメモリボトム（大きいアドレス）に
+                             近い方から確保する。
+                             未指定の場合はメモリのトップ（若いアドレス）に
+                             近い方から確保する
+         <I>option</I>   固定長メモリプールに関する付加情報。
+                  この値は、ReferFplStatus() で参照できます。
+                  マルチスレッドマネージャはこの値を関知しません。
+         <I>blockSize   </I>固定長メモリプールから獲得できるメモリブロックの
+                     サイズを指定します。
+         <I>numBlocks</I>    固定長メモリプールから獲得できるメモリブロックの
+                       個数を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			固定長メモリプールのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_ATTR	<I>attr</I> の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_MEMSIZE	メモリのサイズ指定が不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    固定長のメモリブロックを獲得できるメモリプールを作成します。 <BR>
+    固定長メモリプールは可変長メモリプールと異り一回に獲得できるメモリブロックのサイズが固定長で短い処理時間でメモリを獲得できます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CreateVpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CreateVpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        可変長メモリプール生成	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CreateVpl</B>( struct VplParam *<I>param</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>param</I>   生成する可変長メモリプールの設定情報をもつ構造体変数への
+         ポインタを指定します。
+         以下のメンバがあります。
+         u_int   <I>attr</I>;
+         u_int   <I>option</I>;
+         int     <I>size</I>;
+         各メンバの内容は以下の通りです。
+         <I>attr</I>   可変長メモリプールの属性を指定します。
+               以下のどちらかを指定する必要があります。
+              VA_THFIFO    待ちスレッドのキューイングはFIFOで行う
+              VA_THPRI     待ちスレッドのキューイングはスレッドの
+                              優先度で行う。
+                              また、オプションで、以下の指定を論理和で追加できる
+               VA_MEMBTM  メモリプールをメモリボトム（大きいアドレス）
+                               に近い方から確保する。
+                               未指定の場合はメモリのトップ（若いアドレス）に
+                               近い方から確保する。
+         <I>option</I>  可変長メモリプールに関する付加情報。
+                 この値は、ReferVplStatus()で参照できます。
+                 マルチスレッドマネージャはこの値を関知しません。
+         <I>size</I>    可変長メモリプールの全体サイズ（byte数）を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			可変長メモリプールのID <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_ILLEGAL_ATTR	<I>attr</I> の指定が不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_MEMSIZE	メモリのサイズ指定が不正 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    可変長のメモリブロックを獲得できるメモリプールを作成します。 <BR>
+    可変長メモリプールからは、メモリプールのサイズを越えない任意のサイズのメモリブロックを獲得できますが、後述の固定長メモリプールに比べて処理時間がかかります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteFpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteFpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        固定長メモリプール削除	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteFpl</B>( int <I>fplid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fplid</I>	削除する固定長メモリプールIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_FPLID	対象固定長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    fplidで示した固定長メモリプールを削除します。 <BR>
+    このメモリプールから確保されたメモリブロックのうち返却されていないものが存在してもエラーにはなりません。 <BR>
+    メモリプール削除後に未返却のメモリブロックを使用した場合のシステムの動作は保証されません。 <BR>
+    メモリプール削除後に未返却のメモリブロックが使われることが無いようにアプリケーションプログラムを作成する必要があります。 <BR>
+    メモリ獲得待ちのキューに登録されていたスレッドにはエラーが返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DeleteVpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DeleteVpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        可変長メモリプール削除	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DeleteVpl</B>( int <I>vplid</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>vplid</I>	削除する可変長メモリプールIDを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_VPLID	対象可変長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    vplidで示した可変長メモリプールを削除します。 <BR>
+    このメモリプールから確保されたメモリブロックのうち返却されていないものが存在してもエラーにはなりません。 <BR>
+    メモリプール削除後に未返却のメモリブロックを使用した場合のシステムの動作は保証されません。 <BR>
+    メモリプール削除後に未返却のメモリブロックが使われることが無いようにアプリケーションプログラムを作成する必要があります。 <BR>
+    メモリ獲得待ちのキューに登録されていたスレッドにはエラー(KE_WAIT_DELETE)が返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=FreeFpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FreeFpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        固定長メモリブロック返却	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>FreeFpl</B>( int <I>fplid</I>, void *<I>block</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fplid</I>	メモリブロックを返却するを固定長メモリプールIDを指定します。
+<I>block</I>	返却するメモリブロックのアドレスを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT 例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_MEMBLOCK 解放するメモリブロックがメモリプールに属していない <BR>
+    KE_UNKNOWN_FPLID	対象固定長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    block で示されるメモリブロックを メモリプール fplid に返却します。 <BR>
+    返却によりメモリプールに空きができた場合、メモリ獲得待ちで WAIT状態にあった別のスレッドが、メモリを獲得して WAIT状態が解除されることがあります。 <BR>
+    メモリブロックが、指定されたメモリプールから獲得されたものでない場合はエラー KE_ILLEGAL_MEMBLOCK になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、FreeFpl() を割り込み禁止状態で呼んだ場合、WAIT 状態を解除されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=FreeVpl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FreeVpl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        可変長メモリブロック返却	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>FreeVpl</B>( int <I>vplid</I>, void *<I>block</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>vplid</I>	メモリブロックを返却するを可変長メモリプールIDを指定します。
+<I>block</I>	返却するメモリブロックのアドレスを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_ILLEGAL_MEMBLOCK 解放するメモリブロックがメモリプールに属していない <BR>
+    KE_UNKNOWN_VPLID	対象可変長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    block で示されるメモリブロックを メモリプール vplid に返却します。 <BR>
+    返却によりメモリプールに空きができた場合、メモリ獲得待ちで WAIT状態にあった別のスレッドが、メモリを獲得して WAIT状態が解除されることがあります。 <BR>
+    メモリブロックが、指定されたメモリプールから獲得されたものでない場合はエラー KE_ILLEGAL_MEMBLOCK になります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状では、FreeVpl() を割り込み禁止状態で呼んだ場合、WAIT 状態を解除されたスレッドが自スレッドよりも優先順位が高いと割り込み禁止状態が解除されてそのスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+    この動作はいずれ変更され、割り込み禁止状態が解除されるまでスレッドの切り替えが遅らされるようになる予定です。 <BR>
+    挙動が変わりますので今は割り込み禁止状態で呼ばないことをおすすめします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReferFplStatus / iReferFplStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferFplStatus / iReferFplStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        固定長メモリプール状態参照	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferFplStatus</B>( int <I>fplid</I>, struct FplInfo *<I>info</I> );
+int <B>iReferFplStatus</B>( int <I>fplid</I>, struct FplInfo *<I>info</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fplid</I>	参照するメモリプールID
+<I>info</I>	メモリプールの状態を受け取る構造体変数へのポインタを指定します。
+	以下のメンバがあります。
+	u_int	<I>attr</I>;
+	u_int	<I>option</I>;
+	int	<I>blockSize</I>;
+	int	<I>numBlocks</I>;
+	int	<I>freeBlocks</I>;
+	int	<I>numWaitThreads</I>;
+	各メンバの内容は以下の通りです。
+	<I>attr</I>          CreateFpl()で設定された固定長メモリプール属性
+	<I>option</I>        CreateFpl()で設定された付加情報
+	<I>blockSize</I>     CreateFpl()で設定されたメモリブロックサイズ(byte数)
+	<I>numBlocks</I>    CreateFpl()で設定されたメモリブロック数
+	<I>freeBlocks</I>     メモリプール中の未使用ブロック数
+	<I>numWaitThreads</I>  メモリ獲得待ちをしているスレッド数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_FPLID	対象固定長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+<A name=ReferVplStatus / iReferVplStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferVplStatus / iReferVplStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        可変長メモリプール状態参照	実装済、未テスト
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferVplStatus</B>( int <I>vplid</I>, struct VplInfo *<I>info</I> );
+int <B>iReferVplStatus</B>( int <I>vplid</I>, struct VplInfo *<I>info</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>vplid</I>    参照するメモリプールID
+<I>info</I>    メモリプールの状態を受け取る構造体変数へのポインタを指定します。
+        以下のメンバがあります。
+        u_int   <I>attr</I>;
+        u_int   <I>option</I>;
+        int   <I>size</I>;
+        int   <I>freeSize</I>;
+        int   <I>numWaitThreads</I>;
+        各メンバの内容は以下の通りです。
+        <I>attr</I>    CreateVpl()で設定された可変長メモリプール属性
+        <I>option</I>  CreateVpl()で設定された付加情報
+        <I>size</I> メモリプールから獲得可能な最大可能バイト数
+             これは、CreateVpl で指定したメモリプールサイズからメモリプール
+             の管理領域の大きさを引いた値になります。
+        <I>freeSize</I>  メモリプール中の未使用メモリバイト数
+        <I>numWaitThreads</I>   メモリ獲得待ちをしているスレッド数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_UNKNOWN_VPLID	対象可変長メモリプールが存在しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    可変長メモリプール状態を参照します。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>時間/ソフトタイマ管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=alarmhandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>alarmhandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アラームハンドラのプロトタイプ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>alarmhandler</B>(void *<I>common</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>common</I>    SetAlarm()で指定された <I>common</I> が渡されます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0	このアラームハンドラを削除する。 <BR>
+    1以上	このアラームハンドラを戻り値で示すクロック後、再び呼び出す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アラームハンドラは、その戻り値により再び呼び出しを受けることを指定できます。 <BR>
+    アラームハンドラが戻す値が 0 の場合は、そのアラームハンドラは削除されます。 <BR>
+    アラームハンドラが戻す値が 1 以上の場合は、ハンドラの今回の呼び出し予定時刻に足しこまれて次の呼び出し予定時刻を決定します。 <BR>
+    ただし、100マイクロ秒以下の値の場合には 100マイクロ秒程度に切り上げられます。 <BR>
+<BR>
+    SetAlarm() の節で説明したようにハンドラの呼び出しは必ずしも正確に指定した時刻に行われるわけではなく、遅れる場合がありますが、次のハンドラ呼び出し時刻は実際にハンドラが呼び出された時刻ではなく、呼び出し予定時刻を基準に計算されるので、呼び出しの遅れが累積することはありません。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アラームハンドラは割り込みハンドラの一種です。 <BR>
+    したがってシステムのサービスコールの利用には制限があります。 <BR>
+    iopカーネルライブラリ概要の「マルチスレッドマネージャ管理下でのシステム状態」を参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=CancelAlarm / iCancelAlarm>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>CancelAlarm / iCancelAlarm
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アラームハンドラの解除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>CancelAlarm</B>(u_int (*<I>handler</I>)(void*), void *<I>common</I>);
+int <B>iCancelAlarm</B>(u_int (*<I>handler</I>)(void*), void *<I>common</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>handler</I>	アラームハンドラのエントリポイント
+<I>common</I>	アラームハンドラと一般ルーチンが共有するメモリへのポインタ。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK				正常 <BR>
+    KE_NOTFOUND_HANDLER	ハンドラは未登録 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SetAlarm() で設定したアラームハンドラを、時間経過を待たずに解除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=DelayThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>DelayThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スレッド遅延
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>DelayThread</B>(unsigned int <I>usec</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>usec</I>    停止時間をマイクロ秒単位(表現できるのは 4294.97 秒まで)
+        で指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_RELEASE_WAIT	ReleaseWait によって状態が解除された。 <BR>
+    KE_CAN_NOT_WAIT	ディスパッチ禁止状態で待ち状態に入ろうとした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自スレッドの実行を一時停止し、時間経過待ち状態に入ります。 <BR>
+    時間経過待ち状態は、WAIT状態の一つですので、ReleaseWaitThread() によって時間経過待ち状態を解除することができます。 <BR>
+    停止時間の指定はマイクロ秒単位で指定しますが、100マイクロ秒以下の値を指定した場合には 100マイクロ秒程度に切り上げられます。 <BR>
+    複数のスレッドの DelayThread() の終了時刻が近接している(200マイクロ秒以下)場合、遅い方の時刻にまとめて待ち状態から復帰することがあります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DelayThread() を割り込み禁止状態で呼ばないでください。 <BR>
+    これは本来エラーになるはずですが、現状は警告をプリントして割り込み禁止状態が一旦解除されて他のスレッドに切り替わってしまい、自スレッドがふたたび RUN状態に復帰したときに割り込み禁止状態にもどるという動作をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetSystemTime>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetSystemTime
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        システム時刻参照
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>GetSystemTime</B>(struct SysClock *<I>clock</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>clock</I>
+    <I>hi</I>	クロック数の上位 32bitが格納されます
+    <I>low</I>	クロック数の下位 32bitが格納されます
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK	正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システム稼働開始時からの経過時間をクロック数で取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SetAlarm / iSetAlarm>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetAlarm / iSetAlarm
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        アラームハンドラの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>SetAlarm</B>(
+	struct SysClock *<I>clock</I>,
+	u_int (*<I>handler</I>)(void*),
+	void *<I>common</I>
+);
+int <B>iSetAlarm</B>(
+struct SysClock *<I>clock</I>,
+u_int (*<I>handler</I>)(void*),
+void *<I>common</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>clock</I>
+	<I>hi</I>	ハンドラ起動までの時間の上位 32 bit
+	<I>low</I>	ハンドラ起動までの時間の下位 32 bit
+<I>handler</I>	アラームハンドラのエントリポイント
+<I>common</I>	アラームハンドラと一般ルーチンが共有するメモリへのポインタ。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_NO_MEMORY	メモリ不足 <BR>
+    KE_FOUND_HANDLER	ハンドラは登録済だった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定時間経過後に呼び出されるアラームハンドラを設定します。 <BR>
+    アラームハンドラは、割り込みハンドラに似て引数をひとつ持ち、スレッド独立部として呼び出されます。 <BR>
+    経過時間の指定はシステムクロック単位で指定しますが、100マイクロ秒以下の値を指定した場合には 100マイクロ秒程度に切り上げられます。 <BR>
+    複数のスレッドの DelayThread() の終了時刻やアラームの時間満了が近接している (200マイクロ秒以下)場合、遅い方の時刻にまとめて処理されることがあります。 <BR>
+    アラームハンドラは指定時間経過後に呼び出されたときのハンドラ自身の戻り値によって、解除されるか引き続きアラーム動作をするかが決まります。 <BR>
+    また後述の CancelAlarm()で、指定時間経過を待たずに解除することもできます。 <BR>
+<BR>
+    マルチスレッドマネージャは、アラームハンドラの同一性を handlerアドレスとその引数( common )のペアで識別しています。 <BR>
+    従って handler アドレスと common がともに等しいアラームハンドラの設定は、同一のアラームの２重設定とみなされエラーとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SysClock2USec>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SysClock2USec
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        システムクロック値を実時間に変換
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>SysClock2USec</B>(struct SysClock *<I>clock</I>, int *<I>sec</I>, int *<I>usec</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>clock</I>
+	<I>hi</I>	変換したいシステムクロック値の上位 32bit
+	<I>low</I>	変換したいシステムクロック値の下位 32bit
+<I>sec</I>	変換した結果の秒の単位を格納する変数へのポインタ
+<I>usec</I>	変換した結果のマイクロ秒の単位を格納する変数へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムクロック値をマイクロ秒に変換するユーティリティ関数です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=USec2SysClock>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>USec2SysClock
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マイクロ秒をシステムクロック値に変換
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>USec2SysClock</B>(unsigned int <I>usec</I>, struct SysClock *<I>clock</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>usec</I>	変換したいマイクロ秒の値を指定します
+<I>clock</I>
+	<I>hi</I>	変換した結果の上位 32bitが格納されます
+	<I>low</I>	変換した結果の下位 32bitが格納されます
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マイクロ秒をシステムクロック値に変換するユーティリティ関数です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マイクロ秒単位で 32bit無符号整数で表現できるのは 4294.97 秒までです。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>ハードウェアタイマ管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=AllocHardTimer>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>AllocHardTimer
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>AllocHardTimer</B>(int <I>source</I>, int <I>size</I>, int <I>prescale</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>source</I>  カウントするソースを TC_SYSCLOCK, TC_PIXEL, TC_HLINE 
+        のいずれかで指定します。
+<I>size</I>    タイマのカウンタサイズ（ビット数）を 32 または 16 で指定します。
+<I>prescale</I>  使用するプリスケールを 1, 8, 16, 256 のいずれかで指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			タイマのID <BR>
+    KE_NO_TIMER		ハードウェアタイマは取得できなかった <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=FreeHardTimer>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FreeHardTimer
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマの返却
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>FreeHardTimer</B>(int <I>timid</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	返却するタイマのID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_TIMERID	ハードウェアタイマのIDが不正 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    AllocHardTimer()で取得したハードウェアタイマを返却します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetHardTimerIntrCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetHardTimerIntrCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマの割り込み番号の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>GetHardTimerIntrCode</B>(int <I>timid</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;=0)		割り込み番号 <BR>
+    KE_ERROR	なんらかの異常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマの割り込み番号を取得します。 <BR>
+<BR>
+    得られた割り込み番号は、RegisterIntrHandler()の第一引数に使用します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetHoldMode / iGetHoldMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetHoldMode / iGetHoldMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ホールドモードレジスタを読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>GetHoldMode</B>(int <I>holdnum</I>);
+u_long <B>iGetHoldMode</B>(int <I>holdnum</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>holdnum</I>     ホールドレジスタ番号を 0,1,2,3 のいずれかで指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ホールドモードレジスタの現在値  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ホールドモードレジスタの値を読みます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetHoldReg / iGetHoldReg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetHoldReg / iGetHoldReg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ホールドレジスタを読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>GetHoldReg</B>(int <I>holdnum</I>);
+u_long <B>iGetHoldReg</B>(int <I>holdnum</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>holdnum      </I>ホールドレジスタ番号を 0,1,2,3 のいずれかで指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ホールドレジスタの現在値  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ホールドモードレジスタの値を読みます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetTimerCompare / iGetTimerCompare>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetTimerCompare / iGetTimerCompare
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのコンペアレジスタを読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>GetTimerCompare</B>(int <I>timid</I>);
+u_long <B>iGetTimerCompare</B>(int <I>timid</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コンペアレジスタの現在値  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのコンペアレジスタの現在値を読み出します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetTimerCounter / iGetTimerCounter>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetTimerCounter / iGetTimerCounter
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのカウンタレジスタを読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long <B>GetTimerCounter</B>(int <I>timid</I>);
+u_long <B>iGetTimerCounter</B>(int <I>timid</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    カウンタレジスタの現在値  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのカウンタレジスタの現在値を読み出します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=GetTimerStatus / iGetTimerStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>GetTimerStatus / iGetTimerStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのステータスレジスタを読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>long <B>GetTimerStatus</B>(<I>timid</I>);
+long <B>iGetTimerStatus</B>(<I>timid</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ステータスレジスタの現在値  <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのステータスレジスタの現在値を読み出します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReferHardTimer>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReferHardTimer
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマの参照目的での取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReferHardTimer</B>(int <I>source</I>, int <I>size</I>, int <I>mode</I>, int <I>modemask</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>source</I>   カウントするソースを TC_SYSCLOCK, TC_PIXEL, TC_HLINE 
+         のいずれかで指定します。
+<I>size</I>     タイマのカウンタサイズ（ビット数）を 32 または 16 で指定します。
+<I>mode</I>    タイマに期待する設定モードを指定します。
+<I>modemask</I>    タイマに期待する設定モードの着目ビットを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)			タイマのID <BR>
+    KE_NO_TIMER		ハードウェアタイマは取得できなかった <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    参照専用にハードウェアタイマを取得します。 <BR>
+    引数 mode で設定されて稼働中のハードウェアタイマを参照のみの目的で取得する場合に使います。 <BR>
+    複数のプログラムから同一のタイマを参照することが可能になります。 <BR>
+    たとえば、以下のように使用します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<PRE>xxxx()
+{
+    int <I>timid</I>;
+    timid = ReferHardTimer
+           (TC_HLINE, 16, 期待する mode, 期待する mode のマスク);
+    if( <I>timid</I> == KE_NO_TIMER ) {
+        if( (<I>timid</I> = AllocHardTimer(TC_HLINE, 16, 1)) &gt; KE_OK ) {
+         SetTimerMode( <I>timid</I> , 設定する <I>mode</I> );
+          }
+    }
+    <I>timid</I> &gt; 0 ならば、随時、 GetTimerCounter( <I>timid</I> ) ができる。
+}
+
+</PRE>
+</blockquote>
+<A name=SetHoldMode / iSetHoldMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetHoldMode / iSetHoldMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ホールドモードレジスタの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>SetHoldMode</B>(int <I>holdnum</I>, int <I>mode</I>);
+void <B>iSetHoldMode</B>(int <I>holdnum</I>, int <I>mode</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>holdnum</I>   ホールドレジスタ番号を 0,1,2,3 のいずれかで指定します。
+<I>mode</I>      該当ホールドレジスタのモードを指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ホールドモードレジスタの設定を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SetTimerCompare / iSetTimerCompare>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetTimerCompare / iSetTimerCompare
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのコンペアレジスタの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>SetTimerCompare</B>(int <I>timid</I>, u_long <I>compare</I>);
+void <B>iSetTimerCompare</B>(int <I>timid</I>, u_long <I>compare</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+<I>compare</I>	コンペアレジスタに設定する値を指定します
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのコンペアレジスタの設定をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SetTimerCounter / iSetTimerCounter>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetTimerCounter / iSetTimerCounter
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのカウンタレジスタの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>SetTimerCounter</B>(int <I>timid</I>, u_long <I>count</I>);
+void <B>iSetTimerCounter</B>(int <I>timid</I>, u_long <I>count</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+<I>count</I>	カウンタレジスタに設定する値を指定します
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのカウンタレジスタの設定をします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=SetTimerMode / iSetTimerMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>SetTimerMode / iSetTimerMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ハードウェアタイマのモードレジスタの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>SetTimerMode</B>(int <I>timid</I>, int <I>mode</I>);
+void <B>iSetTimerMode</B>(int <I>timid</I>, int <I>mode</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>timid</I>	タイマのID
+<I>mode</I>	モードレジスタに設定する値を指定します
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアタイマのモードレジスタを設定します。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>V-blank 管理関数</H2></U>
+</DIV>
+</blockquote>
+<A name=RegisterVblankHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>RegisterVblankHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Vblank ハンドラ登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>RegisterVblankHandler</B>( 
+	int <I>edge</I>,
+	 int <I>priority</I>, 
+	int (*<I>handler</I>)(void*), 
+	void *<I>common</I> );
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>edge</I>	呼び出しタイミングを指定します。
+	以下のいずれかの指定ができます。
+	VB_START  V-blank 期間の開始時
+	VB_END  V-blank 期間の終了時
+<I>priority</I>  32～223 で、複数のVblank ハンドラ間の呼び出し優先順位を指定します。
+	小さい数値を持ったハンドラほど先に呼出されます。
+	同一の priority を持った複数のハンドラがあった場合は、
+	先に登録されたハンドラが先に呼び出されます。
+	優先順位の 0～31 と 224～255は予約されています、使用しないでください。
+<I>handler</I>	Vblank ハンドラのエントリポイント
+<I>common</I>	Vblank ハンドラと一般ルーチンが共有するメモリへのポインタ。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_FOUND_HANDLER	ハンドラは登録済だった <BR>
+    KE_NO_MEMORY	登録ハンドラが多すぎる <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    V-blank 期間の開始時と終了時に、呼出される Vblank ハンドラを登録します。 <BR>
+    Vblank ハンドラは、割り込みハンドラに似て引数をひとつ持ち、スレッド独立部として呼び出されます。 <BR>
+    V-blank 期間の開始時と終了時のそれぞれに４つまでハンドラを登録できます。 <BR>
+<BR>
+    WaitVblankStart(),WaitVblankEnd(),WaitVblank(), <BR>
+    WaitNonVblank()のサービスを実現するハンドラも Vblank ハンドラとして登録されており、優先順位は 128 に設定されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ハードウェアの、V-blank 割り込みが起ると、システムの V-blank 割り込みハンドラがこれを受け取ります。 <BR>
+    V-blank 割り込みハンドラは、アプリケーションプログラムが登録した複数の Vblank ハンドラを順番に呼び出すことを目的とするハンドラです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=ReleaseVblankHandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>ReleaseVblankHandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Vblank ハンドラ削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>ReleaseVblankHandler</B>(int <I>edge</I>, int (*<I>handler</I>)(void*));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>edge</I>	ハンドラの呼び出しタイミングを指定します。
+	RegisterVblankHandler() での登録時と同じ値を指定します。
+<I>handler</I>	削除したいVblank ハンドラのエントリポイント
+	RegisterVblankHandler() での登録時と同じ値を指定します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_OK			正常 <BR>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_NOTFOUND_HANDLER	ハンドラは未登録 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録したVblank ハンドラを削除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=vblankhandler>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>vblankhandler
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Vblank ハンドラのプロトタイプ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>vblankhandler</B>(void *<I>common</I>);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>common</I>		RegisterVblankHandler()で指定された <I>common</I> が渡されます。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NEXT_ENABLE	次回の vblank もキャッチする(=1) <BR>
+    NEXT_DISABLE	本ハンドラを削除する(=0) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Vblank ハンドラが戻す値が NEXT_DISABLE の場合は、その Vblank ハンドラは登録を抹消され、次回の Vblank では呼ばれなくなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Vblank ハンドラは割り込みハンドラの一種です。 <BR>
+    したがってシステムのサービスコールの利用には制限があります。 <BR>
+    iopカーネルライブラリ概要の「マルチスレッドマネージャ管理下でのシステム状態」を参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitNonVblank>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitNonVblank
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        V-blank期間ではなくなるまで待つ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitNonVblank()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_OK			正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    V-blank期間ではなくなるまで、発行スレッドはWAIT状態に入ります。 <BR>
+    既にV-blank期間ではない場合は、WAIT状態にならずに戻ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitVblank>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitVblank
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        V-blank期間になるまで待つ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitVblank()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_OK			正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    V-blank期間になるまで、発行スレッドはWAIT状態に入ります。 <BR>
+    既にV-blank期間である場合は、WAIT状態にならずに戻ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitVblankEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitVblankEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        次の「V-blank期間終了」まで待つ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitVblankEnd()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_OK			正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次の 「V-blank期間終了」まで、発行スレッドはWAIT状態に入ります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=WaitVblankStart>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>WaitVblankStart
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        次の「V-blank期間開始」まで待つ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>WaitVblankStart()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    KE_ILLEGAL_CONTEXT	例外ハンドラ／割り込みハンドラからの呼びだしだった <BR>
+    KE_OK			正常 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次の「V-blank期間開始」まで、発行スレッドはWAIT状態に入ります。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>キャッシュ操作関数</H2></U>
+</DIV>
+</blockquote>
+<A name=FlushDcache>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FlushDcache
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データキャッシュのクリア
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>FlushDcache()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CPUのデータキャッシュの内容をクリアします。 <BR>
+    この関数は、DMA などで、プログラムを介在することなくメインメモリが書き換えられたときに、CPU のデータキャッシュとメインメモリの不一致を解消するために使用されます。 <BR>
+    使用する必要が生じるのは、主にデバイスドライバでデータ入力をした直後ですが、デバイスドライバ内で自動的に行われることが多いので、通常のアプリケーションプログラムから呼ぶ必要はあまりないはずです。 <BR>
+    いつ、本関数を呼ぶべきかはデバイスドライバやライブラリのドキュメントに明記されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=FlushIcache>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>FlushIcache
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        インストラクションキャッシュのクリア
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>FlushIcache()</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CPUのインストラクションキャッシュの内容をクリアします。 <BR>
+    この関数は、プログラムのロードなどメインメモリ上のプログラムを書き換えたときに CPUのインストラクションキャッシュとメインメモリの不一致を解消するために用意されていますが、通常、プログラムのロードのための API の中で自動的に行われますので、通常のアプリケーションプログラムから呼ぶ必要はありません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,82 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *
+ *                         Version 0.5.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : joint matrix interpolation runtime
+ *                     Description : arm model data
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.5.0          Aug,16,1999     aoki
+ */
+.include "vumacros.h"
+.global arm_packet
+
+.align 0
+arm_packet:
+DMAcnt *
+unpack[r] 4, 4, V4_32, 0, *
+;iwzyx 0x00000000, 0x00000412, 0x300a4000, 0x0000800e
+iwzyx 0x00000000, 0x00000041, 0x20024000, 0x0000800e
+.EndUnpack
+unpack[r] 4, 4, V4_32, 1, *
+; --- position ---
+fxyzw -0.3,  0.3,  0.3,  1.0
+fxyzw -0.3,  0.3, -0.3,  1.0
+fxyzw -0.3,  1.7,  0.3,  1.0
+fxyzw -0.3,  1.7, -0.3,  1.0
+fxyzw  0.3,  1.7, -0.3,  1.0
+fxyzw -0.3,  0.3, -0.3,  1.0
+fxyzw  0.3,  0.3, -0.3,  1.0
+fxyzw -0.3,  0.3,  0.3,  1.0
+fxyzw  0.3,  0.3,  0.3,  1.0
+fxyzw -0.3,  1.7,  0.3,  1.0
+fxyzw  0.3,  1.7,  0.3,  1.0
+fxyzw  0.3,  1.7, -0.3,  1.0
+fxyzw  0.3,  0.3,  0.3,  1.0
+fxyzw  0.3,  0.3, -0.3,  1.0
+
+;--- normal ---
+fxyzw -1.0, 0.0, 0.0, 1.0
+fxyzw -1.0, 0.0, 0.0, 1.0
+fxyzw -1.0, 0.0, 0.0, 1.0
+fxyzw -1.0, 0.0, 0.0, 1.0
+fxyzw 0.0, 1.0, 0.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, 0.0, -1.0, 1.0
+fxyzw 0.0, -1.0, 0.0, 1.0
+fxyzw 0.0, -1.0, 0.0, 1.0
+fxyzw 0.0, 0.0, 1.0, 1.0
+fxyzw 0.0, 0.0, 1.0, 1.0
+fxyzw 0.0, 1.0, 0.0, 1.0
+fxyzw 1.0, 0.0, 0.0, 1.0
+fxyzw 1.0, 0.0, 0.0, 1.0
+
+; --- color ---
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+fxyzw 100.0, 200.0, 100.0, 128.0
+.EndUnpack
+MSCNT
+.EndDmaData
+DMAend

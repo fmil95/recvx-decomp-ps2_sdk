@@ -1,17 +1,7 @@
-# Local preferences functions for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
+# Local Preferences Functions
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+#
 # On STARTUP:
 # 1. Options database (.Xdefaults on Unix  or ? on Windows) is read
 # 2. GDB prefs file is read ("gdbtk.ini" on Windows; ".gdbtkinit" on Unix)
@@ -28,21 +18,13 @@
 #   pref_save
 #   pref_read
 # ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt <hunt@cygnus.com>
+#   Copyright (C) 1997, 1998 Cygnus Solutions
 #
 
 proc pref_read {} {
   global prefs_init_filename env gdb_ImageDir GDBTK_LIBRARY GDBStartup
   global tcl_platform
-
-  if {[info exists env(HOME)]} {
-    if {$tcl_platform(platform) == "windows"} {
-      set home [ide_cygwin_path to_win32 $env(HOME)]
-    } else {
-      set home $env(HOME)
-    }
-  } else {
-    set home ""
-  }
 
   if {$tcl_platform(platform) == "windows"} {
     set prefs_init_filename "gdbtk.ini"
@@ -58,8 +40,8 @@ proc pref_read {} {
 	return
       }
       set file_opened 1
-    } elseif {$home != ""} {
-      set name [file join $home $prefs_init_filename]
+    } elseif {[info exists env(HOME)]} {
+      set name [file join $env(HOME) $prefs_init_filename]
       if {[file exists $name]} {
 	if {[catch {open $name r} fd]} {
 	  debug "$fd"
@@ -117,8 +99,10 @@ proc pref_read {} {
 	}
       }
       close $fd
-    } elseif {$home != ""} {
-      set prefs_init_filename [file join $home $prefs_init_filename]
+    } elseif {[info exists env(HOME)]} {
+      set prefs_init_filename [file join $env(HOME) $prefs_init_filename]
+    } else {
+      set prefs_init_filename $prefs_init_filename
     }
   
     # now set global options
@@ -171,8 +155,7 @@ proc pref_save {{win {}}} {
     }
 
     #now loop through all sections writing out values
-    lappend secs load console src reg stack locals watch bp search \
-      process geometry help browser kod window
+    lappend secs load console src reg stack locals watch bp search process geometry help browser
 
     foreach section $secs {
       puts $fd "\[$section\]"
@@ -235,10 +218,8 @@ proc pref_set_defaults {} {
   pref define gdb/control_target          1;     # 0 can't control target (EMC), 1 can
   pref define gdb/B1_behavior             1;     # 0 means set/clear breakpoints,
                                                  # 1 means set/clear tracepoints.
-  pref define gdb/use_icons		  1;	 # For Unix, use gdbtk_icon.gif as an icon
-						 # some window managers can't deal with it.
-
   # set download and execution options
+  pref define gdb/load/target	exec
   pref define gdb/load/verbose 0
   pref define gdb/load/main 1
   pref define gdb/load/exit 1
@@ -252,13 +233,9 @@ proc pref_set_defaults {} {
     pref define gdb/load/port "/dev/ttyS0"
   }
 
-  # The list of active windows:
-  pref define gdb/window/active           {}
-
   # Console defaults
   pref define gdb/console/prompt          "(gdb) "
   pref define gdb/console/deleteLeft      1
-  pref define gdb/console/wrap            0
   pref define gdb/console/prompt_fg       DarkGreen
   pref define gdb/console/error_fg        red
   pref define gdb/console/font            src-font
@@ -267,6 +244,7 @@ proc pref_set_defaults {} {
   pref define gdb/src/PC_TAG              green
   pref define gdb/src/STACK_TAG           gold
   pref define gdb/src/BROWSE_TAG          \#9595e2
+  pref define gdb/src/active              1
   pref define gdb/src/handlebg            red
   pref define gdb/src/bp_fg               red
   pref define gdb/src/temp_bp_fg          orange
@@ -276,7 +254,7 @@ proc pref_set_defaults {} {
   pref define gdb/src/source2_fg          navy
   pref define gdb/src/variableBalloons    1
   pref define gdb/src/trace_fg            magenta
-  pref define gdb/src/tab_size            8
+  pref define gdb/src/tab_size            4
   pref define gdb/src/linenums		  1
   pref define gdb/src/thread_fg           pink
 
@@ -310,7 +288,6 @@ proc pref_set_defaults {} {
 
   # Register Window
   pref define gdb/reg/highlight_fg        blue
-  pref define gdb/reg/rows                16
 
   # Global Prefs Dialogs
   pref define gdb/global_prefs/save_fg    red
@@ -322,8 +299,8 @@ proc pref_set_defaults {} {
   pref define gdb/search/filter_mode     "starts with"
 
   pref define gdb/browser/hide_h          0
-  pref define gdb/browser/width           0
-  pref define gdb/browser/top_height       0
+  pref define gdb/browser/width           400
+  pref define gdb/browser/top_height       240
   pref define gdb/browser/view_height      -1
   pref define gdb/browser/view_is_open    0
 
@@ -333,15 +310,6 @@ proc pref_set_defaults {} {
   # Help
   pref define gdb/help/browser		  0
 
-  # Kernel Objects (kod)
-  pref define gdb/kod/show_icon           0
-
-  # Various possible "main" functions. What's for Java?
-  pref define gdb/main_names              [list MAIN___ MAIN__ main]
-
-  # These are the classes of warning dialogs, and whether the user plans
-  # to ignore them.
-  pref define gdb/warnings/signal         0
 }
 
 # This traces the global/fixed font and forces src-font to

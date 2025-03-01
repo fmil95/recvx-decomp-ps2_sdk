@@ -1,0 +1,500 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                      CSLハードウェア・シンセサイザ
+                     ==============================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceHSyn_EffectAttr                                               [構造体]
+=========================================================================
+                                                     エフェクトパラメータ
+[構造]
+        typedef struct {
+        	int core;
+        	#define SCEHS_REV_MODE_OFF		0
+        	#define SCEHS_REV_MODE_ROOM		1
+        	#define SCEHS_REV_MODE_STUDIO_A		2
+        	#define SCEHS_REV_MODE_STUDIO_B		3
+        	#define SCEHS_REV_MODE_STUDIO_C		4
+        	#define SCEHS_REV_MODE_HALL		5
+        	#define SCEHS_REV_MODE_SPACE		6
+        	#define SCEHS_REV_MODE_ECHO		7
+        	#define SCEHS_REV_MODE_DELAY		8
+        	#define SCEHS_REV_MODE_PIPE		9
+        	#define SCEHS_REV_MODE_MAX		10
+        	#define SCEHS_REV_MODE_CLEAR_WA	(1<<8)
+        	int mode;
+        	short depth_L, depth_R;
+        	int delay;
+        	int feedback;
+        	short vol_l, vol_r;
+        } sceHSyn_EffectAttr;
+        
+[メンバ]
+        vol_l, vol_r	エフェクト出力ボリューム
+        その他は、libsd.h sceSdEffectAttr と同一
+        
+[解説]
+        エフェクト属性を設定するための構造体です。
+
+=========================================================================
+sceHSyn_VoiceStat                                                [構造体]
+=========================================================================
+                                                         モジュールの状態
+[構造]
+        typedef struct {
+        	int pendingVoiceCount;
+        	int workVoiceCount;
+        	unsigned char voice_state[sceHSyn_NumCore][sceHSyn_NumVoice];
+        	unsigned short voice_env[sceHSyn_NumCore][sceHSyn_NumVoice];
+        } sceHSyn_VoiceStat;
+        
+[メンバ]
+        pendingVoiceCount	発音待機中のボイスの数
+        workVoiceCount		発音中のボイスの数(KEY_OFFを含む)
+        voice_state		ボイスの状態
+        			bit-7:	データ有効ビット
+        			== 1 の場合、bit-0 -- bit-6 の内容が有効となる。
+        			bit-4,5,6:	ボイスの状態
+        	sceHSyn_VoiceStat_Free		空き
+        	sceHSyn_VoiceStat_Pending	発音待ち
+        	sceHSyn_VoiceStat_KeyOn		キーオン・発音中
+        	sceHSyn_VoiceStat_KeyOff	キーオフ・発音中
+        		bit-0,1,2,3:	使用しているポートの番号
+        voice_env	エンベロープ値（sceHSyn_VoiceStat_KeyOn,
+        		sceHSyn_VoiceStat_KeyOff 時のみ有効）
+        
+[解説]
+        モジュールの状態を取得するための構造体です。
+        メンバvoice_stateを取り扱うマクロとして次のものが用意されています。
+        	sceHSyn_GetVoiceStat(voice_state[?][?])	ボイス状態の取得
+        	sceHSyn_GetVoiceCtrlPort(voice_state[?][?])	使用ポートの取得
+        いずれも、bit-7 == 0の場合、-1が返ります。
+
+=========================================================================
+sceHSynChStat                                                    [構造体]
+=========================================================================
+                                 チャンネル毎のボイス使用状況取得用構造体
+[構造]
+        typedef struct {
+        	unsigned char ch[16];
+        } sceHSynChStat;
+        
+[メンバ]
+        ch[XX]	XXチャンネルのボイスの使用状況
+        以下のビットにより検査し状態を知ることができる。
+        
+        sceHSynChStat_KeyOn	KEY ONで発音中のボイスあり
+        sceHSynChStat_Hold	MIDI Note Off Messageを受信したがHOLD ONのため
+        発音が
+        			継続しているボイスあり
+        sceHSynChStat_KeyOff	KEY OFFでまだ発音が終了していないボイスあり
+        
+        空きチャンネル（まったく発音していないチャンネル）はch[XX]==0とな
+        ります。
+[解説]
+        sceHSyn_GetChStat()で各チャンネルの発音状態を調べる際に、結果を受
+        け取るための構造体です。
+        
+
+=========================================================================
+sceHSynEnv                                                       [構造体]
+=========================================================================
+                                                                 入力環境
+[構造]
+        typedef struct {
+        	unsigned char priority;
+        	unsigned char maxPolyphony;
+        	int lfoWaveNum;
+        	sceHSynUserLfoWave *lfoWaveTbl;
+        	int velocityMapNum;
+        	sceHSynUserVelocityMap *velocityMapTbl;
+        	unsigned char system[sceHSynEnvSize];
+        } sceHSynEnv;
+        
+[メンバ]
+        priority	入力 buffer 毎の優先度
+        		wave parameter の優先度を w_pri とした場合
+        		 priority + w_pri が、発音中の voice の優先度となり、
+        		最大優先度は 255
+        maxPolyphony	この入力で使用する最大音数（デフォルト 48)
+        lfoWaveNum	ユーザー定義 LFO の数
+        lfoWaveTbl	ユーザー定義 LFO 配列の先頭アドレス
+        velocityMapNum	ユーザー定義 velocity 変換テーブルの数
+        velocityMapTbl	ユーザー定義 velocity 変換テーブル配列の先頭アドレ
+        ス
+        system		このモジュールが使う内部変数領域
+        
+[解説]
+        入力 buffer 毎に演奏状態等を管理するための環境バッファです。
+        
+
+=========================================================================
+sceHSynUserLfoWave                                               [構造体]
+=========================================================================
+                                                      ユーザー定義LFO波形
+[構造]
+        typedef struct {
+        	unsigned char id;
+        	unsigned short waveLen;	// in sample
+        	short *wave;
+        } sceHSynUserLfoWave;
+        
+[メンバ]
+        id		Wave Parameter で指定する LFO の ID
+        waveLen		波形データの数
+        		16bitを単位として扱います。
+        		(20 byte の波形の場合 10)
+        wave		波形データ
+        		符号付き16bit
+        
+[解説]
+        ユーザー定義LFOを定義するための構造体です。
+
+=========================================================================
+sceHSynUserVelocityMap                                           [構造体]
+=========================================================================
+                                         ユーザー定義velocity変換テーブル
+[構造]
+        typedef struct {
+        	unsigned char velMap[sceHSynNumVelocity];
+        } sceHSynUserVelocityMap;
+        
+[メンバ]
+        velMap[v]	Velocity == vに対応する値（1 -- 127）
+        
+[解説]
+        Note On MessageのVelocityを修飾するためのテーブルです。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceHSyn_AllNoteOff                                                 [関数]
+=========================================================================
+                                      入力バッファの全てのVoiceを KEY_OFF
+[形式]
+        int sceHSyn_AllNoteOff(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        指定された入力バッファの全ボイスをキーオフ状態にします。
+        
+
+=========================================================================
+sceHSyn_AllSoundOff                                                [関数]
+=========================================================================
+                                              入力バッファの全Voiceを消音
+[形式]
+        int sceHSyn_AllSoundOff(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        指定された入力バッファの全ボイスを消音します。
+        
+
+=========================================================================
+sceHSyn_ATick                                                      [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceHSyn_ATick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        割り込みから定期的に呼出される処理です。
+        すべての入力メッセージを処理し、Voice の状態を更新します。
+        
+
+=========================================================================
+sceHSyn_GetChStat                                                  [関数]
+=========================================================================
+                                       全チャンネルのボイス使用状況の取得
+[形式]
+        int sceHSyn_GetChStat(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	sceHSynChStat *buff_addr
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        buff_addr	状態取得バッファのアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        指定されたポートの全チャンネルのボイス使用状況を調べます。
+        
+
+=========================================================================
+sceHSyn_GetVolume                                                  [関数]
+=========================================================================
+                                               入力毎のボリューム値の取得
+[形式]
+        unsigned short sceHSyn_GetVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        指定された入力バッファのボリューム値
+        
+[解説]
+        入力バッファ単位でのボリューム値を取得します。
+        
+
+=========================================================================
+sceHSyn_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceHSyn_Init(
+        	sceCslCtx *module_context,
+        	unsigned int interval
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        interval	ATick()が呼出される周期をマイクロ秒で表したもの
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        ハードウェア・シンセサイザモジュールの内部環境およびSPU2の初期化
+        を行ないます。
+        指定されたwave dataをSPU2へ転送する処理も実行します。
+        EffectはOFFになります。
+        
+
+=========================================================================
+sceHSyn_Load                                                       [関数]
+=========================================================================
+                                        SPU2上の wave data とヘッダを登録
+[形式]
+        int sceHSyn_Load(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	void *spu2_wave_address,
+        	void *header_address,
+        	unsigned int bank
+        );
+        
+[引数]
+        module_context		Module Context のアドレス
+        port_number		入力ポート番号
+        spu2_wave_address	SPU2上のウェーブデータアドレス
+        header_address		ヘッダアドレス
+        bank			バンク番号（０～１５）
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        SPU2に転送した wave data とヘッダ（パラメータ）を登録します。
+        発音中のポートバンクを変更した場合の動作は保証されません。
+        
+
+=========================================================================
+sceHSyn_ResetAllControler                                          [関数]
+=========================================================================
+                                   入力バッファのコントローラの値を初期化
+[形式]
+        int sceHSyn_ResetAllControler(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        指定された入力バッファのコントローラの値を初期値に戻します。
+        初期値に戻すコントローラは
+        	ホールド
+        	ピッチベンド
+        	モジュレーション
+        	ポルタメント
+        です。
+
+=========================================================================
+sceHSyn_SetEffectAttr                                              [関数]
+=========================================================================
+                                                            EFFECT の設定
+[形式]
+        int sceHSyn_SetEffectAttr(
+        	sceHSyn_EffectAttr *effect_attribute
+        )
+        
+[引数]
+        effect_attribute	設定するエフェクトの状態
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        SPU2 のエフェクトの設定を行ないます。
+        
+
+=========================================================================
+sceHSyn_SetOutputMode                                              [関数]
+=========================================================================
+                                             出力のモノ／ステレオ切り替え
+[形式]
+        int sceHSyn_SetOutputMode(
+        	int output_mode
+        )
+        
+[引数]
+        output_mode	出力モード
+        	sceHSynOutputMode_Mono    パンポットが無効になり、
+        				  すべてがセンターになる
+        	sceHSynOutputMode_Stereo  パンポットが有効
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        出力モード（パンポットの有効／無効）の設定を行ないます。
+        
+
+=========================================================================
+sceHSyn_SetReservVoice                                             [関数]
+=========================================================================
+                                                          予約Voiceの設定
+[形式]
+        int sceHSyn_SetReservVoice(
+        	unsigned int voice_bit[2]
+        )
+        
+[引数]
+        voice_bit[0]にはcore 0の予約ボイス、voice_bit[1]にはcore 1の
+        予約ボイスを指定する。
+        bit-0がvoice 0, bit-N が voice N に対応し、該当ビットが1の
+        ボイスが予約ボイスとなる。
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        各コアの持つボイスのうち、一部のボイスを予約ボイスとして、シンセ
+        サイザモジュールでの使用を禁止します。
+        ボイスが発音中に呼出された場合の動作は保証されません。
+        
+
+=========================================================================
+sceHSyn_SetVoiceStatBuffer                                         [関数]
+=========================================================================
+                                     モジュールの状態モニタバッファの登録
+[形式]
+        int sceHSyn_SetVoiceStatBuffer(
+        	sceHSyn_VoiceStat *status_buffer
+        )
+        
+[引数]
+        status_buffer	状態格納用バッファアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        モジュールの現在の状態モニタ用バッファを登録します。
+        状態はATick()の実行によって更新されます。
+        
+
+=========================================================================
+sceHSyn_SetVolume                                                  [関数]
+=========================================================================
+                                                 入力毎のボリュームの設定
+[形式]
+        int sceHSyn_SetVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned short vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        vol		ボリューム値
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        入力バッファ単位でのボリュームの設定を行ないます。
+        voice の volume を v_vol とした場合、実際に出力される値は
+        (v_vol * vol) / sceHSyn_Volume_0db
+        となります。
+        
+
+=========================================================================
+sceHSyn_VoiceTrans                                                 [関数]
+=========================================================================
+                                                  SPU2へ wave data を転送
+[形式]
+        int sceHSyn_VoiceTrans(
+        	short channel,
+        	unsigned char *data_address,
+        	unsigned char *spu2_address,
+        	unsigned int size
+        )
+        
+[引数]
+        channel		使用チャンネル
+        data_address	データのメモリ上アドレス（転送元）
+        spu2_address	SPU2のアドレス（転送先）
+        size		転送サイズ
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        SPU2にwave dataをDMA転送します。
+        SPU2上の発音中のデータを上書きした場合、その元データを使って出力
+        されていた音声は保証されません。
+        libsdを使うとより細かな制御が可能です。

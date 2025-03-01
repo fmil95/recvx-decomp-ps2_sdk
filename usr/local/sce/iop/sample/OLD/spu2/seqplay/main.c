@@ -33,9 +33,9 @@
 
 //#define PARTLY /* SsVabTransBodyPartly() */
 
-#define  SEQ_FILENAME	"host1:/usr/local/sce/data/sound/seq/fuga.seq"
-#define  VH_FILENAME	"host1:/usr/local/sce/data/sound/wave/simple.vh"
-#define  VB_FILENAME	"host1:/usr/local/sce/data/sound/wave/simple.vb"
+#define  SEQ_FILENAME	"host1:fuga.seq"
+#define  VH_FILENAME	"host1:simple.vh"
+#define  VB_FILENAME	"host1:simple.vb"
 #define  ALLOC_IOP_HEAP_SIZE   0x100000
 #define  VH_ADDR_OFST	0x10000
 #define  VB_ADDR_OFST	0x20000

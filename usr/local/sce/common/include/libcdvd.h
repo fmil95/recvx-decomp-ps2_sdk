@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5.3
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*                      Emotion Engine Library
  *                          Version 0.03
@@ -30,15 +30,12 @@
  * CD-ROM Basic System
  */
 
-/* Flag for sceOpen() CDVD local usage */
-#define SCE_CdSTREAM      0x40000000  /* CD/DVD Media Stream open */
-
 /*
  * Macros for READ Data pattan
  */
 #define SCECdSecS2048		0	/* sector size 2048 */
-#define SCECdSecS2328		1	/* sector size 2328 System Use */
-#define SCECdSecS2340		2	/* sector size 2340 System Use */
+#define SCECdSecS2328		1	/* sector size 2328 */
+#define SCECdSecS2340		2	/* sector size 2340 */
 
 /*
  * Macros for Spindle control
@@ -46,7 +43,6 @@
 #define SCECdSpinMax		0
 #define SCECdSpinNom		1	/* driverの読みだせる最高速度で回す */
 #define SCECdSpinStm		0	/* ストリームの推奨速度で回す       */
-#define SCECdSpinDvdDL0		0	/* DVDデュアルレイア0推奨速度で回す  */	
 
 /*
  * Macros for Error code
@@ -66,8 +62,6 @@
 #define SCECdErOPENS		0x11	/* 蓋が開いている		    */
 #define SCECdErCMD		0x10	/* 未サポートのコマンド発行	    */
 #define SCECdErABRT		0x01	/* コマンド処理中にアボート発行	    */
-#define SCECdErREADCF		0xfd	/* 読みだしコマンド発行に失敗した。 */
-#define SCECdErREADCFR  	0xfe	/* 読みだしコマンド発行に失敗した。 */
 
 /*
  * Macros for sceCdGetDiskType()
@@ -95,8 +89,6 @@
 	/* DETCT (Detecting) Disc 判別動作中を表わす。*/
 #define SCECdNODISC 		0x00
 	/* NODISC (No disc) Disc が入っていない状態を表わす。*/
-#define SCECdUNKNOWN		0x05
-	/* UNKNOWN          Disc 判別不能	*/
 
 /*
  * CD-ROM Primitive Commands
@@ -192,7 +184,6 @@ typedef struct {
 	u_int	size;		/* file size */
 	char	name[16];	/* file name (body) */
 	u_char  date[8];	/* date		    */
-        u_int   flag;           /* file_flag        */
 } sceCdlFILE;
 
 /*
@@ -211,36 +202,16 @@ typedef struct {
 } sceCdCLOCK;
 
 /*
- *      Stream
+ *      Stream mode
  */
-/*  Stream mode  */
 #define STMNBLK         0
 #define STMBLK          1
-/*  Stream Init Devctl() */
-typedef struct {
-        u_int bufmax;
-        u_int bankmax;
-        u_int iop_bufaddr;
-} sceCdStmInit;
 
 /*
  *      Media mode
  */
 #define SCECdCD         1
 #define SCECdDVD        2
-
-/*
- * Macros for sceCdTrayReq
- */
-#define SCECdTrayOpen	0	/* Tray Open  */
-#define SCECdTrayClose	1	/* Tray Close */
-#define SCECdTrayCheck	2	/* Tray Check */
-
-/*
- *      EE Read mode
- */
-#define SCECdNoCheckReady       0x00000001
-#define SCECdNoWriteBackDCache  0x00000002
 
 /*
  *	Prototypes
@@ -252,14 +223,12 @@ extern "C" {
 sceCdlLOCCD *sceCdIntToPos(int i, sceCdlLOCCD *p);
 int sceCdPosToInt(sceCdlLOCCD *p);
 int sceCdSearchFile(sceCdlFILE *fp,const char *name);
-int sceCdLayerSearchFile(sceCdlFILE *fp,const char *name, int layer);
 int sceCdRead(u_int lbn, u_int sectors,
                          void *buf , sceCdRMode *mode);
 int sceCdReadIOPm(u_int lbn, u_int sectors,
                          void *buf , sceCdRMode *mode);
 int sceCdReadChain(u_int *read_tag, sceCdRMode *mode);
 int *sceCdCallback(void (*func)(int));
-int *sceCdPOffCallback(void (*func)(void *),void *addr);
 int sceCdTrayReq(int param,u_int *traychk);
 u_int sceCdGetReadPos( void );
 int sceCdSync(int mode);
@@ -281,7 +250,6 @@ int sceCdPause( void );
 int sceCdStInit(u_int bufmax, u_int bankmax,  u_int iop_bufaddr);
 int sceCdStStart(u_int lbn, sceCdRMode *mode);
 int sceCdStSeek(u_int lbn);
-int sceCdStSeekF(u_int lbn);
 int sceCdStStop(void);
 int sceCdStRead(u_int size, u_int *buf, u_int mode, u_int *err);
 int sceCdStPause(void);
@@ -290,11 +258,8 @@ int sceCdStStat(void);
 int sceCdReadClock( sceCdCLOCK *rtc );
 int sceCdMmode( int media );
 int sceCdChangeThreadPriority( int prio );
-int sceCdPowerOff( int *stat );
-u_int sceCdSetEEReadMode(u_int mode);
-int sceCdReadDvdDualInfo(int *on_dual, u_int *layer1_start);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
 }
 #endif /* _LIBCD_H_ */
-#endif
+#endif		// ndef _LIBCDVD_H

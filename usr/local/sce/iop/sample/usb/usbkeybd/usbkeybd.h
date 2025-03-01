@@ -1,5 +1,5 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4.3
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *      USB Keyboard Class Driver (for IOP)

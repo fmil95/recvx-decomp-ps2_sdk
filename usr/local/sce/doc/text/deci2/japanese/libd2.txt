@@ -1,0 +1,131 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+DECI2 ライブラリ
+=================
+
+
+ 1 概要
+--------
+
+    DECI2 ライブラリは、DECI2 Manager を制御してホスト <-> ターゲット間通
+    信を行うための関数群で、ターゲット上のプロトコルドライバ作成を支援す
+    る目的で用意されています。
+    
+    プロトコルドライバは、DECI2 Manager から通知されるイベントを処理する
+    イベントハンドラ部分とそれ以外の部分から構成されます。イベントハンド
+    ラは、通常のシステム状態とは異なる状態で呼び出されるのでそのプログラ
+    ミングにはいくつかの制限があります。DECI2 Manager に用意された関数で、
+    イベントハンドラから呼び出せる関数には名前に Ex を付けて、イベントハ
+    ンドラ外から呼出せる関数と明確に区別されています。なお DCMP パケット
+    は、イベントとして通知されます。
+    
+
+  1.1 EE の場合
+
+    イベントハンドラは、割込みハンドラと同じような方法で呼び出されます。
+    ただし、イベントハンドラ実行中は、EE Kernel が提供する関数を利用する
+    ことができません。
+    
+
+  1.2 IOP の場合
+
+    イベントハンドラは、IOP のシステムソフトウエアの管理外の特殊な状態で
+    呼び出されます。したがって、プロトコルドライバから見た場合、システム
+    は以下の三つの状態をもちます。
+    
+         (1) スレッド部実行中
+             通常のシステムサービスが利用可能な状態
+         (2) スレッド独立部実行中(割り込み処理ルーチンなど)
+             スレッド独立部専用の制限されたシステムサービスが利用可能な状
+             態
+         (3) DECI2 イベントハンドラ実行中
+    
+    DECI2 イベントハンドラ実行中は、システムサービス関数は利用できません
+    (例外として、ctype.h、memory.h、string.h で宣言されているライブラリ関
+    数は利用可能です)。
+    また、DECI2 イベントハンドラ実行中は、CPU は kernel mode で、割り込み
+    禁止状態です。イベントハンドラ内では、使用スタックは極力少なくしてく
+    ださい。
+    
+    
+
+  1.3 関連ファイル
+
+    DECI2 ライブラリに必要なファイルは次のとおりです。
+    
+    +------------------+-------------------+
+    |カテゴリ           ファイル名         |
+    +                  +                   +
+    |ライブラリファイル libkernl.a (EEのみ)|
+    |ヘッダファイル     deci2.h            |
+    +------------------+-------------------+
+    
+
+ 2 関数一覧
+------------
+
+    DECI2 ライブラリに含まれる関数は次のとおりです。
+    
+
+  2.1 プロトコルの登録・制御
+
+    +----------------+------------------------+
+    |関数名           機能                    |
+    +                +                        +
+    |sceDeci2Open     プロトコルドライバの登録|
+    |sceDeci2Close    プロトコルドライバの削除|
+    |sceDeci2ExLock   他のプロトコルのロック  |
+    |sceDeci2ExUnLock ロックの解除            |
+    +----------------+------------------------+
+
+  2.2 DECI2 パケットの送受信
+
+    +-----------------+--------------------------+
+    |関数名            機能                      |
+    +                 +                          +
+    |sceDeci2ExRecv    DECI2 パケットの受信      |
+    |sceDeci2ExSend    DECI2 パケットの送信      |
+    |sceDeci2ReqSend   DECI2_WRITE イベントの要求|
+    |sceDeci2ExReqSend DECI2_WRITE イベントの要求|
+    +-----------------+--------------------------+
+
+  2.3 イベントハンドラからのスレッド同期 (IOPのみ)
+
+    +----------------------+--------------------------+
+    |関数名                 機能                      |
+    +                      +                          +
+    |sceDeci2ExWakeupThread スリープ中のスレッドの起床|
+    |sceDeci2ExSignalSema   セマフォへのシグナル発行  |
+    |sceDeci2ExSetEventFlag イベントフラグのセット    |
+    +----------------------+--------------------------+
+
+  2.4 イベントハンドラ内のデバック用プリント (IOPのみ)
+
+    +---------------+-------------------------------+
+    |関数名          機能                           |
+    +               +                               +
+    |sceDeci2ExPanic イベントハンドラ内からの printf|
+    +---------------+-------------------------------+
+    
+    
+
+ 3 エラーコード
+----------------
+
+    
+    DECI2_ERR_INVALID     -1  // invalid argument
+    DECI2_ERR_INVALSOCK   -2  // invalid socket descriptor
+    DECI2_ERR_ALREADYUSE  -3  // protocol number already used
+    DECI2_ERR_MFILE       -4  // too many open protocols
+    DECI2_ERR_INVALADDR   -5  // invalid address for buffer
+    DECI2_ERR_PKTSIZE     -6  // buffer is too small
+    DECI2_ERR_WOULDBLOCK  -7  // blocks inspite of asynchronous
+    DECI2_ERR_ALREADYLOCK -8  // already locked
+    DECI2_ERR_NOTLOCKED   -9  // not locked
+    DECI2_ERR_NOROUTE    -10  // no route to host
+    DECI2_ERR_NOSPACE    -11  // no room left on manager
+    DECI2_ERR_INVALHEAD  -12  // invalid deci2 header
+    DECI2_ERR_NOHOSTIF   -13  // No interface to Host

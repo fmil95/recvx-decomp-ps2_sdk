@@ -1,0 +1,3103 @@
+<HTML>
+<HEAD>
+<TITLE> dsedb / dsidbコマンドリファレンス</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="dsnet_rf.htm" SELECTED> dsedb / dsidbコマンドリファレンス
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+dsedb / dsidb<BR>コマンドリファレンス<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 コマンド一覧<BR></A>
+<P><A HREF="#Heading3_2">  2 行入力<BR></A>
+<P><A HREF="#Heading3_3">  3 表現式<BR></A>
+<P><A HREF="#Heading3_4">  4 オプション一覧<BR></A>
+<P><A HREF="#Heading3_5">  5 コマンド詳細<BR></A>
+    <UL>
+    <A HREF="#Heading4_5_1"> dr [-&lt;cpuid&gt;] [-[hfxw]*] [&lt;reg&gt;]...　（dsedb用）<BR></A><BR>
+    <A HREF="#Heading4_5_2"> dr [&lt;reg&gt;]...　（dsidb用）<BR></A><BR>
+    <A HREF="#Heading4_5_3"> sr [&lt;reg&gt; [&lt;val&gt;]]...<BR></A><BR>
+    <A HREF="#Heading4_5_4"> rload &lt;fname&gt; <BR></A><BR>
+    <A HREF="#Heading4_5_5"> rsave &lt;fname&gt; [&lt;reg&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_6"> dx [&lt;adr&gt; [&lt;cnt&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_7"> sx &lt;adr&gt; &lt;val&gt;...<BR></A><BR>
+    <A HREF="#Heading4_5_8"> ix [&lt;adr&gt; [&lt;cnt&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_9"> ox &lt;adr&gt; &lt;val&gt;...<BR></A><BR>
+    <A HREF="#Heading4_5_10"> bload &lt;fname&gt; &lt;adr&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_11"> bsave &lt;fname&gt; &lt;adr&gt; &lt;cnt&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_12"> di [-m &lt;mark&gt;] [&lt;adr&gt; [&lt;cnt&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_13"> vdi [-&lt;cpuid&gt;] [-m &lt;mark&gt;] [&lt;adr&gt; [&lt;cnt&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_14"> as &lt;adr&gt; &lt;inst&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_15"> list [&lt;adr&gt; [&lt;cnt&gt; [&lt;back&gt;]]]<BR></A><BR>
+    <A HREF="#Heading4_5_16"> bt [&lt;cnt&gt;] <BR></A><BR>
+    <A HREF="#Heading4_5_17"> bp [&lt;adr&gt;[,&lt;cnt&gt;]]...<BR></A><BR>
+    <A HREF="#Heading4_5_18"> ub [all|&lt;adr&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_19"> be [&lt;adr&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_20"> bd [&lt;adr&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_21"> hbp [pc][&lt;uskx&gt;][:&lt;adr&gt;[,&lt;amsk&gt;]]...<BR>hbp [da|dr|dw][&lt;uskx&gt;][:&lt;adr&gt;[,&lt;amsk&gt;]=&lt;val&gt;[,&lt;vmsk&gt;]]...　（dsedb用）<BR></A><BR>
+    <A HREF="#Heading4_5_22"> hbp [pc|da|dr|dw][ku]*[:&lt;adr&gt;[,&lt;amsk&gt;]]　（dsidb用）<BR></A><BR>
+    <A HREF="#Heading4_5_23"> hub [pc|da|dr|dw]...<BR></A><BR>
+    <A HREF="#Heading4_5_24"> pload &lt;fname&gt; [&lt;args&gt;]...　（dsedb専用）<BR></A><BR>
+    <A HREF="#Heading4_5_25"> mload &lt;fname&gt; [&lt;args&gt;]...　（dsidb専用）<BR></A><BR>
+    <A HREF="#Heading4_5_26"> mlist [-m]　（dsidb専用）<BR></A><BR>
+    <A HREF="#Heading4_5_27"> sload [&lt;fname&gt;]　（dsedb用）<BR></A><BR>
+    <A HREF="#Heading4_5_28"> sload [-id &lt;id&gt;] [-b &lt;base&gt;] [&lt;fname&gt;]　（dsidb用）<BR></A><BR>
+    <A HREF="#Heading4_5_29"> run [&lt;fname&gt; [&lt;args&gt;]...]　（dsedb専用）<BR></A><BR>
+    <A HREF="#Heading4_5_30"> mstart [-d] [&lt;fname&gt; [&lt;args&gt;]...]　（dsidb専用）<BR></A><BR>
+    <A HREF="#Heading4_5_31"> cont [&lt;cnt&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_32"> step [&lt;cnt&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_33"> next [&lt;cnt&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_34"> lstep [&lt;cnt&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_35"> lnext [&lt;cnt&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_36"> until &lt;adr&gt;...<BR></A><BR>
+    <A HREF="#Heading4_5_37"> break<BR></A><BR>
+    <A HREF="#Heading4_5_38"> wait<BR></A><BR>
+    <A HREF="#Heading4_5_39"> reset [-i] [&lt;ebootp&gt; [&lt;ibootp&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_40"> xgkt &lt;fname&gt; &lt;cnt&gt; [&lt;off&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_41"> dbgctl [vu0|vu1] [on|off]<BR></A><BR>
+    <A HREF="#Heading4_5_42"> storeimage &lt;fname&gt; &lt;bp&gt; &lt;bw&gt; &lt;psm&gt; &lt;x&gt; &lt;y&gt; &lt;w&gt; &lt;h&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_43"> bpfunc &lt;adr&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_44"> set [all] [&lt;var&gt;[=&lt;val&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_45"> alias [-r] [&lt;name&gt; [&lt;value&gt;]]<BR></A><BR>
+    <A HREF="#Heading4_5_46"> subst [-r] [&lt;pattern&gt; &lt;replace&gt;...]<BR></A><BR>
+    <A HREF="#Heading4_5_47"> source &lt;fname&gt;<BR></A><BR>
+    <A HREF="#Heading4_5_48"> ![&lt;cmd&gt; [&lt;args&gt;]...]<BR></A><BR>
+    <A HREF="#Heading4_5_49"> cd [&lt;directory&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_50"> printf "&lt;fmt&gt;" [&lt;args&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_51"> record [[-a] &lt;fname&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_52"> repeat [-c &lt;cnt&gt;] [-i &lt;sec&gt;] [-while &lt;expr&gt;] &lt;cmd&gt;...<BR></A><BR>
+    <A HREF="#Heading4_5_53"> show log [[-]&lt;option&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_54"> show status [-m] [-d]<BR></A><BR>
+    <A HREF="#Heading4_5_55"> show history<BR></A><BR>
+    <A HREF="#Heading4_5_56"> show dbconf<BR></A><BR>
+    <A HREF="#Heading4_5_57"> show symbol [&lt;str&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_58"> show mdebug [&lt;str&gt;]<BR></A><BR>
+    <A HREF="#Heading4_5_59"> help [&lt;keyword&gt;]...<BR></A><BR>
+    <A HREF="#Heading4_5_60"> quit<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_6">  6 オプション詳細<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> target_name<BR></A><BR>
+    <A HREF="#Heading4_6_2"> tty_mask<BR></A><BR>
+    <A HREF="#Heading4_6_3"> atty_mask<BR></A><BR>
+    <A HREF="#Heading4_6_4"> file_priority<BR></A><BR>
+    <A HREF="#Heading4_6_5"> reset_on_start<BR></A><BR>
+    <A HREF="#Heading4_6_6"> check_manager_version<BR></A><BR>
+    <A HREF="#Heading4_6_7"> target_exec_ctl_config<BR></A><BR>
+    <A HREF="#Heading4_6_8"> target_exec_ctl_override<BR></A><BR>
+    <A HREF="#Heading4_6_9"> dr_default_format<BR></A><BR>
+    <A HREF="#Heading4_6_10"> dr_default_di<BR></A><BR>
+    <A HREF="#Heading4_6_11"> ex_default_dr<BR></A><BR>
+    <A HREF="#Heading4_6_12"> dr0_default_di<BR></A><BR>
+    <A HREF="#Heading4_6_13"> ex0_default_dr<BR></A><BR>
+    <A HREF="#Heading4_6_14"> dr1_default_di<BR></A><BR>
+    <A HREF="#Heading4_6_15"> ex1_default_dr<BR></A><BR>
+    <A HREF="#Heading4_6_16"> lstep_default_list<BR></A><BR>
+    <A HREF="#Heading4_6_17"> lstep_stop_at_no_line<BR></A><BR>
+    <A HREF="#Heading4_6_18"> source_directories<BR></A><BR>
+    <A HREF="#Heading4_6_19"> initial_ebootp<BR></A><BR>
+    <A HREF="#Heading4_6_20"> current_ebootp<BR></A><BR>
+    <A HREF="#Heading4_6_21"> initial_ibootp<BR></A><BR>
+    <A HREF="#Heading4_6_22"> current_ibootp<BR></A><BR>
+    <A HREF="#Heading4_6_23"> automatic_prefix_breakpoint<BR></A><BR>
+    <A HREF="#Heading4_6_24"> describe_ub_all<BR></A><BR>
+    <A HREF="#Heading4_6_25"> di_address<BR></A><BR>
+    <A HREF="#Heading4_6_26"> di_instruction_word<BR></A><BR>
+    <A HREF="#Heading4_6_27"> di_branch_address<BR></A><BR>
+    <A HREF="#Heading4_6_28"> di_macro<BR></A><BR>
+    <A HREF="#Heading4_6_29"> help_lang<BR></A><BR>
+    <A HREF="#Heading4_6_30"> help_pager<BR></A><BR>
+    <A HREF="#Heading4_6_31"> hex_radix<BR></A><BR>
+    <A HREF="#Heading4_6_32"> log_total_size<BR></A><BR>
+    <A HREF="#Heading4_6_33"> log_packet_size<BR></A><BR>
+    <A HREF="#Heading4_6_34"> histfile<BR></A><BR>
+    <A HREF="#Heading4_6_35"> histfilesize<BR></A><BR>
+    <A HREF="#Heading4_6_36"> histsize<BR></A><BR>
+    <A HREF="#Heading4_6_37"> tty_max_size<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>コマンド一覧</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsedb / dsidbのコマンドには以下のものがあります。各コマンドの詳細は「5 コマンド詳細」を参照してください。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コマンド</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>備考</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">dr [-&lt;cpuid&gt;] [-[hfxw]*]<BR>   [&lt;reg&gt;]...</TD>
+<TD valign="TOP">レジスタの表示</TD>
+<TD valign="TOP">Ｅ</TD>
+</TR>
+<TR>
+<TD valign="TOP">dr [&lt;reg&gt;]...</TD>
+<TD valign="TOP">レジスタの表示</TD>
+<TD valign="TOP">Ｉ</TD>
+</TR>
+<TR>
+<TD valign="TOP">sr [&lt;reg&gt; [&lt;val&gt;]]...</TD>
+<TD valign="TOP">レジスタの設定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">rload &lt;fname&gt;</TD>
+<TD valign="TOP">レジスタのロード</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">rsave &lt;fname&gt; [&lt;reg&gt;]...</TD>
+<TD valign="TOP">レジスタのセーブ</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">bload &lt;fname&gt; &lt;adr&gt;</TD>
+<TD valign="TOP">バイナリデータのロード</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">bsave &lt;fname&gt; &lt;adr&gt; &lt;cnt&gt;</TD>
+<TD valign="TOP">バイナリデータのセーブ</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">di [-m &lt;mark&gt;] [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">逆アセンブル表示</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">vdi [-&lt;cpuid&gt;] [-m &lt;mark&gt;] <BR>　　[&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">VUマイクロ命令の<BR>逆アセンブル表示</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">as &lt;adr&gt; &lt;inst&gt;</TD>
+<TD valign="TOP">行単位の簡易アセンブラ</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">list [&lt;adr&gt; [&lt;cnt&gt; [&lt;back&gt;]]]</TD>
+<TD valign="TOP">ソース行の表示</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">bt [&lt;cnt&gt;]</TD>
+<TD valign="TOP">バックトレースの表示</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">bp [&lt;adr&gt;[,&lt;cnt&gt;]]...</TD>
+<TD valign="TOP">ブレークポイントの設定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">ub [all|&lt;adr&gt;]...</TD>
+<TD valign="TOP">ブレークポイントの解除</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">be [&lt;adr&gt;]...</TD>
+<TD valign="TOP">ブレークポイントの有効化</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">bd [&lt;adr&gt;]...</TD>
+<TD valign="TOP">ブレークポイントの無効化</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">hbp [pc][&lt;uskx&gt;] <BR>    [:&lt;adr&gt;[,&lt;amsk&gt;]]...<BR>hbp [da|dr|dw][&lt;uskx&gt;]<BR>　　[:&lt;adr&gt;[,&lt;amsk&gt;]<BR>　　=&lt;val&gt;[,&lt;vmsk&gt;]]...</TD>
+<TD valign="TOP">ハードウェアブレークポイント<BR>の設定</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">hbp [pc|da|dr|dw][&lt;uk&gt;]<BR>　　[:&lt;adr&gt;[,&lt;amsk&gt;]]</TD>
+<TD valign="TOP">ハードウェアブレークポイント<BR>の設定</TD>
+<TD valign="TOP">I</TD>
+</TR>
+<TR>
+<TD valign="TOP">hub [pc|da|dr|dw]...</TD>
+<TD valign="TOP">ハードウェアブレークポイント<BR>の解除</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">pload &lt;fname&gt; [&lt;args&gt;]...</TD>
+<TD valign="TOP">ターゲットプログラムのロード</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">mload &lt;fname&gt; [&lt;args&gt;]...</TD>
+<TD valign="TOP">ターゲットプログラム<BR>モジュールのロード</TD>
+<TD valign="TOP">I</TD>
+</TR>
+<TR>
+<TD valign="TOP">mlist [-m]</TD>
+<TD valign="TOP">ターゲットにロードした<BR>モジュールの一覧表示</TD>
+<TD valign="TOP">I</TD>
+</TR>
+<TR>
+<TD valign="TOP">sload [&lt;fname&gt;]</TD>
+<TD valign="TOP">プログラムのシンボルのみの<BR>ロード</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">sload [-id &lt;id&gt;]<BR>     [-b &lt;base&gt;] [&lt;fname&gt;]</TD>
+<TD valign="TOP">プログラムモジュールの<BR>シンボルのみのロード</TD>
+<TD valign="TOP">I</TD>
+</TR>
+<TR>
+<TD valign="TOP">run [&lt;fname&gt; [&lt;args&gt;]...]</TD>
+<TD valign="TOP">ターゲットプログラムの実行</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">mstart [-d]<BR>       [&lt;fname&gt; [&lt;args&gt;]...]</TD>
+<TD valign="TOP">ターゲットプログラム<BR>モジュールの実行</TD>
+<TD valign="TOP">I</TD>
+</TR>
+<TR>
+<TD valign="TOP">cont [&lt;cnt&gt;]</TD>
+<TD valign="TOP">ターゲットプログラムの継続</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">step [&lt;cnt&gt;]</TD>
+<TD valign="TOP">ターゲットプログラムの<BR>ステップ実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">next [&lt;cnt&gt;]</TD>
+<TD valign="TOP">ターゲットプログラムの<BR>ネクスト実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">lstep [&lt;cnt&gt;]</TD>
+<TD valign="TOP">ソース行単位でのステップ実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">lnext [&lt;cnt&gt;]</TD>
+<TD valign="TOP">ソース行単位でのネクスト実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">until &lt;adr&gt;...</TD>
+<TD valign="TOP">一時的ブレークポイントによる<BR>継続実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">break</TD>
+<TD valign="TOP">ターゲットプログラムの中断</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">wait</TD>
+<TD valign="TOP">ターゲットプログラムの停止<BR>を待つ</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">reset [-i] [&lt;ebootp&gt; [&lt;ibootp&gt;]</TD>
+<TD valign="TOP">ターゲットのリセット</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">xgkt &lt;fname&gt; &lt;cnt&gt; [&lt;off&gt;]</TD>
+<TD valign="TOP">XGKICK トレースの開始</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">dbgctl [vu0|vu1] [on|off]</TD>
+<TD valign="TOP">デバッグモードの設定</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">storeimage &lt;fname&gt; &lt;bp&gt; &lt;bw&gt; <BR>　　&lt;psm&gt; &lt;x&gt;&lt;y&gt; &lt;w&gt; &lt;h&gt;</TD>
+<TD valign="TOP">GS イメージデータの保存</TD>
+<TD valign="TOP">E</TD>
+</TR>
+<TR>
+<TD valign="TOP">bpfunc &lt;adr&gt;</TD>
+<TD valign="TOP">ブレークポイント関数の設定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">set [all] [&lt;var&gt;[=&lt;val&gt;]]</TD>
+<TD valign="TOP">オプション/ユーザ変数の<BR>表示と設定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">alias [-r] [&lt;name&gt; [&lt;value&gt;]]</TD>
+<TD valign="TOP">別名の表示、設定、削除</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">subst [-r] [&lt;pattern&gt;<BR>　　 &lt;replace&gt;...]</TD>
+<TD valign="TOP">コマンド入力行置換の表示、<BR>設定、削除</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">source &lt;fname&gt;</TD>
+<TD valign="TOP">ファイルからのコマンド実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">![&lt;cmd&gt; [&lt;args&gt;]...]</TD>
+<TD valign="TOP">シェル呼び出し</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">cd [&lt;directory&gt;]</TD>
+<TD valign="TOP">カレントディレクトリの変更</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">printf "&lt;fmt&gt;" [&lt;args&gt;]...</TD>
+<TD valign="TOP">書式付きメッセージ出力</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">record [[-a] &lt;fname&gt;]</TD>
+<TD valign="TOP">画面出力内容の記録開始<BR>と終了</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">repeat [-c &lt;cnt&gt;] [-i &lt;sec&gt;]<BR>　　[-while &lt;expr&gt;] &lt;cmd&gt;...</TD>
+<TD valign="TOP">コマンドの繰り返し実行</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">show [log|status|history|<BR>　　dbconf |symbol|mdebug] ...</TD>
+<TD valign="TOP">内部情報の表示</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">help [&lt;keyword&gt;]...</TD>
+<TD valign="TOP">ヘルプメッセージの表示</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">quit</TD>
+<TD valign="TOP">dsedb の終了</TD>
+<TD valign="TOP"></TD>
+</TR>
+</TABLE>
+<BR>
+    *E：dsedb専用<BR>
+     I：dsidb専用<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>行入力</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsedb / dsidbでのコマンド入力時には、矢印キーの他に以下の編集キーが使用できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>編集キー</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-P</TD>
+<TD valign="TOP">前の行への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-N</TD>
+<TD valign="TOP">次の行への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-B</TD>
+<TD valign="TOP">前の文字(左)への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-F</TD>
+<TD valign="TOP">次の文字(右)への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-A</TD>
+<TD valign="TOP">カレント行の先頭への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-E</TD>
+<TD valign="TOP">カレント行の最後への移動</TD>
+</TR>
+<TR>
+<TD valign="TOP">BS</TD>
+<TD valign="TOP">前の文字の削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">DEL</TD>
+<TD valign="TOP">前の文字の削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-D</TD>
+<TD valign="TOP">カレント文字の削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-X</TD>
+<TD valign="TOP">カレント行すべての削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-U</TD>
+<TD valign="TOP">カレント行すべての削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-K</TD>
+<TD valign="TOP">カレント行のカレント文字から行末までの削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-L</TD>
+<TD valign="TOP">カレント行の再表示</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-C</TD>
+<TD valign="TOP">入力の中断 (^C のエコーあり)</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-G</TD>
+<TD valign="TOP">入力の中断 (^G のエコーなし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">LF, CR</TD>
+<TD valign="TOP">入力の終了、カレント行をコマンドとして実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">TAB</TD>
+<TD valign="TOP">コマンド名、ファイル名、シンボル名など補完</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-R</TD>
+<TD valign="TOP">逆方向サーチ</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-S</TD>
+<TD valign="TOP">順方向サーチ</TD>
+</TR>
+<TR>
+<TD valign="TOP">Ctrl-Y</TD>
+<TD valign="TOP">Ctrl-K で削除した文字列の挿入</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    TABによる補完は、行の最後でTABを入力した場合にのみ可能で、以下の4つのケースをサポートしています。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> 空白を含まない文字列<BR>コマンド名として補完を試みます。<BR>
+         <LI VALUE= 2> setコマンドの引数<BR>オプション名として補完を試みます。<BR>
+         <LI VALUE= 3> helpコマンドの引数<BR>ヘルプのキーワードとして補完を試みます。<BR>
+         <LI VALUE= 4> その他のコマンドの引数<BR>'/' もしくは '.' が含まれていた時はファイル名として、それ以外はシンボルとして補完を試みます。<BR>
+    </OL>
+    <BR>
+    プログラム実行時には、Ctrl-Cでbreakコマンドをターゲットに送ります。<BR>
+    Ctrl-Gでは、breakコマンドを送らないで単にdsedb / dsidbに制御が戻ります。<BR>
+    RETURNキーで、メモリ内容の表示やステップ実行など、直前に実行したコマンドを再実行できます。このとき、メモリの表示などはアドレスを増加させたうえで再実行されます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>表現式</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ファイル名以外の一般的な値を持つコマンド引数には、以下の表現式（expr）を使用することができます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>表現式</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">16進数</TD>
+<TD valign="TOP">0xはシンボルと重複しない限り省略可能</TD>
+</TR>
+<TR>
+<TD valign="TOP">symbol</TD>
+<TD valign="TOP">シンボル</TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt;fname&gt;:&lt;lineno&gt;</TD>
+<TD valign="TOP">行番号による指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt;fname&gt;:&lt;func&gt;</TD>
+<TD valign="TOP">staticで重複する名前の関数</TD>
+</TR>
+<TR>
+<TD valign="TOP">. </TD>
+<TD valign="TOP">現在のアドレス (ドットアドレス)</TD>
+</TR>
+<TR>
+<TD valign="TOP">.&lt;digit&gt;</TD>
+<TD valign="TOP">C言語と同じ形式での数値 (8,10,16 進数)</TD>
+</TR>
+<TR>
+<TD valign="TOP">$&lt;reg&gt;</TD>
+<TD valign="TOP">現在のレジスタ値またはユーザ変数値</TD>
+</TR>
+<TR>
+<TD valign="TOP">(expr)</TD>
+<TD valign="TOP">式としての括弧</TD>
+</TR>
+<TR>
+<TD valign="TOP">+expr</TD>
+<TD valign="TOP">正の符号の明示</TD>
+</TR>
+<TR>
+<TD valign="TOP">-expr</TD>
+<TD valign="TOP">符号反転</TD>
+</TR>
+<TR>
+<TD valign="TOP">~expr</TD>
+<TD valign="TOP">ビット反転</TD>
+</TR>
+<TR>
+<TD valign="TOP">*expr</TD>
+<TD valign="TOP">アドレス間接指定 (アドレスが指す先は常にワード)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1[expr2]</TD>
+<TD valign="TOP">*(expr1 + ((expr2) &lt;&lt; 2)) と等価</TD>
+</TR>
+<TR>
+<TD valign="TOP">!expr</TD>
+<TD valign="TOP">論理反転</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 || expr2</TD>
+<TD valign="TOP">論理 OR</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 && expr2</TD>
+<TD valign="TOP">論理 AND</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 |  expr2</TD>
+<TD valign="TOP">ビット OR</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 ^  expr2</TD>
+<TD valign="TOP">ビット XOR</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &  expr2</TD>
+<TD valign="TOP">ビット AND</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 == expr2</TD>
+<TD valign="TOP">等しい場合に真(=1)、それ以外は偽(=0)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 != expr2</TD>
+<TD valign="TOP">等しくない場合に真(=1)、それ以外は偽(=0)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &lt;  expr2</TD>
+<TD valign="TOP">符号なし比較 (less than)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &lt;= expr2</TD>
+<TD valign="TOP">符号なし比較 (less than or equal)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &gt;  expr2</TD>
+<TD valign="TOP">符号なし比較 (greater than)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &gt;= expr2</TD>
+<TD valign="TOP">符号なし比較 (greater than or equal)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &gt;&gt; expr2</TD>
+<TD valign="TOP">expr1 を右へ expr2ビットシフト(両方とも符号なし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 &lt;&lt; expr2</TD>
+<TD valign="TOP">expr1 を左へ expr2ビットシフト(両方とも符号なし）</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 +  expr2</TD>
+<TD valign="TOP">expr1,expr2 の算術的加算(両方とも符号なし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 -  expr2</TD>
+<TD valign="TOP">expr1,expr2 の算術的減算(両方とも符号なし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 *  expr2</TD>
+<TD valign="TOP">expr1,expr2 の算術的乗算(両方とも符号なし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 /  expr2</TD>
+<TD valign="TOP">expr1,expr2 の算術的除算(両方とも符号なし)</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr1 %  expr2</TD>
+<TD valign="TOP">expr1,expr2 の算術的剰余(両方とも符号なし)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    括弧、単項演算子および二項演算子の優先順位は C 言語と同じであり、以下のようになっています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>括弧、単項演算子および二項演算子</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>優先度</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">() []</TD>
+<TD valign="TOP"><DIV align=center>高</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">! + - ~ * (単項演算子)</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">* / %</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">+ - (二項演算子)</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt;&lt; &gt;&gt;</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt; &lt;= &gt; &gt;=</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">== !=</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">&</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">^</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">|</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">&&</TD>
+<TD valign="TOP"><DIV align=center>↑</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">||</TD>
+<TD valign="TOP"><DIV align=center>低</DIV></TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    表現式 (expr) 中の数値は特に指定がない限り 16 進として解釈します。<BR>
+    例外は $10 の '10' や、シンボル中の行番号などです。<BR>
+    <BR>
+    16 進数の定義は [0[xX]][0-9a-fA-F]+ であり、大文字と小文字の区別はありません。16進数が使える箇所で10進数を指定するには、数字の前に'.'を置いてください。8進数を指定するには'.0'を前置します。'.'と数字の間に空白を空けることはできません。<BR>
+    <BR>
+    シンボルの指定形式は以下のいずれかです。<BR>
+    <BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> &lt;symbol&gt;<BR>
+         <LI VALUE= 2> :&lt;symbol&gt;<BR>
+    </OL>
+    <BR>
+    'a123' のように 16 進数としてもシンボルとしても解釈可能でそのシンボルが実際に存在する場合にはエラーとしています。このような場合には、16 進なら '0x'を前置し、シンボルならば ':a123' と ':' を前置し、どちらであるかを明示してください。<BR>
+    <BR>
+    レジスタ名には '$a0'のようにシンボリックな表現の他に '$4'のような番号指定も使えます。レジスタ番号指定時の数値部分は 10 進数です。<BR>
+    <BR>
+    表現式中の "." は特殊なシンボルで、メモリの表示や設定、di、as 等の各コマンド実行中は「現在のアドレス」の値を持ち、コマンド終了時には「次のアドレス」の値となります。<BR>
+    <BR>
+    以下は表現式の指定例です。<BR>
+        <BLOCKQUOTE><UL>
+        db 80100000<BR>
+        di main+0x100<BR>
+        di (main + 100 + *(1002 + 4) * 5)<BR>
+        di $epc-8<BR>
+        db $t0+0x124+$v0+buf<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>オプション一覧</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsedbのオプションには以下のものがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値の形式</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>備考</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">target_name</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">dsnetm のホスト名および<BR>ポート</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">tty_mask</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">ターゲットの TTYP 入出力<BR>の設定</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">atty_mask</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">IOP/EE TTYP表示の設定</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">file_priority</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">Remote File Access の<BR>優先順位</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">reset_on_start</TD>
+<TD valign="TOP">ブール</TD>
+<TD valign="TOP">起動時のリセットの有無</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">check_manager_version</TD>
+<TD valign="TOP">ブール</TD>
+<TD valign="TOP">manager version チェック<BR>の有無</TD>
+<TD valign="TOP">※</TD>
+</TR>
+<TR>
+<TD valign="TOP">target_exec_ctl_config</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">ターゲット実行制御の状態</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">target_exec_ctl_override</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">ターゲット実行制御の<BR>上書き</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">dr_default_format</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">drコマンドのデフォルト<BR>表示形式指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">dr_default_di</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">dr コマンド時のdi実行<BR>内容指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">ex_default_dr</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">例外発生時のdr実行内容<BR>指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">dr0_default_di</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">dr -vu0コマンド時のdi<BR>実行内容指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">ex0_default_dr</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">VU0例外発生時のdr実行<BR>内容指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">dr1_default_di</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">dr -vu1 コマンド時のdi<BR>実行内容指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">ex1_default_dr</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">VU1例外発生時のdr実行<BR>内容指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">lstep_default_list</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">lstep,lnext 実行後の list <BR>実行指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">lstep_stop_at_no_line</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">lstep,lnext で行番号がない<BR>場合に停止</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">source_directories</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">ソース探索ディレクトリ<BR>リストの指定</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">initial_ebootp</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">EE 用ブートパラメータの<BR>初期値</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">current_ebootp</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">EE 用ブートパラメータの<BR>現在値</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">initial_ibootp</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">IOP 用ブートパラメータの<BR>初期値</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">current_ibootp</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">IOP 用ブートパラメータの<BR>現在値</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">automatic_prefix_breakpoint</TD>
+<TD valign="TOP">ブール</TD>
+<TD valign="TOP">ブレークポイント番号形式<BR>への自動前置</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">describe_ub_all</TD>
+<TD valign="TOP">ブール</TD>
+<TD valign="TOP">ubでall指定時のみに<BR>全削除を行う</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">di_address</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">diコマンドのアドレス<BR>表示方式</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">di_instruction_word</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">diコマンドの命令ワードの<BR>表示方式</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">di_branch_address</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">diコマンドの分岐アドレス<BR>表示方式</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">di_macro</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">di/as コマンドのマクロ命令<BR>制御</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">help_lang</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">ヘルプ表示の言語</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">help_pager</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">ヘルプ表示に使用する<BR>ページャ</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">hex_radix</TD>
+<TD valign="TOP">ブール</TD>
+<TD valign="TOP">数値を0xなしで16進数と<BR>みなす</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">log_total_size</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">送受信ログの最大合計<BR>バイト数</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">log_packet_size</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">送受信ログのパケットごと<BR>の最大バイト数</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">histfile</TD>
+<TD valign="TOP">文字列</TD>
+<TD valign="TOP">ヒストリセーブファイル名</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">histfilesize</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">セーブするヒストリ数</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">histsize</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">ヒストリの上限数</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">tty_max_size</TD>
+<TD valign="TOP">数値</TD>
+<TD valign="TOP">TTY パケットの最大保留<BR>バイト数</TD>
+<TD valign="TOP"></TD>
+</TR>
+</TABLE>
+<BR>
+    *※：起動時専用<BR>
+    dsedb は起動時に ~/.dsedbrc と ./.dsedbrc の存在を調べ、それらのファイルが存在すればその順序で起動時に自動実行ファイルとして実行します。<BR>
+    起動時専用のオプションは、その自動実行ファイル内のoption文によってのみ設定可能なオプションです。起動後にsetコマンドで変更することはできません。option文の引数はsetコマンドと同じ引数を持ちます。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>コマンド詳細</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_1">
+<A HREF="#Heading3_5"> 5. </A>1 <B>dr [-&lt;cpuid&gt;] [-[hfxw]*] [&lt;reg&gt;]...　（dsedb用）</B>
+</A>
+</H3>
+<blockquote>
+    &lt;reg&gt; には レジスタ名またはレジスタのグループ名を指定します。指定できるレジスタグループ名は以下のとおりです。汎用レジスタについては、レジスタ番号形式 (例: $a0 は $4)も使用可能です。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタグループ名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">gpr</TD>
+<TD valign="TOP">General Purpose Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">hls</TD>
+<TD valign="TOP">HI、LO、HI1、LO1、SA</TD>
+</TR>
+<TR>
+<TD valign="TOP">scr</TD>
+<TD valign="TOP">System Coprocessor Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">pcr</TD>
+<TD valign="TOP">Performance Counter Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">hdr</TD>
+<TD valign="TOP">Hardware Breakpoint Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">fpr</TD>
+<TD valign="TOP">Floating Point Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">fpc</TD>
+<TD valign="TOP">Floating Point Control Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">vu0f</TD>
+<TD valign="TOP">VU0 Floating Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">vu0I</TD>
+<TD valign="TOP">VU0 Integer Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">vu1f</TD>
+<TD valign="TOP">VU1 Floating Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">vu1I</TD>
+<TD valign="TOP">VU1 Integer Registers</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    -&lt;cpuid&gt; オプションには以下のいずれかを指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-cpu</TD>
+<TD valign="TOP">&lt;reg&gt; を省略した時に CPU レジスタを表示対象とします。<BR>[default]<BR>汎用レジスタと $lo、$hi、$sa、$PC、$cause、$status、<BR>$badvaddr、$badpaddrの下位32 bit および $PCの前後の<BR>逆アセンブル表示を行ないます。</TD>
+</TR>
+<TR>
+<TD valign="TOP">-vu0</TD>
+<TD valign="TOP">&lt;reg&gt; を省略した時に VU0 レジスタを表示対象とします。</TD>
+</TR>
+<TR>
+<TD valign="TOP">-vu1</TD>
+<TD valign="TOP">&lt;reg&gt; を省略した時に VU1 レジスタを表示対象とします。<BR>VI00-VI16,TPC,FBRST,VPU-STAT レジスタおよびTPC前後の<BR>逆アセンブル表示を行ないます。<BR>$PCは疑似レジスタで $epc、$errorepc、$status、$causeの<BR>4つのレジスタ値から計算されたプログラムカウンタの値を<BR>持ちます。</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    -[hfxw]* オプションで fpr,vu0f,vu1f レジスタの値の表示指定ができます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-h</TD>
+<TD valign="TOP">32bit 値を 16 進数で表示します。(fpr,vu0f,vu1f)<BR>[default]</TD>
+</TR>
+<TR>
+<TD valign="TOP">-f</TD>
+<TD valign="TOP">32bit 値を浮動小数で表示します。(fpr,vu0f,vu1f)</TD>
+</TR>
+<TR>
+<TD valign="TOP">-x</TD>
+<TD valign="TOP">vu0f,vu1f の表示順序を XYZW 順で表示します。(vu0f,vu1f)</TD>
+</TR>
+<TR>
+<TD valign="TOP">-w</TD>
+<TD valign="TOP">vu0f,vu1f の表示順序を WZYX 順で表示します。(vu0f,vu1f)<BR>[default]</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_2">
+<A HREF="#Heading3_5"> 5. </A>2 <B>dr [&lt;reg&gt;]...　（dsidb用）</B>
+</A>
+</H3>
+<blockquote>
+    &lt;reg&gt;で指定されたレジスタの内容を表示します。<BR>
+    &lt;reg&gt; には レジスタ名または、レジスタのグループ名を指定します。<BR>
+    指定できるレジスタグループ名は以下のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタグループ名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">gpr</TD>
+<TD valign="TOP">General Purpose Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">hl</TD>
+<TD valign="TOP">HI、LO</TD>
+</TR>
+<TR>
+<TD valign="TOP">scc</TD>
+<TD valign="TOP">System Coprocessor Registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">c2r</TD>
+<TD valign="TOP">coprocssor 2 (GTE) registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">c2c</TD>
+<TD valign="TOP">coprocssor 2 (GTE) control registers</TD>
+</TR>
+<TR>
+<TD valign="TOP">gte</TD>
+<TD valign="TOP">all GTE registers (cop2,cp2)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    汎用レジスタについてはレジスタ番号形式 (例: $a0 は $4)も使用可能です。<BR>
+    &lt;reg&gt; を省略した場合には汎用レジスタと $lo、$hi、$PC、$bada および$PC 前後の逆アセンブル表示を行います。<BR>
+    $PC は疑似レジスタで $epc と $status の 2 つのレジスタ値から計算されたプログラムカウンタの値を持ちます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_3">
+<A HREF="#Heading3_5"> 5. </A>3 <B>sr [&lt;reg&gt; [&lt;val&gt;]]...</B>
+</A>
+</H3>
+<blockquote>
+    &lt;reg&gt; で指定されたレジスタに値 &lt;val&gt; を設定します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_4">
+<A HREF="#Heading3_5"> 5. </A>4 <B>rload &lt;fname&gt; </B>
+</A>
+</H3>
+<blockquote>
+    指定されたファイル &lt;fname&gt; からレジスタ値をロードします。<BR>
+    一般には rsave コマンドでセーブしたファイル名を指定します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_5">
+<A HREF="#Heading3_5"> 5. </A>5 <B>rsave &lt;fname&gt; [&lt;reg&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    指定されたファイル &lt;fname&gt; に指定レジスタ &lt;reg&gt;... のレジスタ名と値をセーブします。<BR>
+    &lt;reg&gt;... を省略すると dr の省略時と同じレジスタをセーブします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_6">
+<A HREF="#Heading3_5"> 5. </A>6 <B>d<I>x</I> [&lt;adr&gt; [&lt;cnt&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; からメモリの内容を表示します。次のように、データ幅の異なる６つのコマンドがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コマンド名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">dq [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (quad)</TD>
+</TR>
+<TR>
+<TD valign="TOP">dd [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (double)</TD>
+</TR>
+<TR>
+<TD valign="TOP">dw [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (word)</TD>
+</TR>
+<TR>
+<TD valign="TOP">dh [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (half)</TD>
+</TR>
+<TR>
+<TD valign="TOP">db [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">df [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">メモリ内容の表示 (float)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    &lt;adr&gt; のデフォルトはドットアドレス（現在のアドレス）です。<BR>
+    &lt;cnt&gt; は一度に表示するバイト数で、dq などで端数がある場合には切り上げられます。128bit 単位でアクセスしなければならない I/O レジスタなどに対して、dq 以外のコマンド等でアクセスした場合の値は保証できません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_7">
+<A HREF="#Heading3_5"> 5. </A>7 <B>s<I>x</I> &lt;adr&gt; &lt;val&gt;...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; 以降のメモリに指定データ&lt;val&gt;...を書き込みます。次のように、データ幅の異なる６つのコマンドがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コマンド名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sq &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (quad)</TD>
+</TR>
+<TR>
+<TD valign="TOP">sd &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (double)</TD>
+</TR>
+<TR>
+<TD valign="TOP">sw &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (word)</TD>
+</TR>
+<TR>
+<TD valign="TOP">sh &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (half)</TD>
+</TR>
+<TR>
+<TD valign="TOP">sb &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">sf &lt;adr&gt; &lt;fval&gt;...</TD>
+<TD valign="TOP">メモリ内容の設定 (float)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    sf コマンドの指定データ &lt;fval&gt; は浮動小数を含む表現式で、以下の表現式のみが指定可能です。<BR>
+        <BLOCKQUOTE><UL>
+        &lt;floating_point_number&gt;<BR>
+        (&lt;fexpr&gt;)<BR>
+        +&lt;fexpr&gt;<BR>
+        -&lt;fexpr&gt;<BR>
+        *&lt;fexpr&gt;<BR>
+        &lt;fexpr1&gt; + &lt;fexpr2&gt;<BR>
+        &lt;fexpr1&gt; - &lt;fexpr2&gt;<BR>
+        &lt;fexpr1&gt; * &lt;fexpr2&gt;<BR>
+        &lt;fexpr1&gt; / &lt;fexpr2&gt;<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_8">
+<A HREF="#Heading3_5"> 5. </A>8 <B>i<I>x</I> [&lt;adr&gt; [&lt;cnt&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; のデバイスからデータを入力し、結果を表示します。次のように、データ幅の異なる5つのコマンドがあります。<BR>
+    <BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コマンド名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">iq [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">デバイスからの入力 (quad)</TD>
+</TR>
+<TR>
+<TD valign="TOP">id [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">デバイスからの入力 (double)</TD>
+</TR>
+<TR>
+<TD valign="TOP">iw [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">デバイスからの入力 (word)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ih [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">デバイスからの入力 (half)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ib [&lt;adr&gt; [&lt;cnt&gt;]]</TD>
+<TD valign="TOP">デバイスからの入力 (byte)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    &lt;adr&gt; のデフォルトアドレスは前回の指定アドレスです。<BR>
+    &lt;cnt&gt; はデータ数で、アドレスとともに省略した場合には前回の指定数となり、アドレスを指定した場合には 1 となります。<BR>
+    dq/dd/dw/dh/db と異なり、ドットアドレスの更新は行いません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_9">
+<A HREF="#Heading3_5"> 5. </A>9 <B>o<I>x</I> &lt;adr&gt; &lt;val&gt;...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; のデバイスへ指定データ &lt;val&gt;...を出力します。次のように、データ幅の異なる5つのコマンドがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コマンド名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">oq &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">デバイスへの出力 (quad)</TD>
+</TR>
+<TR>
+<TD valign="TOP">od &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">デバイスへの出力 (double)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ow &lt;adr&gt; &lt;val&gt;..</TD>
+<TD valign="TOP">デバイスへの出力 (word)</TD>
+</TR>
+<TR>
+<TD valign="TOP">oh &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">デバイスへの出力 (half)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ob &lt;adr&gt; &lt;val&gt;...</TD>
+<TD valign="TOP">デバイスへの出力 (byte)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    sq/sd/sw/sh/sb と異なりドットアドレスの更新は行いません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_10">
+<A HREF="#Heading3_5"> 5. </A>10 <B>bload &lt;fname&gt; &lt;adr&gt;</B>
+</A>
+</H3>
+<blockquote>
+    ファイル &lt;fname&gt; のすべての内容をバイナリデータとして、開始アドレス &lt;adr&gt; で指定された領域にロードします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_11">
+<A HREF="#Heading3_5"> 5. </A>11 <B>bsave &lt;fname&gt; &lt;adr&gt; &lt;cnt&gt;</B>
+</A>
+</H3>
+<blockquote>
+    ファイル &lt;fname&gt; に、アドレス &lt;adr&gt; からバイト数 &lt;cnt&gt; の領域の内容をバイナリデータとしてセーブします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_12">
+<A HREF="#Heading3_5"> 5. </A>12 <B>di [-m &lt;mark&gt;] [&lt;adr&gt; [&lt;cnt&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; から逆アセンブル表示を行ないます。<BR>
+    &lt;adr&gt; のデフォルトはドットアドレス(現在のアドレス)です。<BR>
+    &lt;cnt&gt; は一度に表示する命令数で、デフォルトは 20 命令です。<BR>
+    -m &lt;mark&gt; が指定された場合はアドレス &lt;mark&gt; の行に "-&gt;" のマークを表示します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_13">
+<A HREF="#Heading3_5"> 5. </A>13 <B>vdi [-&lt;cpuid&gt;] [-m &lt;mark&gt;] [&lt;adr&gt; [&lt;cnt&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; から 8 バイトずつのデータを VU のマイクロ命令として逆アセンブル表示を行ないます。<BR>
+    <BR>
+    -&lt;cpuid&gt; オプションには以下のいずれかを指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-cpu</TD>
+<TD valign="TOP">指定アドレス空間を CPU のメインメモリ空間とします。<BR>[default]</TD>
+</TR>
+<TR>
+<TD valign="TOP">-vu0</TD>
+<TD valign="TOP">指定アドレス空間を uMEM0 空間とします。</TD>
+</TR>
+<TR>
+<TD valign="TOP">-vu1</TD>
+<TD valign="TOP">指定アドレス空間を uMEM1 空間とします。</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    &lt;adr&gt; のデフォルトはドットアドレス(現在のアドレス)です。<BR>
+    &lt;cnt&gt; は一度に表示する命令数で、デフォルトは 20 命令です。<BR>
+    -m &lt;mark&gt; が指定された場合はアドレス &lt;mark&gt; の行に "-&gt;" のマークを表示します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_14">
+<A HREF="#Heading3_5"> 5. </A>14 <B>as &lt;adr&gt; &lt;inst&gt;</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; に命令 &lt;inst&gt; を書き込みます。<BR>
+    たとえば以下のように指定します。<BR>
+    <BR>
+        <BLOCKQUOTE><UL>
+        dsedb &gt; as 10000 lw $v0,10($s0)<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_15">
+<A HREF="#Heading3_5"> 5. </A>15 <B>list [&lt;adr&gt; [&lt;cnt&gt; [&lt;back&gt;]]]</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; に該当する前後のソース行を表示します。<BR>
+    &lt;adr&gt; のデフォルト値は $PC です。<BR>
+    指定行数 &lt;cnt&gt; は表示するソース行数でデフォルトは 21 行です。<BR>
+    &lt;back&gt; は指定アドレスに該当するソース行と表示開始行との差分でデフォルトは10 行です。(10 行前から表示を開始します)<BR>
+    list コマンド実行後に RET のみで継続を指定した場合には、最後に表示した次のソース行から、最後に実行した表示行数分の表示を行います。<BR>
+    ソース行表示の左端の "-&gt;" は $PC に該当するソース行であることを示します。<BR>
+    ソース行表示を行うには実行ファイルを gcc -g で作成しておく必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_16">
+<A HREF="#Heading3_5"> 5. </A>16 <B>bt [&lt;cnt&gt;] </B>
+</A>
+</H3>
+<blockquote>
+    現在のプログラムカウンタからスタックフレームを遡り、スタックフレーム中のプログラムカウンタ値を表示します。<BR>
+    スタックフレーム数 &lt;cnt&gt; が指定された場合にはその数だけ、指定がない場合にはすべてのスタックフレームを表示します。<BR>
+    バックトレースを表示すると以下の疑似変数が設定され、以降のコマンドで参照が可能となります。<BR>
+      <BLOCKQUOTE>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>類似変数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">$BT&lt;n&gt;</TD>
+<TD valign="TOP">バックトレースアドレス<BR>&lt;n&gt; が 1 以上の場合はそのスタックフレームから該当する<BR>関数呼び出し命令のアドレス。&lt;n&gt; が 0 の場合は $PC の値。</TD>
+</TR>
+<TR>
+<TD valign="TOP">$SFA&lt;n&gt;</TD>
+<TD valign="TOP">スタックフレームアドレス<BR>&lt;n&gt; 番目のスタックフレームの最小値。</TD>
+</TR>
+<TR>
+<TD valign="TOP">$SFS&lt;n&gt;</TD>
+<TD valign="TOP">スタックフレームサイズ<BR>&lt;n&gt; 番目のスタックフレームの最大値から最小値を引いた値。</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+    <BR>
+    たとえば2番目のスタックフレーム位置に戻った場所にブレークポイントを設定するには、<BR>
+    bp $BT2+0x8 のように指定します。<BR>
+    <BR>
+    &lt;n&gt; 番目のスタックフレームを dw でダンプする命令 dsf を subst コマンドで定義し、実行するには以下のように指定します。<BR>
+    <BR>
+        <BLOCKQUOTE><UL>
+        dsedb &gt; subst "^dsf  *\([0-9][0-9]*\) *$" dw $SFA\1 $SFS\1<BR>
+        dsedb &gt; dsf 2<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_17">
+<A HREF="#Heading3_5"> 5. </A>17 <B>bp [&lt;adr&gt;[,&lt;cnt&gt;]]...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; にブレークポイントを設定します。<BR>
+    引数を省略すると現在設定されているブレークポイントをすべて表示します。<BR>
+    カウント値 &lt;cnt&gt; はブレークポイントの指定通過回数で、省略時には 1 となります。<BR>
+    ブレークポイントを設定するとそのアドレスに対応するブレークポイント疑似変数 $BP&lt;n&gt; にそのアドレスが設定され、以降の ub コマンド等で $BP&lt;n&gt; を用いた指定が可能となります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_18">
+<A HREF="#Heading3_5"> 5. </A>18 <B>ub [all|&lt;adr&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; のブレークポイントを解除します。<BR>
+    引数を省略するか all を指定すると、すべてのブレークポイントを解除します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_19">
+<A HREF="#Heading3_5"> 5. </A>19 <B>be [&lt;adr&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; のブレークポイントを有効化します。<BR>
+    &lt;adr&gt; を省略するとすべてのブレークポイントを有効化します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_20">
+<A HREF="#Heading3_5"> 5. </A>20 <B>bd [&lt;adr&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; のブレークポイントを無効化します。<BR>
+    &lt;adr&gt; を省略するとすべてのブレークポイントを無効化します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_21">
+<A HREF="#Heading3_5"> 5. </A>21 <B>hbp [pc][&lt;uskx&gt;][:&lt;adr&gt;[,&lt;amsk&gt;]]...<BR>hbp [da|dr|dw][<uskx>][:<adr>[,<amsk>]=<val>[,&lt;vmsk&gt;]]...　（dsedb用）</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; に対してハードウェアブレークポイントを設定します。<BR>
+    pc,da,dr,dw はハードウェアブレークポイントのアクセスタイプで以下の意味を持ちます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>アクセスタイプ名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">pc</TD>
+<TD valign="TOP">プログラムカウンタ</TD>
+</TR>
+<TR>
+<TD valign="TOP">da</TD>
+<TD valign="TOP">データアクセス</TD>
+</TR>
+<TR>
+<TD valign="TOP">dr</TD>
+<TD valign="TOP">データリードアクセス</TD>
+</TR>
+<TR>
+<TD valign="TOP">dw</TD>
+<TD valign="TOP">データライトアクセス</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    da,dr,dw は一度に一つのみ設定できます。<BR>
+    &lt;amsk&gt; は指定アドレスに対するマスク値です。<BR>
+    &lt;uskx&gt; は CPU の動作モード指定で以下のいずれかです。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      u：userのみ<BR>
+      s：supervisorのみ<BR>
+      k：kernelのみ<BR>
+      x：EXL modeのみ<BR>
+      uk：userまたはkernel<BR>
+      --------<BR>
+      uskx：すべての動作モード<BR>
+      </BLOCKQUOTE>
+    <BR>
+    [pc|da|dr|dw] 部分の省略はできません。<BR>
+    &lt;adr&gt; を省略するとそのタイプの前回のアドレス値となります。<BR>
+    &lt;uskx&gt;を省略すると前回の動作モードとなります。<BR>
+    <BR>
+    da,dr,dw の場合には、さらに指定データ値 &lt;val&gt; およびそのマスク値 &lt;vmsk&gt;が指定可能です。<BR>
+    <BR>
+    引数をすべて省略すると、現在のハードウェアブレークポイントを表示します。<BR>
+    <BR>
+    指定例)アドレス0x08000000へのデータリードの場合<BR>
+        <BLOCKQUOTE><UL>
+        dsedb &gt; hbp druskx:0x08000000<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_22">
+<A HREF="#Heading3_5"> 5. </A>22 <B>hbp [pc|da|dr|dw][ku]*[:&lt;adr&gt;[,&lt;amsk&gt;]]　（dsidb用）</B>
+</A>
+</H3>
+<blockquote>
+    指定アドレス &lt;adr&gt; に対してハードウェアブレークポイントを設定します。<BR>
+    pc,da,dr,dw はハードウェアブレークポイントのアクセスタイプで以下の意味を持ちます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>アクセスタイプ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">pc</TD>
+<TD valign="TOP">プログラムカウンタ</TD>
+</TR>
+<TR>
+<TD valign="TOP">da</TD>
+<TD valign="TOP">データアクセス</TD>
+</TR>
+<TR>
+<TD valign="TOP">dr</TD>
+<TD valign="TOP">データリードアクセス</TD>
+</TR>
+<TR>
+<TD valign="TOP">dw</TD>
+<TD valign="TOP">データライトアクセス</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    da,dr,dw は一度に一つのみ設定できます。<BR>
+    &lt;amsk&gt; は指定アドレスに対するマスク値です。<BR>
+    &lt;uk&gt; は CPU の動作モード指定で以下のいずれかです。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      u：userのみ<BR>
+      k：kernelのみ<BR>
+      uk：userまたはkernel<BR>
+      </BLOCKQUOTE>
+    <BR>
+    [pc|da|dr|dw] 部分の省略はできません。<BR>
+    &lt;adr&gt; を省略するとそのタイプの前回のアドレス値となります。<BR>
+    &lt;uk&gt; を省略すると前回の動作モードとなります。<BR>
+    <BR>
+    引数をすべて省略すると、現在のハードウェアブレークポイントを表示します。<BR>
+    <BR>
+    指定例)<BR>
+      <BLOCKQUOTE>
+      dsedb &gt; hbp druk:0x08000000<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_23">
+<A HREF="#Heading3_5"> 5. </A>23 <B>hub [pc|da|dr|dw]...</B>
+</A>
+</H3>
+<blockquote>
+    指定されたタイプ [pc|da|dr|dw] のハードウェアブレークポイントを解除します。<BR>
+    引数をすべて省略すると、すべてのハードウェアブレークポイントを解除します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_24">
+<A HREF="#Heading3_5"> 5. </A>24 <B>pload &lt;fname&gt; [&lt;args&gt;]...　（dsedb専用）</B>
+</A>
+</H3>
+<blockquote>
+    指定実行ファイル &lt;fname&gt; をターゲットのメモリへロードし、開始アドレスなどの情報をデバッガ内部に保存します。&lt;args&gt;... は実行時にターゲットプログラムへ引数として渡されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_25">
+<A HREF="#Heading3_5"> 5. </A>25 <B>mload &lt;fname&gt; [&lt;args&gt;]...　（dsidb専用）</B>
+</A>
+</H3>
+<blockquote>
+    指定実行ファイル &lt;fname&gt; をターゲットのメモリへロードし、開始アドレスなどの情報をデバッガ内部に保存します。&lt;args&gt;... は実行時にターゲットプログラムへ引数として渡されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_26">
+<A HREF="#Heading3_5"> 5. </A>26 <B>mlist [-m]　（dsidb専用）</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットのメモリにロードしたプログラムモジュールの一覧を表示します。通常は mload / mstart コマンドでロードしたモジュールのみ表示しますが、-mオプションを指定するとメモリ上に存在するすべてのプログラムモジュールの一覧を表示できます<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_27">
+<A HREF="#Heading3_5"> 5. </A>27 <B>sload [&lt;fname&gt;]　（dsedb用）</B>
+</A>
+</H3>
+<blockquote>
+    指定実行ファイル &lt;fname&gt; のシンボル情報をデバッガの内部のシンボル情報に追加します。pload と異なりターゲットのメモリへのロードは行ないません。<BR>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    &lt;fname&gt; を省略するとデバッガ内部のシンボル情報をすべてクリアします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_28">
+<A HREF="#Heading3_5"> 5. </A>28 <B>sload [-id &lt;id&gt;] [-b &lt;base&gt;] [&lt;fname&gt;]　（dsidb用）</B>
+</A>
+</H3>
+<blockquote>
+    指定実行ファイル &lt;fname&gt; のシンボル情報をデバッガの内部のシンボル情報に追加します。<BR>
+    &lt;fname&gt; を省略するとデバッガ内部のシンボル情報をすべてクリアします。<BR>
+    -id &lt;id&gt; オプションと -b &lt;base&gt; オプションの可能な組合せおよび意味は以下のとおりです。<BR>
+    <BR>
+
+     <H4><B>sload &lt;fname&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      モジュールファイル &lt;fname&gt; 中のモジュール名とバージョンでターゲットに問い合わせを行い、モジュールベースアドレスを決定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sload -id &lt;id&gt; &lt;fname&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      指定されたモジュール ID &lt;id&gt; によるモジュールベースアドレスを使用します。モジュールファイル &lt;fname&gt; 中のモジュール名とバージョンがターゲットが持つ情報と一致しない場合にはエラーとなります。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sload -b &lt;base&gt; &lt;fname&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      ターゲットへの問い合わせを行わずに指定されたモジュールベースアドレス &lt;base&gt; を使用します。<BR>
+      <BR>
+      -id オプションと -b オプションを同時に指定することはできません。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_29">
+<A HREF="#Heading3_5"> 5. </A>29 <B>run [&lt;fname&gt; [&lt;args&gt;]...]　（dsedb専用）</B>
+</A>
+</H3>
+<blockquote>
+    プログラムを実行します。すでに pload を行っている場合は引数なしで実行できます。pload を行っていない場合は、引数にファイル名を指定することで実行を開始します。<BR>
+    画面にはターゲットプログラムからの標準出力が表示されます。<BR>
+    program の中断は Ctrl-C、中断しないで debugger に制御を戻すには Ctrl-G を入力します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_30">
+<A HREF="#Heading3_5"> 5. </A>30 <B>mstart [-d] [&lt;fname&gt; [&lt;args&gt;]...]　（dsidb専用）</B>
+</A>
+</H3>
+<blockquote>
+    プログラムモジュールのエントリポイントを呼び出します。すでに mload を行っている場合は引数なしで呼び出せます。 mload を行っていない場合は、引数にファイル名を指定することでプログラムモジュールのロードとエントリポイントを呼び出します。<BR>
+    -d オプションをつけるとデバックモードでエントリポイントを呼び出します。具体的には、ブレークポイントを設定し、エントリポイントを呼び出しプログラムモジュールから戻ってくるまで画面にはターゲットプログラムからの標準出力が表示されます。<BR>
+    ターゲットプログラムの中断はCtrl-C、中断しないで debugger に制御を戻すにはCtrl-G を入力します。<BR>
+    -d オプションをつけない場合はプログラムモジュール起動後、直ちにプロンプトを表示します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_31">
+<A HREF="#Heading3_5"> 5. </A>31 <B>cont [&lt;cnt&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットプログラムを現在の状態から継続実行し、ブレークポイントに達するか、何らかの exception が発生するまで待ちます。<BR>
+    引数の &lt;cnt&gt; は継続回数の指定でデフォルトは 1 です。<BR>
+    画面にはターゲットプログラムからの標準出力が表示されます。<BR>
+    ターゲットプログラムの中断は Ctrl-C、中断しないでデバッガに制御を戻すには Ctrl-G を入力します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_32">
+<A HREF="#Heading3_5"> 5. </A>32 <B>step [&lt;cnt&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    現在の $PC から指定回数 &lt;cnt&gt; (default は 1) のステップ実行を行ないます。<BR>
+    ステップ回数は CPU の命令数と一致しています。遅延分岐を含む場合もそれらをCPU が実行するそのままの順序でステップ実行を行います。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_33">
+<A HREF="#Heading3_5"> 5. </A>33 <B>next [&lt;cnt&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    現在の $PC から指定回数 &lt;cnt&gt; (default は 1) のネクスト実行を行ないます。<BR>
+    ネクスト回数は CPU の命令数と一致しています。遅延分岐を含む場合もそれらをCPU が実行するそのままの順序でネクスト実行を行います。<BR>
+    ステップ実行との違いは jal、jalr 命令による関数呼び出しの中までトレース対象とするかどうかだけです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_34">
+<A HREF="#Heading3_5"> 5. </A>34 <B>lstep [&lt;cnt&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    現在の $PC から指定行数 &lt;cnt&gt; (default は 1) のステップ実行を行います。<BR>
+    <BR>
+    コマンド実行時、または内部の 1 命令ステップ実行後の $PC が行番号を持たない場合にはその旨を表示し、コマンドを終了します。(デフォルト)<BR>
+    <BR>
+    オプション変数 lstep_stop_at_no_line を設定すると行番号情報を持たない場所でもエラーとならずに内部で行番号情報を持つ場所までステップ実行を行います。<BR>
+    <BR>
+    lstep を行うには実行ファイルを gcc -g で作成して下さい。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_35">
+<A HREF="#Heading3_5"> 5. </A>35 <B>lnext [&lt;cnt&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    現在の $PC から指定行数 &lt;cnt&gt; (default は 1) のネクスト実行を行います。<BR>
+    <BR>
+    コマンド実行時、または内部の 1 命令ネクスト実行後の $PC が行番号を持たない場合にはその旨を表示し、コマンドを終了します。(デフォルト)<BR>
+    <BR>
+    オプション変数 lstep_stop_at_no_line を設定すると行番号情報を持たない場所でもエラーとならずに内部で行番号情報を持つ場所までネクスト実行を行います。<BR>
+    <BR>
+    lnext を行うには実行ファイルを gcc -g で作成して下さい。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_36">
+<A HREF="#Heading3_5"> 5. </A>36 <B>until &lt;adr&gt;...</B>
+</A>
+</H3>
+<blockquote>
+    現在の $PC から指定アドレス &lt;adr&gt;... まで、その順序で一時的ブレークポイントを用いて継続実行を行ないます。この until コマンドは bp コマンドによるブレークポイントの影響は受けません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_37">
+<A HREF="#Heading3_5"> 5. </A>37 <B>break</B>
+</A>
+</H3>
+<blockquote>
+    プログラムの実行を中断します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_38">
+<A HREF="#Heading3_5"> 5. </A>38 <B>wait</B>
+</A>
+</H3>
+<blockquote>
+    プログラムが実行中の時に例外が発生するのを待ちます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_39">
+<A HREF="#Heading3_5"> 5. </A>39 <B>reset [-i] [&lt;ebootp&gt; [&lt;ibootp&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    すべてのブレークポイントを無効化し、シンボル情報をクリアした後にターゲット全体をリセットします。<BR>
+    <BR>
+    -i オプションを指定すると initial_[ei]bootp 変数値をcurrent_[ei]bootp 変数に設定します。<BR>
+    EE 用ブートパラメータ &lt;ebootp&gt; を指定するとその値をcurrent_ebootp に設定します。<BR>
+    IOP 用ブートパラメータ &lt;ibootp&gt; を指定するとその値をcurrent_ibootp に設定します。<BR>
+    ターゲットのブートパラメータは current_[ei]bootp 変数値を使用します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_40">
+<A HREF="#Heading3_5"> 5. </A>40 <B>xgkt &lt;fname&gt; &lt;cnt&gt; [&lt;off&gt;]</B>
+</A>
+</H3>
+<blockquote>
+    VU1 の D-bit interrupt を用いて XGKICK 命令が指す GIF パケットデータを指定ファイル &lt;fname&gt; に指定オフセット &lt;off&gt; から指定回数 &lt;cnt&gt; 分記録します。&lt;off&gt; を省略した場合にはオフセットは 0 となります。<BR>
+    現在のバージョンでこの機能を使用するには、XGKICK 命令の upper 命令にD-bit をあらかじめたてておく必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_41">
+<A HREF="#Heading3_5"> 5. </A>41 <B>dbgctl [vu0|vu1] [on|off]</B>
+</A>
+</H3>
+<blockquote>
+    VU0,VU1 の D-bit 割り込みの設定を行います。<BR>
+    [vu0|vu1] で VU0,VU1 を指定し、D-bit 割り込みを許可する場合には on を、禁止する場合には off を指定します。<BR>
+    xgkt コマンド実行時には dbgctl vu1 on を自動的に実行します。<BR>
+    現在のバージョンで D-bit によるマイクロプログラムを停止させたい場合は、停止させたい命令の upper 命令に D-bit をあらかじめたてておく必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_42">
+<A HREF="#Heading3_5"> 5. </A>42 <B>storeimage &lt;fname&gt; &lt;bp&gt; &lt;bw&gt; &lt;psm&gt; &lt;x&gt; &lt;y&gt; &lt;w&gt; &lt;h&gt;</B>
+</A>
+</H3>
+<blockquote>
+    指定されたパラメータで GS イメージデータを読みだし、指定ファイル &lt;fname&gt;に保存します。<BR>
+
+     <H4><B>&lt;bp&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      転送バッファベースアドレス (bp x 64 が実際のアドレスになります)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>&lt;bw&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      転送バッファ幅 (bw x 64 が実際の幅になります)<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>&lt;psm&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      転送データのピクセルフォーマット<BR>
+      </BLOCKQUOTE>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>入力番号</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ピクセルフォーマット</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">PSMCT32  (ピクセルサイズ:32bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">PSMCT24  (ピクセルサイズ:24bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">PSMCT16  (ピクセルサイズ:16bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">10</TD>
+<TD valign="TOP">PSMCT16S (ピクセルサイズ:16bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">19</TD>
+<TD valign="TOP">PSMT8    (ピクセルサイズ:8bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">20</TD>
+<TD valign="TOP">PSMT4    (ピクセルサイズ:4bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">27</TD>
+<TD valign="TOP">PSMT8H   (ピクセルサイズ:8bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">36</TD>
+<TD valign="TOP">PSMT4HL  (ピクセルサイズ:4bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">44</TD>
+<TD valign="TOP">PSMT4HH  (ピクセルサイズ:4bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">48</TD>
+<TD valign="TOP">PSMZ32   (ピクセルサイズ:32bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">49</TD>
+<TD valign="TOP">PSMZ24   (ピクセルサイズ:24bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">50</TD>
+<TD valign="TOP">PSMZ16   (ピクセルサイズ:16bit)</TD>
+</TR>
+<TR>
+<TD valign="TOP">58</TD>
+<TD valign="TOP">PSMZ16S  (ピクセルサイズ:16bit)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+
+     <H4><B>&lt;x&gt;&lt;y&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      転送領域の左上端点<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>&lt;w&gt;&lt;h&gt;</B></H4>
+
+      <BLOCKQUOTE>
+      転送領域の幅、高さ(ピクセル単位)<BR>
+      </BLOCKQUOTE>
+    <BR>
+    イメージデータのサイズ(w×h×ピクセルサイズ)は、16byte の倍数で32767×16byte 以下でなければなりません。また、ピクセルサイズが 8bit の場合は x,w はともに 2 の倍数、ピクセルサイズが 4bit の場合は x,w はともに4 の倍数でなければなりません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_43">
+<A HREF="#Heading3_5"> 5. </A>43 <B>bpfunc &lt;adr&gt;</B>
+</A>
+</H3>
+<blockquote>
+    ブレークポイントを通過する際に実行される関数 &lt;adr&gt; を設定します。<BR>
+    &lt;adr&gt; に 0 が指定された場合には設定の解除となります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_44">
+<A HREF="#Heading3_5"> 5. </A>44 <B>set [all] [&lt;var&gt;[=&lt;val&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    デフォルト値から変更されたオプションのみを表示するには set だけを指定します。すべてのオプションを表示するには set all と指定します。<BR>
+    オプションが文字列か数値を値として持つ場合に、オプション名 &lt;var&gt; の値を &lt;val&gt; に設定するには set &lt;var&gt;=&lt;val&gt; と指定します。<BR>
+    オプションがブール値を持つ場合に、true の値に設定するにはset &lt;var&gt; を指定し、false の値を設定するには set no&lt;var&gt; と指定します。<BR>
+    それぞれのオプションの意味に関しては 「4.2.4 dsedb のオプション」の項を参照してください。<BR>
+    <BR>
+    set コマンドにはユーザ変数の表示と設定機能もあります。<BR>
+    ユーザ変数として使える変数名はオプション名に含まれずかつ dsedb のレジスタ名でもない名前です。ユーザ変数は常に 32bit の数値を値として持ち、all を指定しない時でも常に表示されます。ユーザ変数値への参照は表現式中で $&lt;var&gt; の形式で可能です。ユーザ変数に対して set &lt;var&gt;= のように &lt;val&gt; を省略すると、そのユーザ変数を削除します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_45">
+<A HREF="#Heading3_5"> 5. </A>45 <B>alias [-r] [&lt;name&gt; [&lt;value&gt;]]</B>
+</A>
+</H3>
+<blockquote>
+    指定された別名 &lt;name&gt; がコマンド名として指定された時にコマンド文字列 &lt;value&gt; を実行します。<BR>
+    現在設定されているすべての別名を表示するには alias のみを指定します。<BR>
+    現在設定されているすべての別名を削除するには alias -r と指定します。<BR>
+    別名 &lt;name&gt; の設定のみを表示するには alias &lt;name&gt; と指定します。<BR>
+    新しい別名 &lt;name&gt; を &lt;value&gt; に設定するには alias &lt;name&gt; &lt;value&gt; と設定します。 &lt;value&gt; 中にはこの alias のみで使用可能な ${*} と ${N} という表現が使え、${*} は実行時に指定された引数すべてに、${N} は実行時に指定された N 番目の引数に展開されます。<BR>
+    <BR>
+    &lt;value&gt; 中に複数のコマンドを指定するには alias dr2 (dr;dr) のように指定します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_46">
+<A HREF="#Heading3_5"> 5. </A>46 <B>subst [-r] [&lt;pattern&gt; &lt;replace&gt;...]</B>
+</A>
+</H3>
+<blockquote>
+    コマンド入力行を文字列として扱い、その文字列中に含まれるパターン &lt;pattern&gt; をすべて置換文字列 &lt;replace&gt;... で置き換えます。<BR>
+    現在設定されているすべての置換を表示するには subst のみを指定します。<BR>
+    現在設定されているすべての置換を削除するには subst -r と指定します。<BR>
+    現在設定されている &lt;pattern&gt; &lt;replace&gt;... の置換を削除するには subst -r &lt;pattern&gt; &lt;replace&gt;... と指定します。<BR>
+    alias とは異なり同じ &lt;pattern&gt; への置換が設定されていた場合にも前の設定を削除することは行いません。また &lt;replace&gt;... が省略された場合には空の文字列への置換 (つまり削除) の設定となります。<BR>
+    複数の置換定義がある場合、指定された順序ですべてが適用されます。<BR>
+      <BLOCKQUOTE>
+          <BR>
+      </BLOCKQUOTE>
+    &lt;pattern&gt; は一般には '"' で囲まれた文字列形式で指定しますが、空白を含まない場合には前後の '"' は省略しても構いません。<BR>
+    &lt;pattern&gt; は以下の正規表現で指定します。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>文字列</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">X</TD>
+<TD valign="TOP">文字 X （X が以下の表現に含まれない場合）</TD>
+</TR>
+<TR>
+<TD valign="TOP">\X</TD>
+<TD valign="TOP">文字 X （X が '(',')' でない場合）</TD>
+</TR>
+<TR>
+<TD valign="TOP">. </TD>
+<TD valign="TOP">任意の 1 文字</TD>
+</TR>
+<TR>
+<TD valign="TOP">X*</TD>
+<TD valign="TOP">X の繰り返し（0 回の繰り返しを含む）</TD>
+</TR>
+<TR>
+<TD valign="TOP">[abc]</TD>
+<TD valign="TOP">'a','b','c' のいずれかの 1 文字</TD>
+</TR>
+<TR>
+<TD valign="TOP">[x-y]</TD>
+<TD valign="TOP">'x' から 'y' までのいずれかの 1 文字</TD>
+</TR>
+<TR>
+<TD valign="TOP">[^abc]</TD>
+<TD valign="TOP">'a','b','c' のいずれでもない 1 文字</TD>
+</TR>
+<TR>
+<TD valign="TOP">^</TD>
+<TD valign="TOP">行の先頭（&lt;pattern&gt; の先頭にある場合のみ一致）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$</TD>
+<TD valign="TOP">行の最後（&lt;pattern&gt; の最後のある場合のみ一致）</TD>
+</TR>
+<TR>
+<TD valign="TOP">\(</TD>
+<TD valign="TOP">タグの開始記録</TD>
+</TR>
+<TR>
+<TD valign="TOP">\)</TD>
+<TD valign="TOP">タグの終了記録</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    &lt;replace&gt;... は通常の文字列の他、以下の特殊文字も指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>文字列</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">\X</TD>
+<TD valign="TOP">文字 X (X が '1'-'9' でない場合)</TD>
+</TR>
+<TR>
+<TD valign="TOP">&</TD>
+<TD valign="TOP">現在一致している文字列全体</TD>
+</TR>
+<TR>
+<TD valign="TOP">\1</TD>
+<TD valign="TOP">1番目のタグ</TD>
+</TR>
+<TR>
+<TD valign="TOP">\2</TD>
+<TD valign="TOP">2番目のタグ</TD>
+</TR>
+<TR>
+<TD valign="TOP">...</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">\9</TD>
+<TD valign="TOP">9番目のタグ</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    以下は指定例です。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      ブレークポイント番号を $bp&lt;n&gt; で入力可能に設定する<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        dsedb&gt; subst "$bp\([0-9]*\)" $BP\1<BR>
+        </BLOCKQUOTE></UL>
+      <BLOCKQUOTE>
+      show history を単に history だけで実行可能と設定する<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        dsedb&gt; subst "^ *history *$" show history<BR>
+        </BLOCKQUOTE></UL>
+    <BR>
+    コマンド入力行の先頭が '\' である時には置換処理は行いません。<BR>
+    間違って subst ".*" のような設定をしてしまった時には、たとえば \quitと入力すれば常に quit を実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_47">
+<A HREF="#Heading3_5"> 5. </A>47 <B>source &lt;fname&gt;</B>
+</A>
+</H3>
+<blockquote>
+    指定ファイル &lt;fname&gt; の内容をコマンド列として実行します。<BR>
+    ファイル中の行の最後が '\' である場合には次の行との連結が行われます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_48">
+<A HREF="#Heading3_5"> 5. </A>48 <B>![&lt;cmd&gt; [&lt;args&gt;]...]</B>
+</A>
+</H3>
+<blockquote>
+    '!' 以降のコマンド &lt;cmd&gt; および引数 &lt;args&gt;... をシェルに渡し実行します。&lt;cmd&gt;、&lt;args&gt; は何も評価もせずにそのままシェルに渡します。使用されるシェルは環境変数 SHELL によって決まり、設定されていない場合には "/bin/sh" になります。<BR>
+    &lt;cmd&gt; を省略するとシェルそのものを呼び出します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_49">
+<A HREF="#Heading3_5"> 5. </A>49 <B>cd [&lt;directory&gt;]</B>
+</A>
+</H3>
+<blockquote>
+     カレントディレクトリを &lt;directory&gt; に変更します。引数が省略された場合は環境変数 HOME で示されるディレクトリへ変更します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_50">
+<A HREF="#Heading3_5"> 5. </A>50 <B>printf "&lt;fmt&gt;" [&lt;args&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+     メッセージを画面に出力します。<BR>
+    &lt;fmt&gt; には printf(3) と同じ書式が使えます。ただし floating 関係 (e,E,f,g) と %n は未サポートです。&lt;args&gt; は常に式として評価され、その値が使われます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_51">
+<A HREF="#Heading3_5"> 5. </A>51 <B>record [[-a] &lt;fname&gt;]</B>
+</A>
+</H3>
+<blockquote>
+     指定されたファイル &lt;fname&gt; に、以後の画面出力内容を保存します。<BR>
+    &lt;fname&gt; を省略すると記録の終了となります。<BR>
+    -a オプションを指定した場合はファイルには追加モードで書き込まれます。<BR>
+    記録終了せずに次の record を指定すると、自動的に前のファイルをクローズします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_52">
+<A HREF="#Heading3_5"> 5. </A>52 <B>repeat [-c &lt;cnt&gt;] [-i &lt;sec&gt;] [-while &lt;expr&gt;] &lt;cmd&gt;...</B>
+</A>
+</H3>
+<blockquote>
+    指定されたコマンド &lt;cmd&gt;... を繰り返し実行します。<BR>
+    <BR>
+    繰り返し回数 &lt;cnt&gt; が -c オプションで指定されている場合にはその回数だけ、指定されていない場合にはエラーが発生するか Ctrl-C が入力されるまで無限に繰り返します。<BR>
+    <BR>
+    繰り返し実行の間に、一度パケットの送受信処理等を行ないます。<BR>
+    -i オプションによる秒数 &lt;sec&gt; (デフォルト値は 1 [sec]) の時間内にパケットの送受信やキー入力等がない場合には次の繰り返しを開始します。もし、パケットの送受信またはキー入力があった時にはその時間を待たずに次の繰り返しを実行します。<BR>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    -while &lt;expr&gt; オプションが指定された場合には、&lt;cmd&gt;... の実行前にその都度 &lt;expr&gt; を評価し、その値が 0 である時には repeat コマンドを終了します。また -while オプションが指定され -i オプションが指定されていない場合にはタイムアウト時間は 0 となります。<BR>
+    <BR>
+    複数のコマンドを繰り返し実行するには repeat (dr;dr) のように指定します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_53">
+<A HREF="#Heading3_5"> 5. </A>53 <B>show log [[-]&lt;option&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    DECI2 パケットの送受信ログを表示します。&lt;option&gt;は以下の指定が可能です。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">l[ong]</TD>
+<TD valign="TOP">時刻の差分、IP アドレス等も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">n[um]</TD>
+<TD valign="TOP">DECI2 パケットをすべて 16 進で表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">r[emove]</TD>
+<TD valign="TOP">ログデータをすべて削除する</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[ll]</TD>
+<TD valign="TOP">すべて表示する (tail,head との対比)</TD>
+</TR>
+<TR>
+<TD valign="TOP">t[ail] &lt;N&gt;</TD>
+<TD valign="TOP">最後の &lt;N&gt; 個だけ表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">h[ead] &lt;N&gt;</TD>
+<TD valign="TOP">最初の &lt;N&gt; 個だけ表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">i[d] &lt;ID&gt;</TD>
+<TD valign="TOP">&lt;ID&gt; に関するものだけ表示対象とする</TD>
+</TR>
+<TR>
+<TD valign="TOP">m[sg] &lt;msg&gt;</TD>
+<TD valign="TOP">&lt;msg&gt; に関するものだけ表示対象とする</TD>
+</TR>
+<TR>
+<TD valign="TOP">p[roto] &lt;proto&gt;</TD>
+<TD valign="TOP">プロトコル &lt;proto&gt; に関するものだけ表示対象とする</TD>
+</TR>
+<TR>
+<TD valign="TOP">s[rc] &lt;src&gt;</TD>
+<TD valign="TOP">送信元ノードが &lt;src&gt; に関するものだけ表示対象とする</TD>
+</TR>
+<TR>
+<TD valign="TOP">d[st] &lt;dst&gt;</TD>
+<TD valign="TOP">送信先ノードが &lt;dst&gt; に関するものだけ表示対象とする</TD>
+</TR>
+<TR>
+<TD valign="TOP">v[erbose]</TD>
+<TD valign="TOP">冗長モードによる表示</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+      <BLOCKQUOTE>
+      long、num は表示形式、remove は削除、all、tail、head は個数指定、残りは表示条件で、複数指定は常に AND として解釈されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_54">
+<A HREF="#Heading3_5"> 5. </A>54 <B>show status [-m] [-d]</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      内部ステータスの表示を行ないます。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> -m　　メモリステータスを表示する<BR>
+         <LI> -d　　DECI2 を扱うすべての接続ステータスを表示する<BR>
+</UL>
+      <BLOCKQUOTE>
+      -m、-d がともに省略された場合は両方を表示します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_55">
+<A HREF="#Heading3_5"> 5. </A>55 <B>show history</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      過去の入力行の表示を行います。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_56">
+<A HREF="#Heading3_5"> 5. </A>56 <B>show dbconf</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      ターゲットから返された設定情報を表示します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_57">
+<A HREF="#Heading3_5"> 5. </A>57 <B>show symbol [&lt;str&gt;]</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      シンボル情報を表示します。<BR>
+      &lt;str&gt; が省略された場合にはすべての情報を表示します。&lt;str&gt; が指定された場合は、名前に &lt;str&gt; が含まれる情報のみを表示します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_58">
+<A HREF="#Heading3_5"> 5. </A>58 <B>show mdebug [&lt;str&gt;]</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      mdebug 情報を表示します。<BR>
+      &lt;str&gt; が省略された場合にはすべての情報を表示します。<BR>
+      &lt;str&gt; が指定された場合には名前に &lt;str&gt; が含まれる情報のみを表示します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_59">
+<A HREF="#Heading3_5"> 5. </A>59 <B>help [&lt;keyword&gt;]...</B>
+</A>
+</H3>
+<blockquote>
+    &lt;keyword&gt; を省略した場合には dsedb のコマンドの一覧を表示します。&lt;keyword&gt; が指定された場合にはそのキーワードに関するヘルプのみを表示します。&lt;keyword&gt; には以下が指定できます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>キーワード名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt;cmd&gt;</TD>
+<TD valign="TOP">コマンド名 &lt;cmd&gt; に関するヘルプを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">reg</TD>
+<TD valign="TOP">指定可能なレジスタグループを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">edit</TD>
+<TD valign="TOP">行編集に使用可能なキーを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">var</TD>
+<TD valign="TOP">set コマンドで設定可能なオプション変数の一覧を表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">&lt;var&gt;</TD>
+<TD valign="TOP">set コマンドで設定可能なオプション変数 &lt;var&gt; に関して<BR>表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">expr</TD>
+<TD valign="TOP">使用可能な表現式に関して表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">keyword</TD>
+<TD valign="TOP">help コマンドで指定できるすべてのキーワードを表示する</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_60">
+<A HREF="#Heading3_5"> 5. </A>60 <B>quit</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      dsedb を終了します。<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>オプション詳細</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>target_name</B>
+</A>
+</H3>
+<blockquote>
+    dsnetm のホスト名およびポートは以下の 3 つの方法のいずれかで設定できます。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> 環境変数 "DSNETM" の値<BR>
+         <LI VALUE= 2> 起動時の自動実行ファイル中の option 文<BR>
+         <LI VALUE= 3> dsedb の起動オプションの -d &lt;host&gt;[:&lt;port&gt;]<BR>
+    </OL>
+    <BR>
+    複数が指定されている場合には 1)-&gt;2)-&gt;3) の順序で設定を上書きします。<BR>
+    このオプションのデフォルト値は "" (空の文字列)で、dsedb を実行した同じホストのデフォルトポート指定の意味を持ちます。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_2">
+<A HREF="#Heading3_6"> 6. </A>2 <B>tty_mask</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットの TTYP 入出力を dsedb で扱うかどうかの設定を行ないます。<BR>
+    dsedb でターゲットの TTYP 入出力を扱いたくない場合には 0 を指定します。<BR>
+    TTYP は E0TTYP から E9TTYP および EKTTYP の 11 個があり、この tty_mask のビット 0 は E0TTYP に対応し、ビット 9 は E9TTYP に対応します。EKTTYP の指定はビット 15 で行います（各ビットが on の時は dsedb で「扱う」、off の時は「扱わない」）。<BR>
+    このオプションのデフォルト値は 0x183ff です。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+    なお dsedb の TTYP 出力は dsecons とは異なり LF による行単位の表示のみをサポートします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_3">
+<A HREF="#Heading3_6"> 6. </A>3 <B>atty_mask</B>
+</A>
+</H3>
+<blockquote>
+    dsedbの場合はIOPのTTYP、dsidbの場合は、EEのTTYPの表示を行うかどうかの設定を行います。ビット値の定義は、tty_maskと同様です。<BR>
+    このオプションのデフォルト値は、0x0です。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_4">
+<A HREF="#Heading3_6"> 6. </A>4 <B>file_priority</B>
+</A>
+</H3>
+<blockquote>
+    ターゲットからの Remote File Access を dsedb で扱うかどうかの設定を行ないます。dsedb でターゲットからの Remote File Access を扱いたくない場合には -1 を指定します。<BR>
+    このオプションのデフォルト値は 0xd0 です。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_5">
+<A HREF="#Heading3_6"> 6. </A>5 <B>reset_on_start</B>
+</A>
+</H3>
+<blockquote>
+    dsedb が起動時にターゲットをリセットするかどうかを指定します。<BR>
+    この指定はコマンドラインオプションの -r や -nr のどちらも指定されていない時に有効となります。このオプションのデフォルト値は true です。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_6">
+<A HREF="#Heading3_6"> 6. </A>6 <B>check_manager_version</B>
+</A>
+</H3>
+<blockquote>
+    dsedb が起動時に dsnetm のバージョン情報をチェックするかどうかを指定します。true ならチェックし、異なるならエラー終了します。false ならバージョン情報はチェックしません。<BR>
+    このオプションのデフォルト値は true です。<BR>
+    コマンドラインで -ncmv が指定されている場合には false に上書きされます。<BR>
+    起動時専用オプションであり、自動実行ファイル中のoption文でのみ実行できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_7">
+<A HREF="#Heading3_6"> 6. </A>7 <B>target_exec_ctl_config</B>
+</A>
+</H3>
+<blockquote>
+    cont,step,next 等の実行コマンドの実行制御状態を示します。<BR>
+    0 の時はホスト側での制御、それ以外はターゲット側での制御を意味します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_8">
+<A HREF="#Heading3_6"> 6. </A>8 <B>target_exec_ctl_override</B>
+</A>
+</H3>
+<blockquote>
+    target_exec_ctl_config の値への上書き指定で、0 以上の値の時上書きを行います。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_9">
+<A HREF="#Heading3_6"> 6. </A>9 <B>dr_default_format</B>
+</A>
+</H3>
+<blockquote>
+    デフォルト値は option dr_default_format="" であり、これは内部で固定的に持っている表示形式を使用することを意味します。これと等価な明示的設定を行うには自動実行ファイルで次のように指定します。<BR>
+
+     <H4><B>~/.dsidbrcの場合</B></H4>
+
+      <BLOCKQUOTE>
+      option dr_default_format="\<BR>
+      at=%at  v0-1=%v0,%v1  a0-3=%a0,%a1,%a2,%a3\n\<BR>
+      t0-7=%t0,%t1,%t2,%t3, %t4,%t5,%t6,%t7\n\<BR>
+      s0-7=%s0,%s1,%s2,%s3, %s4,%s5,%s6,%s7\n\<BR>
+      t8=%t8 t9=%t9   k0=%k0 k1=%k1   gp=%gp sp=%sp\n\<BR>
+      fp=%fp ra=%ra   lo=%lo hi=%lo   PC=%PC bada=%bada\n\<BR>
+      $cr=0x%cr [%symcr]\n\<BR>
+      $sr=0x%sr [%symsr]\n"<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>~/.dsedbrcの場合</B></H4>
+
+      <BLOCKQUOTE>
+      option dr_default_format="\<BR>
+      at=%at  v0-1=%v0,%v1  a0-3=%a0,%a1,%a2,%a3\n\<BR>
+      t0-7=%t0,%t1,%t2,%t3, %t4,%t5,%t6,%t7\n\<BR>
+      s0-7=%s0,%s1,%s2,%s3, %s4,%s5,%s6,%s7\n\<BR>
+      t8=%t8 t9=%t9   k0=%k0 k1=%k1   gp=%gp sp=%sp\n\<BR>
+      fp=%fp ra=%ra   lo=%lo hi=%lo   sa=%sa PC=%PC\n\<BR>
+      badvaddr=%badvaddr badpaddr=%badpaddr\n\<BR>
+      $cause   = 0x%cause [%symcause]\n\<BR>
+      $status  = 0x%status [%symstatus]\n"<BR>
+      </BLOCKQUOTE>
+    <BR>
+    変換の対象となるものは以下に限られます。<BR>
+      <BLOCKQUOTE>
+      %%         '%' を意味する。<BR>
+      %&lt;reg&gt;      レジスタ名 &lt;reg&gt; を printf("%08x",...) で表示<BR>
+      &lt;reg&gt; には以下のいずれも指定「できません」<BR>
+      </BLOCKQUOTE>
+<UL><UL>
+            <LI> レジスタグループ名<BR>
+            <LI> $&lt;n&gt; の数値表現に対応するもの<BR>
+            <LI> 疑似レジスタ名<BR>
+            <LI> '$' の前置<BR>
+            <LI> '_' の前置、<BR>
+            <LI> cr -&gt; cause, sr -&gt; status の別名 (dsedb)<BR>
+            <LI> cause -&gt; cr の別名 (dsidb)<BR>
+</UL></UL>
+    指定できない名前が指定された場合には %&lt;reg&gt; は変換せずに表示します。<BR>
+    <BR>
+    cause,status レジスタのシンボリックな表示は、上の例のようにdsidbでは%symcr, %symsr、dsedbでは %symstatus,%symcauseという指定が可能で、必ず前後に 1 つのスペースが表示されます。<BR>
+    また %08x 以外の 128bit レジスタや 16bit 表示は未サポートであり、dsedb の dr -vu[01] の場合の設定オプションは存在しません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_10">
+<A HREF="#Heading3_6"> 6. </A>10 <B>dr_default_di</B>
+</A>
+</H3>
+<blockquote>
+    dr コマンドを引数なしで指定すると、現在の $PC の前後を逆アセンブル表示を行いますが、その表示方法はこのオプションの値で決まります。設定がない場合のデフォルト値は "\\di -m $PC $_PC-8 7" です（先頭の '\' は alias 展開をしない、という指定です）。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_11">
+<A HREF="#Heading3_6"> 6. </A>11 <B>ex_default_dr</B>
+</A>
+</H3>
+<blockquote>
+    cont、step、next 等で実行を開始しブレークポイントや例外発生によって停止した場合に dr 表示を行ないますが、その表示方法はこのオプションの値で決まります。設定がない場合のデフォルト値は "\\dr" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_12">
+<A HREF="#Heading3_6"> 6. </A>12 <B>dr0_default_di</B>
+</A>
+</H3>
+<blockquote>
+    dr -vu0 実行時の逆アセンブル表示方法の指定です。設定がない場合のデフォルト値は "\\vdi -vu0 -m $_vu0vi26 $_vu0vi26-3 7" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_13">
+<A HREF="#Heading3_6"> 6. </A>13 <B>ex0_default_dr</B>
+</A>
+</H3>
+<blockquote>
+    VU0 例外発生時の dr 表示方法の指定です。<BR>
+    設定がない場合のデフォルト値は "\\dr -vu0" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_14">
+<A HREF="#Heading3_6"> 6. </A>14 <B>dr1_default_di</B>
+</A>
+</H3>
+<blockquote>
+    dr -vu0 実行時の逆アセンブル表示方法の指定です。設定がない場合のデフォルト値は "\\vdi -vu1 -m $_vu1vi26 $_vu1vi26-3 7" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_15">
+<A HREF="#Heading3_6"> 6. </A>15 <B>ex1_default_dr</B>
+</A>
+</H3>
+<blockquote>
+    VU0 例外発生時の dr 表示方法の指定です。<BR>
+    設定がない場合のデフォルト値は "\\dr -vu1" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_16">
+<A HREF="#Heading3_6"> 6. </A>16 <B>lstep_default_list</B>
+</A>
+</H3>
+<blockquote>
+    lstep、lnext の正常終了時に実行するリスト表示方法を指定します。<BR>
+    設定がない場合のデフォルト値は"\\list" です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_17">
+<A HREF="#Heading3_6"> 6. </A>17 <B>lstep_stop_at_no_line</B>
+</A>
+</H3>
+<blockquote>
+    lstep、lnext の開始時または実行中の $PC が行番号を持たない場所であった場合にコマンドを終了させるかどうかの指定です。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>表示</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">行番号を持つ場所まで内部で step,next 動作を続ける</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">その旨を表示し、コマンドを終了する(デフォルト)</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_18">
+<A HREF="#Heading3_6"> 6. </A>18 <B>source_directories</B>
+</A>
+</H3>
+<blockquote>
+    di および list コマンドで参照されるソースファイルの探索ディレクトリを指定します。<BR>
+    実行ファイルの .mdebug 中に含まれるソースファイル名の先頭が '/' (絶対パス) である場合や、source_directories 変数が "" である場合にはソースファイル名そのままのみを参照します。<BR>
+    それ以外の場合には、単独または複数(区切りは ':')のディレクトリ名をソースファイル名に前置して参照を試みます。なお空の区切りは空の前置を意味します。例えば ".:" は "." の次に "" の前置となります。<BR>
+    指定ディレクトリ名が '@' で始まる場合には '@' 部分をオブジェクトファイル名の絶対パスに変換されたディレクトリ名で置換します。<BR>
+    このオプションのデフォルト値は "" です。<BR>
+<UL>
+         <LI> オブジェクトのあるディレクトリのみの場合の指定例)<BR>set source_directories="@"<BR>
+         <LI> カレントディレクトリ -&gt; オブジェクト位置 -&gt; ABC -&gt; DEF の順の指定例) <BR>set source_directories=".:@:ABC:DEF"<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_19">
+<A HREF="#Heading3_6"> 6. </A>19 <B>initial_ebootp</B>
+</A>
+</H3>
+<blockquote>
+    resetコマンドで参照されるEE用ブートパラメータの初期値です。デフォルト値は"-1"で、[現在の値を変更しない」という意味になります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_20">
+<A HREF="#Heading3_6"> 6. </A>20 <B>current_ebootp</B>
+</A>
+</H3>
+<blockquote>
+    resetコマンドで参照されるEE用ブートパラメータの現在値です。デフォルト値は"-1"で、[現在の値を変更しない」という意味になります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_21">
+<A HREF="#Heading3_6"> 6. </A>21 <B>initial_ibootp</B>
+</A>
+</H3>
+<blockquote>
+    resetコマンドで参照されるIOP用ブートパラメータの初期値です。デフォルト値は"-1"で、[現在の値を変更しない」という意味になります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_22">
+<A HREF="#Heading3_6"> 6. </A>22 <B>current_ibootp</B>
+</A>
+</H3>
+<blockquote>
+    resetコマンドで参照されるIOP用ブートパラメータの現在値です。デフォルト値は"-1"で、[現在の値を変更しない」という意味になります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_23">
+<A HREF="#Heading3_6"> 6. </A>23 <B>automatic_prefix_breakpoint</B>
+</A>
+</H3>
+<blockquote>
+    ub,be,bd コマンドの引数はアドレスですが、そのアドレス指定中の表現式中には $BP&lt;n&gt; の形式の疑似レジスタを指定できます。この automatic_prefix_breakpoint 変数が true の場合、ub,be,bd コマンドの引数がすべて 10 進数での数値のみで構成されている場合に自動的に "$BP" を指定引数に前置します。デフォルト値は false です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_24">
+<A HREF="#Heading3_6"> 6. </A>24 <B>describe_ub_all</B>
+</A>
+</H3>
+<blockquote>
+    ub コマンドでは引数を省略した場合全てのブレークポイントを削除の指定になりますが、describe_ub_all 変数が true の場合には全削除は禁止されます。デフォルト値は false です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_25">
+<A HREF="#Heading3_6"> 6. </A>25 <B>di_address</B>
+</A>
+</H3>
+<blockquote>
+    diコマンドのアドレス（ラベル）部分の表示方式指定です。<BR>
+      <BLOCKQUOTE>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>表示</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0x0</TD>
+<TD valign="TOP">16 進数とシンボルの両方を表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x1</TD>
+<TD valign="TOP">16 進数のみで表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x2</TD>
+<TD valign="TOP">シンボルが存在するならシンボルのみ、それ以外は 16 進数</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x3</TD>
+<TD valign="TOP">同じシンボルに関して一度だけ独立した行で表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x4</TD>
+<TD valign="TOP">0x0 の時に加えて行番号も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x5</TD>
+<TD valign="TOP">0x1 の時に加えて行番号も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x6</TD>
+<TD valign="TOP">0x2 の時に加えて行番号も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x7</TD>
+<TD valign="TOP">0x3 の時に加えて行番号も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x8</TD>
+<TD valign="TOP">0x4 の時に加えてソース行も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0x9</TD>
+<TD valign="TOP">0x5 の時に加えてソース行も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0xa</TD>
+<TD valign="TOP">0x6 の時に加えてソース行も表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">0xb</TD>
+<TD valign="TOP">0x3 の時に加えてソース行も表示する<BR>ソースファイルがアクセスできない場合には0x7と同じ(デフォルト)</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+    <BR>
+    行番号やソース行を表示するには、あらかじめ gcc -g で実行ファイルを作成しておいてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_26">
+<A HREF="#Heading3_6"> 6. </A>26 <B>di_instruction_word</B>
+</A>
+</H3>
+<blockquote>
+    di コマンドの命令ワード部分の表示方式指定です。<BR>
+        <BLOCKQUOTE><UL>
+        0：命令ワードを 16 進数表示を行う(デフォルト)<BR>
+        1：命令ワードの 16 進数表示を行わない<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_27">
+<A HREF="#Heading3_6"> 6. </A>27 <B>di_branch_address</B>
+</A>
+</H3>
+<blockquote>
+    di コマンドの分岐アドレス部分の表示方式指定です。<BR>
+        <BLOCKQUOTE><UL>
+        0：16 進数とシンボルの両方を表示する(デフォルト)<BR>
+        1：16 進数のみで表示する<BR>
+        2：シンボルが存在するならシンボルのみ、それ以外は 16 進数で表示する<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_28">
+<A HREF="#Heading3_6"> 6. </A>28 <B>di_macro</B>
+</A>
+</H3>
+<blockquote>
+    di/as コマンドで li,move 等のマクロ命令を扱うかどうかを指定します。<BR>
+          0：マクロ命令は扱わない<BR>
+        <BLOCKQUOTE><UL>
+        1：li,move,b,bal,dmove のマクロ命令を扱う(デフォルト)<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_29">
+<A HREF="#Heading3_6"> 6. </A>29 <B>help_lang</B>
+</A>
+</H3>
+<blockquote>
+    help コマンドで表示する言語を指定します。<BR>
+      <BLOCKQUOTE>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>表示</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">"eng"</TD>
+<TD valign="TOP">(デフォルト)</TD>
+</TR>
+<TR>
+<TD valign="TOP">"euc"</TD>
+<TD valign="TOP">日本語 (EUC コード)</TD>
+</TR>
+<TR>
+<TD valign="TOP">"jis"</TD>
+<TD valign="TOP">日本語 (JIS コード)</TD>
+</TR>
+<TR>
+<TD valign="TOP">"sjis"</TD>
+<TD valign="TOP">日本語 (シフトJIS コード)</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_30">
+<A HREF="#Heading3_6"> 6. </A>30 <B>help_pager</B>
+</A>
+</H3>
+<blockquote>
+    help コマンドで表示するページャを指定します。<BR>
+    デフォルトは "" (空の文字列) でページャを使用しません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_31">
+<A HREF="#Heading3_6"> 6. </A>31 <B>hex_radix</B>
+</A>
+</H3>
+<blockquote>
+    dsedb の数値指定の解釈の方法を設定します。フォルト値は true で、数値は 0x なしで 16 進数と解釈されます。<BR>
+    false の場合は C 言語と同じく 16 進数は 0x を前置しなければなりません。<BR>
+    シンボルがなければ true の方が便利ですが、シンボルがあり例えばdb abc のように指定された場合に、abc というシンボルもあるとdb 0xabc と入力し直す必要があり、あいまいさが残ります。false の場合には db abc は常にシンボルのみをサーチするため、このような「場合によっては入力しなおす」必要は生じません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_32">
+<A HREF="#Heading3_6"> 6. </A>32 <B>log_total_size</B>
+</A>
+</H3>
+<blockquote>
+    デフォルトでは合計バイト数が 128KB まで DECI2 パケットのログを保存します。送受信ログが不要の場合には 0 を設定してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_33">
+<A HREF="#Heading3_6"> 6. </A>33 <B>log_packet_size</B>
+</A>
+</H3>
+<blockquote>
+    デフォルトではパケットの先頭から 128 バイトまでのデータをログに保存します。すべてのデータをログに保存したい場合には65535 以上の値を設定してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_34">
+<A HREF="#Heading3_6"> 6. </A>34 <B>histfile</B>
+</A>
+</H3>
+<blockquote>
+    デフォルトでは "~/.dsedb_history" で、この文字列が示すファイルへdsedb の終了時にヒストリをセーブし、起動時にそのファイルからヒストリをロードします。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_35">
+<A HREF="#Heading3_6"> 6. </A>35 <B>histfilesize</B>
+</A>
+</H3>
+<blockquote>
+    histfile へセーブするヒストリ数です。デフォルト値は 256 です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_36">
+<A HREF="#Heading3_6"> 6. </A>36 <B>histsize</B>
+</A>
+</H3>
+<blockquote>
+    コマンド操作中に記憶するヒストリ数の上限数です。デフォルト値は 256 です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_37">
+<A HREF="#Heading3_6"> 6. </A>37 <B>tty_max_size</B>
+</A>
+</H3>
+<blockquote>
+    dsedb が送信する TTY パケットの最大保留バイト数で、デフォルト値は64KB です。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

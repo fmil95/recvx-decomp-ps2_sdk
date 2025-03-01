@@ -1,0 +1,730 @@
+<HTML>
+<HEAD>
+<TITLE> CSL（Component Sound Libraries）概要</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="csl.htm" SELECTED> CSL概要
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSL（Component Sound Libraries）<BR>概要<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 CSLの概要<BR></A>
+<P><A HREF="#Heading3_2">  2 CSL標準<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 入出力によるカテゴリ分け<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 共通データ構造<BR></A><BR>
+    <A HREF="#Heading4_2_3"> Buffer Group構造<BR></A><BR>
+    <A HREF="#Heading4_2_4"> カテゴリ定義データ構造<BR></A><BR>
+    <A HREF="#Heading4_2_5"> 拡張MIDIメッセージ<BR></A><BR>
+    <A HREF="#Heading4_2_6"> 推奨API形式<BR></A><BR>
+    <A HREF="#Heading4_2_7"> 低レベルライブラリ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 CSLの利用<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> SCE提供CSLモジュール<BR></A><BR>
+    <A HREF="#Heading4_3_2"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 クリエータ用オーサリング環境<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> JAM<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>CSLの概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    "PlayStation 2"用サウンドライブラリは、ソフトウエア支援によるサウンドレンダリングに柔軟に対応するために、コンポーネントアーキテクチャを採用しています。すなわち、データの受け渡し方式を規定することによってサウンド生成の各工程・各機能をモジュールに分割して実装し、ある機能を実装形態の異なるモジュールに置き換えたり、モジュールを追加してエフェクトを加えたりといったことが柔軟に行えるシステムとなっています。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/csln1.gif">
+<P>
+    <BR>
+    CSLとは、このようなコンポーネント化インタフェースに基づくサウンド開発環境の総称です。CSLは高い柔軟性を持つ一方で、リアルタイムサウンドレンダリングに特化したシンプルな構造のため、コンポーネント化によるオーバーヘッドはほとんどありません。<BR>
+    CSLが規定するインタフェースを持つライブラリを、CSLモジュールと呼びます。CSLモジュールは、IOP上とEE上のどちらにでも実装することができます。IOP上ではダイナミックリンクライブラリ（.irx）として動作することを前提としていますが、スタティックリンク（.a）も可能です。EE上では常にスタティックリンクとなります。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>CSL標準</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    CSLモジュールに関する規定事項を以下説明します。<BR>
+    CSLの標準化コンセプトは、モジュール間のストリームデータの互換性を重視し、そのほかの点については柔軟性やパフォーマンスを損なわないようなるべく緩やかに規定する、というものです。<BR>
+    ユーザプログラム側の便宜のため、APIや内部データ構造についても、CSLとしての統一感を持たせるための推奨仕様を規定していますが、必須ではありませんし、細部はCSLモジュールの作成者に任せられています。<BR>
+    CSLモジュールとして満たすべき必須条件は、以下の3点です。<BR>
+<UL>
+         <LI> ひとつのインスタンスにつきひとつのmodule context構造体を持つこと。<BR>
+         <LI> Buffer Group構造に従うこと。<BR>
+         <LI> サウンドストリームデータは、カテゴリ定義データ構造に従うこと。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>入出力によるカテゴリ分け</B>
+</A>
+</H3>
+<blockquote>
+    CSLモジュールは、入力データ形式と出力データ形式の組み合わせによってカテゴリ区分されます。データ形式としては次のものがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ形式</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">midi-stream</TD>
+<TD valign="TOP">MIDIデータそのもの。デルタタイムは無し。</TD>
+</TR>
+<TR>
+<TD valign="TOP">pcm-stream</TD>
+<TD valign="TOP">SPU仕様の16bit PCMデータ。512byte毎にL/Rインタリーブ。</TD>
+</TR>
+<TR>
+<TD valign="TOP">raw-stream</TD>
+<TD valign="TOP">1サンプルインタリーブまたはモノラルの16bitPCMデータ。</TD>
+</TR>
+<TR>
+<TD valign="TOP">adpcm-stream</TD>
+<TD valign="TOP">vag形式のADPCMデータ</TD>
+</TR>
+<TR>
+<TD valign="TOP">original</TD>
+<TD valign="TOP">モジュール固有のデータ</TD>
+</TR>
+<TR>
+<TD valign="TOP">any</TD>
+<TD valign="TOP">内容を問わないデータ</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    たとえば、midi-streamを入力してpcm-streamを出力するモジュールは、"midi-pcmカテゴリ"ということになります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>共通データ構造</B>
+</A>
+</H3>
+<blockquote>
+    CSLで規定されているデータ構造には、全体に共通のものと、カテゴリごとに定義されたものがあります。まず共通のデータ構造について記述します。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_1">
+(1) <B>CSL context構造体（sceCslCtx）</B>
+</A>
+</H4>
+    CSL context構造体は、主として入出力用データバッファの構造を記述する構造体です。CSLモジュールは、ひとつのインスタンスについてひとつのCSL context構造体を持つように規定されています。<BR>
+
+     <H4><B>構造</B></H4>
+
+      <BLOCKQUOTE>
+      typedef struct {<BR>
+      int		buffGrpNum;<BR>
+      sceCslBuffGrp	*buffGrp;<BR>
+      void*		config; <BR>
+      void*		callBack;<BR>
+      char		*extmod[];<BR>
+      } sceCslCtx;<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>メンバ</B></H4>
+
+      <BLOCKQUOTE>
+      buffGrpNum	必須）buffGrpの個数<BR>
+      buffGrp		必須）buffGrp配列へのポインタ<BR>
+      config		任意）モジュール全体に関わる設定の構造体<BR>
+      callBack		任意）非同期実行の場合のコールバック関数<BR>
+      extmod		任意）外部モジュールに直接アクセスする場合、そのモジュールの名前<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_2">
+(2) <B>CSL buffer group構造体（sceCslBuffGrp）</B>
+</A>
+</H4>
+    CSL buffer group構造体は、入出力用のデータバッファをまとめて、グループとして管理するための構造体です。CSLモジュールはこの形式に即したデータバッファを持つように規定されています。<BR>
+
+     <H4><B>構造</B></H4>
+
+      <BLOCKQUOTE>
+      typedef struct {<BR>
+      int		buffNum;<BR>
+      sceCslBuffCtx	*buffCtx[n];<BR>
+      } sceCslBuffGrp;<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>メンバ</B></H4>
+
+      <BLOCKQUOTE>
+      buffNum		必須）そのgroupに属するバッファの数<BR>
+      buffCtx		必須）バッファ配列へのポインタ<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_3">
+(3) <B>CSL buffer context構造体（sceCslBuffCtx）</B>
+</A>
+</H4>
+    CSL buffer context構造体は、個々の入出力用データバッファを１対１で対応する構造体です。<BR>
+
+     <H4><B>構造</B></H4>
+
+      <BLOCKQUOTE>
+      typedef struct {<BR>
+      int   	sema;<BR>
+      void  	*buff;<BR>
+      } sceCslBuffCtx;<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>メンバ</B></H4>
+
+      <BLOCKQUOTE>
+      sema		任意）そのバッファに有効なセマフォ<BR>
+      buff		必須）バッファへのポインタ<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>Buffer Group構造</B>
+</A>
+</H3>
+<blockquote>
+    モジュールが使用するデータバッファの構造は、CSL context構造体 / CSL buffer group構造体 / CSL buffer context構造体で記述されます。図に示すように、複数のグループがそれぞれ複数のバッファを持つ構成になっています。<BR>
+<P>
+<IMG SRC ="gif/csln2.gif">
+<P>
+    <BR>
+    入力バッファや出力バッファと同じ位置に、データの属性を記述する構造体を持つことができます。これを環境構造体（env）と呼び、データ本体と環境環境構造体をセットにしてポートと呼びます。<BR>
+
+     <H4><B>必須仕様）Buffer Groupの並べ方</B></H4>
+
+      <BLOCKQUOTE>
+      モジュールが入力バッファグループを持つ場合、Groupの0番を入力バッファグループに割り当ててください。さらに出力バッファグループを持つ場合は、Groupの１番を出力バッファグループに割り当てます。<BR>
+      入力バッファを持たない場合は、Groupの0番を出力バッファグループに割り当てます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>必須仕様）Bufferの並べ方</B></H4>
+
+      <BLOCKQUOTE>
+      入力バッファ配列 / 出力バッファ配列には、ポートを単位としてCSL buffer context構造体を配置します。たとえばA / Bふたつの環境構造体付き入力データがある場合、bufferの0番がポートAのデータ本体、bufferの1番がポートAの環境構造体、bufferの2番がポートBのデータ本体、bufferの3番がポートBの環境構造体、という順序で配置してください。<BR>
+      データ本体のみで環境構造体を使用しないモジュールでは、単純にデータバッファを順番に並べてください。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>推奨仕様）制御情報の持ち方</B></H4>
+
+      <BLOCKQUOTE>
+      モジュールの動作に必要な制御情報は、できるだけBuffer Group構造に関連付けられたデータとして持つことを推奨します。グローバル変数等としてモジュール内部に保持することは最低限にするべきです。<BR>
+      各入出力ポートに関連する制御情報は、それぞれポートに属する環境構造体にまとめることを推奨します。ポート個別ではなくモジュール全体に関する制御情報は、CSL context構造体のconfigメンバに関連付けられる構造体に記述することを推奨します。いずれも形式は任意です。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>推奨仕様）メモリの確保</B></H4>
+
+      <BLOCKQUOTE>
+      入出力バッファや制御情報、Buffer Group構造に使用するメモリは、ユーザアプリケーションが確保してモジュールに与える仕様を推奨します。メモリの管理はユーザに委ねるほうが安全ですので、モジュール内で動的にアロケーションすることは避けるべきでしょう。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>カテゴリ定義データ構造</B>
+</A>
+</H3>
+<blockquote>
+    カテゴリ（入出力形式）ごとに定義されているデータ構造を説明します。originalに対するデータ構造は任意に定義してかまいません。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_4_1">
+(1) <B>midi-stream buffer構造体（sceCslMidiStream）</B>
+</A>
+</H4>
+
+     <H4><B>構造</B></H4>
+
+      <BLOCKQUOTE>
+      typedef struct {<BR>
+      	u_int	buffsize;		// include Header size<BR>
+      	u_int	validsize;	// valid data size<BR>
+      	u_char	data[0];		// data max is data[buffsize]<BR>
+      } sceCslMidiStream;<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>メンバ</B></H4>
+
+      <BLOCKQUOTE>
+      buffsize		必須）バッファ全体のサイズ<BR>
+      validsize		必須）有効なデータのサイズ<BR>
+      data		必須）midiデータ<BR>
+      </BLOCKQUOTE>
+    buffsizeおよびvalidsizeがヘッダとなり、その後にMIDIデータの実体が続く、不定長の構造です。validsizeは、モジュールが処理済のデータ位置を逐次記録するメンバです。<BR>
+    dataに入るのはMIDIメッセージそのものですが、デルタタイムはありません。ランニングステータスにも対応していません。なお、CSL独自の拡張MIDIメッセージが定義されています（詳細後述）。拡張MIDIメッセージへの対応は必須ではなく、推奨仕様です。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_4_2">
+(2) <B>pcm-stream buffer 構造体（sceCslPcmStream）</B>
+</A>
+</H4>
+
+     <H4><B>構造</B></H4>
+
+      <BLOCKQUOTE>
+      typedef struct {<BR>
+      	u_int	pcmbuf_size;<BR>
+      	u_int	validsize;<BR>
+      	void	*pcmbuf;<BR>
+      	u_int	pad;<BR>
+      } sceCslPcmStream;<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>メンバ</B></H4>
+
+      <BLOCKQUOTE>
+      buffsize		必須）pcmbufのサイズ<BR>
+      validsize		必須）pcmbufのうち有効なデータのサイズ<BR>
+      pcmbuf		必須）pcmbufへのポインタ<BR>
+      pad		未使用<BR>
+      </BLOCKQUOTE>
+    midi-streamと異なり、データの実体はpcmbufが指し示す領域にあります。validsizeは、モジュールが処理済のデータ位置を逐次記録するメンバです。<BR>
+    データの中身は、16bit,signed,little endianのPCMデータで、512byteごとにL / Rがインタリーブされた構造です。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_4_3">
+(3) <B>raw-stream構造体</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      未定義（検討中）です。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_4_4">
+(4) <B>adpcm-stream構造体</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      未定義（検討中）です。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>拡張MIDIメッセージ</B>
+</A>
+</H3>
+<blockquote>
+    MIDIメッセージは音楽用に定められた体系であり、効果音制御用として見ると以下の欠点があります。<BR>
+<UL>
+         <LI> 発音ボイスがチャンネル番号とキー番号のみで管理されるので、同じキーを連打して個別にキーオフするようなことができない。<BR>
+         <LI> パンポット等のコントロールがチャンネル全体に対してかかってしまう。<BR>
+</UL>
+    この欠点を解消するために、SCEで独自に定義した拡張MIDIメッセージを以下説明します。この拡張MIDIメッセージはCSLでのみ通用するもので、MIDI規格には従っていませんので、MIDIインタフェースを介して一般のMIDI機器に渡すようなことは避けてください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_5_1">
+(1) <B>Pre Voice Control Message</B>
+</A>
+</H4>
+    このメッセージの直後に発音するボイスに対してのみ、Expression / Panpot / PitchBendを設定するメッセージです。他のボイスには影響しません。<BR>
+    Pre Voice Control Messageは次の5バイトで構成されます。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><DIV align=center><B>0xF9</B></DIV></TD>
+<TD valign="TOP"><DIV align=center>op. code</DIV></TD>
+<TD valign="TOP"><DIV align=center>ch.</DIV></TD>
+<TD valign="TOP"><DIV align=center>1st data</DIV></TD>
+<TD valign="TOP"><DIV align=center>2nd data</DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+
+     <H4><B>op. code / 1st data / 2nd data</B></H4>
+
+      <BLOCKQUOTE>
+      メッセージ内容により、次のように指定する。<BR>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>op. code</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>1st data</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>2nd data</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Expression</TD>
+<TD valign="TOP">0x00</TD>
+<TD valign="TOP">0～127</TD>
+<TD valign="TOP">無効</TD>
+</TR>
+<TR>
+<TD valign="TOP">Panpot</TD>
+<TD valign="TOP">0x01</TD>
+<TD valign="TOP">0～127</TD>
+<TD valign="TOP">無効</TD>
+</TR>
+<TR>
+<TD valign="TOP">PitchBend</TD>
+<TD valign="TOP">0x02</TD>
+<TD valign="TOP">LSB（0～127）</TD>
+<TD valign="TOP">MSB（0～127）</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ch.</B></H4>
+
+    下位4bitでチャンネルを指定する。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_5_2">
+(2) <B>Voice Control Message</B>
+</A>
+</H4>
+    キー番号とID番号によってボイスを制御するメッセージです。より柔軟なボイス制御を可能にします。<BR>
+    Voice Control Messageは次の7バイトで構成されます。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><DIV align=center><B>0xFD</B></DIV></TD>
+<TD valign="TOP"><DIV align=center>op. code</DIV></TD>
+<TD valign="TOP"><DIV align=center>mode & ch.</DIV></TD>
+<TD valign="TOP"><DIV align=center>key</DIV></TD>
+<TD valign="TOP"><DIV align=center>id</DIV></TD>
+<TD valign="TOP"><DIV align=center>1st data</DIV></TD>
+<TD valign="TOP"><DIV align=center>2nd data</DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+
+     <H4><B>op. code / 1st data / 2nd data</B></H4>
+
+      <BLOCKQUOTE>
+      メッセージ内容により、次のように指定する。<BR>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>op. code</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>1st data</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>2nd data</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Expression</TD>
+<TD valign="TOP">0x00</TD>
+<TD valign="TOP">0～127</TD>
+<TD valign="TOP">無効</TD>
+</TR>
+<TR>
+<TD valign="TOP">Panpot</TD>
+<TD valign="TOP">0x01</TD>
+<TD valign="TOP">0～127</TD>
+<TD valign="TOP">無効</TD>
+</TR>
+<TR>
+<TD valign="TOP">PitchBend</TD>
+<TD valign="TOP">0x02</TD>
+<TD valign="TOP">LSB（0～127）</TD>
+<TD valign="TOP">MSB（0～127）</TD>
+</TR>
+<TR>
+<TD valign="TOP">Note Control<BR>(Note On/Off）</TD>
+<TD valign="TOP">0x10</TD>
+<TD valign="TOP">velocity（0～127）0を指定する<BR>とNote Offメッセージとなる</TD>
+<TD valign="TOP">無効</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>mode & ch.</B></H4>
+
+      <BLOCKQUOTE>
+      bit0-3でチャンネル、bit4-6でモードを指定する。<BR>
+      bit4 = 1を指定すると、keyフィールドが無視され、キー番号によらずすべてのボイスが対象となる。Note Control Messageについてはこのビットは必ず0を指定すること。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>key</B></H4>
+
+      <BLOCKQUOTE>
+      キー番号（0～127）を指定する。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>id</B></H4>
+
+      <BLOCKQUOTE>
+      ID番号（0～126,127）を指定する。127を指定すると、ID番号によらずすべてのボイスが対象となる。Note Control Messageについては、127を指定してはならない。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>推奨API形式</B>
+</A>
+</H3>
+<blockquote>
+    CSLモジュールのAPIについては必須の規定はありません。処理内容に沿って自由に実装することができます。ただし、モジュールの動作に必要な情報はすべてCSL context構造体に記述することができますので、APIの引数はCSL context構造体へのポインタとすることを推奨します。<BR>
+    また、以下の２つのAPIを以下に示す形式で実装することを特に推奨します。<BR>
+
+     <H4><B>推奨仕様）int vendername???_Init( sceSdModCtx *module_ctx, u_int interval )</B></H4>
+
+      <BLOCKQUOTE>
+      引数：	module_ctx	CSL context構造体へのポインタ<BR>
+      interval	1Tickの時間（マイクロ秒）<BR>
+      モジュール内部環境の初期化を行なうAPI。ユーザプログラムから渡された環境構造体の初期化などを行う。<BR>
+      Tickとは次に示すATick関数がコールされる時間間隔のことで、ユーザプログラムから指定を受ける。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>推奨仕様）int vendername???_ATick( sceSdModCtx *module_context )</B></H4>
+
+      <BLOCKQUOTE>
+      引数：	module_ctx	CSL context構造体へのポインタ<BR>
+      ユーザプログラムが所定の時間間隔で定期的に呼び出すAPI。これを受けて、モジュール側で1Tickに相当するサウンド処理を行なう。このAPIを定期的に呼び出すのはユーザプログラムの責任とする。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>低レベルライブラリ</B>
+</A>
+</H3>
+<blockquote>
+    CSLモジュールがSPU2にアクセスするためには、低レベルライブラリのlibsd（IOP用）を使用してください。libsdのレジスタラッパAPIを用いると、公開されているSPUレジスタにはほぼダイレクトにアクセスできます。<BR>
+    EE側に実装するCSLモジュールでは、libsdをリモート呼び出しするlibsdrを使用してください。リモートアクセスを効率的に行うため、レジスタラッパAPIをバッチ処理するAPIが用意されています。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>CSLの利用</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>SCE提供CSLモジュール</B>
+</A>
+</H3>
+<blockquote>
+    SCEから提供する予定のCSLモジュールは以下のとおりです。カテゴリ欄は入出力のデータ形式を表しています。<BR>
+
+     <H4><B>EE</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>モジュール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIストリーム生成</TD>
+<TD valign="TOP">Original→MIDI</TD>
+<TD valign="TOP">プログラムにより<BR>MIDI streamを生成する<BR>モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">ソフトウェア・シンセサイザ</TD>
+<TD valign="TOP">MIDI→PCM</TD>
+<TD valign="TOP">EEで演算を行う多機能<BR>WaveTable音源モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">ラインアウト</TD>
+<TD valign="TOP">PCM→Original</TD>
+<TD valign="TOP">PCM streamをSPU2へ送って<BR>発音させるモジュール</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>IOP</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>モジュール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIストリーム生成</TD>
+<TD valign="TOP">Original→MIDI</TD>
+<TD valign="TOP">プログラムにより<BR>MIDI streamを生成する<BR>モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIシーケンサ</TD>
+<TD valign="TOP">Original→MIDI</TD>
+<TD valign="TOP">sqファイルを読み<BR>MIDI streamを出力する<BR>シーケンサモジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">効果音シーケンサ</TD>
+<TD valign="TOP">Original→MIDI</TD>
+<TD valign="TOP">効果音に特化した<BR>シーケンサモジュール<BR>（未提供）</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIディレイ</TD>
+<TD valign="TOP">MIDI→MIDI</TD>
+<TD valign="TOP">レーテンシ調節モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIモノフォニック</TD>
+<TD valign="TOP">MIDI→MIDI</TD>
+<TD valign="TOP">MIDI streamを<BR>モノフォニックにアサイン<BR>するモジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">ハードウェア・シンセサイザ</TD>
+<TD valign="TOP">MIDI→Original</TD>
+<TD valign="TOP">SPU2のボイスを使用する<BR>音源モジュール</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    CSLモジュールを利用したサンプルプログラムとして、以下のものがありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_1">
+(1) <B>sce/iop/sample/sound/sqhard</B>
+</A>
+</H4>
+    　以下のモジュールを用いて楽曲を演奏します。CSLのもっとも基本的な例です。<BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> MIDIシーケンサ（modmidi）[IOP]<BR>
+         <LI VALUE= 2> ハードウェア・シンセサイザ（modhsyn）[IOP]<BR>
+    </OL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_2">
+(2) <B>sce/iop/sample/sound/ezmidi</B>
+</A>
+</H4>
+    　以下のモジュールを用いて、楽曲を演奏するとともにEE側から効果音を発音します。<BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> MIDIシーケンサ（modmidi）[IOP]<BR>
+         <LI VALUE= 2> MIDI stream生成（modmsin）[EE]<BR>
+         <LI VALUE= 3> ハードウェア・シンセサイザ（modhsyn）[IOP]<BR>
+    </OL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_3">
+(3) <B>sce/iop/sample/sound/sqsoft</B>
+</A>
+</H4>
+    　以下のモジュールを用いて楽曲を演奏します。演奏はEE側のソフトウェア・シンセサイザにより、楽音はPCMデータとして出力され、EEからIOPそしてSPU2に転送されます。<BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> MIDIシーケンサ（modmidi）[IOP]<BR>
+         <LI VALUE= 2> ソフトウェア・シンセサイザ（modssyn）[EE/IOP]<BR>
+         <LI VALUE= 3> ラインアウト（liblout）[EE]<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>クリエータ用オーサリング環境</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>JAM</B>
+</A>
+</H3>
+<blockquote>
+    SCE提供のCSLモジュールに対応するオーサリングツールとして、JAMを提供しています。<BR>
+    JAMはMacintosh上で動作し、波形変換・バンク編集・MIDI変換・プレビューを統合的に行なうことができます。<BR>
+    ハードウェアシンセサイザとソフトウエアシンセサイザの両方に対応しています。<BR>
+    詳しくは JAM 付属のドキュメントをご参照ください。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

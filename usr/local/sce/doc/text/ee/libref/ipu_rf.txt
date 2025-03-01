@@ -1,0 +1,464 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                              IPUライブラリ
+                             ==============
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceIpuDmaEnv                                                     [構造体]
+=========================================================================
+                                                   IPU関連DMA停止時の状態
+[構造]
+        typedef struct {
+            u_int d4madr;
+            u_int d4qwc;
+            u_int d3madr;
+            u_int d3qwc;
+            u_int ipubp;
+            u_int ipuctrl;
+        } sceIpuDmaEnv;
+        
+[メンバ]
+        d4madr		toIPUチャネルの転送アドレス（D4_MADRレジスタの値）
+        d4qwc		toIPUチャネルの転送データサイズ（D4_QWCレジスタの値）
+        d3madr		fromIPUチャネルの転送アドレス（D3_MADRレジスタの値）
+        d3qwc		fromIPUチャネルの転送データサイズ（D3_QWCレジスタの値）
+        ipubp		ビットストリーム位置（IPU_BPレジスタの値）
+        ipuctrl		IPUのステータス（IPU_CTRLレジスタの値）
+        
+[解説]
+        sceIpuStopDMA() を用いてIPU関連のDMA転送を停止する際に、DMAC およ
+        びIPU の状態を保存しておくための構造体です。
+        sceIpuRestartDMA()を用いて復帰・再開することができます。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceIpuBCLR                                                         [関数]
+=========================================================================
+                                                       BCLRコマンドの実行
+[形式]
+        void sceIpuBCLR(
+        	int bp
+        )
+        
+[引数]
+        bp	最初の 128 bit のうち復号を開始するビット位置
+        
+[返り値]
+        なし
+        
+[解説]
+        BCLR コマンドを実行して入力FIFOをクリアします。
+        この関数を呼び出す前に、入力FIFOへのDMA(toIPU:ch-4)を停止しておく
+        必要があります。
+        
+
+=========================================================================
+sceIpuBDEC                                                         [関数]
+=========================================================================
+                                                       BDECコマンドの実行
+[形式]
+        void sceIpuBDEC(
+        	int mbi,
+        	int dcr,
+        	int dt,
+        	int qsc,
+        	int fb
+        )
+        
+[引数]
+        mbi	Macroblock Intra
+        	    SCE_IPU_BDEC_NONINTRA(0) : 非イントラマクロブロック
+        	    SCE_IPU_BDEC_INTRA(1)    : イントラマクロブロック
+        dcr	DC Reset
+        	    SCE_IPU_BDEC_NODCRESET(0): DC予測値をリセットしない
+        	    SCE_IPU_BDEC_DCRESET(1)  : DC予測値をリセットする
+        dt	DCT Type
+        	    SCE_IPU_BDEC_FRAMEDCT(0) : frame DCT
+        	    SCE_IPU_BDEC_FIELDDCT(1) : field DCT
+        qsc	Quantiser Step Code
+        fb	Forward Bit
+        
+[返り値]
+        なし
+        
+[解説]
+        BDEC コマンドを実行してブロック復号を行います。
+        
+
+=========================================================================
+sceIpuCSC                                                          [関数]
+=========================================================================
+                                                        CSCコマンドの実行
+[形式]
+        void sceIpuCSC(
+        	int ofm,
+        	int dte,
+        	int mbc
+        )
+        
+[引数]
+        ofm 	Output Format
+        	    SCE_IPU_CSC_RGB32(0)    : RGB32
+        	    SCE_IPU_CSC_RGB16(1)    : RGB16
+        dte	Dither Enable
+        	    SCE_IPU_CSC_NODITHER(0) : ディザなし
+        	    SCE_IPU_CSC_DITHER(1)   : ディザあり
+        	    (ofm = RGB16 のときのみ有効)
+        mbc	Macroblock Count 変換するマクロブロック数
+        
+[返り値]
+        なし
+        
+[解説]
+        CSC コマンドを実行して色空間の変換を行います。
+        
+
+=========================================================================
+sceIpuFDEC                                                         [関数]
+=========================================================================
+                                                       FDECコマンドの実行
+[形式]
+        void sceIpuFDEC(
+        	int fb
+        )
+        
+[引数]
+        fb	Forward Bit
+        
+[返り値]
+        なし
+        
+[解説]
+        FDEC コマンドを実行して固定長データを復号します。
+        復号結果は sceIpuGetFVdecResult() で取得することができます。
+        
+
+=========================================================================
+sceIpuGetFVdecResult                                               [関数]
+=========================================================================
+                                          FDEC/VDECコマンドの実行結果取得
+[形式]
+        u_int sceIpuGetFVdecResult(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        直前の FDEC コマンドまたは VDEC コマンドで復号されたデータ
+        
+[解説]
+        直前に実行された FDEC コマンドまたは VDEC コマンドの実行結果を読
+        み出します。
+        
+
+=========================================================================
+sceIpuIDEC                                                         [関数]
+=========================================================================
+                                                       IDECコマンドの実行
+[形式]
+        void sceIpuIDEC(
+        	int ofm,
+        	int dte,
+        	int sgn,
+        	int dtd,
+        	int qsc,
+        	int fb
+        )
+        
+[引数]
+        ofm	Output Format
+        	    SCE_IPU_IDEC_RGB32(0)      : RGB32
+        	    SCE_IPU_IDEC_RGB16(1)      : RGB16
+        dte	Dither Enable
+        	    SCE_IPU_IDEC_NODITHER(0)   : ディザなし
+        	    SCE_IPU_IDEC_DITHER(1)     : ディザあり
+        	    (ofm = RGB16 のときのみ有効)
+        sgn	Pseudo Sign Offset
+        	    SCE_IPU_IDEC_NOOFFSET(0)   : offset なし
+        	    SCE_IPU_IDEC_OFFSET(1)     : offset -128
+        dtd	DT Decode
+        	    SCE_IPU_IDEC_NODTDECODE(0) : Dct Type をデコードしない
+        	    SCE_IPU_IDEC_DTDECODE(1)   : Dct Type をデコードする
+        qsc 	Quantizer Step Code
+        fb	Forward Bit
+        
+[返り値]
+        なし
+[解説]
+        IDEC コマンドを実行してイントラ復号を行います。
+        
+
+=========================================================================
+sceIpuInit                                                         [関数]
+=========================================================================
+                                           IPUおよびIPUライブラリの初期化
+[形式]
+        void sceIpuInit(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        IPU をリセットし、IPU_in_FIFOをクリアします。
+        IPU ライブラリを初期化します。
+        
+
+=========================================================================
+sceIpuIsBusy                                                       [関数]
+=========================================================================
+                                                            IPUの状態検査
+[形式]
+        int sceIpuIsBusy(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        0 : 停止中
+        その他 : 動作中
+        
+[解説]
+        IPU が動作中かどうかを返します。
+        
+
+=========================================================================
+sceIpuIsError                                                      [関数]
+=========================================================================
+                                                            IPUの状態検査
+[形式]
+        int sceIpuIsError(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        0 : エラーなし
+        その他 : エラーあり
+        
+[解説]
+        IPU の処理途中でエラーが発生したかどうかを返します。
+        この値は IPU コマンドを実行するたびに自動的にクリアされます。
+        
+
+=========================================================================
+sceIpuPACK                                                         [関数]
+=========================================================================
+                                                       PACKコマンドの実行
+[形式]
+        void sceIpuPACK(
+        	int ofm,
+        	int dte,
+        	int mbc
+        )
+        
+[引数]
+        ofm	Output Format
+        	    SCE_IPU_PACK_INDX4(0)    : INDX4
+        	    SCE_IPU_PACK_RGB16(1)    : RGB16
+        dte 	Dither Enable
+        	    SCE_IPU_PACK_NODITHER(0) : ディザなし
+        	    SCE_IPU_PACK_DITHER(1)   : ディザあり
+        mbc	Macroblock Count 変換するマクロブロック数
+        
+[返り値]
+        なし
+        
+[解説]
+        PACK コマンドを実行してフォーマット変換を行います。
+        
+
+=========================================================================
+sceIpuReset                                                        [関数]
+=========================================================================
+                                                            IPUのリセット
+[形式]
+        void sceIpuReset(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        IPU をリセットします。
+        
+
+=========================================================================
+sceIpuRestartDMA                                                   [関数]
+=========================================================================
+                                                         IPU関連DMAの再開
+[形式]
+        void sceIpuRestartDMA(
+        	sceIpuDmaEnv *env
+        )
+        
+[引数]
+        env	DMA および IPU の状態を保存した構造体変数のポインタ
+        
+[返り値]
+        なし
+        
+[解説]
+        保存された DMA および IPU の状態に従って、toIPU(ch-4) およびfromI
+        PU(ch-3) の DMA を再開します。
+        
+
+=========================================================================
+sceIpuSETIQ                                                        [関数]
+=========================================================================
+                                                      SETIQコマンドの実行
+[形式]
+        void sceIpuSETIQ(
+        	int iqm,
+        	int fb
+        )
+        
+[引数]
+        iqm	Intra IQ Matrix
+        	    SCE_IPU_SETIQ_INTRA(0)    : イントラ量子化マトリクス
+        	    SCE_IPU_SETIQ_NONINTRA(1) : 非イントラ量子化マトリクス
+        fb	Forward Bit
+        
+[返り値]
+        なし
+        
+[解説]
+        SETIQ コマンドを実行して IQ テーブルを設定します。
+        
+
+=========================================================================
+sceIpuSETTH                                                        [関数]
+=========================================================================
+                                                      SETTHコマンドの実行
+[形式]
+        void sceIpuSETTH(
+        	int th1,
+        	int th0
+        )
+        
+[引数]
+        th1	半透明スレショルド
+        th0	透明スレショルド
+        
+[返り値]
+        なし
+        
+[解説]
+        SETTH コマンドを実行してスレショルド値を設定します。
+        このスレショルド値は CSC コマンドで色変換を行う際に使用されます。
+        
+
+=========================================================================
+sceIpuSETVQ                                                        [関数]
+=========================================================================
+                                                      SETVQコマンドの実行
+[形式]
+        void sceIpuSETVQ(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        SETVQ コマンドを実行して VQCLUT テーブルを設定します。
+        
+
+=========================================================================
+sceIpuStopDMA                                                      [関数]
+=========================================================================
+                                                         IPU関連DMAの停止
+[形式]
+        void sceIpuStopDMA(
+        	sceIpuDmaEnv *env
+        )
+        
+[引数]
+        env	内部状態を保存する構造体変数へのポインタ
+        
+[返り値]
+        なし
+        
+[解説]
+        toIPU(ch-4) および fromIPU(ch-3) の DMA を安全に停止し、これらの
+        DMAの状態および IPU の内部状態を保存します。
+        
+
+=========================================================================
+sceIpuSync                                                         [関数]
+=========================================================================
+                                                        IPUの処理との同期
+[形式]
+        int sceIpuSync(
+        	int mode,
+        	unsigned short timeout
+        )
+        
+[引数]
+        mode
+            0: IPU が動作中である間ブロックします。
+            1: 即座に終了し、そのときのステータスを返します。
+               これは、sceIpuIsBusy() と同じ動作となります。
+        
+        timeout
+            mode = 0 のときのタイムアウト値を指定します。
+            指定する値の単位は Horizontal line カウントです。
+        
+            timeout = 0: ライブラリでデフォルトのタイムアウト値を使用しま
+        す。
+            timeout > 0: 指定される値をタイムアウト値として使用します。
+        
+[返り値]
+        mode = 0 のとき
+            0 以上の値: 正常終了
+            負の値:     異常終了(タイムアウト発生)
+        
+        mode = 1 のとき
+            0: IPU が動作中でない
+            正の値: IPU が動作中
+        
+[解説]
+        IPU が動作中かどうかを判断し、IPU の動作終了を待ちます。
+        IPU が動作中かどうかを判断し、その状態を返します。
+        
+
+=========================================================================
+sceIpuVDEC                                                         [関数]
+=========================================================================
+                                                       VDECコマンドの実行
+[形式]
+        void sceIpuVDEC(
+        	int tbl,
+        	int fb
+        )
+        
+[引数]
+        tbl	VLC table
+        	    SCE_IPU_VDEC_MBAI(0)      : Macroblock Address Increment
+        	    SCE_IPU_VDEC_MBTYPE(1)    : Macroblock Type
+        	    SCE_IPU_VDEC_MOTIONCODE(2): Motion Code
+        	    SCE_IPU_VDEC_DMVECTOR(3)  : DMVector
+        fb	Forward Bit
+        
+[返り値]
+        なし
+        
+[解説]
+        VDEC コマンドを実行して、tbl で指定されたシンボルを復号します。
+        復号結果は sceIpuGetVdecResult() で取得することができます。

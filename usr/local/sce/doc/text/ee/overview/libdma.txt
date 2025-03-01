@@ -1,0 +1,60 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+DMA基本ライブラリ
+==================
+
+
+ 1 ライブラリ概要
+------------------
+
+
+  1.1 概要
+
+    libdmaは、DMA転送処理を支援するライブラリです。DMACを制御してDMA転送
+    を行うほかに、転送リストの作成をサポートするためにChainモード用のタグ
+    を生成する機能があります。
+
+  1.2 関連ファイル
+
+    libdmaに必要なファイルは次のとおりです。
+    
+    +------------------+----------+
+    |カテゴリ           ファイル名|
+    +                  +          +
+    |ライブラリファイル libdma.a  |
+    |ヘッダファイル     Libdma.h  |
+    +------------------+----------+
+
+  1.3 関数一覧
+
+    libdmaの関数のうち、タグを生成して転送リストに追加する関数は、生成す
+    るDMAタグの種類と割り込み発生ビットの設定に応じて、次のように整理する
+    ことができます。
+    
+    +----------------+----------------+--------------------------------+
+    |割り込みなし関数 割り込みあり関数 機能（生成するタグ）            |
+    +                +                +                                +
+    |SceDmaAddRef     SceDmaAddIRef    REFタグの追加（Source Chain用） |
+    |SceDmaAddRefe    SceDmaAddIRefe   REFEタグの追加（Source Chain用）|
+    |SceDmaAddRefs    SceDmaAddIRefs   REFSタグの追加（Source Chain用）|
+    |SceDmaAddCont    SceDmaAddICont   CNTタグの追加（Source Chain用） |
+    |SceDmaAddNext    SceDmaAddINext   NEXTタグの追加（Source Chain用）|
+    |SceDmaAddCall    SceDmaAddICall   CALLタグの追加（Source Chain用）|
+    |SceDmaAddRet     SceDmaAddIRet    RETタグの追加（Source Chain用） |
+    |SceDmaAddEnd     SceDmaAddIEnd    ENDタグの追加（Source Chain用） |
+    |SceDmaAddDest    SceDmaAddIDest   CNTタグの追加                   |
+    |                                  （Destination Chain用）         |
+    |SceDmaAddDests   SceDmaAddIDests  CNTSタグの追加                  |
+    |                                  （Destination Chain用）         |
+    +----------------+----------------+--------------------------------+
+    
+    DMAの終了割り込みのハンドラの登録は、カーネルのAPIである 
+    AddDmacHandler() によって行う事ができます。
+
+  1.4 参考資料
+
+    DMA転送機能の詳細については、「EE User's Manual」の3章を参照してくだ
+    さい。

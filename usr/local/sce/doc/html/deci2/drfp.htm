@@ -1,0 +1,479 @@
+<HTML>
+<HEAD>
+<TITLE> DRFP(DECI2 Remote File Protocol) Specification</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="drfp.htm" SELECTED> DRFP
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+DRFP(DECI2 Remote File Protocol) Specification<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> メッセージフォーマット<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 メッセージ<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> DRFP_CODE_OPEN<BR></A><BR>
+    <A HREF="#Heading4_2_2"> DRFP_CODE_OPENR<BR></A><BR>
+    <A HREF="#Heading4_2_3"> DRFP_CODE_CLOSE<BR></A><BR>
+    <A HREF="#Heading4_2_4"> DRFP_CODE_CLOSER<BR></A><BR>
+    <A HREF="#Heading4_2_5"> DRFP_CODE_READ<BR></A><BR>
+    <A HREF="#Heading4_2_6"> DRFP_CODE_READR<BR></A><BR>
+    <A HREF="#Heading4_2_7"> DRFP_CODE_WRITE<BR></A><BR>
+    <A HREF="#Heading4_2_8"> DRFP_CODE_WRITER<BR></A><BR>
+    <A HREF="#Heading4_2_9"> DRFP_CODE_SEEK<BR></A><BR>
+    <A HREF="#Heading4_2_10"> DRFP_CODE_SEEKR<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである DRFP について説明します。<BR>
+    <BR>
+    DRFP は、ターゲットからホスト上のファイルをアクセスするためのプロトコルで、プロトコル番号は、以下のようになります。下記 2 つのプロトコルの総称を DRFP とします。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      EE  からのファイルアクセス: DRFP0 = 0x0120<BR>
+      IOP からのファイルアクセス: DRFP1 = 0x0121<BR>
+      </BLOCKQUOTE>
+    <BR>
+    DRFP プロトコルドライバは IOP のみに実装されており、EE からのファイルアクセスは DECI2 プロトコルとは別の方法で IOP と通信し、IOP 上の DRFP プロトコルドライバによってホストとの通信が行われます。したがって、EE、IOP 用のどちらのプロトコルも相手となるノードは 'I' となります。<BR>
+    <BR>
+    ホスト上のアプリケーションは、ターゲット上のプロトコルドライバからのリクエストメッセージに対応するリプライメッセージを返すようなサーバーアプリケーションとなります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>メッセージフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    DRFP メッセージは、基本的な DECI2 ヘッダを使って送信されます。<BR>
+    DECI2 ヘッダに続いて、以下の DRFP ヘッダが続きます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf1.gif">
+<P>
+    <B>図 1 基本的な DRFP メッセージヘッダ</B>
+</DIV>
+
+     <H4><B>Request/Reply Code</B></H4>
+
+      <BLOCKQUOTE>
+      リクエスト／リプライコードを表します。以下の 5種類のリクエストと対応するリプライがあります。<BR>
+      <BR>
+      DRFP_CODE_OPEN  (0)、DRFP_CODE_OPENR  (1)<BR>
+      DRFP_CODE_CLOSE (2)、DRFP_CODE_CLOSER (3)<BR>
+      DRFP_CODE_READ  (4)、DRFP_CODE_READR  (5)<BR>
+      DRFP_CODE_WRITE (6)、DRFP_CODE_WRITER (7)<BR>
+      DRFP_CODE_SEEK  (8)、DRFP_CODE_SEEKR  (9)<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Request Sequence Number</B></H4>
+
+      <BLOCKQUOTE>
+      リクエストシーケンス番号は、リクエストメッセージが発生する度にインクリメントされる整数です。リクエストメッセージの応答として生成されるリプライメッセージは、対応するリクエストメッセージのリクエストシーケンス番号を持ちます。<BR>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>メッセージ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>DRFP_CODE_OPEN</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_OPEN はファイルのオープンリクエストメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf2.gif">
+<P>
+    <B>図 2 DRFP_CODE_OPEN メッセージ</B>
+</DIV>
+
+     <H4><B>Flag</B></H4>
+
+      <BLOCKQUOTE>
+      Flag の下位 16bit は以下の意味を持ちます。<BR>
+      <BR>
+      DRFP_RDONLY	0x0001	読み取り専用でオープンする<BR>
+      DRFP_WRONLY	0x0002	書き込み専用でオープンする<BR>
+      DRFP_RDWR	0x0003	読み書き両用でオープンする<BR>
+      DRFP_CREAT	0x0200	ファイルが存在しない場合には、ファイルを作成する<BR>
+      DRFP_TRUNC	0x0400	書き込みオープン時、内容を捨てサイズを 0 にする<BR>
+      DRFP_EXCL	0x0800	ファイル作成時に同名のファイルが存在するとエラーとする<BR>
+      その他のbit	ホストシステムのファイルサーバアプリケーションはこれを無視する。<BR>
+      <BR>
+      Flag の上位 16bitは、ファイルサーバアプリケーションが実装されているホストシステムに依存します。たとえば UNIX の場合、ファイルのパーミッションを指定することができます。0 の場合は、ファイルサーバーアプリケーションのデフォルトのパーミッションを指定したものとみなします。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Filename String</B></H4>
+
+      <BLOCKQUOTE>
+      オープンするファイル名を表す null ターミネートされた文字列です。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>DRFP_CODE_OPENR</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_OPENR は、ファイルのオープンリクエストに対するリプライメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf3.gif">
+<P>
+    <B>図 3 DRFP_CODE_OPENR メッセージ</B>
+</DIV>
+
+     <H4><B>Result</B></H4>
+
+      <BLOCKQUOTE>
+      ファイルが正常にオープンできたならば 0、そうでなければ以下のエラーコードを設定します。下記以外のエラーが発生した場合は、下位 16 ビットは 0xffff とします。<BR>
+      <BR>
+      DRFP_EACCES	(13)	パーミッション違反<BR>
+      DRFP_EDQUOT	(122)	ディレクトリにスペースを確保できない<BR>
+      DRFP_EEXIST	(17)	ファイルは既に存在する<BR>
+      DRFP_ENOENT	(2)	ファイルが見つからない、またはファイル名が異常<BR>
+      DRFP_ENOSPC	(28)	ディスクにスペースを確保できない<BR>
+      DRFP_ENFILE	(23)	同時にオープンしているファイル数が限界に達している<BR>
+      DRFP_EROFS	(30)	読み取り専用ディスク上で書き込みオープンをしようとした<BR>
+      DRFP_EBADF	(9)	ファイル番号が不正<BR>
+      DRFP_EIO	(5)	I/O エラー<BR>
+      DRFP_EISDIR	(21)	ディレクトリをオープンした<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>File Descriptor</B></H4>
+
+      <BLOCKQUOTE>
+      オープンしたファイルを表すファイル番号を設定します。ターゲット上でファイルの読み書き、クローズの際に使用されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>DRFP_CODE_CLOSE</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_CLOSE はファイルのクローズリクエストメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf4.gif">
+<P>
+    <B>図 4 DRFP_CODE_CLOSE メッセージ</B>
+</DIV>
+
+     <H4><B>File Descriptor</B></H4>
+
+      <BLOCKQUOTE>
+      ファイル番号が設定されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>DRFP_CODE_CLOSER</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_CLOSER はファイルのクローズリクエストに対するリプライメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf5.gif">
+<P>
+    <B>図 5 DRFP_CODE_CLOSER メッセージ</B>
+</DIV>
+
+     <H4><B>result</B></H4>
+
+      <BLOCKQUOTE>
+      正常にクローズできたならば 0、そうでなければ、以下のエラーコードを設定します。下記以外のエラーが発生した場合は、下位 16 ビットは 0xffff とします。<BR>
+      <BR>
+      DRFP_EBADF	(9)	ファイル番号が不正<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>DRFP_CODE_READ</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_READ はファイルの読み込みリクエストメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf6.gif">
+<P>
+    <B>図 6 DRFP_CODE_READ メッセージ</B>
+</DIV>
+
+     <H4><B>File Descriptor</B></H4>
+
+      <BLOCKQUOTE>
+      ファイル番号が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Number of Bytes</B></H4>
+
+      <BLOCKQUOTE>
+      読み取りたいデータのバイト数が設定されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>DRFP_CODE_READR</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_READR はファイルの読み込みリクエストに対するリプライメッセージです。<BR>
+    DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf7.gif">
+<P>
+    <B>図 7 DRFP_CODE_READR メッセージ</B>
+</DIV>
+
+     <H4><B>Result</B></H4>
+
+      <BLOCKQUOTE>
+      正常に読み込めたならば 0、そうでなければ、以下のエラーコードを設定します。<BR>
+      下記以外のエラーが発生した場合は、下位 16 ビットは 0xffff とします。<BR>
+      <BR>
+      DRFP_EBADF	(9)	ファイル番号が不正<BR>
+      DRFP_EIO	(5)	I/O エラー<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Number of Bytes</B></H4>
+
+      <BLOCKQUOTE>
+      読み込んだデータのサイズ(バイト数)です。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Data</B></H4>
+
+      <BLOCKQUOTE>
+      読み込んだデータです。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    以下の場合は、返すデータサイズがリクエストされた読み込みデータ数より少なくなります。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> DRFP_CODE_READ で指定されたデータ数が、パケットに収まりきらない場合<BR>
+         <LI VALUE= 2> ファイルの終端に達した場合<BR>
+    </OL>
+    <BR>
+    ターゲット側は Number of Bytes が 0 で、Result も 0 ならば、ファイルの終端に達していると判断します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>DRFP_CODE_WRITE</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_WRITE はファイルの書き込みリクエストメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf8.gif">
+<P>
+    <B>図 8 DRFP_CODE_WRITE メッセージ</B>
+</DIV>
+    <BR>
+
+     <H4><B>File Descriptor</B></H4>
+
+      <BLOCKQUOTE>
+      ファイル番号が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Number of Bytes</B></H4>
+
+      <BLOCKQUOTE>
+      書き込みたいデータのバイト数が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Data</B></H4>
+
+      <BLOCKQUOTE>
+      書き込むデータが設定されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>DRFP_CODE_WRITER</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_WRITER はファイルの書き込みリクエストに対するリプライメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf9.gif">
+<P>
+    <B>図 9 DRFP_CODE_WRITER メッセージ</B>
+</DIV>
+
+     <H4><B>Result</B></H4>
+
+      <BLOCKQUOTE>
+      正常に書き込めたならば 0、そうでなければ、以下のエラーコードを設定します。<BR>
+      下記以外のエラーが発生した場合は、下位 16 ビットは 0xffff とします。<BR>
+      <BR>
+      DRFP_EBADF	(9)	ファイル番号が不正<BR>
+      DRFP_EIO	(5)	I/O エラー<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Number of Bytes</B></H4>
+
+      <BLOCKQUOTE>
+      ファイルに書き込んだバイト数を設定します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_9">
+<A HREF="#Heading3_2"> 2. </A>9 <B>DRFP_CODE_SEEK</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_SEEK はファイルのシークリクエストメッセージです。DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf10.gif">
+<P>
+    <B>図 10 DRFP_CODE_SEEK メッセージ</B>
+</DIV>
+
+     <H4><B>File Descriptor</B></H4>
+
+      <BLOCKQUOTE>
+      ファイル番号が設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Offset</B></H4>
+
+      <BLOCKQUOTE>
+      ファイルポインタの移動量がバイト単位で設定されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Base</B></H4>
+
+      <BLOCKQUOTE>
+      0、1、2 のいずれかの値で、以下のように Offset の基準点が設定されます。<BR>
+      <BR>
+      0	ファイルの先頭から<BR>
+      1	現在の位置から<BR>
+      2	ファイルの最後から<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_10">
+<A HREF="#Heading3_2"> 2. </A>10 <B>DRFP_CODE_SEEKR</B>
+</A>
+</H3>
+<blockquote>
+    DRFP_CODE_SEEKR はファイルのシークリクエストに対するリプライメッセージです。<BR>
+    DRFP ヘッダにつづいて、次のようなフォーマットになっています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/drfpf11.gif">
+<P>
+    <B>図 11 DRFP_CODE_SEEKR メッセージ</B>
+</DIV>
+
+     <H4><B>Result</B></H4>
+
+      <BLOCKQUOTE>
+      正常にシークできたならば 0、そうでなければ以下のエラーコードを設定します。<BR>
+      下記以外のエラーが発生した場合は、下位 16 ビットは 0xffff とします。<BR>
+      <BR>
+      DRFP_EBADF	(9)	ファイル番号が不正<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Pos</B></H4>
+
+      <BLOCKQUOTE>
+      移動後のファイルポインタの位置を設定します。
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

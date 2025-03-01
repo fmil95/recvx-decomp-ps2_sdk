@@ -1,0 +1,726 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Emotion Engine ABI Summary</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Emotion Engine ABI Summary</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-16.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-18.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-460549"></A><A NAME="marker-491485"></A><A NAME="25831"></A>Emotion Engine ABI Summary</H2>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465547"></A>Data types and alignment</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465548"></A>This section describes the MIPS EABI, which the Emotion Engine tools adhere to, by default, with one exception. Pointers are 4 bytes instead of 8 bytes.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465549"></A>Data type sizes and alignments</H3>
+<P CLASS="Body">
+<A NAME="pgfId-466917"></A>The following table shows the size and alignment for all data types:</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-467220"></A>Emotion Engine Data Type Sizes and Alignments</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467226"></A>Type</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467228"></A>Size</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467230"></A>Alignment</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467232"></A><TT CLASS="Code">
+char</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467234"></A>1 byte</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467236"></A>1 byte</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467238"></A><TT CLASS="Code">
+short</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467240"></A>2 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467242"></A>2 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467244"></A><TT CLASS="Code">
+int</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467246"></A>4 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467248"></A>4 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467250"></A><TT CLASS="Code">
+unsigned</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467252"></A>4 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467254"></A>4 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467256"></A><TT CLASS="Code">
+long</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467258"></A>8 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467260"></A>8 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467262"></A><TT CLASS="Code">
+long long</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467264"></A>8 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467266"></A>8 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467268"></A><TT CLASS="Code">
+float</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467270"></A>4 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467272"></A>4 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467274"></A><TT CLASS="Code">
+double</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467276"></A>8 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467278"></A>8 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467280"></A><TT CLASS="Code">
+pointer</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467282"></A>4 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467284"></A>4 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525536"></A><TT CLASS="Code">
+TItype</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525538"></A>16 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525540"></A>16 bytes</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525542"></A><TT CLASS="Code">
+UTItype</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525544"></A>16 bytes</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-525546"></A>16 bytes</P>
+</TD>
+</TR>
+</TABLE>
+<UL>
+<LI>
+<A NAME="pgfId-465562"></A>Alignment within aggregates (structs and unions) is as above, with padding added if needed</LI>
+<LI>
+<A NAME="pgfId-465563"></A>Aggregates have alignment equal to that of their most aligned member</LI>
+<LI>
+<A NAME="pgfId-465564"></A>Aggregates have sizes which are a multiple of their alignment</LI>
+</UL>
+<P CLASS="Body">
+<A NAME="pgfId-525442"></A>You can specify 128-bit data types as follows:</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-525445"></A>typedef          int TItype  __attribute__ ((mode (TI)));</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-525454"></A>typedef unsigned int UTItype __attribute__ ((mode (TI)));</P>
+<P CLASS="Body">
+<A NAME="pgfId-525470"></A>This defines two types, <TT CLASS="Code">
+TItype </TT>
+and <TT CLASS="Code">
+UTItype,</TT>
+ which are 128-bit signed and unsigned types, respectively.</P>
+<P CLASS="Body">
+<A NAME="pgfId-525473"></A>The only operations allowed on 128-bit types are <TT CLASS="Code">
+load, store, copy</TT>
+ and <TT CLASS="Code">
+constant</TT>
+ initialization. No arithmetic, logical, conversion, comparison or other operations are allowed. Any attempt to use an operation that is not allowed will cause the compiler to emit an error message.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465565"></A>Subroutine calls</H3>
+<P CLASS="Body">
+<A NAME="pgfId-467444"></A>The following describes the calling conventions for <A NAME="marker-516754"></A>subroutine calls. The first table outlines the registers used for passing parameters. The second table outlines other register usage.</P>
+<P CLASS="Body">
+<A NAME="pgfId-467445"></A>&nbsp;</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-467451"></A>Registers used for passing parameters</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="2">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467455"></A>Parameter Registers:</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467459"></A>general-purpose</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467461"></A><TT CLASS="Code">
+r4-r11</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467463"></A>floating point</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467465"></A><TT CLASS="Code">
+f12-f19</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-467470"></A>&nbsp;</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-467473"></A>Register usage</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="2">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467477"></A>Register Usage:</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467481"></A>fixed 0 value</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467483"></A><TT CLASS="Code">
+r0</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467485"></A>volatile</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467487"></A><TT CLASS="Code">
+r1-r15, r24, r25</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467489"></A>non-volatile</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467491"></A><TT CLASS="Code">
+r16-r23, r30</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467493"></A>kernel reserved</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467495"></A><TT CLASS="Code">
+r26, r27</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467497"></A>gp (SDA base)</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467499"></A><TT CLASS="Code">
+r28</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467501"></A>stack pointer</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467503"></A><TT CLASS="Code">
+r29</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467505"></A>frame pointer</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467507"></A><TT CLASS="Code">
+r30</TT>
+  (if needed)</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467509"></A>return address</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467511"></A><TT CLASS="Code">
+r31</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<UL>
+<LI>
+<A NAME="pgfId-466223"></A>General-purpose and floating point parameter registers are allocated independently.</LI>
+<LI>
+<A NAME="pgfId-465582"></A>Structures that are less than or equal to 32 bits are passed as values.</LI>
+<LI>
+<A NAME="pgfId-465583"></A>Structures that are greater than 32 bits are passed as pointers.</LI>
+</UL>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465584"></A>The stack frame</H3>
+<UL>
+<LI>
+<A NAME="pgfId-465585"></A>The stack grows downwards from high addresses to low addresses.</LI>
+<LI>
+<A NAME="pgfId-465586"></A>A leaf function need not allocate a stack frame if it does not need one.</LI>
+<LI>
+<A NAME="pgfId-465587"></A>A frame pointer (FP) need not be allocated.</LI>
+<LI>
+<A NAME="pgfId-465588"></A>The stack pointer (SP) shall always be aligned to 16-byte boundaries.</LI>
+</UL>
+<P CLASS="Body">
+<A NAME="pgfId-525100"></A>Stack frames for functions that take a fixed number of arguments look like this: </P>
+<P CLASS="Body">
+<A NAME="pgfId-526153"></A>&nbsp;</P>
+<DIV>
+<MAP NAME="ee-8">
+</MAP>
+<IMG SRC="ee-8.gif" USEMAP="#ee-8">
+</DIV>
+<P CLASS="Body">
+<A NAME="pgfId-502702"></A> Stack frames for functions that take a variable number of arguments look like this:</P>
+<P CLASS="Body">
+<A NAME="pgfId-525654"></A>&nbsp;</P>
+<DIV>
+<MAP NAME="ee-9">
+</MAP>
+<IMG SRC="ee-9.gif" USEMAP="#ee-9">
+</DIV>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465595"></A>Parameter assignment to registers</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465596"></A>Consider the parameters in a <A NAME="marker-524395"></A>function call as ordered from left (first parameter) to right. In this algorithm, FR contains the number of the next available floating-point register (or register pair for modes in which floating-point registers hold only 32 bits). <TT CLASS="Code">
+GR</TT>
+ contains the number of the next available general-purpose register. STARG is the address of the next available stack parameter word.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-465597"></A>INITIALIZE:</H4>
+<P CLASS="Body">
+<A NAME="pgfId-465598"></A>Set GR=r4, FR=f12, and STARG to point to parameter word 1.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-465599"></A>SCAN:</H4>
+<P CLASS="Body">
+<A NAME="pgfId-465600"></A>If there are no more parameters, terminate. Otherwise, select one of the following depending on the type of the next parameter:</P>
+<H5 CLASS="Heading4">
+<A NAME="pgfId-465601"></A>DOUBLE OR FLOAT:</H5>
+<P CLASS="Body">
+<A NAME="pgfId-465602"></A>If FR &gt; f19, go to STACK. Otherwise, load the parameter value into floating-point register FR and advance FR to the next floating-point register (or register pair in 32-bit mode). Then go to SCAN.</P>
+<H5 CLASS="Heading4">
+<A NAME="pgfId-465603"></A>SIMPLE ARG:</H5>
+<P CLASS="Body">
+<A NAME="pgfId-465604"></A>A SIMPLE ARG is one of the following:</P>
+<UL>
+<LI>
+<A NAME="pgfId-465605"></A>One of the simple integer types that will fit into a general-purpose register</LI>
+<LI>
+<A NAME="pgfId-465606"></A>A pointer to an object of any type</LI>
+<LI>
+<A NAME="pgfId-465607"></A>A struct or union small enough to fit in a register</LI>
+<LI>
+<A NAME="pgfId-465608"></A>A larger struct or union, which shall be treated as a pointer to the object or to a copy of the object (see below for when copies are made)</LI>
+</UL>
+<P CLASS="Body">
+<A NAME="pgfId-465609"></A>If GR &gt; r11, go to STACK. Otherwise, load the parameter value into general-purpose register GR and advance GR to the next general-purpose register. Values shorter than the register size are sign-extended or zero-extended depending on whether they are signed or unsigned. Then go to SCAN.</P>
+<H5 CLASS="Heading4">
+<A NAME="pgfId-465610"></A>LONG LONG in 32-bit mode:</H5>
+<P CLASS="Body">
+<A NAME="pgfId-465611"></A>If GR &gt; r10, go to STACK. Otherwise, if GR is odd, advance GR to the next register. Load the 64-bit <TT CLASS="Code">
+long long </TT>
+value into register pair GR and GR+1. Advance GR to GR+2 and go to SCAN.</P>
+<H5 CLASS="Heading4">
+<A NAME="pgfId-465612"></A>STACK:</H5>
+<P CLASS="Body">
+<A NAME="pgfId-465613"></A>Parameters that are not otherwise handled above are passed in the parameter words of the caller's stack frame. SIMPLE ARGs, as defined above, are considered to have size and alignment equal to the size of a general-purpose register, with simple argument types shorter than this sign- or zero-extended to this width. Float arguments are considered to have size and alignment equal to the size of a floating-point register. In 64-bit mode, floats are stored in the low-order 32 bits of the 64-bit space allocated to them. double and long long are considered to have 64-bit size and alignment. Round STARG up to a multiple of the alignment requirement of the parameter and copy the argument byte-for-byte into STARG, STARG+1, ... STARG+size-1. Set STARG to STARG+size and go to SCAN.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-525661"></A>Specified registers for local variables</H3>
+<P CLASS="Body">
+<A NAME="pgfId-525667"></A>Stores into local register variables may deleted when they appear to be dead according to dataflow analysis. References to local register variables may be deleted or moved or simplified.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465614"></A><A NAME="marker-516755"></A>Structure passing</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465615"></A>As noted above, code that passes structures and unions by value is implemented specially. (In this section, &quot;struct&quot; will refer to structs and unions inclusively.) Structs small enough to fit in a register are passed by value in a single register or in a stack frame slot the size of a register. Larger structs are handled by passing the address of the structure. In this case, a copy of the structure will be made if necessary in order to preserve the pass-by-value semantics.</P>
+<P CLASS="Body">
+<A NAME="pgfId-465616"></A>Copies of large structs are made under the following rules:</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-467937"></A>Structure passing rules</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467943"></A>&nbsp;</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467945"></A>ANSI mode</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-467947"></A>K&amp;R Mode</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467949"></A>Normal param</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467951"></A>Callee copies if needed</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467953"></A>Caller copies</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467955"></A>Varargs (...) param</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467957"></A>Caller copies</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-467959"></A>Caller copies</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-525428"></A>&nbsp;</P>
+<P CLASS="Body">
+<A NAME="pgfId-525660"></A>In the case of normal (non-varargs) large-struct parameters in ANSI mode, the callee is responsible for producing the same effect as if a copy of the structure were passed, preserving the pass-by-value semantics. This may be accomplished by having the callee make a copy, but in some cases the callee may be able to determine that a copy is not necessary in order to produce the same results. In such cases, the callee may choose to avoid making a copy of the parameter.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465622"></A><A NAME="marker-491480"></A>Varargs handling</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465623"></A>No special changes are needed for handling varargs parameters other than the caller knowing that a copy is needed on struct parameters larger than a register (see above).</P>
+<P CLASS="Body">
+<A NAME="pgfId-465624"></A>The varargs macros set up a two-part register save area, one part for the general-purpose registers and one part for floating-point registers, and maintain separate pointers for these two areas and for the stack parameter area. The register save area lies between the caller and callee stack frame areas.</P>
+<P CLASS="Body">
+<A NAME="pgfId-465625"></A>In the case of software floating-point, only the general-purpose registers need to be saved. Because the save area lies between the two stack frames, the saved register parameters are contiguous with parameters passed on the stack. This allows the varargs macros to be much simpler. Only one pointer is needed, which advances from the register save area into the caller's stack frame.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465626"></A><A NAME="marker-524398"></A>Function return values</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465967"></A>Data types and register usage for return values.</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-466813"></A>Function return values</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-466817"></A><SPAN CLASS="Bold">
+Type</SPAN>
+</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-466819"></A><SPAN CLASS="Bold">
+Register</SPAN>
+</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466821"></A><TT CLASS="Code">
+int</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466823"></A><TT CLASS="Code">
+r2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466825"></A><TT CLASS="Code">
+short</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466827"></A><TT CLASS="Code">
+r2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466829"></A><TT CLASS="Code">
+long</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466831"></A><TT CLASS="Code">
+r2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466833"></A><TT CLASS="Code">
+long long</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466835"></A><TT CLASS="Code">
+r2-r3</TT>
+ (32-bit mode)</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466837"></A><TT CLASS="Code">
+float</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466839"></A><TT CLASS="Code">
+f0</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466841"></A><TT CLASS="Code">
+double</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466843"></A><TT CLASS="Code">
+f0-f1</TT>
+ (32-bit mode)</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466845"></A><TT CLASS="Code">
+struct/union</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-466847"></A>see below</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-525215"></A>&nbsp;</P>
+<P CLASS="Body">
+<A NAME="pgfId-533202"></A>Structures and unions, which will fit into two general-purpose registers, are returned in <TT CLASS="Code">
+r2,</TT>
+ or in <TT CLASS="Code">
+r2 </TT>
+and <TT CLASS="Code">
+r3 </TT>
+if necessary. They are aligned within the register according to the endianness of the processor; e.g. on a big-endian processor the first byte of the struct is returned in the most significant byte of <TT CLASS="Code">
+r2, </TT>
+while on a little-endian processor the first byte is returned in the least significant byte of <TT CLASS="Code">
+r2.</TT>
+ The caller handles larger structures and unions, by passing, as a &quot;hidden&quot; first argument, a pointer to space allocated to receive the return value.</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Emotion Engine ABI Summary</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-16.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-18.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

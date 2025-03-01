@@ -1,0 +1,61 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+CSL MIDIディレイモジュール
+(moddelay)
+======================================
+
+
+ 1 概要
+--------
+
+    moddelayは、CSL（Component Sound Library）に準拠して実装されているIOP
+    モジュールで、入力バッファのMIDI Streamデータを指定されたTick数だけ遅
+    らせて出力する機能を持ちます。ソフトウェア・シンセサイザとハードウェ
+    ア・シンセサイザのレーテンシ差を吸収するなどの用途で使用します。
+
+ 2 利用方法
+------------
+
+
+  2.1 バッファ構造
+
+
+    Buffer Group 0：入力ポートグループ
+
+    +------------+-----------------+------------------------+
+    |BufCtx Index 内容              データ構造              |
+    +            +                 +                        +
+    |N*2          入力ポートN番の   sceCslMidiStream        |
+    |             入力バッファ      void[ buffsize - sizeof |
+    |                               (sceCslMidiStream) ]    |
+    |N*2+1        入力ポートN番の   sceMidiDelay_DelayBuffer|
+    |             ディレイバッファ                          |
+    +------------+-----------------+------------------------+
+
+    Buffer Group 1：出力ポート
+
+    +------------+---------------+------------------------+
+    |BufCtx Index 内容            データ構造              |
+    +            +               +                        +
+    |N            出力ポートN番の sceCslMidiStream        |
+    |             出力バッファ    void[ buffsize - sizeof |
+    |                             (sceCslMidiStream) ]    |
+    +------------+---------------+------------------------+
+    
+    Nの範囲は0～15です。
+    入力バッファとそれに対応するディレイバッファは必ず対で存在する必要が
+    あります。片方が欠けている場合、初期化時にエラーとなるか、その入力バ
+    ッファが使用できなくなります。
+
+  2.2 初期化処理
+
+    moddelayの初期化はsceMidiDelay_Init()を呼び出して行います。その前に、
+    上記のバッファ構造をメモリ上に確保し、また、ディレイバッファに置く
+    sceMidiDelay_DelayBuffer構造体のメンバに次のような値を設定しておく必
+    要があります。
+    
+      delayBfSize	ディレイバッファデータ領域（delayBf[]）のバイト数
+      delayTime	ディレイタイム（ATick()の呼出し回数）

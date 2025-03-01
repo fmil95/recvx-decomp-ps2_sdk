@@ -371,23 +371,15 @@ proc dos_load { dest prog args } {
 	    global target_alias;
 
 	    set comp [get_multilibs];
-	    if [file exists "${comp}/winsup/new-cygwin1.dll"] {
-		set dll "${comp}/winsup/new-cygwin1.dll";
-		set dll_name "cygwin1.dll";
-	    } elseif [file exists "${comp}/winsup/new-cygwin.dll"] {
+	    if [file exists "${comp}/winsup/new-cygwin.dll"] {
 		set dll "${comp}/winsup/new-cygwin.dll";
-		set dll_name "cygwin.dll";
-	    } elseif [file exists ${comp}/lib/cygwin1.dll] {
-		set dll "${comp}/lib/cygwin1.dll";
-		set dll_name "cygwin1.dll";
 	    } elseif [file exists ${comp}/lib/cygwin.dll] {
 		set dll "${comp}/lib/cygwin.dll";
-		set dll_name "cygwin.dll";
 	    } else {
 		error "couldn't find cygwin.dll:$comp"
 		return "fail";
 	    }
-	    remote_download $dest $dll $dll_name
+	    remote_download $dest $dll "cygwin.dll";
 	}
 	set dos_dll_loaded 1;
     }

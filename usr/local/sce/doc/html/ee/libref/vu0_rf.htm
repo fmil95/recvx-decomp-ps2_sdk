@@ -1,0 +1,2931 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> VU0ライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>VU0ライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0FMATRIX>sceVu0FMATRIX </A><BR>
+</TD><TD> </TD>
+<TD>4x4マトリックス</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0FVECTOR>sceVu0FVECTOR </A><BR>
+</TD><TD> </TD>
+<TD>4次元ベクトル（浮動小数）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0IVECTOR>sceVu0IVECTOR </A><BR>
+</TD><TD> </TD>
+<TD>4次元ベクトル（整数）</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceVpu0Reset>sceVpu0Reset </A><BR>
+</TD><TD> </TD>
+<TD>VU0,VIF0のリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0AddVector>sceVu0AddVector </A><BR>
+</TD><TD> </TD>
+<TD>4並列加算 (ADD/xyzw)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ApplyMatrix>sceVu0ApplyMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルとマトリックスの乗算</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0CameraMatrix>sceVu0CameraMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ワールドビュー行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ClampVector>sceVu0ClampVector </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルのクランプ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ClipAll>sceVu0ClipAll </A><BR>
+</TD><TD> </TD>
+<TD>表示範囲によるクリッピング検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ClipScreen>sceVu0ClipScreen </A><BR>
+</TD><TD> </TD>
+<TD>GS描画範囲によるクリッピング検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ClipScreen3>sceVu0ClipScreen3 </A><BR>
+</TD><TD> </TD>
+<TD>GS描画範囲によるクリッピング検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0CopyMatrix>sceVu0CopyMatrix </A><BR>
+</TD><TD> </TD>
+<TD>マトリックスの複写</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0CopyVector>sceVu0CopyVector </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルの複写</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0CopyVectorXYZ>sceVu0CopyVectorXYZ </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルの複写</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0DivVector>sceVu0DivVector </A><BR>
+</TD><TD> </TD>
+<TD>除算</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0DivVectorXYZ>sceVu0DivVectorXYZ </A><BR>
+</TD><TD> </TD>
+<TD>除算</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0DropShadowMatrix>sceVu0DropShadowMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ドロップシャドウ射影行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0FTOI0Vector>sceVu0FTOI0Vector </A><BR>
+</TD><TD> </TD>
+<TD>浮動小数点 -&gt; 小数部0bit固定小数点</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0FTOI4Vector>sceVu0FTOI4Vector </A><BR>
+</TD><TD> </TD>
+<TD>浮動小数点 -&gt; 小数部4bit固定小数点</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0InnerProduct>sceVu0InnerProduct </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルの内積</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0InterVector>sceVu0InterVector </A><BR>
+</TD><TD> </TD>
+<TD>内挿ベクトルの生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0InterVectorXYZ>sceVu0InterVectorXYZ </A><BR>
+</TD><TD> </TD>
+<TD>内挿ベクトルの生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0InversMatrix>sceVu0InversMatrix </A><BR>
+</TD><TD> </TD>
+<TD>逆行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ITOF0Vector>sceVu0ITOF0Vector </A><BR>
+</TD><TD> </TD>
+<TD>小数部0bit固定小数点 -&gt; 浮動小数点</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ITOF4Vector>sceVu0ITOF4Vector </A><BR>
+</TD><TD> </TD>
+<TD>小数部4bit固定小数点 -&gt; 浮動小数点</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0LightColorMatrix>sceVu0LightColorMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ライトカラー行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0MulMatrix>sceVu0MulMatrix </A><BR>
+</TD><TD> </TD>
+<TD>マトリックスの積</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0MulVector>sceVu0MulVector </A><BR>
+</TD><TD> </TD>
+<TD>4並列積算 (MUL/xyzw)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0Normalize>sceVu0Normalize </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルの正規化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0NormalLightMatrix>sceVu0NormalLightMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ノーマルライト行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0OuterProduct>sceVu0OuterProduct </A><BR>
+</TD><TD> </TD>
+<TD>ベクトルの外積</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotMatrix>sceVu0RotMatrix </A><BR>
+</TD><TD> </TD>
+<TD>行列の回転</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotMatrixX>sceVu0RotMatrixX </A><BR>
+</TD><TD> </TD>
+<TD>X軸を中心とする回転</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotMatrixY>sceVu0RotMatrixY </A><BR>
+</TD><TD> </TD>
+<TD>Y軸を中心とする回転</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotMatrixZ>sceVu0RotMatrixZ </A><BR>
+</TD><TD> </TD>
+<TD>Z軸を中心とする回転</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotTransPers>sceVu0RotTransPers </A><BR>
+</TD><TD> </TD>
+<TD>透視変換</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0RotTransPersN>sceVu0RotTransPersN </A><BR>
+</TD><TD> </TD>
+<TD>透視変換</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ScaleVector>sceVu0ScaleVector </A><BR>
+</TD><TD> </TD>
+<TD>スカラー値とベクトルの乗算 (MULx/xyzw)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ScaleVectorXYZ>sceVu0ScaleVectorXYZ </A><BR>
+</TD><TD> </TD>
+<TD>スカラー値とベクトルの乗算 (MULx/xyz)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0SubVector>sceVu0SubVector </A><BR>
+</TD><TD> </TD>
+<TD>4並列減算 (SUB/xyzw)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0TransMatrix>sceVu0TransMatrix </A><BR>
+</TD><TD> </TD>
+<TD>行列の平行移動</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0TransposeMatrix>sceVu0TransposeMatrix </A><BR>
+</TD><TD> </TD>
+<TD>転置行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0UnitMatrix>sceVu0UnitMatrix </A><BR>
+</TD><TD> </TD>
+<TD>単位行列の生成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVu0ViewScreenMatrix>sceVu0ViewScreenMatrix </A><BR>
+</TD><TD> </TD>
+<TD>ビュースクリーン行列の生成</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceVu0FMATRIX>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0FMATRIX
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4x4マトリックス
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef sceVu0FVECTOR <B>sceVu0FMATRIX</B>[4];
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    float×4×4要素のマトリックスです。行列要素としての並びは次のようになっています。 <BR>
+<BR>
+    |m[0][0] m[1][0] m[2][0] m[3][0]| <BR>
+    |m[0][1] m[1][1] m[2][1] m[3][1]| <BR>
+    |m[0][2] m[1][2] m[2][2] m[3][2]| <BR>
+    |m[0][3] m[1][3] m[2][3] m[3][3]| <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0FVECTOR>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0FVECTOR
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4次元ベクトル（浮動小数）
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef float <B>sceVu0FVECTOR</B>[4];
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    float×4要素のベクトルです。EEはリトルエンディアンであり、sceVu0FVECTORの配列要素とベクトル要素(フィールド)との対応は次のようになっています。 <BR>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>配列要素</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>フィールド</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">a[0]</TD>
+<TD valign="TOP">x</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[1]</TD>
+<TD valign="TOP">y</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[2]</TD>
+<TD valign="TOP">z</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[3]</TD>
+<TD valign="TOP">w</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0IVECTOR>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0IVECTOR
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4次元ベクトル（整数）
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef int <B>sceVu0IVECTOR</B>[4];
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    int×4要素のベクトルです。EEはリトルエンディアンであり、sceVu0IVECTORの配列要素とベクトル要素(フィールド)との対応は次のようになっています。 <BR>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>配列要素</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>フィールド</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">a[0]</TD>
+<TD valign="TOP">x</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[1]</TD>
+<TD valign="TOP">y</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[2]</TD>
+<TD valign="TOP">z</TD>
+</TR>
+<TR>
+<TD valign="TOP">a[3]</TD>
+<TD valign="TOP">w</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+    sceVu0IVECTORは、小数部0bitの固定小数点数または小数部4bitの固定小数点数と、ふたつの数値フォーマットで使用することができます。 <BR>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>フォーマット</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>仕様</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">固定小数点(32.0)</TD>
+<TD valign="TOP">整数部:32bit,小数部:0bit</TD>
+</TR>
+<TR>
+<TD valign="TOP">固定小数点(28.4)</TD>
+<TD valign="TOP">整数部:24bit,小数部:4bit</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceVpu0Reset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVpu0Reset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VU0,VIF0のリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVpu0Reset</B>(void);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VU0およびVIF0を初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0AddVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0AddVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4並列加算 (ADD/xyzw)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0AddVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1の各要素とベクトルv2の各要素を各々加算し、結果をv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ApplyMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ApplyMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルとマトリックスの乗算
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ApplyMatrix</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FVECTOR <I>v1</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>m0</I>		入力:マトリックス
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm0にベクトルv1を右から乗算し、結果をベクトルv0に返します。式で表現すると次のとおりです。 <BR>
+    v0=m0*v1 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0CameraMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0CameraMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ワールドビュー行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0CameraMatrix</B>(
+	sceVu0FMATRIX <I>m</I>,
+	sceVu0FVECTOR <I>p</I>,
+	sceVu0FVECTOR <I>zd</I>,
+	sceVu0FVECTOR <I>yd</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m</I>		出力:マトリックス(ビューワールド座標)
+<I>p</I>		入力:ベクトル(視点)
+<I>zd</I>		入力:ベクトル(視線)
+<I>yd</I>		入力:ベクトル(垂直方向)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    視点pを(0,0,0)に、視線zdを(0,0,1)に、垂直方向ydを(0,1,0)にと変換するような行列を求め、mに返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ClampVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ClampVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルのクランプ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ClampVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	float <I>min</I>,
+	float <I>max</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+<I>min</I>		入力:最小値
+<I>max</I>		入力:最大値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1の各要素を、最小値min、最大値maxでクランプし、結果をベクトルv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ClipAll>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ClipAll
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        表示範囲によるクリッピング検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceVu0ClipAll</B>(
+	sceVu0FVECTOR <I>minv</I>,
+	sceVu0FVECTOR <I>maxv</I>,
+	sceVu0FMATRIX <I>ms</I>,
+	sceVu0FVECTOR *<I>vm</I>,
+	int <I>n</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>minv</I>		入力:表示範囲の最小値
+<I>maxv</I>		入力:表示範囲の最大値
+<I>ms</I>		入力:マトリックス（モデル－スクリーン）
+<I>vm</I>		入力:頂点ベクトルのポインタ
+<I>n</I>		入力:頂点数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    すべての頂点が表示範囲に入っていないときは1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    vmとnで指定されるn個の頂点がすべて表示範囲に入っていないかどうかを調べます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ClipScreen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ClipScreen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS描画範囲によるクリッピング検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceVu0ClipScreen</B>(
+	sceVu0FVECTOR <I>v0</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    描画範囲に入っているときは0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    頂点ベクトルv0がGSの描画範囲に入っているかどうかを調べます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ClipScreen3>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ClipScreen3
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS描画範囲によるクリッピング検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceVu0ClipScreen3</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>,<I>v1</I>,<I>v2</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    すべての頂点が描画範囲に入っているときは0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    頂点ベクトルv0,v1,v2がすべてGSの描画範囲に入っているかどうかを調べます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0CopyMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0CopyMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マトリックスの複写
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0CopyMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm1をマトリックスm0にコピーします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0CopyVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0CopyVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルの複写
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0CopyVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1をベクトルv0にコピーします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0CopyVectorXYZ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0CopyVectorXYZ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルの複写
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0CopyVectorXYZ</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1のx,y,z要素をベクトルv0にコピーします。 <BR>
+    ベクトルv0のw要素は、そのままベクトルv0に返す。	 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0DivVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0DivVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        除算
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0DivVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	float <I>q</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+<I>q</I>		入力:スカラー
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1をスカラーqで除算し、結果をベクトルv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0DivVectorXYZ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0DivVectorXYZ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        除算
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0DivVectorXYZ</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	float <I>q</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+<I>q</I>		入力:スカラー
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1のx,y,z要素をスカラーqで除算し、結果をベクトルv0に返します。 <BR>
+    ベクトルv0のw要素は、そのままベクトルv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0DropShadowMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0DropShadowMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ドロップシャドウ射影行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0DropShadowMatrix</B>(
+	sceVu0FMATRIX <I>m</I>,
+	sceVu0FVECTOR <I>lp</I>,
+	float <I>a</I>,
+	float <I>b</I>,
+	float <I>c</I>,
+	int <I>mode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m</I>		出力:マトリックス
+<I>lp</I>		入力:ベクトル(光源の位置)
+<I>a</I>		入力:影の投影面
+<I>b</I>		入力:影の投影面
+<I>c</I>		入力:影の投影面
+<I>mode</I>		入力:光源の種類
+		0: 平行光源
+		1: 点光源
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ax+by+cz=1で表現される平面にlpとmodeで指定される光源からの影を投影する行列を求め、mに返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0FTOI0Vector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0FTOI0Vector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        浮動小数点 -&gt; 小数部0bit固定小数点
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0FTOI0Vector</B>(
+	sceVu0IVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    浮動小数点ベクトルv1の各要素を小数部0bitの固定小数点に変換し、v0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0FTOI4Vector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0FTOI4Vector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        浮動小数点 -&gt; 小数部4bit固定小数点
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0FTOI4Vector</B>(
+	sceVu0IVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    浮動小数点ベクトルv1の各要素を小数部4bitの固定小数点数に変換し、v0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0InnerProduct>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0InnerProduct
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルの内積
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>float <B>sceVu0InnerProduct</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>,<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    内積 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv0,v1の内積を求めます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0InterVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0InterVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        内挿ベクトルの生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0InterVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>, 
+	float <I>t</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+<I>t</I>		入力:内挿パラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1,v2およびパラメータtから内挿ベクトルを求め、v0に返します。 <BR>
+    式で表現すると次のとおりです。 <BR>
+    v0 = v1*t + v2*(1-t) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0InterVectorXYZ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0InterVectorXYZ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        内挿ベクトルの生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0InterVectorXYZ</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>, 
+	float <I>t</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+<I>t</I>		入力:内挿パラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1,v2およびパラメータtから内挿ベクトルを求め、v0に返します。 <BR>
+    式で表現すると次のとおりです。 <BR>
+    v0 = v1*t + v2*(1-t) <BR>
+    ただしベクトルv0のw要素は、そのままベクトルv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0InversMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0InversMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        逆行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0InversMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス（正則行列）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm1の逆行列を求めて、マトリックスm0に返します。 <BR>
+    m1は正則行列(回転または並行移動のマトリックス)でなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ITOF0Vector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ITOF0Vector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        小数部0bit固定小数点 -&gt; 浮動小数点
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ITOF0Vector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0IVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    小数部0bitの固定小数点ベクトルv1の各要素を浮動小数点に変換し、v0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ITOF4Vector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ITOF4Vector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        小数部4bit固定小数点 -&gt; 浮動小数点
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ITOF4Vector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0IVECTOR <I>v1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    小数部4bitの固定小数点ベクトルv1の各要素を浮動小数点に変換し、v0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0LightColorMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0LightColorMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ライトカラー行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0LightColorMatrix</B>(
+	sceVu0FMATRIX <I>m</I>,
+	sceVu0FVECTOR <I>c0</I>,
+	sceVu0FVECTOR <I>c1</I>,
+	sceVu0FVECTOR <I>c2</I>,
+	sceVu0FVECTOR <I>a</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m</I>		出力:マトリックス
+<I>c0</I>		入力:ベクトル(光源色0)
+<I>c1</I>		入力:ベクトル(光源色1)
+<I>c2</I>		入力:ベクトル(光源色2)
+<I>a</I>		入力:ベクトル(アンビエント)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    光源色c0,c1,c2と環境色aからライトカラー行列を求め、mに返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0MulMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0MulMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マトリックスの積
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0MulMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	sceVu0FMATRIX <I>m2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>,<I>m2</I>		入力:マトリックス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm1にマトリックスm2を右から乗算し、結果をm0に返します。式で表現すると次のとおりです。 <BR>
+    m0=m1*m2 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0MulVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0MulVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4並列積算 (MUL/xyzw)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0MulVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1の各要素とベクトルv2の各要素をそれぞれ乗算し、結果をv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0Normalize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0Normalize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルの正規化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0Normalize</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1を正規化してv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0NormalLightMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0NormalLightMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ノーマルライト行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0NormalLightMatrix</B>(
+	sceVu0FMATRIX <I>m</I>,
+	sceVu0FVECTOR <I>l0</I>,
+	sceVu0FVECTOR <I>l1</I>,
+	sceVu0FVECTOR <I>l2</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m</I>		出力:マトリックス
+<I>l0</I>		入力:ベクトル(光源0の方向)
+<I>l1</I>		入力:ベクトル(光源1の方向)
+<I>l2</I>		入力:ベクトル(光源2の方向)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    光源l0、光源l1、光源l2からノーマルライト行列を求め、mに返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0OuterProduct>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0OuterProduct
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ベクトルの外積
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0OuterProduct</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1,v2の外積を求めてv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        行列の回転
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	sceVu0FVECTOR <I>rot</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+<I>rot</I>		入力:x,y,z軸の回転角(有効範囲:-π～π)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Z軸を中心とする回転マトリックスをrot[2]から、Y軸を中心とする回転マトリックスをrot[1]から、X軸を中心とする回転マトリックスをrot[0]からそれぞれ求め、順にマトリックスm1に左側から乗算して、その結果をマトリックスm0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotMatrixX>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotMatrixX
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        X軸を中心とする回転
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotMatrixX</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	float <I>rx</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+<I>rx</I>		入力:回転角(有効範囲:-π～π)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    X軸を中心とする回転マトリックスを指定された回転角rxから求め、マトリックスm1に左側から乗算して、その結果をマトリックスm0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotMatrixY>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotMatrixY
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Y軸を中心とする回転
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotMatrixY</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	float <I>ry</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+<I>ry</I>		入力:回転角(有効範囲:-π～π)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Y軸を中心とする回転マトリックスを指定された回転角ryから求め、マトリックスm1に左側から乗算して、その結果をマトリックスm0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotMatrixZ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotMatrixZ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Z軸を中心とする回転
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotMatrixZ</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	float <I>rz</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+<I>rz</I>		入力:回転角(有効範囲:-π～π)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Z軸を中心とする回転マトリックスを指定された回転角rzから求め、マトリックスm1に左側から乗算して、その結果をマトリックスm0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotTransPers>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotTransPers
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        透視変換
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotTransPers</B>(
+	sceVu0IVECTOR <I>v0</I>,
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	int <I>mode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:スクリーン座標を表すベクトル
+<I>m0</I>		入力:透視変換マトリックス
+<I>v1</I>		入力:頂点を表すベクトル
+<I>mode</I>		入力:出力座標値v0[2],v0[3]のフォーマット指定
+		0: 小数部4bitの固定小数点
+		1: 小数部0bitの固定小数点
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1で与えられた頂点を、マトリックスm0によってスクリーン座標に透視変換し、ベクトルv0に返します。 <BR>
+    出力されるv0[0],v0[1]の数値フォーマットは小数部4bitの32bit符号付き固定小数点数です。v0[2],v0[3]の数値フォーマットはmodeの指定に応じて変わり、mode=0のときは小数部4bitの32bit符号なし固定小数点、mode=1のときは小数部0bitの32bit符号なし固定小数点となります。GIFのPACKEDモードでXYZF2,XYZF3を用いる場合には、mode=0を指定すると、PACK時に整数部が切り出されるので有用です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0RotTransPersN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0RotTransPersN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        透視変換
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0RotTransPersN</B>(
+	sceVu0IVECTOR *<I>v0</I>,
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FVECTOR *<I>v1</I>,
+	int <I>n</I>,
+	int <I>mode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:スクリーン座標を表すベクトルのポインタ
+<I>m0</I>		入力:マトリックス
+<I>v1</I>		入力:頂点を表すベクトルのポインタ
+<I>n</I>		入力:頂点数
+<I>mode</I>		入力:出力座標値v0[2],v0[3]のフォーマット指定
+		0: 小数部4bitの固定小数点
+		1: 小数部0bitの固定小数点
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    v1とnとで指定されたn個の頂点を、マトリックスm0によってスクリーン座標に透視変換し、結果をv0が指す領域に返します。 <BR>
+    出力される*v0[0],*v0[1]の数値フォーマットは小数部4bitの32bit符号付き固定小数点数です。*v0[2],*v0[3]の数値フォーマットはmodeの指定に応じて変わり、mode=0のときは小数部4bitの32bit符号なし固定小数点、mode=1のときは小数部0bitの32bit符号なし固定小数点となります。GIFのPACKEDモードでXYZF2,XYZF3を用いる場合には、mode=0を指定すると、PACK時に整数部が切り出されるので有用です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ScaleVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ScaleVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スカラー値とベクトルの乗算 (MULx/xyzw)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ScaleVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	float <I>t</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+<I>t</I>		入力:スカラー
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1にスカラーtを乗算し、結果をv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ScaleVectorXYZ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ScaleVectorXYZ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スカラー値とベクトルの乗算 (MULx/xyz)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ScaleVectorXYZ</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	float <I>t</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>		入力:ベクトル
+<I>t</I>		入力:スカラー
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1のx,y,z要素にスカラーtを乗算し、結果をベクトルv0に返します。 <BR>
+    ベクトルv0のw要素は、そのままベクトルv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0SubVector>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0SubVector
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        4並列減算 (SUB/xyzw)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0SubVector</B>(
+	sceVu0FVECTOR <I>v0</I>,
+	sceVu0FVECTOR <I>v1</I>,
+	sceVu0FVECTOR <I>v2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>v0</I>		出力:ベクトル
+<I>v1</I>,<I>v2</I>		入力:ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルv1の各要素からベクトルv2の各要素を各々減算し、結果をv0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0TransMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0TransMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        行列の平行移動
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0TransMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>,
+	sceVu0FVECTOR <I>tv</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+<I>tv</I>		入力:移動ベクトル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ベクトルtvにしたがってマトリックスm1を平行移動し、m0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0TransposeMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0TransposeMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        転置行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0TransposeMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>,
+	sceVu0FMATRIX <I>m1</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+<I>m1</I>		入力:マトリックス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm1の転置行列を求め、m0に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0UnitMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0UnitMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        単位行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0UnitMatrix</B>(
+	sceVu0FMATRIX <I>m0</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m0</I>		出力:マトリックス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マトリックスm0に4x4の単位行列を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVu0ViewScreenMatrix>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVu0ViewScreenMatrix
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ビュースクリーン行列の生成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVu0ViewScreenMatrix</B>(
+	sceVu0FMATRIX <I>m</I>,
+	float <I>scrz</I>,
+	float <I>ax</I>,
+	float <I>ay</I>,
+	float <I>cx</I>,
+	float <I>cy</I>,
+	float <I>zmin</I>,
+	float <I>zmax</I>,
+	float <I>nearz</I>,
+	float <I>farz</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>m</I>		出力:マトリックス
+<I>scrz</I>		入力:(スクリーンまでの距離)
+<I>ax</I>		入力:(Ｘ方向アスペクト比)
+<I>ay</I>		入力:(Ｙ方向アスペクト比)
+<I>cx</I>		入力:(スクリーンの中心Ｘ座標)
+<I>cy</I>		入力:(スクリーンの中心Ｙ座標)
+<I>zmin</I>		入力:(Ｚバッファ最小値)
+<I>zmax</I>		入力:(Ｚバッファ最大値)
+<I>nearz</I>		入力:(ニアクリップ面のＺ)
+<I>farz</I>		入力:(ファークリップ面のＺ)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された各パラメータに従ってビュースクリーン行列を求め、mに返します。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

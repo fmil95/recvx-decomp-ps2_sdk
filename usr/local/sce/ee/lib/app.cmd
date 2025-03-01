@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -32,34 +32,11 @@ SECTIONS {
 	.text		0x00100000: {
 		crt0.o(.text)
 		*(.text)
-		*(.text.*)
-    		*(.gnu.linkonce.t*)
 		QUAD(0)
 	}
-	.ctors 			  : {
-		KEEP (*crtbegin.o(.ctors))
-		KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
-	    	KEEP (*(SORT(.ctors.*)))
-		KEEP (*(.ctors))	
-	}
-  	.dtors    : 	{
-    		KEEP (*crtbegin.o(.dtors))
-    		KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
-    		KEEP (*(SORT(.dtors.*)))
-    		KEEP (*(.dtors))
-  	}
-
 	.reginfo		  : { KEEP(*(.reginfo)) }
-	.data		ALIGN(128): { 
-		*(.data)
-	    	*(.data.*)
-    		*(.gnu.linkonce.d*)
-	 }
-	.rodata		ALIGN(128): {
-		*(.rodata)
-		*(.rodata.*)
-		*(.gnu.linkonce.r*)
-	}
+	.data		ALIGN(128): { *(.data) }
+	.rodata		ALIGN(128): { *(.rodata) }
 	.rdata		ALIGN(128): { *(.rdata) }
 	.gcc_except_table ALIGN(128): { *(.gcc_except_table) }
 	_gp = ALIGN(128) + 0x7ff0;

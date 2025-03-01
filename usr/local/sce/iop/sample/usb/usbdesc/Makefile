@@ -1,7 +1,7 @@
 #
 #  IOP USB Static Descriptor Printer
 #
-#  $Id: Makefile,v 1.5 2001/05/17 11:21:19 fukunaga Exp $
+#  $Id: Makefile,v 1.1 2000/07/22 12:49:30 fukunaga Exp $
 #
 ifeq ($(wildcard PathDefs),)
 PathDefs:
@@ -20,9 +20,7 @@ CFLAGS   =  -Wall -G0
 ASFLAGS  =
 LDLIBS   = -ilb=usbd.ilb
 PROGNAME = usbdesc.irx
-OBJS	 = $(PROGNAME:%.irx=%.o) \
-           hid.o
-           # add here other objects
+OBJS	 = $(PROGNAME:%.irx=%.o) # add here other objects
 
 all:	$(PROGNAME)
 
@@ -31,7 +29,7 @@ clean:
 
 run:	$(PROGNAME)
 	dsreset 0 0 ;\
-	dsistart /usr/local/sce/iop/modules/usbd.irx conf=2048 reportd=1;\
+	dsistart /usr/local/sce/iop/modules/usbd.irx conf=2048;\
 	dsistart $(PROGNAME)
 	dsidb -nr
 

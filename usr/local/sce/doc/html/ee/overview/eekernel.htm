@@ -1,0 +1,706 @@
+<HTML>
+<HEAD>
+<TITLE> EE Kernel API</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="eekernel.htm" SELECTED> EEカーネル
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+EE Kernel API<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 解説<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> スレッドの概要<BR></A><BR>
+    <A HREF="#Heading4_2_2"> スレッドの状態と動作<BR></A><BR>
+    <A HREF="#Heading4_2_3"> スレッドのスケジューリング（優先度）<BR></A><BR>
+    <A HREF="#Heading4_2_4"> セマフォ<BR></A><BR>
+    <A HREF="#Heading4_2_5"> 割り込みの取り扱い<BR></A><BR>
+    <A HREF="#Heading4_2_6"> アラーム機能の概要<BR></A><BR>
+    <A HREF="#Heading4_2_7"> メモリマップ<BR></A><BR>
+    <A HREF="#Heading4_2_8"> スタック領域・ヒープ領域の設定<BR></A><BR>
+    <A HREF="#Heading4_2_9"> キャッシュ制御の概要<BR></A><BR>
+    <A HREF="#Heading4_2_10"> ファイル操作の概要<BR></A><BR>
+    <A HREF="#Heading4_2_11"> IOP制御機能の概要<BR></A><BR>
+    <A HREF="#Heading4_2_12"> スクラッチパッドの擬似的拡張<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 予約タイマー<BR></A><BR>
+    <A HREF="#Heading4_3_2"> レジスタの保存<BR></A><BR>
+    <A HREF="#Heading4_3_3"> 割り込みハンドラの記述<BR></A><BR>
+    <A HREF="#Heading4_3_4"> DI / EIによる割り込み制御<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelは、EE上で動作するオペレーティングシステムです。アプリケーションとは独立したアドレス空間で実行され、優先度ベースのマルチスレッドスケジューリング機能、セマフォによるスレッド間通信機能、例外ハンドラの管理機能、COP0の制御機能などをシステムコールとして提供します。<BR>
+    また、コントローラやホストファイルに対する入出力サービスはEE Kernelの拡張部分として提供されています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernel APIを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">eekernel.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>解説</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>スレッドの概要</B>
+</A>
+</H3>
+<blockquote>
+    スレッドとは、並行処理の観点から見たプログラムの論理的な単位です。<BR>
+    ひとつのアプリケーションプログラムの処理内容を複数のスレッドに分け、それらを同時並行的に動作させることができます。並行といってもCPUはひとつしかありませんから、ある短い時間内で見ると、実行されているスレッドはひとつだけです。実行されるスレッドは、各スレッドの持つ優先度によって決められます。優先度は絶対的であり、優先度の高いスレッドが実行中であればそのスレッドが待ち状態に入るか割り込みハンドラ中で状態が変更されない限り、それより優先度の低いスレッドが実行されることはありません。複数のタスク（またはプロセス）を切り替えながらまんべんなく実行しようとするTSS（Time Sharing System）とはこの点で異なっています。<BR>
+    スレッドは互いに並行的に実行されますが、入出力装置やメモリ上の特定のワークエリアなどの資源は、スレッド間で排他的に使用するように調整しなければなりません。EE Kernelはスレッド間の同期機能としてセマフォを提供しています。<BR>
+    なお、スレッドと割り込みハンドラは明確に区別されます。スレッドはユーザプログラムの一部分として実行されますが、割り込みハンドラは（ユーザが作成したものであっても）システムプログラムの一部分として実行されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>スレッドの状態と動作</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelの管理するスレッドは、以下の7つ（大きく見ると５つ）の状態をもちます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>状態</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">RUN</TD>
+<TD valign="TOP">実行状態。CPUがそのスレッドを実行中の状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">READY</TD>
+<TD valign="TOP">実行可能な状態。CPUが他のスレッドを実行中であるため<BR>待機している状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">WAIT</TD>
+<TD valign="TOP">待ち状態。ある条件が成立するまで、自ら待ちに入った状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">SUSPEND</TD>
+<TD valign="TOP">強制待ち状態。他のスレッドが発行したシステムコールに<BR>よって強制的に待ちに入れられた状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">WAIT-SUSPEND</TD>
+<TD valign="TOP">2重待ち状態。WAIT状態であったときに他のスレッドから<BR>強制的に待ちに入れられた状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">DORMANT</TD>
+<TD valign="TOP">休止状態。スレッドが生成されてまだ起動されていない状態<BR>、または終了してから削除されるまでの状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">NON-EXISTENT</TD>
+<TD valign="TOP">未登録状態。スレッドが生成されていない、または<BR>削除された後の仮想的な状態</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    <BR>
+<UL>
+         <LI> RUN：実行状態<BR>CPUがそのスレッドを実行中であるという状態です。ある瞬間について見れば、この状態のスレッドはひとつしかありません。<BR>
+         <LI> READY：実行可能状態<BR>そのスレッドは実行できる条件が整っているが、より優先度の高い（あるいは同じ）スレッドが実行中であるために待機している状態です。実行可能状態のスレッドが複数個ある場合、それらのスレッドはCPUが空くのを待って待ち行列を作ります。これをレディキューと呼びます。<BR>
+         <LI> WAIT：待ち状態／SUSPEND：強制待ち状態／WAIT-SUSPEND：2重待ち状態<BR>そのスレッドが実行できる条件が整わないため実行を止められている、実行保留状態です。WAITは自スレッドの発行したシステムコールによって実行が止まっている状態、SUSPENDは他のスレッドから強制的に止められている状態、WAIT-SUSPENDはWAIT中にさらに他スレッドによって止められた状態です。<BR>待ち状態からの実行再開は、実行を中断した場所から行われ、プログラムカウンタやレジスタなどプログラムの実行状態を表現する情報（コンテキスト）はそのまま復元されます。<BR>
+         <LI> DORMANT：休止状態<BR>スレッドがまだ起動されていない状態、または終了した状態。スレッドを生成するとまずこの状態になります。<BR>
+         <LI> NON-EXISTENT：未登録状態<BR>スレッドが作成される前、または削除されたあとの、仮想的な状態です。<BR>生成されたスレッドはまずDORMANT状態になり、起動されることによってREADY状態となってレディキューに入ります。レディキューの並び順は優先度の高い順で、同一優先度のスレッドどうしは早くREADY状態になった順に並び、レディキューの先頭にあるスレッドが実行されてRUN状態となります。RUN状態のスレッドは、セマフォ待ちまたはイベントフラグ待ちによってWAIT状態に移り、待ち条件が成立するとREADY状態に戻ります。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>スレッドのスケジューリング（優先度）</B>
+</A>
+</H3>
+<blockquote>
+    スレッドは優先度ごとにレディキューで管理され、レディキューによって実行がスケジューリングされます。<BR>
+    たとえば次のように、優先度1のスレッドA、優先度3のスレッドB、C、D、優先度5のスレッドE、Fがレディキューに存在するとします。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/eeken1.gif">
+<P>
+    <BR>
+    レディキューにあるもっとも優先度の高いスレッドはスレッドAなので、スレッドAが実行されます（実行状態のスレッドもレディキューに含まれると考えます）。スレッドAの実行中に、暗黙のうちに他のスレッドに実行が移ることはありません。<BR>
+    スレッドAがSleepThread()を呼び出し、WAIT状態になったとすると、その時点でレディキューは下図のようになり、スレッドBが実行されます。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/eeken2.gif">
+<P>
+    <BR>
+    この状態で割り込みが発生すると、制御は割り込みハンドラに移り、割り込みハンドラからリターンする時点で再度スケジューリングが行われますが、割り込みがあっただけではスレッドBから実行権がうばわれることはありません。割り込みハンドラ内でスレッドAを実行可能状態に移したりスレッドBの優先度を下げたりする処理が行われない限り、割り込みハンドラから戻ったあともやはりスレッドBが実行されます。<BR>
+    割り込みハンドラ内でスレッドAが実行可能状態に移されると、リターンした時点でスレッドAが実行状態になり、スレッドBは実行状態から実行可能状態に移ります。これを「スレッドBがプリエンプト（preempt）された」と言います。この場合でもレディキューでのスレッドBの位置は変わらないので、スレッドAがレディキューから外れれば再びスレッドBが実行されます。<BR>
+    <BR>
+    スレッドの優先度は、ユーザプログラム起動時に0に設定され、Kernel APIのChangeThreadPriority()によって0-127の範囲で変更することができます。<BR>
+    また、レディキューを回転させるRotateReadyQueue()によって、優先度の同じスレッドどうしの優先順序を変更することができます。たとえば優先度3をRotateReadyQueue()によって回転すると、先頭のスレッドが最後尾に移ってC,D,Bの順となります。<BR>
+    なお、実行保留状態のスレッドが実行可能状態に移った場合は、そのスレッドは該当優先度のレディキューの最後尾につきます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>セマフォ</B>
+</A>
+</H3>
+<blockquote>
+    複数のスレッドが同じデバイスやバッファ領域などを使用する場合に、使用状況を他のスレッドに知らせ同期を取るために用意されているのがセマフォ（信号機）機能です。<BR>
+    デバイス等を使用したいスレッドはWaitSema()を実行してセマフォ資源を取得し、つまり使用中フラグを立てることで使用権を取得してから使用します。使い終われば、SignalSema()を実行してセマフォ資源をシステムに返却します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken3.gif">
+<P>
+    <BR>
+</DIV>
+    WaitSema()を実行したときにもし他のスレッドがデバイス等を使用中であれば、セマフォ資源は取得できず、そのスレッドはWAIT状態になってセマフォ待ち行列に入ります。デバイス等を使い終わったスレッドがSignalSema()を実行してセマフォ資源をシステムに返却すると、返却されたセマフォ資源がセマフォ待ち行列の先頭のスレッドに与えられ、そのスレッドはREADY状態に戻り、優先度によるスケジューリングにしたがって実行され、デバイス等を使用できるようになります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken4.gif">
+<P>
+    <BR>
+</DIV>
+    セマフォ資源の個数はセマフォ作成時に指定することができるため、上記のような排他制御のほかに、複数のスレッドがデータを供給する共有バッファの有効データ数を表すような使いかたも可能です。データ供給側のスレッドは、共有バッファにデータを格納したときにSignalSema()を実行して有効データが増えたことを示します。それに対してデータ消費側のスレッドは、共有バッファからデータを取り出そうとするときにWaitSema()を実行して、セマフォ資源が取得できれば共有バッファ中のデータを処理し、取得できなければWAIT状態になってデータが供給されるのを待つことになります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>割り込みの取り扱い</B>
+</A>
+</H3>
+<blockquote>
+    EEにはINTCとDMACの２つの割り込みコントローラがあります。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>割り込みコントローラ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>割り込み要因</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">GS</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">SBUS</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">V-blank start</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">V-blank end</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">VIF0</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">VIF1</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">VU0</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">VU1</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">IPU</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">Timer 0</TD>
+</TR>
+<TR>
+<TD valign="TOP">INTC</TD>
+<TD valign="TOP">Timer 1</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-0（VIF0,DIR:to,GP:A）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-1（VIF1,DIR:both,GP:C）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-2（GIF,DIR:to,GP:C）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-3（IPU,DIR:from,GP:C）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-4（IPU,DIR:to,GP:C）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-8（SPR,DIR:from,GP:C）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DMAC</TD>
+<TD valign="TOP">DMAチャネルch-9（SPR,DIR:to,GP:C）</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    EE Kernelには、割り込み要因ごとに割り込みハンドラを登録する機能が用意されています。割り込み発生を受けてアプリケーションが行う処理があれば関数として記述し、その関数を割り込みハンドラとして登録してください。ひとつの割り込み要因に対して複数の割り込みハンドラを登録することができます。またその場合に、割り込みハンドラが呼び出される順序を指定することもできます。<BR>
+    割り込みを使用したプログラム例として、sce/ee/sample/mpeg/ezmpeg、sce/ee/sample/ipu/ezcube3がありますので参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>アラーム機能の概要</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelのサービスとして、Hsync単位のタイマを64個用意してあります。<BR>
+    SetAlarm()を用いて、これらのタイマに対する割り込みハンドラとそれが呼び出される時間を指定することができます。設定した時間が経過すると割り込みハンドラが呼び出されます。<BR>
+    ReleaseAlarm()を呼び出すと、設定されている割り込みハンドラが解除されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>メモリマップ</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelのメモリマップを次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken5.gif">
+<P>
+    <BR>
+</DIV>
+
+     <H4><B>EE Kernel</B></H4>
+
+      <BLOCKQUOTE>
+      0x00000000 - 0x000fffffはEE Kernelが使用する空間で、アプリケーションプログラムからはアクセスできません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>Uncached</B></H4>
+
+<UL>
+         <LI> readは、cacheを経由しない。<BR>
+         <LI> writeは、write back bufferを経由する。<BR>(128バイト以下の連続するストアをまとめて行う)<BR>
+</UL>
+
+     <H4><B>Uncached accelerated</B></H4>
+
+<UL>
+         <LI> readは、Uncached accelerated bufferを経由する<BR>(まとめて128バイト読み込む)<BR>
+         <LI> writeは、write back bufferを経由する<BR>(128バイト以下の連続するストアをまとめて行う)<BR>
+</UL>
+    <BR>
+    Uncached acceleratedは、連続したメモリアクセスをキャッシュを汚さず、高速化するものです。<BR>
+    メモリに連続してアクセスする場合は、Uncacheに比べて有利になりますが、メモリをランダムにアクセスするような処理は、Uncacheより遅くなりますので注意してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>スタック領域・ヒープ領域の設定</B>
+</A>
+</H3>
+<blockquote>
+    アプリケーションプログラムのメモリマップ、つまりスタートアドレス（エントリポイント）・スタック領域・ヒープ領域などの設定は、リンカスクリプトファイル（.cmd）で設定します。リンカスクリプトファイルでの設定にしたがって、スタートアップルーチン（crt0.s）の中でメモリが確保されます。<BR>
+    サンプルプログラム等では、リンカスクリプトファイル/usr/local/sce/ee/lib/app.cmdを使用して、主に以下の情報を設定しています。<BR>
+<UL>
+         <LI> スタック領域に関する情報（_stack / _stack_size）<BR>
+         <LI> ヒープ領域に関する情報（_heap_size）<BR>
+         <LI> エントリポイント（0x00100000）<BR>
+         <LI> 各セクションの配置および構成に関する情報<BR>
+         <LI> ユーザプログラムの最後尾（end, _end）<BR>
+</UL>
+    スタック領域・ヒープ領域は、_stack, _stack_size, _end, _heap_sizeによって次のように決定されます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>シンボル</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">_stack</TD>
+<TD valign="TOP">スタック領域の先頭アドレス<BR>-1 を指定すると、メモリの最終アドレスから<BR>_stack_size + 0x100(4Kb)を引いたアドレスとみなされます。<BR>最後の 4kbyte は、システムデバッグ時作業領域として<BR>利用しています。-1 以外の場合この領域は存在しません。</TD>
+</TR>
+<TR>
+<TD valign="TOP">_stack_size</TD>
+<TD valign="TOP">スタック領域の大きさ</TD>
+</TR>
+<TR>
+<TD valign="TOP">_end</TD>
+<TD valign="TOP">プログラム領域の末尾アドレス＝ヒープ領域の直前の<BR>アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">_heap_size</TD>
+<TD valign="TOP">ヒープ領域の大きさ<BR>-1を指定すると、_stackから_endを引いた大きさとみなさ<BR>れる(スタック領域の直前まですべてヒープ領域となる)</TD>
+</TR>
+</TABLE>
+<BR>
+    ※スタックポインタはスタック領域の最終アドレスから先頭へ向かって移動します。<BR>
+<P>
+<IMG SRC ="gif/eeken6.gif">
+<P>
+    <BR>
+    必要に応じて、/usr/local/sce/ee/lib/app.cmdをローカルディレクトリにコピーし、カスタマイズして使用してください。なおこのとき、書き換えたapp.cmdがリンクされるように、MakefileのLCFILEをローカルディレクトリに設定してください。<BR>
+
+     <H4><B>設定例</B></H4>
+
+<PRE>        _stack_size = 0x00200000;
+        _stack = 0x1d00000;
+        _heap_size = 0x00080000;
+</PRE>
+      <BLOCKQUOTE>
+      この場合、スタック領域は0x01d00000 - 0x01efffff、ヒープ領域は(_end) - (_end+0x7ffff)となります。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_9">
+<A HREF="#Heading3_2"> 2. </A>9 <B>キャッシュ制御の概要</B>
+</A>
+</H3>
+<blockquote>
+    EEのデータキャッシュはライトバック方式であり、明示的にメモリへ書き戻す処理が必要になる場合があります。このため、EE Kernelはデータキャッシュを書き戻すシステムコールを用意しています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>システムコール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">FlushCache() / iFlushCache()</TD>
+<TD valign="TOP">データキャッシュ全体を書き戻す</TD>
+</TR>
+<TR>
+<TD valign="TOP">SyncDCache() / iSyncDCache()</TD>
+<TD valign="TOP">指定領域を書き戻す</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_9_1">
+(1) <B>DMA転送とキャッシュ制御</B>
+</A>
+</H4>
+    キャッシュ領域にバッファ変数を設けてDMA転送を行う際には、データキャッシュの書き戻しが必要です。書き戻すタイミングはDMA転送の方向によって異なり、それぞれ次の順序になります。<BR>
+    <BR>
+
+     <H4><B>メモリからペリフェラルへのDMA転送</B></H4>
+
+    <OL>
+         <LI VALUE= 1> データをバッファ変数に書き込む（キャッシュに書き込まれる）<BR>
+         <LI VALUE= 2> キャッシュをメモリに書き戻す<BR>
+         <LI VALUE= 3> DMA転送を行う<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken7.gif">
+<P>
+    </OL>
+      <BLOCKQUOTE>
+      <BR>
+</DIV>
+      (2)で書き戻しを行わないと、(1)でバッファに書き込んだデータではなくそれ以前にメモリにあったデータが(3)でペリフェラルへ転送されることになってしまいます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ペリフェラルからメモリへのDMA転送</B></H4>
+
+    <OL>
+         <LI VALUE= 1> キャッシュを書き戻す（無効化する）<BR>
+         <LI VALUE= 2> DMA転送を行う<BR>
+         <LI VALUE= 3> メモリからデータを読む<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken8.gif">
+<P>
+    </OL>
+      <BLOCKQUOTE>
+      <BR>
+</DIV>
+      (1)で無効化を行わないと、(2)でペリフェラルから転送したデータではなくそれ以前にキャッシュにあったデータを(3)で読むことになってしまいます。<BR>
+      </BLOCKQUOTE>
+    <BR>
+    バッファ変数の読み書きをアンキャッシュ領域を通して行えば、上記のようなキャッシュ書き戻しは不要になります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_9_2">
+(2) <B>キャッシュ制御とアライメント</B>
+</A>
+</H4>
+    キャッシュからメモリへの書き戻しは、キャッシュラインのサイズである64byteを単位として行われます。したがって、書き戻したいデータと同じ64byteバウンダリに他のデータがある場合は、そのデータも暗黙のうちに書き戻されることになります。これが予期しない影響を引き起こすことがありますので、データの64byteアライメントに注意してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_10">
+<A HREF="#Heading3_2"> 2. </A>10 <B>ファイル操作の概要</B>
+</A>
+</H3>
+<blockquote>
+    CD/DVD-ROM上のファイルおよび開発用コンピュータ上のファイルに対する入出力サービスは、EE Kernelの拡張部分としてSIF RPC Interfaceを使用して実装されています。詳しくは「入出力サービス」ドキュメントを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_11">
+<A HREF="#Heading3_2"> 2. </A>11 <B>IOP制御機能の概要</B>
+</A>
+</H3>
+<blockquote>
+    EE側のアプリケーションからIOPを制御するAPIとして、IOPシステムのリブートを行う関数と、リブート後の起動完了を待つ関数が用意されています。リブートの際には、IOP側でROMからロードされて動作しているデフォルトモジュールを置き換えることができます。<BR>
+    また、EE - IOP相互に協調して行う処理をサポートするために、図のような3階層のAPIが用意されています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/eeken9.gif">
+<P>
+    <BR>
+</DIV>
+    詳しくは「SIFシステム」ドキュメントを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_12">
+<A HREF="#Heading3_2"> 2. </A>12 <B>スクラッチパッドの擬似的拡張</B>
+</A>
+</H3>
+<blockquote>
+    スクラッチパッド(0x70000000 - 0x70003fff)の直後の論理アドレスにメインメモリの一部をマップし、スクラッチパッドの領域を見かけ上増やします。ただし、拡張した領域にDMA転送はできません。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>システムコール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ExpandScratchPad()</TD>
+<TD valign="TOP">スクラッチパッドの擬似的拡張</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>予約タイマー</B>
+</A>
+</H3>
+<blockquote>
+    EEが持つ4本のタイマーのうち、TIMER2とTIMER3はEE Kernelが占有します。アプリケーションでは使用しないでください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>レジスタの保存</B>
+</A>
+</H3>
+<blockquote>
+    割り込みおよびスレッド切り替えの際に、カーネル側でセーブされるレジスタは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>割り込み発生時</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>スレッド切り替え時</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">$1 - $25</TD>
+<TD valign="TOP">セーブする</TD>
+<TD valign="TOP">セーブする</TD>
+</TR>
+<TR>
+<TD valign="TOP">$28 - $31</TD>
+<TD valign="TOP">セーブする</TD>
+<TD valign="TOP">セーブする</TD>
+</TR>
+<TR>
+<TD valign="TOP">HI/LO/SA</TD>
+<TD valign="TOP">セーブする</TD>
+<TD valign="TOP">セーブする</TD>
+</TR>
+<TR>
+<TD valign="TOP">$f0 - $f31</TD>
+<TD valign="TOP">セーブしない</TD>
+<TD valign="TOP">セーブする</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    汎用レジスタ$26 / $27はEE Kernelが占有します。アプリケーションで使用することはできません。<BR>
+    また、VU0のレジスタはコプロセッサ命令でアクセスできますが、EE Kernelは管理しません。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>割り込みハンドラの記述</B>
+</A>
+</H3>
+<blockquote>
+    さまざまな割り込みに対して、ユーザが作成した割り込み処理ルーチン（コールバック関数）を登録することができますが、その割り込み処理ルーチンがどのような状態で実行されるかを意識してプログラミングする必要があります。多くの場合、割り込み処理ルーチンは割り込みハンドラとして実行されますが、一部にはスレッドとして実行されるものもあります。割り込み処理ルーチンを登録するシステムコールやライブラリ関数によって異なりますので注意してください。<BR>
+    割り込みハンドラとスレッドは、それぞれ異なるシステム状態のもとで実行されます。割り込みハンドラのプログラミングに際しては、以下の点に注意してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_1">
+(1) <B>APIの区別</B>
+</A>
+</H4>
+    割り込みハンドラでは「自スレッド」の概念が存在しないので、待ち状態に入るシステムコールや暗黙に自スレッドを指定するシステムコールなどを呼び出すことは原理的に不可能です。また、実装上の都合で、スレッドから呼び出すシステムコールと割り込みハンドラから呼び出すシステムコールではカーネル内の処理が異なる場合もあります。<BR>
+    EE-Kernelでは、割り込みハンドラから呼び出せるシステムコールの数を制限し、スレッドから呼び出すシステムコールとは異なるエントリ名を用意してあります。原則として割り込みハンドラから呼ぶシステムコールは、システムコール名の先頭に「i」(英小文字)をつけた名称を使用します。たとえば、スレッドの起床を行うシステムコールWakeupThreadは、割り込みハンドラから発行する場合は、iWakeupThreadとして呼び出します。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_2">
+(2) <B>スタックの区別</B>
+</A>
+</H4>
+    割り込みハンドラは通常のスレッド部とは別に、専用のスタックを持っています。スタックサイズは4KBですので、より大きなスタックを利用したい場合はユーザプログラムでメモリを確保してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_3">
+(3) <B>終了処理</B>
+</A>
+</H4>
+    割り込みハンドラを終了して通常の処理に戻る前に、ExitHandler()を呼び出してください。ExitHandler()はEEのライトバックバッファに保持されている命令をすべて書き出す働きを持ちます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>DI / EIによる割り込み制御</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelは、割り込みの禁止／許可を軽い処理で実現するために、割り込みが禁止されているかどうかの情報をスレッドのコンテキストにあえて含めていません。そのため、割り込みが禁止されているときにスレッドを切り替えたり、DI / EIがネストする処理を行ったりすると、不都合が生じることがあります。<BR>
+    アプリケーションでむやみにDI / EIを使用することは避け、メモリにマップされたレジスタ群にアトミックにアクセスするような場合に限ってください。共有バッファなどソフトウエアで実現されている資源の排他制御は、セマフォを利用して行うことができます。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

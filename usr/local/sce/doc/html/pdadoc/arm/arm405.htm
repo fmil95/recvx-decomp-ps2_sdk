@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm405</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm404.htm">[前]</A> <A HREF="arm406.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.5 <A NAME="anchor2975781"></A>セマフォ命令</H3>
+
+<BLOCKQUOTE>
+  <P>このコードは、コードのクリティカル・セクションの入口と出口を制御します。セマフォ命令には、比較および条件書き込み機能はないので、この命令は明示的に実行しなければなりません。以下のコードは、セマフォ値を使用してロックが検査されていることを示すことによってこれを達成します。</P>
+  <P>下記のコードで、呼び出し側プロセスはロックが解除されるまで、ビジー待ちになります。正しく進行するように、ロックにアクセスできない場合は、OSを3回呼び出して（各ループ分岐<A
+  NAME="anchor1593531"></A>の前に1回ずつ）プロセスをスリープする必要があります。</P>
+  <PRE>; Critical section entry and exit
+; The code uses a process ID to identify the lock owner
+; An ID of zero indicates the lock is free
+; An ID of -1 indicates the lock is being inspected
+; On entry:    R0 holds the address of the semaphore
+;              R1 holds the ID of the process requesting the lock
+         MVN     R2, #0           ; load the `looking' value (-1) in R2
+spinin   SWP     R3, R2, [R0]     ; look at the lock, and lock others out
+         CMN     R3, #1           ; anyone else trying to look?
+         : conditional OS call to sleep process
+         BEQ     spinin           ; yes, so wait our turn
+         CMP     R3, #0           ; no-one looking, is the lock free?
+         STRNE   R3, [R0]         ; no, then restore the previous owner
+         : conditional OS call to sleep process
+         BNE     spinin           ; and wait again
+         STR     R1, [R0]         ; otherwise grab the lock
+        .....
+        Insert critical code here
+        .....
+spinout  SWP     R3, R2, [R0]     ; look at the lock, and lock others out
+         CMN     R3, #1           ; anyone else trying to look ?
+         : conditional OS call to sleep process
+         BEQ     spinout          ; yes, so wait our turn
+         CMP     R3, R1           ; check we own it
+         BNE     CorruptSemaphore ; we should have been the owner!
+         MOV     R2, #0           ; load the `free' value
+         STR     R2, [R0]         ; and open the lock</PRE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm404.htm">[前]</A> <A HREF="arm406.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

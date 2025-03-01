@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>t_add4</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]
+</A><A HREF="t_add3.htm">[前]</A> <A HREF="t_add5.htm">[次]</A>
+<A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">ADD（4）</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>Add high register</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">ADD Rd, Rm</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>この形式のADD命令は上位レジスタの値の加算に使用します。</P>
+  <P>この場合、ADDは以下の加算を実行します。</P>
+  <UL>
+    <LI>下位レジスタの値を上位レジスタの値に加算（H1=1、H2=0）する。または、
+    <LI>上位レジスタの値を下位レジスタの値に加算（H1=0、H2=1）する。または、
+    <LI>上位レジスタの値をもう1つの上位レジスタに加算（H1=1、H2=1）する。
+  </UL>
+  <P>コンディション・コード・フラグに影響はありません。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962513"></A><B>15</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962515"></A><B>14</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962517"></A><B>13</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962519"></A><B>12</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962521"></A><B>11</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962523"></A><B>10</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962525"></A><B>9</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962527"></A><B>8</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962529"></A><B>7</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962531"></A><B>6</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962533"></A><B>5</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962535"></A><FONT COLOR="#ffffff">-</FONT></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962537"></A><B>3</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962539"></A><B>2</B></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962541"></A><FONT COLOR="#ffffff">-</FONT></CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962543"></A><B>0</B></CENTER></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962545"></A><BR>
+    0<BR>
+    </CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962547"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962549"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962551"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962553"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962555"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962557"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962559"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962561"></A><BR>
+    H1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="962563"></A><BR>
+    H2</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="3">
+    <P><CENTER><A NAME="962565"></A><BR>
+    Rm</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="3">
+    <P><CENTER><A NAME="962571"></A><BR>
+    Rd</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>Rd = Rd + Rm</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P>オペランドの制限：RdとRmに下位レジスタを指定（H1=0およびH2=0）した場合、結果は予測できません。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>同等なARM構文とエンコーディング</H4>
+
+<BLOCKQUOTE>
+  <H3><FONT COLOR="#009999">ADD Rd, Rd, Rm</FONT></H3>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962589"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962591"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962593"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962595"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962597"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962599"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962601"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962603"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962605"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962607"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962609"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962611"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962613"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962615"></A><B>18</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962617"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962619"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962621"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962623"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962625"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962627"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962629"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962631"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962633"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962635"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962637"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962639"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962641"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962643"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962645"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962647"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962649"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962651"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962653"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962655"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962657"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962659"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962661"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962663"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962665"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962667"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962669"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962671"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="962673"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962675"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962677"></A><BR>
+    H1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="962679"></A><BR>
+    Rd</TD>
+     
+    <TD VALIGN="TOP">
+    <A NAME="962685"></A><BR>
+    H1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="962687"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962693"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962695"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962697"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962699"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962701"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962703"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962705"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962707"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="962709"></A><BR>
+    H2</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="962711"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE><BR>
+</P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次] </A><A
+HREF="t_add3.htm">[前]</A> <A HREF="t_add5.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

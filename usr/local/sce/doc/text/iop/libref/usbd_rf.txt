@@ -1,0 +1,636 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                          USBドライバライブラリ
+                         ======================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceUsbdLddOps                                                    [構造体]
+=========================================================================
+                                                            LDD管理構造体
+[構造]
+        typedef struct _sceUsbdLddOps {
+        	struct _sceUsbdLddOps *forw, *back;
+        	char *name;
+        	int (*probe)(int dev_id);
+        	int (*attach)(int dev_id);
+        	int (*detach)(int dev_id);
+        	void *reserved[5];
+        	u_int gp;
+        } sceUsbdLddOps;
+        
+[メンバ]
+        forw	USBD 内部で使用される双方向リンクで、NULL を指定します。
+        back	USBD 内部で使用される双方向リンクで、NULL を指定します。
+        name	LDD の名称文字列を指定します。(命名方法は自由)
+        probe	デバイスの検出処理関数を指定します（デバイスが挿入されたと
+        き）。
+        attach	デバイスの接続処理関数を指定します（デバイスと通信するとき）
+        。
+        detach	デバイスの切断処理関数を指定します（デバイスが抜かれたとき）
+        。
+        reserved		将来の拡張用の予約領域で、すべて 0 でなければなりません。
+        gp	probe,attach,detach 関数を USBD から呼び出す際の $gp 値で、
+        	sceUsbdRegisterLdd() を呼び出した時の $gp 値に USBD が設定します。
+        
+[解説]
+        USBDがLDD(Logical Device Driver)の管理に使用する構造体です。sceUs
+        bdRegisterLdd()の引数として指定します。
+
+ 2 LDD外部公開関数
+===================
+
+
+=========================================================================
+xxxProbe                                                           [関数]
+=========================================================================
+                                            LDDごとのデバイス検出処理関数
+[形式]
+        int xxxProbe(
+        	int dev_id
+        );
+        
+[引数]
+        dev_id	デバイスID
+        
+[返り値]
+        dev_idで示されるデバイスをそのLDDで扱う場合は0以外、扱わない場合
+        は0を返します。
+        
+[解説]
+        LDDごとのデバイス検出処理関数です（sceUsbdLddOps構造体のprobeメン
+        バと対応）。
+        dev_idのデバイスが、このLDDで扱うべきかどうかを判定します。
+        USBDは、このxxxProbe関数をコールする前に静的なディスクリプタを自
+        らのバッファに保存しています。そのため、引数のdev_idがどのような
+        デバイスであるかの情報は、USBDがデバイスの認識処理時に取得した静
+        的なディスクリプタを得る関数sceUsbdScanStaticDescriptor()を用いて
+        得ることができます。
+        
+        そのデバイスを扱うかどうかの判定方法は、通常以下のいずれかになり
+        ます。
+            ・ Device Descriptor または Interface Descriptor の Class,S
+              SubClass,Protocol によって判定する。
+            ・ Device Descriptor の idVendor,idProduct によって判定する。
+        
+        xxxProbe() が呼ばれるのは以下のいずれかの場合です。
+            ・ sceUsbdRegisterLdd() を呼び出した際に、LDD とまだ関連付けら
+              れれていないデバイスが存在した場合。
+            ・ 新たなデバイスが接続された時。
+        
+        デバイスIDは、USBDでデバイスを特定するためのIDです。現在の実装で
+        は、デバイスIDは常にUSBバス上のアドレス値と同じ値を用いており、こ
+        の値は動的に変化するため、ポート番号等の位置情報との関連はありま
+        せん。
+        デバイスの位置情報を得るにはsceUsbdGetDeviceLocation()を使用して
+        ください。
+        
+[備考]
+        一度あるデバイスを「扱う」と示した時、途中でそれを返却することは
+        できません。また、ひとつのデバイスを他のLDDと共有して管理すること
+        もできません。
+        
+
+=========================================================================
+xxxAttach                                                          [関数]
+=========================================================================
+                                            LDDごとのデバイス接続処理関数
+[形式]
+        int xxxAttach(
+        	int dev_id
+        );
+        
+[引数]
+        dev_id	デバイスID
+        
+[返り値]
+        正常終了の場合は0、エラーの場合はそれ以外の値を返します。
+        
+[解説]
+        xxxProbe()が0以外の値を返したときに呼ばれる接続処理関数です（sceU
+        sbdLddOps構造体のattachメンバと対応）。
+        
+        xxAttach() で必要な主な処理は以下のとおりです。
+        
+            ・静的なディスクリプタの内容を sceUsbdScanStaticDescriptor()
+              を用いてスキャンし、整合性をチェックしつつ必要な情報を得る。
+            ・LDD 内で処理に必要なパイプを開く。(sceUsbdOpenPipe)
+            ・そのデバイスに LDD 依存データを関連付ける。(sceUsbd
+              (sceUsbdSetPrivateData)
+            ・デバイスを Configured の状態に移行させる。(sceUsbd
+              (sceUsbdSetConfiguration)
+        
+[備考]
+        現状ではxxxAttach()の返す値によって処理は変わりませんが、将来、エ
+        ラー時にはデバイスを Power-off もしくは Disable とする処理を追加
+        する予定です。
+        
+
+=========================================================================
+xxxDetach                                                          [関数]
+=========================================================================
+                                            LDDごとのデバイス切断処理関数
+[形式]
+        int xxxDetach(
+        	int dev_id
+        );
+        
+[引数]
+        dev_id	デバイスID
+        
+[返り値]
+        正常終了の場合は0、エラーの場合はそれ以外の値を返します。
+        
+[解説]
+        デバイスが切断された時に呼ばれる切断処理関数です（sceUsbdLddOps構
+        造体のdetachメンバと対応）。
+        LDD依存の切断処理を行います（プライベートデータの解放など）。関連
+        するパイプを閉じる等の処理はUSBDが行いますので、必要ありません。
+        
+        
+
+ 3 USBD関数
+============
+
+
+=========================================================================
+sceUsbdRegisterLdd                                                 [関数]
+=========================================================================
+                                                            LDDの登録追加
+[形式]
+        int sceUsbdRegisterLdd(
+        	sceUsbdLddOps *lddops
+        );
+        
+[引数]
+        lddops	LDDの登録情報。内容は構造体sceUsbdLddOpsの項を参照してくだ
+        さい。
+        
+[返り値]
+        ステータスを次のいずれかの値で返します。
+        
+        +--------------------+---------------------------------------+
+        |ステータス           意味                                   |
+        +                    +                                       +
+        |sceUsbd_NOERR        正常終了                               |
+        |sceUsbd_BUSY         エラー                                 |
+        |                     lddops->forw, lddops->backがNULL以外で |
+        |                     あった、もしくはすでにUSBD内部のLDD    |
+        |                     リストの先頭に登録されている           |
+        |sceUsbd_INVAL_LDDOPS エラー                                 |
+        |                     lddops->nameがNULLであった             |
+        +--------------------+---------------------------------------+
+        
+[解説]
+        USBD に対して LDD（Logical Device Driver）を登録します。
+        
+
+=========================================================================
+sceUsbdUnregisterLdd                                               [関数]
+=========================================================================
+                                                           LDD の登録削除
+[形式]
+        int sceUsbdUnregisterLdd(
+        	sceUsbdLddOps *lddops
+        );
+        
+[引数]
+        lddops	LDD管理構造体のポインタ
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        LDD（Logical Device Driver）の登録を削除します。
+        動作中のデバイス（すでにAttachされたデバイス）に対しても全てのパ
+        イプを閉じます。
+        この関数を呼ぶ前にLDDの終了処理（プライベートデータの解放など）を
+        行ってください。
+        
+
+=========================================================================
+sceUsbdScanStaticDescriptor                                        [関数]
+=========================================================================
+                                           静的なディスクリプタのスキャン
+[形式]
+        int sceUsbdScanStaticDescriptor(
+        	int dev_id,
+        	void *ptr,
+        	u_char type
+        );
+        
+[引数]
+        dev_id	デバイスID
+        ptr	ディスクリプタのスキャン開始位置
+        type	スキャンするディスクリプタタイプ（標準ディスクリプタ構造のbD
+        escriptorType）
+        
+[返り値]
+        スキャンが成功した場合にはそのディスクリプタの先頭アドレス、該当
+        するディスクリプタが存在しなかった場合にはNULLを返します。
+        
+[解説]
+        USBD内に保持されている静的なディスクリプタのスキャンを行います。
+        
+        スキャン開始位置（ptr）が NULL の場合には先頭からのスキャンとなり、
+        NULL 以外の場合には ptr で示されるディスクリプタの「次の」ディス
+        クリプタからスキャンを開始します。
+        
+        type はスキャンするディスクリプタタイプの指定です（標準ディスクリ
+        プタ構造のbDescriptorTypeに相当）。0 の場合には 「全てのディスク
+        リプタ」を意味します。
+        
+        
+        USBD内部で保持されている静的なディスクリプタの並びは以下のとおり
+        です。
+        
+        	Device Descriptor（つねに 1 つ)
+        	Configuration Descriptor 1
+        	Configuration Descriptor 2
+        		:
+        	Configuration Descriptor N（=Device Descriptor 中の bNumConfigur
+        ations)
+        
+        各Configuration Descriptorは、Interface Descriptor, Endpoint Desc
+        riptor, Class Specific Descriptor を0または1以上含みます。
+        それぞれのConfiguration Descriptorの大きさはConfiguration Descrip
+        tor中のwTotalLengthバイトで、Configuration Descriptor間のalignmen
+        tはありません。
+        
+
+=========================================================================
+sceUsbdGetDeviceLocation                                           [関数]
+=========================================================================
+                                                 デバイスの位置情報を得る
+[形式]
+        int sceUsbdGetDeviceLocation(
+        	int dev_id,
+        	u_char *locations
+        );
+        
+[引数]
+        dev_id		デバイスID
+        locations	位置情報を格納するポインタ（指す先は常に7バイトの領域）
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        指定デバイス（dev_id）の位置情報を指定領域（locations）に転送しま
+        す。
+        locationsが指す先は常に7バイトの領域で、以下のように"PlayStation
+        2"から指定デバイスに至るまでのポート番号が順に設定され、最初に現
+        れる0x00が指定デバイスを表します。
+        
+         ・指定デバイスが"PlayStation 2"本体のUSBポート1に接続されていると
+           き
+           0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        
+         ・"PlayStation 2"本体のUSBポート2にHub-Aが接続され、Hub-Aのポート
+           3にHub-Bが接続され、Hub-Bのポート4に指定デバイスが接続されてい
+           るとき
+           0x02, 0x03, 0x04, 0x00, 0x00, 0x00, 0x00
+        
+        USBの規格上、"PlayStation 2"本体とデバイス間には最大5つのHubを経
+        由することが可能です。この制限を破った場合、sceUsbdGetDeviceLocat
+        ion()はsceUsbd_INVAL_HUB_DEPTHのエラーを返します。
+
+=========================================================================
+sceUsbdSetPrivateData                                              [関数]
+=========================================================================
+                                 デバイスにプライベートデータを関連付ける
+[形式]
+        int sceUsbdSetPrivateData(
+        	int dev_id,
+        	void *priv
+        );
+        
+[引数]
+        dev_id	デバイスID
+        priv	LDD依存プライベートデータのポインタ
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        指定デバイス（dev_id）に LDD依存のプライベートデータ（priv）を関
+        連付けます。
+        
+        プライベートデータにどのようなデータを指定するかは自由ですが、た
+        とえばLDD依存処理のための動的なデータ領域のアドレスを関連付け、xx
+        xDetach()でその領域を開放するという使い方があります。
+        
+
+=========================================================================
+sceUsbdGetPrivateData                                              [関数]
+=========================================================================
+                                   関連付けられたプライベートデータを得る
+[形式]
+        void *sceUsbdGetPrivateData(
+        	int dev_id
+        );
+        
+[引数]
+        dev_id	デバイスID
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        指定デバイス（dev_id）に関連付けられたプライベートデータを得ます。
+        
+
+=========================================================================
+sceUsbdOpenPipe                                                    [関数]
+=========================================================================
+                                                             パイプを開く
+[形式]
+        int sceUsbdOpenPipe(
+        	int dev_id,
+        	UsbEndpointDescriptor *edesc
+        );
+        
+[引数]
+        dev_id	デバイスID
+        edesc	パイプを開きたいエンドポイントディスクリプタのポインタ
+        
+[返り値]
+        edescがNULLのときはControl PipeのパイプIDを返します。
+        edescがNULL以外のときはEndpoint Descriptorに従ってパイプを開き、
+        そのパイプIDを返します。
+        以下のいずれかの場合には、エラーを意味する -1 を返します。
+            ・dev_id 値が不正な場合
+            ・Endpoint数が最大値を越えた場合
+        
+[解説]
+        指定デバイス（dev_id）の指定エンドポイント（edesc）とのパイプを開
+        きます。
+        
+
+=========================================================================
+sceUsbdOpenPipeAligned                                             [関数]
+=========================================================================
+                                                 ワード境界のパイプを開く
+[形式]
+        int sceUsbdOpenPipeAligned(
+        	int dev_id,
+        	UsbEndpointDescriptor *edesc
+        );
+        
+[引数]
+        dev_id	デバイスID
+        edesc	パイプを開きたいエンドポイントディスクリプタのポインタ
+        
+[返り値]
+        edescがNULLのときはControlパイプのパイプIDを返します。
+        edescがNULL以外のときはEndpoint Descriptorに従ってパイプを開き、
+        そのパイプIDを返します。このとき、アライメントの検査を行います。
+        以下のいずれかの場合には、エラーを意味する -1 を返します。
+            ・dev_id 値が不正な場合
+            ・Endpoint数が最大値を越えた場合
+            ・開かれたパイプのアライメントが不正のとき
+        
+[解説]
+        指定デバイス（dev_id）の指定エンドポイント（edesc）とのパイプを開
+        きます。
+        sceUsbdOpenPipe()と異なる点は以下のとおりです。
+        
+         ・最大パケットサイズが64バイトのときに、それを62バイトに丸める処
+           理を行いません（USBドライバライブラリの概要の「制限事項および
+           注意事項」を参照してください）。
+         ・開かれたパイプに対してsceUsbdTransferPipe()を行ったときにデータ
+           の先頭アドレスがワード境界になければ、sceUsbd_INVAL_ALIGNのエ
+           ラーになります。
+        
+        Controlパイプの場合は、sceUsbdOpenPipeAligned()とsceUsbdTransferP
+        ipe()の処理は常に同じです。
+        sceUsbd_INVAL_ALIGNのエラー判定は転送方向や転送サイズに関係せず、
+        先頭アドレスの値のみで処理します。
+        
+
+=========================================================================
+sceUsbdClosePipe                                                   [関数]
+=========================================================================
+                                                           パイプを閉じる
+[形式]
+        int sceUsbdClosePipe(
+        	int pipe_id
+        );
+        
+[引数]
+        pipe_id	閉じたいパイプのパイプID
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        指定パイプ（pipe_id）を閉じます。
+        
+
+=========================================================================
+sceUsbdTransferPipe                                                [関数]
+=========================================================================
+                                                 パイプとデータ転送を行う
+[形式]
+        typedef void (*sceUsbdDoneCallback)(int result, int count, void *
+        arg);
+        
+        int sceUsbdTransferPipe(
+        	int pipe_id,
+        	void *ptr,
+        	int len,
+        	void *option,
+        	sceUsbdDoneCallback done_cb,
+        	void *arg
+        );
+        
+[引数]
+        pipe_id	パイプID
+        ptr	送信データあるいは受信バッファのポインタ
+        len	転送長（byte単位）
+        option	オプション（転送モードによって意味が異なる）
+        done_cb	転送終了時に呼ばれるコールバック関数。
+        	コールバック関数の引数は以下の通りです。
+        		result	完了/エラーコード
+        		count	転送済みデータサイズ（byte単位）
+        		arg	LDD依存プライベートデータのポインタ
+        arg	LDD依存プライベートデータのポインタ
+        
+[返り値]
+        完了/エラーコードを参照。
+        
+[解説]
+        指定パイプ（pipe_id）に対してデータ（ptr,len）の転送を行います。
+        
+        指定オプション（option）は Control転送とIsochronous転送時に用いら
+        れる転送タイプ依存のパラメータです(説明は後述)。
+        
+        関数（done_cb）は転送完了時に呼ばれるコールバック関数で、引数のre
+        sultは完了コード（sceUsbd_XXX)、countは転送済データのバイト数、ar
+        gはsceUsbdTransferPipe()の引数のargでLDD依存処理用です。
+        
+        done_cbが呼ばれる時の$gp値は、sceUsbdTransferPipe()を呼び出したと
+        きの$gp値となります。
+
+    Control転送:
+
+        オプション（option）にはUsbDeviceRequestへのポインタを指定します。
+
+    Isochronous転送:
+
+        オプション（(int)option）にframe番号の相対値を指定します。
+        通常は0を指定しますが、この場合、frame番号はそのframeが（途切れず
+        に転送されているframeの集まりの）先頭である場合には現在のframe番
+        号に2を加えたものとみなされ、転送は1ms～2ms後に行われます。次のfr
+        ame以降はデータ転送が途切れない限り、増分値1のframe番号で転送が行
+        われます。
+        
+        たとえば、m[frame]のデータをn[frame]後にIsochronous転送するには、
+        最初の転送時のオプションに（n-2）を指定し、残りのオプションには0
+        を指定します。
+        
+        +--------+----------+
+        |フレーム オプション|
+        +        +          +
+        |1        n-2       |
+        |2        0         |
+        |3        0         |
+        |:        :         |
+        |m-1      0         |
+        |m        0         |
+        +--------+----------+
+        
+        Isochronous転送では通常、毎frameごとに転送を行いますが、このよう
+        な「途切れることがない」転送を行うには、コールバック関数が呼ばれ
+        る前に複数のsceUsbdTransferPipe()を呼ぶ操作によって、「複数の転送
+        要求を積む」必要があります。
+        
+        なお、USBD内部で管理するframe番号は16bitであるため、0x7ffc（約30
+        秒)を越える指定はできません。
+        
+
+    Interrupt転送:
+
+        オプション（option）は使用しません。常にNULLを指定してください。
+        
+
+    Bulk転送:
+
+        オプション（option）は使用しません。常にNULLを指定してください。
+        
+[備考]
+         (1) usbd.hにはsceUsbdTransferPipe()を呼び出すマクロがいくつか用意
+             されています。Class依存、Vendor依存ではない標準の転送である
+             なら、それらのマクロを使用可能です。
+         (2) sceUsbdTransferPipe()で転送を要求した後にその転送を中断するた
+             めの関数は用意されていません。中断が必要な場合にはいったんsc
+             eUsbdClosePipe()でパイプを閉じ、再度sceUsbdOpenPipe()でパイ
+             プを開いてください。
+         (3) Isochronous IN転送で、指定されたデータ長（len）よりも実際の転
+             送長（count）が少ない場合の完了コード（result）は0x90（Data
+             Underrun）となります。このケースを除けば0x0以外で「エラーで
+             はなくステータス」とみなすべき完了コードはありません。
+        
+        done_cbが実行されるスレッドの優先度は、sceUsbdChangeThreadPriorit
+        y()で設定することができます。
+
+=========================================================================
+sceUsbdChangeThreadPriority                                        [関数]
+=========================================================================
+                                 USBDが使用するスレッドの優先度を変更する
+[形式]
+        int sceUsbdChangeThreadPriority(
+        	int prio1,
+        	int prio2
+        );
+        
+[引数]
+        prio1	割込みを処理するスレッドの優先度
+        prio2	コールバック関数を呼ぶ処理をするスレッドの優先度
+        
+[返り値]
+        完了/エラーコードを参照してください。
+        
+[解説]
+        USBDが生成するスレッドの優先度を変更する。
+        Prio1の優先度をPrio2よりも高くするようにして下さい。
+        
+
+ 4 完了/エラーコード一覧
+=========================
+
+
+   (1)  OHCIが返す完了コード（GTD.CC または ITD.CC)
+
+        完了コードのビットマップは、下図のようになっています。
+        
+        +-------------------------+-------------------+------------------+
+        |31　　　　　　　　　　　8 7　　　　　　　　 4 3　　　　　　　　0|
+        +                         +                   +                  +
+        |                                                                |
+        |Reserved                  PSW.CC              GTD.CC            |
+        |                                              or ITD.CC         |
+        +-------------------------+-------------------+------------------+
+        
+         (1) GTD.CC (Completion Code of General Transfer Descriptor)
+             Control転送、Bulk転送そしてInterrupt転送時の完了コードです。
+         (2) ITD.CC (Completion Code of Isochronous Transfer Descriptor)
+             Isochronous転送時の完了コードです。
+         (3) PSW.CC (Completion Code of Packet Status Word)
+             Isochronous転送時のData Overrun, Data Underrun, Buffer Overr
+             un そして Buffer Underrun は、ここに表示されます。
+        
+        ※Reservedは、オールゼロです。
+        ※Isochronous 転送時、指定したデータ長よりも転送済みデータ長が少
+        ないとき、0x90（Data Underrun）が返ってきます。これはエラーではな
+        くステータスとして扱ってください。
+        
+        CCは、以下のように定義されています。
+        #define sceUsbd_NOERR		0x000    /* No Error */
+        #define sceUsbd_CRC		0x001    /* CRC */
+        #define sceUsbd_BFV		0x002    /* Bit Stuffing Violation */
+        #define sceUsbd_DTM		0x003    /* Data Toggle Mismatch */
+        #define sceUsbd_STALL		0x004    /* Stall */
+        #define sceUsbd_NOTRESP		0x005    /* Device Not Responding */
+        #define sceUsbd_PIDCF		0x006    /* PID Check Failure */
+        #define sceUsbd_UEPID		0x007    /* Unexpected PID */
+        #define sceUsbd_DOR		0x008    /* Data Overrun */
+        #define sceUsbd_DUR		0x009    /* Data Underrun */
+        #define sceUsbd_RSVDA		0x00a    /* (reserved) */
+        #define sceUsbd_RSVDB		0x00b    /* (reserved) */
+        #define sceUsbd_BOR		0x00c    /* Buffer Overrun */
+        #define sceUsbd_BUR		0x00d    /* Buffer Underrun */
+        #define sceUsbd_NOTACC1		0x00e    /* (not accessed) */
+        #define sceUsbd_NOTACC2		0x00f    /* (not accessed) */
+        
+        PSW.CCを取り出すために以下のようなマクロも用意しています。
+        
+        /* PSW.CC (Isochronous 転送時、上記 ITD.CC との OR で返される) */
+        #define sceUsbd_PSW_BITS	0x0f0    /* PSW.CC (Isochronous) */
+        #define sceUsbd_PSW_SHIFT	4
+        
+
+   (2) USBDが返すエラーコード
+
+        #define sceUsbd_INVAL_DEVICE	0x101    /* Invalid device id */
+        #define sceUsbd_INVAL_PIPE	0x102    /* Invalid pipe id */
+        #define sceUsbd_INVAL_LENGTH	0x103    /* Invalid length */
+        #define sceUsbd_INVAL_LDDOPS	0x104    /* Invalid LDD ops */
+        #define sceUsbd_INVAL_CONTEXT  	0x105    /* Invalid context */
+        #define sceUsbd_INVAL_ALIGN   	0x106    /* Invalid alignment */
+        #define sceUsbd_INVAL_HUB_DEPTH	0x107    /* Invalid hub Depth */
+        #define sceUsbd_NO_ED          	0x111    /* No space (ED) */
+        #define sceUsbd_NO_IOREQ       	0x112    /* No space (IOREQ) */
+        #define sceUsbd_NO_OPTION      	0x113    /* No Option */
+        #define sceUsbd_BUSY           	0x121    /* Busy */
+        #define sceUsbd_ABORTED       	0x122    /* Aborted */
+        #define sceUsbd_NOT_IMP        	0x131    /* Not yet implemented
+        */
+        #define sceUsbd_ERROR          	0x132    /* Error (unknown reaso
+        n) */

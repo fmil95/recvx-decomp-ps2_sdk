@@ -1,0 +1,1633 @@
+<HTML>
+<CENTER>
+
+<!-- 見出し 2,章見出し -->
+<HEAD>
+<TITLE> PDAカーネル仕様書</TITLE>
+</HEAD>
+<BODY BGCOLOR=#ffffff>
+<A NAME="Top"></A>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM>
+<SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="kernel.htm">PDAカーネル仕様書
+<OPTION VALUE="index.htm"> PDA
+<OPTION VALUE="../arm/arm_gtoc.htm">ARM
+<OPTION VALUE="../../deci2/index.htm"> DECI2
+<OPTION VALUE="../../ee/libref/index.htm"> EE Library Reference
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../ee/overview/index.htm"> EE Overview
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../index.htm">TOP MENU
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+
+<HR NOSHADE SIZE=8>
+<P>
+<A NAME="Heading2_1">
+<H1>
+PDAカーネル仕様書
+</H1>
+</A>
+
+</CENTER>
+<blockquote>
+<H2>
+        <B>目次</B>
+</H2>
+</blockquote>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1_1"> 1 カーネルサービス概要</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_1_1"> メモリマップ</A><BR>
+    <A HREF="#Heading4_1_1_2"> システムコール</A><BR>
+    <A HREF="#Heading4_1_1_3"> 割り込み処理</A><BR>
+    <A HREF="#Heading4_1_1_4"> 初期設定</A><BR>
+    <A HREF="#Heading4_1_1_5"> PDAアプリケーションの制御</A><BR>
+    <A HREF="#Heading4_1_1_6"> PlayStationとの通信</A><BR>
+    <A HREF="#Heading4_1_1_7"> PDAデバイス制御の注意点</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_2"> 2 システムコール詳細説明</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_2_1"> システムコール一覧</A><BR>
+    <A HREF="#Heading4_1_2_2"> ソフトウェアリセット</A><BR>
+    <A HREF="#Heading4_1_2_3"> ユーザーコールバック設定</A><BR>
+    <A HREF="#Heading4_1_2_4"> ユーザーコールバック呼び出し</A><BR>
+    <A HREF="#Heading4_1_2_5"> フラッシュメモリへの書き込み(相対番号)</A><BR>
+    <A HREF="#Heading4_1_2_6"> システムクロック周波数設定</A><BR>
+    <A HREF="#Heading4_1_2_7"> カーネルモード切換え</A><BR>
+    <A HREF="#Heading4_1_2_8"> PDAステータス取得</A><BR>
+    <A HREF="#Heading4_1_2_9"> アプリケーションブロック番号制御</A><BR>
+    <A HREF="#Heading4_1_2_10"> アプリケーションの終了／中断</A><BR>
+    <A HREF="#Heading4_1_2_11"> シリアル番号の読み出し</A><BR>
+    <A HREF="#Heading4_1_2_12"> PlayStationとのファイル送受信の終了</A><BR>
+    <A HREF="#Heading4_1_2_13"> リアルタイムクロックへの書き込み</A><BR>
+    <A HREF="#Heading4_1_2_14"> カレンダーの読み出し</A><BR>
+    <A HREF="#Heading4_1_2_15"> 時計の読み出し</A><BR>
+    <A HREF="#Heading4_1_2_16"> シリアル番号の書き込み　　［使用禁止］</A><BR>
+    <A HREF="#Heading4_1_2_17"> フラッシュメモリへの書き込み(実番号)</A><BR>
+    <A HREF="#Heading4_1_2_18"> PlayStation通信機能制御</A><BR>
+    <A HREF="#Heading4_1_2_19"> アプリケーションの状態取得</A><BR>
+    <A HREF="#Heading4_1_2_20"> ユーザインタフェースステータス取得</A><BR>
+    <A HREF="#Heading4_1_2_21"> システムコールテーブル取得</A><BR>
+    <A HREF="#Heading4_1_2_22"> アプリケーションのブロック番号取得</A><BR>
+    <A HREF="#Heading4_1_2_23"> PDAアプリケーションフラグの取得</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_3"> 3 Appendix</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_3_1"> 「起動アプリケーション」で使用されているフォントデータ</A><BR>
+    </UL>
+</UL>
+<HR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>カーネルサービス概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_1">
+<A HREF="#Heading3_1_1"> 1. </A>1 <B>メモリマップ</B>
+</A>
+</H3>
+<blockquote>
+    PDAカーネルは、スタティックRAMを下図の様に初期化する。割り込みベクタ領域、カーネル領域、システムスタック領域などのシステム領域として512バイトが確保され、残りの1.5キロバイトがユーザ領域として使用できる。ユーザ領域には、ユーザスタック領域も含まれる。<BR>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernef1.gif">
+<P>
+    <B>図 1 メモリマップ初期状態</B><BR>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_2">
+<A HREF="#Heading3_1_1"> 1. </A>2 <B>システムコール</B>
+</A>
+</H3>
+<blockquote>
+    アプリケーションでは、システムコールによって、あらかじめ準備されているカーネルのサービスを利用する。システムコールへの引数は、r0,r1,r2レジスタに格納して引き渡す。返り値がある場合には、r0レジスタに格納されている。<BR>
+    <BR>
+    主なシステムコールの内容は、以下の通りである。<BR>
+<UL><UL>
+            <LI> 割り込み処理の設定
+            <LI> PlayStationとの通信制御
+            <LI> PDAアプリケーションの制御
+            <LI> システムクロックの設定
+            <LI> フラッシュメモリへのアクセス
+            <LI> リアルタイムクロックへのアクセス
+            <LI> シリアル番号へのアクセス
+</UL></UL>
+    システムコールの詳細は、後述。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_3">
+<A HREF="#Heading3_1_1"> 1. </A>3 <B>割り込み処理</B>
+</A>
+</H3>
+<blockquote>
+    PDAカーネルは、IRQ, FIQおよびソフトウェア割り込みに対して、PDAアプリケーションで設定されたコールバック関数を呼び出すことで、割り込み処理を可能とする。<BR>
+    <BR>
+    コールバック関数を、Thumbモードで記述した場合には、コールバック関数のアドレスのLSBを1として設定する必要がある。また、コールバック関数から戻る場合には、"bx lr"等の命令を使用して、コールバック関数を呼び出した時のモードに戻す必要がある。<BR>
+    <BR>
+    コールバック関数を、ARMモードで記述した場合には、スタックのプッシュ、ポップには、プリデクリメントストア(stmfd)、ポストインクリメントロード(ldmfd)を使用する必要がある。<BR>
+    <BR>
+    また、カーネルでは割り込みフラグのクリアは行わないため、コールバック関数で割り込みフラグのクリアを行う必要がある。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_3_1">
+(1) <B>IRQ割り込み処理について</B>
+</A>
+</H4>
+    IRQ割り込みソースの内、PSインタフェース電源供給線（BATIRQ）とリアルタイムクロック割り込み（RTCIRQ）については、カーネルが管理するため、PDAアプリケーションのコールバック関数内で割り込みフラグのクリアは行ってはならない。それぞれの割り込みステータスの参照は可能である。<BR>
+    <BR>
+    IRQコールバック関数呼び出しの場合、r0,r1,r12,r14(lr)レジスタについてはカーネルがIRQスタックに退避する。それ以外のレジスタの退避が必要な場合には、コールバック関数で行う必要がある。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_3_2">
+(2) <B>FIQ割り込みについて</B>
+</A>
+</H4>
+    FIQ割り込みソースの内、同期シリアル通信モジュール（SPIFIQ）については、カーネルが管理するため、PDAアプリケーションでは使用できない。<BR>
+    <BR>
+    FIQコールバック関数呼び出しの場合、r0,r1,r12,r14(lr)レジスタについてはカーネルがFIQスタックに退避する。それ以外のレジスタの退避が必要な場合には、コールバック関数で行う必要がある。<BR>
+    <BR>
+    PDAがPlayStationに装着されている場合には、FIQ割り込みの制御には注意が必要である。<BR>
+    PlayStationと通信中に、カウンタ２（TC2FIQ）のFIQ割り込みが発生すると、通信エラーが発生する場合がある。また、カウンタ２のFIQ割り込み処理を確実に行うためには、PlayStationとの通信を禁止（swi 17）にしておく必要がある。<BR>
+    <BR>
+    PDAがPlayStationに装着されていない場合には、FIQ割り込み処理を高速化するために、FIQ割り込みの割り込みベクトルを書き換えることが可能である。ただし、割り込みベクトルの書き換えを行った場合には、必ず元に戻すことが必要である。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_3_3">
+(3) <B>ソフトウェア割り込み処理について</B>
+</A>
+</H4>
+    ソフトウェア割り込みは、ユーザモードで実行できない処理を行う場合などに使用する。<BR>
+    <BR>
+    ソフトウェア割り込みコールバック関数呼び出しの場合、r1-r12,r14(lr)レジスタについてはカーネルがソフトウェア割り込みスタックに退避する。r0-r10レジスタについては、コールバック関数が呼び出された時点では、値が保持されているため、コールバック関数への引数として使用することが可能である。また、r0レジスタは、コールバック関数からの返り値として使用できる。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_3_4">
+(4) <B>コールバック関数でのカーネルサービスの利用方法</B>
+</A>
+</H4>
+    割り込み処理中は、システムコールを直接呼び出すことができない。そこで、システムコールのジャンプテーブルを取得できるサービスが準備されている。このテーブルには、各システムコールの処理モジュールへの飛び先が、システムコールの番号順に格納されている。<BR>
+    割り込み処理中に、カーネルのサービスを利用する場合には、あらかじめこのテーブルから必要な情報を取り出しておき、割り込み処理への引数としてそれら必要な情報を引き渡す必要がある。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_4">
+<A HREF="#Heading3_1_1"> 1. </A>4 <B>初期設定</B>
+</A>
+</H3>
+<blockquote>
+    PDAのリセット時には、PIO01を出力ポートとして設定、システムクロックを4MHzに設定、低電圧検出回路をアクティブに設定、液晶表示はフレームレート64Hzでオンに設定する。それ以外のデバイスレジスタは、リセット値のままである。<BR>
+    また、アプリケーションの起動時はPlayStationとの通信は禁止されているのでPlayStation通信機能制御システムコール（swi 17）によって通信機能を再開する必要がある。この際、PlayStationに装着されていない場合は通信開始されない。<BR>
+    <BR>
+    PlayStationへの着脱を行った場合には、PSインタフェースからの電源電圧検出(BATIRQ)によって割り込みが発生するが、その割り込み処理において、PlayStationとの通信状態を制御する必要がある。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_5">
+<A HREF="#Heading3_1_1"> 1. </A>5 <B>PDAアプリケーションの制御</B>
+</A>
+</H3>
+<blockquote>
+    カーネルは、PDAアプリケーションの起動、終了、一時停止などの制御を行うサービスを提供する。PDAアプリケーションは、メモリーカードのブロック番号で指定する。一枚のメモリーカードは、15ブロックで構成されているので、ブロック番号1～15で指定する。なお、ブロック番号0は、「起動アプリケーション」を指定する。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_5_1">
+(1) <B>PDAアプリケーションの起動</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      PDAアプリケーションは、メモリーカードデータと同様に、ブロック単位(８キロバイト)でPDAに格納される。従って、PDAアプリケーションのファイルサイズが、2ブロック以上の場合には、連続していない2つ以上のブロックに分割されて格納される場合もある。そこで、PDAアプリケーションを起動する際に、カーネルはMMU(Memory Management Unit)機能により、分割されたブロックを連続した仮想アドレスに再配置する。この仮想アドレスの先頭は、必ず 0x2000000 である。<BR>
+      <BR>
+      仮想アドレスに再配置された状態で、ファイルヘッダの「プログラム開始アドレス」に指定されているアドレスから、PDAアプリケーションを起動する。この「プログラム開始アドレス」は、0x2000000 を先頭とするアドレスである。<BR>
+      <BR>
+      PDAアプリケーションの起動手順は、次に起動するアプリケーションを設定(swi 8)してから、現在起動中のアプリケーションを終了(swi 9)すると、次に起動すべきアプリケーションに移行するという流れになる。PDAは、電池が無くならない限り、電源を落とすことができない為、「起動アプリケーション」も含めて、常時何れかのPDAアプリケーションが動作している。<BR>
+      <BR>
+      アプリケーションの起動直後は、ユーザー領域は初期化され、システムクロックは4MHzに、BATIRQ、RTCIRQ以外は割り込み禁止に設定されている。また、登録されているコールバック関数のクリアが行われている。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_5_2">
+(2) <B>PDAアプリケーションの終了</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      PDAアプリケーション終了システムコール(swi 9)によって、現在動作中のPDAアプリケーションを終了し、あらかじめ登録されている次のPDAアプリケーションが起動される。<BR>
+      なお、PDAアプリケーションを終了する直前に、PlayStationとの通信機能を停止(swi 17)する必要がある。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_5_3">
+(3) <B>"起動アプリケーション"の引数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      "起動アプリケーション"は、起動時のアプリケーション引数（SWI 8のr2にセット）に、以下の値を設定できる。これ以外の値が指定された場合の動作は保証されない。<BR>
+      <BR>
+<CENTER>
+<TABLE BORDER>
+    <TD>Bit</TD><TD>機能</TD><TR>
+    <TD>0-3</TD><TD>ブロック番号を指定（0x0 - 0xF）。ゼロの場合はブロックを指定しないという意味になる。</TD><TR>
+    <TD>4-7<BR></TD><TD>起動後に表示する画面を指定。<BR>0x1: 時計Ｂ画面。ブロック番号指定は無効。<BR>0x2: 時計Ａ画面。ブロック番号指定が0の時は、通常表示。<BR>　　0以外の時は、起動直後に時計合わせモードに入り、決定ボタンが<BR>　　押されると指定されたブロックのPDAアプリを起動する。（※）<BR>0x3: ゲーム選択画面。指定されたブロック番号のアイコンが表示される。</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+      </BLOCKQUOTE>
+    <BR>
+    （※）この機能を使うと、ユーザアプリケーションから"起動アプリケーション"の時計合わせ機能を呼び出すことができる。ただしユーザアプリケーションは引数無しで再起動されるので、フラッシュメモリにフラグを書き込んでおく等の処理が必要になる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_6">
+<A HREF="#Heading3_1_1"> 1. </A>6 <B>PlayStationとの通信</B>
+</A>
+</H3>
+<blockquote>
+    PlayStationからPDAアプリケーションを制御するために、ファイル転送制御コールバックとデバイスエントリコールバックの、2種類のコールバックが準備されている。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_6_1">
+(1) <B>ファイル転送制御コールバック</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      PlayStationのライブラリ(libmcx)からPDAアプリケーションに対して、データ転送の開始と終了を通知できるが、その通知があった場合に起動されるコールバックである。このコールバック関数は、ユーザコールバックの設定(swi 1)で行う。<BR>
+      <BR>
+      コールバック関数への引数は、r0レジスタで引き渡される。<BR>
+      <BR>
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">Bit 23-16</TD><TD ALIGN="center">Bit 15-8</TD><TD ALIGN="center">Bit 7-0</TD><TR>
+    <TD ALIGN="center">転送方向<BR>0 : PDA -&gt; PlayStation<BR>1 : PDA &lt;- PlayStation</TD><TD ALIGN="center">転送制御<BR>0 : 開始<BR>0以外 : 終了</TD><TD>タイムアウト時間<BR>タイムアウト秒数<BR></TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>図 2 ファイル転送制御コールバック関数への引数</B></H4>
+
+</CENTER>
+      <BLOCKQUOTE>
+      PDAアプリケーションはファイル転送中にエラーが発生した場合などに、設定されたタイムアウト時間に従ってエラー処理などを行うことができる。またその際PlayStationとのファイル送受信の終了のシステムコール（swi 11）を呼ぶことでカーネルに転送終了を知らせる必要がある。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_6_2">
+(2) <B>デバイスエントリコールバック</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ファイルヘッダに登録されているデバイスエントリコールバックを使用して、PlayStationとPDAとの間でデータ転送を行うことが可能である。このデバイスエントリコールバックは、PlayStationライブラリ(libmcx)から呼び出す。<BR>
+      <BR>
+      以下に、デバイスエントリコールバック関数の例を示す。<BR>
+      typedef struct {<BR>
+      	char		*buf;<BR>
+      	unsigned long	size;<BR>
+      } buf_rec;<BR>
+      <BR>
+      buf_rec *dev_ent_callback(unsigned long status, char *rec_buf)<BR>
+      {<BR>
+      	:<BR>
+      }<BR>
+      <BR>
+      上記のstatusの各ビットには、下表のモードが割り当てられる。<BR>
+      <BR>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>表 1 statusのビット割り当て</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">Bit</TD><TD>意味</TD><TR>
+    <TD ALIGN="center">0</TD><TD>リード</TD><TR>
+    <TD ALIGN="center">1</TD><TD>ライト</TD><TR>
+    <TD ALIGN="center">2</TD><TD>データ転送エラー</TD><TR>
+    <TD ALIGN="center">3</TD><TD>パラメータ引き渡し</TD><TR>
+    <TD ALIGN="center">4</TD><TD>データ転送終了</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+      <BLOCKQUOTE>
+      <BR>
+      libmcxのsceMcxReadDev(),sceMcxWriteDev()に渡されるパラメータを受信すると、パラメータ引き渡しモードでデバイスエントリコールバックが呼び出され、送受信するデータの転送が行われた後に再度、データ転送終了モードでデバイスエントリコールバックを呼び出される。<BR>
+      パラメータ引き渡しモード時は、第2引数（rec_buf）に受信したパラメータが格納されているバッファアドレスが設定されている。PDAアプリケーションはパラメータを解釈して、リードモード時には送信するデータが格納されているアドレスとサイズを、ライトモード時には受信するデータを格納するアドレスとサイズを、構造体（buf_rec）に格納して返り値とする。(＊注意＊　パラメータおよび送･受信データサイズは、最大128バイトに制限されており、128バイト以上の値が与えられると正常に動作しません。)<BR>
+      データ転送終了モード時は、第2引数（rec_buf）には送受信したデータの先頭アドレスが設定されている。ここで、PDAアプリケーションはデータの転送終了後の処理を行うことができる。データ転送終了モード時の返り値は、特に規定しない。データの転送時にエラーがあった場合、statusにデータ転送エラービットが立つ。<BR>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_7">
+<A HREF="#Heading3_1_1"> 1. </A>7 <B>PDAデバイス制御の注意点</B>
+</A>
+</H3>
+<blockquote>
+    PDA内蔵の、赤外線通信モジュール、スピーカ、LEDの各デバイスは、動作時の消費電流が大きい。従って、PDAをPlayStationに挿入して使用する場合には、PlayStationの消費電流許容量を超えない範囲で、PDAの各デバイスを動作させる必要がある。<BR>
+    <BR>
+    後述のPDAステータスは、消費電流を考慮したデバイス制御を行うために利用される。<BR>
+    各デバイスのステータスは、デバイスが使用許可状態(0)かまたは使用禁止状態(1)かを示す。各デバイスのステータスの初期値は許可となっているが、PDAがPlayStationに挿入された時には禁止となる。また、PDAがPlayStationから抜かれた時には許可となる。PDAがPlayStationに挿入されている場合に、各デバイスを動作させるためには、PlayStationのアプリケーションが許可を与える必要がある。この場合、PlayStationのアプリケーションは、PlayStationから供給可能な電流値を考慮して、その許容範囲内で許可を与える。<BR>
+    このように、PlayStationからPDAステータスが制御されるので、PDAアプリケーションでは、必ずPDAステータスに従って、各デバイスの動作を制御する必要がある。即ち、ステータスが許可の場合にはデバイスを動作させることができるが、禁止の場合には動作させてはいけない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>システムコール詳細説明</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_1">
+<A HREF="#Heading3_1_2"> 2. </A>1 <B>システムコール一覧</B>
+</A>
+</H3>
+<blockquote>
+<CENTER>
+<TABLE BORDER>
+    <TD>システムコール内容</TD><TD>番号</TD><TD>引数</TD><TD>返り値</TD><TR>
+    <TD>ソフトウェアリセット</TD><TD>0</TD><TD>-</TD><TD>-</TD><TR>
+    <TD>ユーザーコールバック設定<BR></TD><TD>1<BR></TD><TD>r0:割り込みの種類<BR>r1:コールバック関数へのアドレス</TD><TD>設定前のコールバック関数のアドレス<BR></TD><TR>
+    <TD>ユーザーコールバック呼び出し</TD><TD>2</TD><TD>-</TD><TD>コールバック関数の返り値</TD><TR>
+    <TD>フラッシュメモリへの書き込み(相対番号)<BR></TD><TD>3<BR></TD><TD>r0:書き込み先アドレス<BR>r1:書き込みソースアドレス</TD><TD>書き込みの成否<BR></TD><TR>
+    <TD>システムクロック周波数設定</TD><TD>4</TD><TD>r0:システムクロック周波数</TD><TD>設定前のシステムクロック周波数</TD><TR>
+    <TD>カーネルモード切換え</TD><TD>5</TD><TD>-</TD><TD>-</TD><TR>
+    <TD>PDAステータス取得</TD><TD>6</TD><TD>-</TD><TD>ステータスバッファのアドレス</TD><TR>
+    <TD>アプリケーションブロック番号制御<BR></TD><TD>8<BR></TD><TD>r0:取得または設定の指定<BR>r1:起動されるブロック番号<BR>r2:起動アプリケーションへの引数</TD><TD>取得または設定されたブロック番号<BR></TD><TR>
+    <TD>アプリケーションの終了／中断</TD><TD>9</TD><TD>r0:再起動方法</TD><TD>-</TD><TR>
+    <TD>シリアル番号の読み出し</TD><TD>10</TD><TD>-</TD><TD>シリアル番号</TD><TR>
+    <TD>PlayStationとのファイル送受信の終了</TD><TD>11</TD><TD>-</TD><TD>-</TD><TR>
+    <TD>リアルタイムクロックへの書き込み<BR></TD><TD>12<BR></TD><TD>r0:年、月、日<BR>r1:曜日、時、分、秒</TD><TD>-<BR></TD><TR>
+    <TD>カレンダーの読み出し</TD><TD>13</TD><TD>-</TD><TD>カレンダーの値</TD><TR>
+    <TD>時計の読み出し</TD><TD>14</TD><TD>-</TD><TD>時計の値</TD><TR>
+    <TD>シリアル番号の書き込み　[使用禁止]</TD><TD>15</TD><TD>r0:シリアル番号</TD><TD>-</TD><TR>
+    <TD>フラッシュメモリへの書き込み(実番号)<BR></TD><TD>16<BR></TD><TD>r0:書き込み先アドレス<BR>r1:書き込みソースアドレス</TD><TD>書き込みの成否<BR></TD><TR>
+    <TD>PlayStation通信機能制御</TD><TD>17</TD><TD>r0:PlayStationとの通信状態</TD><TD>-</TD><TR>
+    <TD>アプリケーションの状態取得</TD><TD>18</TD><TD>r0</TD><TD>アプリケーションの状態</TD><TR>
+    <TD>ユーザインタフェースステータス取得</TD><TD>19</TD><TD>-</TD><TD>ステータスバッファのアドレス</TD><TR>
+    <TD>システムコールテーブル取得<BR></TD><TD>20<BR></TD><TD>-<BR></TD><TD>テーブルのアドレスが格納されている<BR>アドレス</TD><TR>
+    <TD>アプリケーションのブロック番号取得</TD><TD>22</TD><TD>-</TD><TD>起動中のアプリケーションのブロック番号</TD><TR>
+    <TD>PDAアプリケーションフラグの取得</TD><TD>24</TD><TD>r0:プログラム番号（1－15）</TD><TD>PDAアプリケーションフラグ</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+
+<H1>
+<A NAME="Heading4_1_2_2">
+    ソフトウェアリセット
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		0<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし
+<BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし
+<BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_3">
+    ユーザーコールバック設定
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		1<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：割り込み種類<BR>
+    	0：ソフトウェア割り込み<BR>
+    	1：IRQ割り込み<BR>
+    	2：FIQ割り込み<BR>
+    	3：PSからファイル転送中表示開始／終了設定時<BR>
+    r1：コールバック関数へのアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    設定される前のコールバック関数へのアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    コールバック関数がARM Thumb コードで書かれている場合は、LSB が１であること。<BR>
+    コールバックからの戻る場合は、'BX  LR'等を用いて戻り先のモードに戻ること。<BR>
+    <BR>
+    各割り込みが発生した場合、コールバック関数が呼び出される前に、必要に応じて幾つかのレジスタが退避される。<BR>
+<CENTER>
+        <H4><B>表 2 割り込み種類と退避レジスタ</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">割り込み種類</TD><TD ALIGN="center">退避レジスタ</TD><TR>
+    <TD>ソフトウェア割り込み</TD><TD>R1-R12, LR</TD><TR>
+    <TD>IRQ割り込み</TD><TD>R0, R1, R12,LR</TD><TR>
+    <TD>FIQ割り込み</TD><TD>R0, R1, R12,LR</TD><TR>
+    <TD>PSからファイル転送中表示開始／終了設定時</TD><TD>なし</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_4">
+    ユーザーコールバック呼び出し
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ソフトウェア割り込みに設定されたユーザーコールバックを呼び出す。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		2<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    r0 - r10 の各レジスタは、システムコールが呼び出された時の値を保持したままユーザーコールバック関数に渡る。<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ユーザーコールバック関数の返り値<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_5">
+    フラッシュメモリへの書き込み(相対番号)
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    メモリーカードの1ブロック(8Kバイト)は、64セクタで構成されている。このシステムコールでは、1セクタ(128バイト)単位での書き込みを、メモリーカードファイルの先頭セクタからの相対番号によって行う。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		3<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：ディストネーションアドレス<BR>
+    	メモリーカードファイルフォーマットに従った、ファイルの先頭セクタからの相対番号によるディストネーションアドレス<BR>
+    r1：ソースデータバッファへのアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0：書き込み成功<BR>
+    1：書き込み失敗<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このシステムコールを呼ぶ前に、システムクロック周波数を125KHz以上に切換える必要がある。<BR>
+    ソースデータバッファは、フラッシュメモリ領域以外であること。<BR>
+    ソースデータバッファのアドレスは LSB が ０であること。
+<BR>
+    PDAのアプリケーションが実行される場合、ＭＭＵによってそのアプリケーションに割り当てられているブロックが0x02000000から順番に仮想アドレスに再配置される。相対番号とは、0x02000000をセクタ番号０とした場合のセクタ番号のことを指す。
+
+<BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_6">
+    システムクロック周波数設定
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		4<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：システムクロック周波数の指定<BR>
+    	1：62KHz<BR>
+    	2：125KHz<BR>
+    	3：250KHz<BR>
+    	4：500KHz<BR>
+    	5：1MHz<BR>
+    	6：2MHz<BR>
+    	7：4MHz<BR>
+    	8：8MHz<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    設定前のシステムクロック周波数<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    システムクロック周波数に8MHzが指定された場合には、自動的にウェイトサイクル挿入モードに設定される。それ以外のクロック周波数の場合には、ウェイトサイクル挿入モードは解除される。<BR>
+    <BR>
+    **ご注意**<BR>
+    本仕様書のRelease1.4以前では、引数"0"でシステムクロック周波数を32KHzに設定できることになっていましたが、引数"0"の場合だけこのシステムコールの動作に不具合があることが発覚しました。従って、引数に"0"を与えることは禁止とします。システムクロック周波数を32KHzに設定する場合には、このシステムコールを使用せず、&lt;PMFrequency&gt;.&lt;FREQ&gt;を"0"にするというように、デバイスレジスタを直接設定してください。<BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_7">
+    カーネルモード切換え
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    PlayStationへの着脱によるカーネルモードの切換えを行う。<BR>
+    PlayStationに挿入された場合には、メモリーカードとしてPlayStationと通信可能な状態にする。このときシステムクロックは、4MHzに切り替えられる。このシステムコールを呼び出した後で、2MHZ以下のシステムクロックに切換えられた場合には、PDAはメモリーカードとして使用できなくなる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		5<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_8">
+    PDAステータス取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		6<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし
+<BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ステータスバッファのアドレス
+<BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ステータス値(32bits)のビットアサインは下表の通り。<BR>
+<CENTER>
+        <H4><B>表 3 PDAステータス</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">Bit</TD><TD ALIGN="center">内容</TD><TD ALIGN="center">0</TD><TD ALIGN="center">1</TD><TR>
+    <TD ALIGN="center">0</TD><TD>フラッシュメモリへの書き込み</TD><TD>許可</TD><TD>禁止</TD><TR>
+    <TD ALIGN="center">1</TD><TD>スピーカ出力</TD><TD>許可</TD><TD>禁止</TD><TR>
+    <TD ALIGN="center">2</TD><TD>LED点灯</TD><TD>許可</TD><TD>禁止</TD><TR>
+    <TD ALIGN="center">3</TD><TD>赤外線送信</TD><TD>許可</TD><TD>禁止</TD><TR>
+    <TD ALIGN="center">8</TD><TD>PlayStationへの抜き差し</TD><TD>無し</TD><TD>有り</TD><TR>
+    <TD ALIGN="center">9</TD><TD>PlayStationとの通信</TD><TD>不可</TD><TD>可能</TD><TR>
+    <TD ALIGN="center">10</TD><TD>PlayStationとのファイル転送状態</TD><TD>終了</TD><TD>転送中</TD><TR>
+    <TD ALIGN="center">11</TD><TD>PDAアプリケーション終了</TD><TD>無し</TD><TD>有り</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    Bit0～3の初期値は許可となっており、PlayStationに挿入された時に禁止となるので、必要に応じてPlayStationのアプリケーションから許可にする。Bit1～3に対応する各デバイスについては、PlayStationのアプリケーションが、PlayStationの消費電流容量の許容範囲内で許可を与える。従って、PDAアプリケーションがこれらのデバイスを使用する場合には、このPDAステータスの状態を確認し、許可状態の場合のみデバイスが動作するよう制御する必要がある。<BR>
+    <BR>
+    PlayStationへの抜き差し有りのフラグは、カーネルモード切換えのシステムコール(swi 5)を呼び出すとクリアされる。<BR>
+    PlayStationとの通信フラグは、PlayStation通信制御システムコール(swi 16)で制御する。<BR>
+    PDAアプリケーション終了フラグは、PlayStationのアプリケーションから終了要求が送られてきた場合に設定される。<BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_9">
+    アプリケーションブロック番号制御
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    メモリーカードに格納されているPDAアプリケーションの、先頭ブロック番号(ファイルヘッダが格納されているブロック番号)を取得および設定する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		8
+<BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：ブロック番号制御<BR>
+    	0：ブロック番号取得<BR>
+    	1：ブロック番号設定<BR>
+    r1：起動されるブロック番号 (1-15)<BR>
+    r2：起動されるアプリケーションへの引数<BR>
+    <BR>
+    ＊r1, r2は番号設定の場合のみ設定する。
+<BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    取得/設定されたブロック番号
+<BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このシステムコールで指定されたアプリケーションは、アプリケーションの終了/中断システムコール(swi 9)で起動される。<BR>
+    ブロック番号0は、起動アプリケーション（時計機能、アプリケーション選択機能）を示す。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_10">
+    アプリケーションの終了／中断
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    現在動作中のアプリケーションを終了/中断し、別のアプリケーションを起動する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		9<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：動作中のアプリケーションの再起動方法（coldstartのみ）<BR>
+    	0：動作中のアプリケーションを、再起動時にはcoldstartとして終了。<BR>
+    	<BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_11">
+    シリアル番号の読み出し
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		10
+<BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    シリアル番号<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_12">
+    PlayStationとのファイル送受信の終了
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		11<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    PlayStationからPDAにファイルを転送中に、PlayStationがリセットされた場合などは、転送終了が検知できない為、このシステムコールを呼び出すことによって、カーネルに転送の終了を知らせる必要がある。<BR>
+    PDAがPlayStationから抜かれた場合は、自動的に初期状態に設定されるため、このシステムコールの呼び出しは不要である。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_13">
+    リアルタイムクロックへの書き込み
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		12<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：年(西暦上位)、年（西暦下位）、月、日<BR>
+    r1：曜日、時間、分、秒<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    引数は、2桁のBCDで指定する。曜日は１～７で、日曜日～土曜日を指定する。<BR>
+    詳細は、PDA仕様書を参照のこと。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_14">
+    カレンダーの読み出し
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		13<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    カレンダーの値。BCDでYYYYMMDD 形式。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_15">
+    時計の読み出し
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		14<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    時計の値。BCDでDDHHMMSSの形式。<BR>
+    曜日(DD)については、１～７が日曜日～土曜日に対応する。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_16">
+    シリアル番号の書き込み　　［使用禁止］
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		15<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：シリアル番号(32bits)<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+    **ご注意**<BR>
+    シリアル番号の書き換えが禁止となりましたので、このサービスの使用は禁止とします。誤ってこのサービスが呼び出された場合、アプリケーションがフリーズします。<BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_17">
+    フラッシュメモリへの書き込み(実番号)
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    メモリーカードの1ブロック(8Kバイト)は、64セクタで構成されている。このシステムコールでは、1セクタ(128バイト)単位での書き込みを、0x08000000を先頭とする、実セクタ番号によって行う。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		16<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：ディストネーションアドレス<BR>
+    	0x08000000から始まるセクタをセクタ番号０とする、実セクタ番号のよるディストネーションアドレス<BR>
+    r1：ソースデータバッファへのアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0：書き込み成功<BR>
+    1：書き込み失敗<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このシステムコールを呼ぶ前に、システムクロック周波数を125KHz以上に切換える必要がある。<BR>
+    ソースデータバッファは、フラッシュメモリ領域以外であること。
+ソースデータバッファのアドレスは LSB が ０であること。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_18">
+    PlayStation通信機能制御
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		17<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：PlayStationとの通信状態<BR>
+    	0：停止<BR>
+    	1：開始<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    PlayStationとの通信を停止すると、メモリーカードとして認識されない。<BR>
+    PDA本体をPlayStationに装着していない場合には、通信開始を指定しても通信は開始されない。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_19">
+    アプリケーションの状態取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    メモリーカードに格納されているPDAアプリケーションの、先頭ブロック番号(ファイルヘッダが格納されているブロック番号)を指定して、そのアプリケーションの再起動時の設定を取得する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		18<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：メモリーカードブロック番号 (1-15)<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    アプリケーションの状態<BR>
+    	0：coldstart<BR>
+    	1：resume<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    指定されたブロックに、アプリケーションが存在するかどうかはチェックしない。
+
+<BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_20">
+    ユーザインタフェースステータス取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ユーザインタフェースのステータスバッファへのアドレスを取得する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		19<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ユーザインタフェースのステータスバッファのアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    ステータス値(64ビット)のビットアサインは、下表の通り。<BR>
+<CENTER>
+        <H4><B>表 4 ユーザインタフェースステータス</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">Bit</TD><TD ALIGN="center">内容</TD><TD ALIGN="center">備考</TD><TR>
+    <TD>47-32</TD><TD>フォントデータ開始アドレス</TD><TD>0x4000000からの相対アドレス</TD><TR>
+    <TD>23</TD><TD>時計設定フラグ</TD><TD>0：未設定, 1：設定済み</TD><TR>
+    <TD>22-20</TD><TD>エリアコード</TD><TD>0：日本, 1：北米, 2：欧州</TD><TR>
+    <TD>19-18</TD><TD>スピーカ音量</TD><TD>0：大, 1：小, 2：消音</TD><TR>
+    <TD>17</TD><TD>キーロックON/OFF</TD><TD>0：OFF, 1：ON</TD><TR>
+    <TD>16</TD><TD>アラームON/OFF</TD><TD>0：OFF, 1：ON</TD><TR>
+    <TD>15-8</TD><TD>アラーム:時</TD><TD>BCD,2桁</TD><TR>
+    <TD>7-0</TD><TD>アラーム:分</TD><TD>BCD,2桁</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    PDA本体の時計画面では、スピーカ音量で小が指定された場合には、出力値を1/4にする。大が指定された場合には、出力値はそのままとする。<BR>
+    <BR>
+    フォントデータの詳細は、Appendix 参照のこと。<BR>
+    <BR>
+    **ご注意**<BR>
+    フォントデータの開始アドレスは、PDAの日本/北米/欧州向けによって異なる場合がありますので、必ず本サービスを使用してフォントデータ開始アドレスを取得してください。<BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_21">
+    システムコールテーブル取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    システムコールテーブルへのアドレスが格納されているアドレスを取得する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		20<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    システムコールのテーブルへのアドレスが格納されているアドレス<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    システムコールのテーブルには、番号順にアドレスが格納されている。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_22">
+    アプリケーションのブロック番号取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		22<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    なし<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    起動中のアプリケーションのブロック番号<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<H1>
+<A NAME="Heading4_1_2_23">
+    PDAアプリケーションフラグの取得
+<HR SIZE="5">
+</H1>
+    <BR>
+
+<!-- 概要 -->
+<B>概要</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    メモリーカードに格納されているPDAアプリケーションがPlayStationから直接ダウンロードされたときに立てられるFAT内のフラグを調べる。PlayStationのメモリーカード管理画面においてコピーされたPDAアプリケーションではこのフラグは0にクリアされる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    swi		24<BR>
+    <BR>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    r0：メモリーカードブロック番号 (1-15)<BR>
+    <BR>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    PDAアプリケーションフラグ<BR>
+    	0：PDAアプリケーション以外のファイル、またはPlayStaionから直接ダウンロードされていないPDAアプリケーション<BR>
+    	1：PlayStationから直接ダウンロードされたPDAアプリケーション<BR>
+    <BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    当該アプリケーションのFAT内オフセット126にある1バイトの値を返す。
+
+<BR>
+</blockquote>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>Appendix</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3_1">
+<A HREF="#Heading3_1_3"> 3. </A>1 <B>「起動アプリケーション」で使用されているフォントデータ</B>
+</A>
+</H3>
+<blockquote>
+    「起動アプリケーション」で使用されているフォントデータは、下記 Font Data Mapの通り配置されている。これらのフォントデータは、PDAアプリケーションで利用することが可能である。このフォントデータの先頭アドレスは、システムコール(swi 19)によって取得できる。<BR>
+    フォントデータの表示イメージについては、Font Data Image を参照のこと。<BR>
+    <BR>
+    なお、fontdata48 分類のフォントデータについては、上位1バイト(Font Data Image の下の2ライン分)は別のデータの為に使用されているため、フォントデータとして使用する場合には、マスクする必要がある。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1_1">
+(1) <B>Font Data Map</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    fontdata88<BR>
+    	DCD 0x1519110E, 0x000E1113	;'0'<BR>
+    	DCD 0x08080E08, 0x00080808	;'1'<BR>
+    	DCD 0x0C10110E, 0x001F0102	;'2'<BR>
+    	DCD 0x0C10110E, 0x000E1110	;'3'<BR>
+    	DCD 0x090A0C08, 0x0008081F	;'4'<BR>
+    	DCD 0x100F011F, 0x000E1110	;'5'<BR>
+    	DCD 0x0F01020C, 0x000E1111	;'6'<BR>
+    	DCD 0x0808101F, 0x00040404	;'7'<BR>
+    	DCD 0x0E11110E, 0x000E1111	;'8'<BR>
+    	DCD 0x1E11110E, 0x00060810	;'9'<BR>
+    	DCD 0x00000000, 0x00000000	;' '<BR>
+    <BR>
+    	DCD 0x00000300, 0x00000300	;null<BR>
+    	DCD 0x7E242418, 0x007E425A	;lock<BR>
+    	DCD 0x95175418, 0x00185417	;speaker<BR>
+    	DCD 0x02000001, 0x00010000	;loud<BR>
+    	DCD 0x09172458, 0x00191215	;spkoff<BR>
+    	DCD 0x93a3de80, 0x000204fa	;batlow<BR>
+    	DCD 0x2a122c48, 0x00097b26	;alloff<BR>
+    	DCD 0x222a1c08, 0x00087f22	;allarm<BR>
+    	DCD 0x2121213f, 0x001e212d	;mcard<BR>
+    <BR>
+    DCD 0x0, 0x0 ; ここから32ワード（128バイト）分のデータは、日本/北米/欧州向けによってそれぞれ<BR>
+    DCD 0x0, 0x0 ; 異なりますので、使用できません。<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    <BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    <BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    <BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    	DCD 0x0, 0x0<BR>
+    <BR>
+    fontdata48<BR>
+    	DCD 0x00075557	;0<BR>
+    	DCD 0x04022223	;1<BR>
+    	DCD 0x05071747	;2<BR>
+    	DCD 0x06074747	;3<BR>
+    	DCD 0x07047564	;4<BR>
+    	DCD 0x08074717	;5<BR>
+    	DCD 0x08075717	;6<BR>
+    	DCD 0x00022247	;7<BR>
+    	DCD 0x04075757	;8<BR>
+    	DCD 0x05074757	;9<BR>
+    	DCD 0x06000000	;'' ''<BR>
+    	DCD 0x07002020	;:<BR>
+    	DCD 0x08012244	;/<BR>
+    	DCD 0x08011122	;/<BR>
+    	DCD 0x08024655	;y<BR>
+    	DCD 0x01000000	;'' ''<BR>
+    	DCD 0x020f5642	;a<BR>
+    	DCD 0x01075744	;d<BR>
+    	DCD 0x03061752	;e<BR>
+    <BR>
+    	DCD 0x2D022e2e	;F<BR>
+    	DCD 0x62055711	;h<BR>
+    	DCD 0x65088ad8	;M<BR>
+    	DCD 0x64055700	;n<BR>
+    	DCD 0x3D075700	;o<BR>
+    	DCD 0x70011350	;r<BR>
+    	DCD 0x65068e2c	;S<BR>
+    	DCD 0x6E04444e	;T<BR>
+    	DCD 0x2B062720	;t<BR>
+    	DCD 0x6D075500	;u<BR>
+    	DCD 0x6105aaaa	;W<BR>
+    	DCD 0x64022202	;i<BR>
+    	DCD 0x2E001111	;!<BR>
+    <BR>
+    	DCD 0x16005752	;A(AM)<BR>
+    	DCD 0x11001757	;P(PM)<BR>
+    	DCD 0x0D00aa40	;^(M)<BR>
+    	DCD 0x09002223	;1(12h)<BR>
+    	DCD 0x02003123	;2(12h)<BR>
+    	DCD 0x00004755	;4(24h)<BR>
+    	DCD 0x00005531	;h<BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1_2">
+(2) <B>Font Data Image</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen1.gif">
+<P>
+</CENTER>
+      </BLOCKQUOTE>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen2.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen3.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen4.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen5.gif">
+<P>
+</CENTER>
+    <BR>
+    <BR>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen6.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen7.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen8.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen9.gif">
+<P>
+</CENTER>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/kernen10.gif">
+<P>
+</CENTER>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+
+<DIV ALIGN=right>
+Copyright (c) 2000 Sony Computer Entertainment Inc. All Rights Reserved.<BR>
+SCEI CONFIDENTIAL</DIV>
+</BODY>
+</HTML>

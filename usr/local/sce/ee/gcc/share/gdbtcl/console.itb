@@ -1,17 +1,3 @@
-# Console window for GDBtk
-# Copyright 1998, 1999 Cygnus Solutions
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 body Console::constructor {args} {
   global gdbtk_state
   window_name "Console Window"
@@ -27,7 +13,7 @@ body Console::constructor {args} {
 
 body Console::destructor {} {
   global gdbtk_state
-  set gdbtk_state(console) ""
+  unset gdbtk_state(console)
   remove_hook gdb_busy_hook [list $this busy]
   remove_hook gdb_idle_hook [list $this idle]
   remove_hook gdb_no_inferior_hook [list $this idle]
@@ -39,12 +25,7 @@ body Console::_build_win {} {
 
   set _twin [$itk_interior.stext component text]
 
-  if {[pref get gdb/console/wrap]} {
-    $_twin configure -wrap word
-  } else {
-    $_twin configure -wrap none
-  }
-
+  $_twin config -wrap none
   $_twin tag configure prompt_tag -foreground [pref get gdb/console/prompt_fg]
   $_twin tag configure err_tag -foreground [pref get gdb/console/error_fg]
   $_twin configure -font [pref get gdb/console/font]
@@ -79,30 +60,34 @@ body Console::_build_win {} {
   bind $_twin <Left> [bind $_twin <Control-b>]
 
   # Don't let Control-h, Delete, or Backspace back up over the prompt.
-  bind_plain_key $_twin Control-h "[code $this _delete]; break"
-
-  bind $_twin <BackSpace> "[code $this _delete]; break"
-  
-  bind $_twin <Delete> "[code $this _delete 1]; break"
+  bind_plain_key $_twin Control-h {
+    if {[%W compare insert <= {cmdmark + 1 char}]} {
+      break
+    }
+  }
+  bind $_twin <BackSpace> [bind $_twin <Control-h>]
+  bind $_twin <Delete> {
+    if {[pref get gdb/console/deleteLeft]
+	&& [%W compare insert <= cmdmark]} {
+      break
+    }
+  }
 
   # Control-a moves to start of line.
   bind_plain_key $_twin Control-a {
     %W mark set insert {cmdmark + 1 char}
-    %W see {insert linestart}
     break
   }
 
   # Control-u deletes to start of line.
   bind_plain_key $_twin Control-u {
     %W delete {cmdmark + 1 char} insert
-    %W see {insert linestart}
   }
   
   # Control-w deletes previous word.
   bind_plain_key $_twin Control-w {
     if {[%W compare {insert -1c wordstart} > cmdmark]} {
       %W delete {insert -1c wordstart} insert
-      %W see insert
     }
   }
 
@@ -170,14 +155,13 @@ body Console::_build_win {} {
     }
     break
   }
-  bind $_twin <ButtonRelease-2> [format {
+  bind $_twin <ButtonRelease-2> {
     if {!$tkPriv(mouseMoved) || $tk_strictMotif} {
-      %s
+      event generate %W <<Paste>>
       break
     }
-  } [code $this _paste 1]]
-  bind $_twin <<Paste>> "[code $this _paste 0]; break"
-  bind $_twin <<PasteSelection>> "[code $this _paste 0]; break"
+  }
+  bind [winfo toplevel $itk_interior] <<Paste>> "[code $this _paste]; break"
   
   _setprompt
   pack $itk_interior.stext -expand yes -fill both
@@ -436,44 +420,6 @@ body Console::invoke {} {
 }
 
 #-------------------------------------------------------------------
-#  PRIVATE METHOD:  _delete - Handle a Delete of some sort.
-# ------------------------------------------------------------------
-body Console::_delete {{right 0}} {
-
-  # If we are deleting to the right, and we have this turned off,
-  # delete to the right.
-  
-  if {$right && ![pref get gdb/console/deleteLeft]} {
-    set right 0
-  }
-  
-  if {!$right} {
-    set insert_valid [$_twin compare insert > {cmdmark + 1 char}]
-    set delete_loc "insert-1c"
-  } else {
-    set insert_valid [$_twin compare insert > cmdmark]
-    set delete_loc "insert"
-  }
-  
-  # If there is a selection on the command line, delete it,
-  # If there is a selection above the command line, do a
-  # regular delete, but don't delete the prompt.
-  # If there is no selection, do the delete.
-  
-  if {![catch {$_twin index sel.first}]} {
-    if {[$_twin compare sel.first <= cmdmark]} {
-      if {$insert_valid} {
-	$_twin delete $delete_loc
-      }
-    } else {
-      $_twin delete sel.first sel.last
-    }
-  } elseif {$insert_valid} {
-    $_twin delete $delete_loc
-  }
-}
-
-#-------------------------------------------------------------------
 #  PRIVATE METHOD:  _insertion - Set or get saved insertion point
 # ------------------------------------------------------------------
 body Console::_insertion {args} {
@@ -487,22 +433,14 @@ body Console::_insertion {args} {
 # ------------------------------------------------------------------
 #  METHOD:  _paste - paste the selection into the console window
 # ------------------------------------------------------------------
-body Console::_paste {{check_primary 1}} {
+body Console::_paste {} {
   set sel {}
-
-  if {!$check_primary || [catch {selection get} sel] || $sel == ""} {
-    if {[catch {selection get -selection CLIPBOARD} sel] || $sel == ""} {
-      return
-    }
+  catch {set sel [selection get]}
+  if {$sel == "" && [catch {set sel [selection get -selection CLIPBOARD]}]} {
+    return
   }
 
-  #if there is a selection, insert over it:
-  if {![catch {$_twin index sel.first}] 
-      && [$_twin compare sel.first > {cmdmark + 1 char}]} {
-    set point [$_twin index sel.first]
-    $_twin delete sel.first sel.last
-    $_twin insert $point $sel
-  } else {
+  if {$sel != ""} {
     $_twin insert insert $sel
   }
 }
@@ -566,10 +504,10 @@ body Console::_complete {} {
     # is one match, complete the command and print a space.
     # If two or more matches, complete the command and beep.
     # If no match, just beep.
-    switch [llength $choices] {
+    switch {[llength $choices]} {
       0 {}
       1 {
-	$_twin insert end "$completion "
+	_twin insert end "$completion "
 	set _saw_tab 0
 	return
       }

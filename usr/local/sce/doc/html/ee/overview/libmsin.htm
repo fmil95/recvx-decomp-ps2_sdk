@@ -1,0 +1,141 @@
+<HTML>
+<HEAD>
+<TITLE> CSL MIDI stream 生成</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libmsin.htm" SELECTED> CSL MIDI stream 生成
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSL MIDI stream 生成<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+<P><A HREF="#Heading3_2">  2 利用方法<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> バッファ構造<BR></A><BR>
+    <A HREF="#Heading4_2_2"> MIDIメッセージのパック<BR></A><BR>
+    <A HREF="#Heading4_2_3"> 拡張MIDIメッセージ<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    libmsinは、CSL（Component Sound Library）に準拠して実装されているEEライブラリで、アプリケーションプログラムからのAPI呼び出しによってMIDI streamを生成し出力する機能を持っています。典型的なCSLモジュールとは異なり、APIによる設定が中心で、ATick()関数はありません。<BR>
+    libmsinは効果音用にSCEが定義した拡張MIDIメッセージに対応しています。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>利用方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>バッファ構造</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>Buffer Group 0：（なし）</B></H4>
+
+
+     <H4><B>Buffer Group 1：出力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">N</TD>
+<TD valign="TOP">出力ポートN番の出力バッファ</TD>
+<TD valign="TOP">sceCslMidiStream<BR>void[ buffsize - sizeof<BR>    (sceCslMidiStream) ]</TD>
+</TR>
+</TABLE>
+    <BR>
+    Nの範囲は0～15です。<BR>
+<P>
+<IMG SRC ="gif/msinn1.gif">
+<P>
+
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>MIDIメッセージのパック</B>
+</A>
+</H3>
+<blockquote>
+    libmsinでは、2～3byteのMIDIメッセージを32bitワードにパックしてから出力します。<BR>
+    まずsceMSIn_MakeMsg()などのマクロを用いてパックしたMIDIメッセージを用意し、それをsceMSIn_PutMsg()関数で出力ストリームに書き込む、という手順になります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>拡張MIDIメッセージ</B>
+</A>
+</H3>
+<blockquote>
+    libmsinでは、sceMSIn_PutHsMsg()関数を使用することで、効果音用にSCEが定義した拡張MIDIメッセージを出力ストリームに埋め込むことができます。また、拡張MIDIメッセージの各パラメータを整形するマクロが用意されています。<BR>
+    拡張MIDIメッセージの内容については「CSL概要」ドキュメントを参照してください。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

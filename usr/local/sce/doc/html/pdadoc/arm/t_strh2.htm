@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>t_strh2</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]
+</A><A HREF="t_strh1.htm">[前]</A> <A HREF="t_sub1.htm">[次]</A>
+<A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">STRH（2）</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>Store halfword, register offset</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">STRH Rd, [Rn, Rm]</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>この形式のSTRH（Store Register Halfword）命令は、汎用レジスタの16ビットのデータをメモリにストアすることができます。このアドレッシング・モードは、ポインタ＋大きなオフセットの算術（MOVイミディエイトを使用してオフセットを設定）や配列の1要素にアクセスするのに便利です。</P>
+  <P>この場合、STRHはレジスタRdの最下位ハーフワードの1ハーフワードをメモリにストアします。メモリ・アドレスは、レジスタRmの値をレジスタRnの値に加算して計算されます。アドレスがハーフワードに整列していない場合、結果は予測できません。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995912"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995914"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995916"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995918"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995920"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995922"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995924"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995926"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995928"></A></TD>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995930"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995932"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995934"></A></TD>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995936"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995938"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995940"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995942"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995944"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995946"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995948"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995950"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995952"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995954"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="995956"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="995958"></A><BR>
+    Rm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="995964"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="995970"></A><BR>
+    Rd</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>&lt;address&gt; = Rn + Rm
+&lt;data&gt; = Rd
+if &lt;address&gt;[1:0] == 0
+	Memory[&lt;address&gt;,2] = &lt;data&gt;[15:0]
+else
+	Memory[&lt;address&gt;,2] = unpredictable</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>データ・アボート</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>アラインメント：</B>インプリメンテーションに、システム・コントロール・コプロセッサ（英文リファレンスマニュアル第7章「システム・アーキテクチャとシステム・コントロール・コプロセッサ」を参照）が含まれており、アラインメント・チェックがイネーブルされている場合、ビット[0]!=0のアドレスによって、アラインメント例外が発生します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>同等なARM構文とエンコーディング</H4>
+
+<BLOCKQUOTE>
+  <H3><FONT COLOR="#009999">STRH Rd, [Rn, Rm]</FONT></H3>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" WIDTH="99%">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="995990"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="995992"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="995994"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="995996"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="995998"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996000"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996002"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996004"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996006"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996008"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996010"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996012"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996014"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996016"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996018"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996020"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996022"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996024"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996026"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996028"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996030"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996032"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996034"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996036"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996038"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996040"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996042"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996044"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996046"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996048"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996050"></A><B>1</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996052"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996054"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996056"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996058"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996060"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996062"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996064"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996066"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996068"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996070"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996072"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996074"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="22">
+    <A NAME="996076"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="996078"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="996086"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="996094"></A><BR>
+    SBZ</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996102"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996104"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996106"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="21">
+    <A NAME="996108"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="996110"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE><BR>
+</P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次] </A><A
+HREF="t_strh1.htm">[前]</A> <A HREF="t_sub1.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

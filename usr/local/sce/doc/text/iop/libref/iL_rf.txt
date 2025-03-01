@@ -1,0 +1,1503 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                        i.LINK ドライバライブラリ
+                       ==========================
+
+    
+
+ 1 i.LINKデバイスドライバの操作
+================================
+
+=========================================================================
+sce1394ConfGet                             [i.LINKデバイスドライバの操作]
+=========================================================================
+                               i.LINKデバイスドライバの動作パラメータ取得
+[形式]
+        int sce1394ConfGet(
+        	int member,
+        	...
+        );
+        
+[引数]
+        member	パラメータの種別を表す次のいずれかの値
+        
+        +-----------------------+-------------------------------+
+        |値                      パラメータ種別                 |
+        +                       +                               +
+        |SCE1394CF_PRIORITY      ドライバスレッドの優先度       |
+        |                        （＊変更予定あり＊）           |
+        |SCE1394CF_TRSIZE_MASTER 送出するトランザクションの     |
+        |                        最大ペイロードサイズ（バイト） |
+        |SCE1394CF_TRSIZE_SLAVE  受信するトランザクションの     |
+        |                        最大ペイロードサイズ（バイト） |
+        +-----------------------+-------------------------------+
+        
+[返り値]
+        i.LINKデバイスドライバの現在の動作パラメータを返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        i.LINKデバイスドライバの現在の動作パラメータを返す。
+        
+
+=========================================================================
+sce1394ConfSet                             [i.LINKデバイスドライバの操作]
+=========================================================================
+                               i.LINKデバイスドライバの動作パラメータ設定
+[形式]
+        int sce1394ConfSet(
+        	int member,
+        	int value
+        );
+        
+[引数]
+        member	パラメータの種別を表す次のいずれかの値
+        
+        +-------------------------+-------------------------------+
+        |値                        パラメータ種別                 |
+        +                         +                               +
+        |SCE1394CF_PRIORITY        ドライバスレッドの優先度       |
+        |                          （＊変更予定あり＊）           |
+        |SCE1394CF_TRSIZE_MASTER   送出するトランザクションの     |
+        |                          最大ペイロードサイズ（バイト） |
+        |SCE1394CF_TRSIZE_SLAVE    受信するトランザクションの最大 |
+        |                          ペイロードサイズ（バイト）     |
+        |SCE1394CF_NODE_CAPABILITY ノードケーパビリティ           |
+        +-------------------------+-------------------------------+
+        
+        value	パラメータとして設定する値
+        
+[返り値]
+        以前の動作パラメータの値を返す。
+        エラーとして、次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ARGUMENT
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        i.LINKデバイスドライバの動作パラメータを設定する。
+        優先度はvalueとvalue+1の二種類が設定される（＊変更予定あり＊）。
+        最大ペイロードサイズの初期値は122であり、0の指定は初期値を意味す
+        る。ハードウエアの扱える値を越える場合、SCE1394ERR_INVALID_ARGUME
+        NTを返す。ハードウエア資源が他の用途で使用中の場合はSCE1394ERR_RE
+        SOURCE_UNAVAILABLEを返す。
+        ノードケーパビリティはコンフィグレーションROMのBus_Info_Block中の
+        第5バイトの値で指定する（irmc / cmc / isc / bmc / pmc）。実装され
+        ていない機能を指定した場合はエラーとなり、状態は変更されない。現
+        在cmcのみが実装済。
+        そのノードがルートである場合にcmcをイネーブルすると、サイクルスタ
+        ートパケットの送信が開始される。
+        
+
+=========================================================================
+sce1394Destroy                             [i.LINKデバイスドライバの操作]
+=========================================================================
+                                               デバイスドライバの使用中止
+[形式]
+        int sce1394Destroy();
+        
+[引数]
+        なし
+        
+[返り値]
+        新しいドライバ参照数を返す。
+        エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        i.LINKデバイスドライバの使用を止める。具体的には、ドライバの参照
+        数を1減らし、0であればデバイスドライバをリセットしてリソースを解
+        放する。
+        
+
+=========================================================================
+sce1394Initialize                          [i.LINKデバイスドライバの操作]
+=========================================================================
+                                   i.LINKデバイスドライバのロードと初期化
+[形式]
+        int sce1394Initialize(
+        	void *arg
+        );
+        
+[引数]
+        arg	NULLを指定しなければならない
+        
+[返り値]
+        以前のドライバ参照数を返す。
+        エラーとして、次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_ERROR
+        SCE1394ERR_NO_MEMORY
+        
+[解説]
+        i.LINKデバイスドライバをロードし初期化する。具体的には、ドライバ
+        の参照数を1増やし、以前の参照数を返す。すでに初期化済の場合は初期
+        化処理は行わない。
+        ドライバスレッド（複数）は36, 37の二種類の優先度で作成される（28,
+         34の二種類に変更される予定）。
+        初期化直後はシリアルバスがディスエーブルされた状態になっているた
+        め、sce1394SbEnable()を呼び出すまでパケットの送受信はできない。
+        
+
+=========================================================================
+sce1394UnitAdd                             [i.LINKデバイスドライバの操作]
+=========================================================================
+                                               ユニットディレクトリの追加
+[形式]
+        int sce1394UnitAdd(
+        	int size,
+        	u_int *dir
+        );
+        
+[引数]
+        size	イメージデータのquadlet数
+        dir		ユニットディレクトリイメージ（host byte order）
+        
+[返り値]
+        ユニットディレクトリの識別子（id > 0）を返す。
+        エラーとして、次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        Config-ROMのルートディレクトリにユニットディレクトリを追加し、識
+        別子（id > 0）を返す。
+        イメージデータの先頭にはディレクトリサイズが含まれていなければな
+        らないが、CRCは自動生成される。
+        ユニットディレクトリにはサブディレクトリ等が含まれていてもよい。
+        サブディレクトリ等のCRCはあらかじめ設定しておかなければならない。
+        ユニット数、イメージサイズは有限である。
+        
+
+=========================================================================
+sce1394UnitDelete                          [i.LINKデバイスドライバの操作]
+=========================================================================
+                                               ユニットディレクトリの削除
+[形式]
+        enum Sce1394ErrorCode sce1394UnitDelete(
+        	int id
+        );
+        
+[引数]
+        id		ユニットディレクトリの識別子
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ID
+        
+[解説]
+        識別子idで指定されたユニットディレクトリを削除する。
+        
+
+ 2 SB_CONTROL.request
+======================
+
+
+=========================================================================
+sce1394SbCycleTime                                   [SB_CONTROL.request]
+=========================================================================
+                                                     サイクルタイムの取得
+[形式]
+        u_int sce1394SbCycleTime(
+        	u_int *bus_time
+        );
+        
+[引数]
+        bus_time		BUS_TIMEの値をコピーするバッファまたはNULL
+        
+[返り値]
+        CYCLE_TIME CSRとBUS_TIME CSRの値を取得する。正常時には、返す値は0
+        xfff3fbff以下となる。
+        エラーとして、次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        自らがcycle-masterでなく、以前の呼びだしから現在までの間、cycle-s
+        tartパケットを受信できなかったことがある場合、(u_int)SCE1394ERR_R
+        ESOURCE_UNAVAILABLEを返す。
+        
+
+=========================================================================
+sce1394SbDisable                                     [SB_CONTROL.request]
+=========================================================================
+                                             シリアルバスのディスエーブル
+[形式]
+        int sce1394SbDisable(
+        	int reset
+        );
+        
+[引数]
+        reset	bus-reset発行の有無
+        	0 : 発行しない
+        	1 : 発行する
+        
+[返り値]
+        以前のバス状態を返す（0: disabled, 1: enabled)。
+        エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        シリアルバスでのパケット送受信を禁止し、外部からのパケットに応答
+        しないようにする。resetの指定により、同時にbus-resetを発行するこ
+        とができる。
+        
+
+=========================================================================
+sce1394SbEnable                                      [SB_CONTROL.request]
+=========================================================================
+                                                 シリアルバスのイネーブル
+[形式]
+        int sce1394SbEnable();
+        
+[引数]
+        なし
+        
+[返り値]
+        以前のバス状態を返す（0: disabled, 1: enabled）。
+        エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        シリアルバスでのパケット送受信を可能にする。
+        最初のsce1394Initialize()直後はディスエーブル状態となっている。
+        
+
+=========================================================================
+sce1394SbEui64                                       [SB_CONTROL.request]
+=========================================================================
+                                                      自ノードのEUI64取得
+[形式]
+        enum Sce1394ErrorCode sce1394SbEui64(
+        	u_int *buff
+        );
+        
+[引数]
+        buff	EUI64を返す2quadletのバッファ
+        	buff[0]	上位32bit
+        	buff[1]	下位32bit
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        自分自身の64bit Extended Unique IDを取得し、buffが指す領域にhost
+        byte orderで格納する。
+        
+
+=========================================================================
+sce1394SbGenNumber                                   [SB_CONTROL.request]
+=========================================================================
+                                                  generation numberの取得
+[形式]
+        int sce1394SbGenNumber();
+        
+[引数]
+        なし
+        
+[返り値]
+        generation number（ >= 0 ）を返す。
+        エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        バスのgeneration numberを返す。
+        generation numberはbus-resetを検出するごとにインクリメントされる
+        値で、この関数を二度呼び出す間に値が変化していればバス構成が変化
+        したことになり、この間に取得した情報が無効となっている可能性があ
+        る。
+        
+
+=========================================================================
+sce1394SbNodeCount                                   [SB_CONTROL.request]
+=========================================================================
+                                                           ノード数の取得
+[形式]
+        int sce1394SbNodeCount();
+        
+[引数]
+        なし
+        
+[返り値]
+        ノード数を返す。Self-IDを受信できていないときは0を返す。
+        また、エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        直前に受信したSelf-IDデータから得られるノード数を返す。
+        
+
+=========================================================================
+sce1394SbNodeID                                      [SB_CONTROL.request]
+=========================================================================
+                                                   自ノードのノードID取得
+[形式]
+        int sce1394SbNodeID();
+        
+[引数]
+        なし
+        
+[返り値]
+        自分自身のノードIDを返す。
+        エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。
+        
+[解説]
+        自分自身のノードID（BUS-IDとPHY-IDを連結した16bit値）を返す。
+        
+
+=========================================================================
+sce1394SbPhyPacket                                   [SB_CONTROL.request]
+=========================================================================
+                                              PHYパケットの送信（未実装）
+[形式]
+        int sce1394SbPhyPacket(
+        	int request,
+        	 u_int arg
+        );
+        
+[引数]
+        request	PHYパケットの種類
+        		RAWPACKET
+        		LINKON
+        		GAPCOUNT
+        		ROOTHOLD
+        arg	PHYパケットに含めるパラメータ、またはPHYパケットそのもの
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_ERROR
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NOT_SUPPORTED
+        
+[解説]
+        PHYパケットを送信する。
+        
+
+=========================================================================
+sce1394SbReset                                       [SB_CONTROL.request]
+=========================================================================
+                                                             バスリセット
+[形式]
+        enum Sce1394ErrorCode sce1394SbReset(
+        	int flag
+        );
+        
+[引数]
+        flag	0を指定しなければならない
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_NOT_INITIALIZED
+        
+[解説]
+        PHYに（short）bus-resetを要求する。
+        
+
+=========================================================================
+sce1394SbSelfId                                      [SB_CONTROL.request]
+=========================================================================
+                                                            Self-IDの取得
+[形式]
+        int sce1394SbSelfId(
+        	int nquad,
+        	u_int *buff
+        );
+        
+[引数]
+        nquad	バッファサイズ（quadlet）
+        buff	転送先バッファアドレス（4byte整合）
+        
+[返り値]
+        Self-IDのquadlet数を返す。Self-IDを受信できていない場合は0を返す。
+        また、エラーとしてSCE1394ERR_INVALID_ARGUMENTを返す可能性がある。
+        
+[解説]
+        直前に受信したSelf-IDデータをhost byte orderとしてバッファへコピ
+        ーし、Self-IDの実際のquadlet数を返す。
+
+ 3 SB_EVENT.indication
+=======================
+
+
+=========================================================================
+sce1394EvAlloc                                      [SB_EVENT.indication]
+=========================================================================
+                                                   イベントバッファの作成
+[形式]
+        int sce1394EvAlloc();
+        
+[引数]
+        なし
+        
+[返り値]
+        作成したイベントバッファのid（ > 0 ）を返す。
+        エラーとして、次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        イベントバッファを作成し、そのid（ > 0 ）を返す。
+        
+
+=========================================================================
+sce1394EvFree                                       [SB_EVENT.indication]
+=========================================================================
+                                                   イベントバッファの削除
+[形式]
+        enum Sce1394ErrorCode sce1394EvFree(
+        	int id
+        );
+        
+[引数]
+        id	イベントバッファ識別子
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ID
+        
+[解説]
+        イベントバッファを削除する。
+        
+
+=========================================================================
+sce1394EvPoll                                       [SB_EVENT.indication]
+=========================================================================
+                                                       イベントの発生調査
+[形式]
+        int sce1394EvPoll(
+        	int id,
+        	int eventMask
+        );
+        
+[引数]
+        id		イベントバッファid
+        eventMask	調べるイベントの種類
+        
+        +---------------------------------+------+
+        |イベント                          ビット|
+        +                                 +      +
+        |SCE1394EV_BUS_RESET_START         1     |
+        |SCE1394EV_BUS_RESET_COMPLETE      2     |
+        |SCE1394EV_SELF_ID                 3     |
+        |SCE1394EV_COMMAND_RESET           4     |
+        |SCE1394EV_BUS_OCCUPANCY_VIOLATION 8     |
+        |SCE1394EV_CYCLE_TOO_LONG          9     |
+        |SCE1394EV_CABLE_POWER_FAIL        10    |
+        |SCE1394EV_DUPLICATE_CHANNEL       11    |
+        |SCE1394EV_HEADER_CRC_ERROR        12    |
+        |SCE1394EV_REQUEST_DATA_ERROR      13    |
+        |SCE1394EV_RESPONSE_ACK_MISSING    14    |
+        |SCE1394EV_RESPONSE_DATA_ERROR     15    |
+        |SCE1394EV_RESPONSE_FORMAT_ERROR   16    |
+        |SCE1394EV_RESPONSE_RETRY_FAILED   17    |
+        |SCE1394EV_UNEXPECTED_CHANNEL      18    |
+        |SCE1394EV_UNKNOWN_TCODE           19    |
+        |SCE1394EV_UNSOLICITED_RESPONSE    20    |
+        +---------------------------------+------+
+        
+[返り値]
+        発生しているイベントを表すビットマスクを返す。指定されたイベント
+        が発生していない場合は0を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        指定されたイベントが発生しているか調べ、発生しているイベントのビ
+        ットマスクを返す。指定されたイベントが発生していない場合は0を返す。
+        指定されたイベントはバッファから取り除かれる。
+        既にsce1394EvWait()でブロックしているイベントバッファに対して呼出
+        すことはできない。
+        
+
+=========================================================================
+sce1394EvWait                                       [SB_EVENT.indication]
+=========================================================================
+                                                         イベント発生待ち
+[形式]
+        int sce1394EvWait(
+        	int id,
+        	int eventMask
+        );
+        
+[引数]
+        id		イベントバッファid
+        eventMask	待合わせるイベントのビットマスク
+        
+        +---------------------------------+------+
+        |イベント                          ビット|
+        +                                 +      +
+        |SCE1394EV_BUS_RESET_START         1     |
+        |SCE1394EV_BUS_RESET_COMPLETE      2     |
+        |SCE1394EV_SELF_ID                 3     |
+        |SCE1394EV_COMMAND_RESET           4     |
+        |SCE1394EV_BUS_OCCUPANCY_VIOLATION 8     |
+        |SCE1394EV_CYCLE_TOO_LONG          9     |
+        |SCE1394EV_CABLE_POWER_FAIL        10    |
+        |SCE1394EV_DUPLICATE_CHANNEL       11    |
+        |SCE1394EV_HEADER_CRC_ERROR        12    |
+        |SCE1394EV_REQUEST_DATA_ERROR      13    |
+        |SCE1394EV_RESPONSE_ACK_MISSING    14    |
+        |SCE1394EV_RESPONSE_DATA_ERROR     15    |
+        |SCE1394EV_RESPONSE_FORMAT_ERROR   16    |
+        |SCE1394EV_RESPONSE_RETRY_FAILED   17    |
+        |SCE1394EV_UNEXPECTED_CHANNEL      18    |
+        |SCE1394EV_UNKNOWN_TCODE           19    |
+        |SCE1394EV_UNSOLICITED_RESPONSE    20    |
+        +---------------------------------+------+
+        
+[返り値]
+        発生しているイベントを表すビットマスクを返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        指定されたイベントのいずれかが発生しているか調べ、発生しているイ
+        ベントのビットマスクを返す。イベントが発生していない場合は発生す
+        るまでブロックする。
+        指定されたイベントはバッファから取り除かれる。
+        ひとつのイベントバッファで同時に複数のスレッドが待つことはできな
+        い。
+        
+
+ 4 TR_DATA.indication / TR_DATA.response
+=========================================
+
+
+=========================================================================
+callbackFunc                      [TR_DATA.indication / TR_DATA.response]
+=========================================================================
+                                                 簡易形式コールバック関数
+[形式]
+        int callbackFunc(
+        	u_int off,
+        	u_int size,
+        	u_int *payload,
+        	int pb
+        );
+        
+[引数]
+        off		リクエストのoffset_Lフィールドの値
+        size	リクエストのlengthフィールドの値
+        payload	リクエストのデータ部先頭アドレス（network byte order）
+        pb		リクエストのパケットブロックハンドル
+        
+[返り値]
+        返信すべきrcode。
+        
+[解説]
+        リクエストパケットを受信したときにコールバック専用スレッドから呼
+        び出される、簡易形式コールバック関数。
+        この関数は、直ちに返信すべきrcodeを返さなければならない。
+        リクエストパケットに関する詳細情報は以下のAPIで取得できる。
+        	int sce1394PbGetGenNumber(int pb);
+        	int sce1394PbGetSpeed(int pb);
+        	int sce1394PbGetDest(int pb);
+        	int sce1394PbGetSource(int pb);
+        	int sce1394PbGetExTCode(int pb);
+        
+
+=========================================================================
+rawCallbackFunc                   [TR_DATA.indication / TR_DATA.response]
+=========================================================================
+                                                 直接形式コールバック関数
+[形式]
+        typedef int (*sce1394TrDataIndProc)(int pb, void *arg);
+        sce1394TrDataIndProc rawCallbackFunc(
+        	int pb,
+        	void *arg
+        );
+        
+[引数]
+        pb		パケットブロックハンドル
+        arg	コンテクスト
+        
+[返り値]
+        返信すべきパケットブロックハンドル。
+        
+[解説]
+        リクエストパケットを受信したときにコールバック専用スレッドから呼
+        び出される、直接形式コールバック関数。
+        この関数は、直ちにレスポンスとして返信すべきパケットブロックハン
+        ドルを返さなければならない。パケットブロックハンドルは送受信プラ
+        イマリパケットに関する情報を保持するデータの識別子（ > 0 ）。保持
+        されるデータには以下のようなものが含まれる。
+        	generation number
+        	転送レート
+        	対象ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        	送信ノードID
+        	トランザクションコード
+        	転送サイズ
+        	ペイロードデータ
+        	...
+
+=========================================================================
+sce1394TrDataInd                  [TR_DATA.indication / TR_DATA.response]
+=========================================================================
+                                                   コールバック関数の登録
+[形式]
+        typedef int (*sce1394TrDataIndProc)(int pb, void *arg);
+        
+        int sce1394TrDataInd(
+        	int offH,
+        	u_int offL,
+        	u_int size,
+        	sce1394TrDataIndProc write, void *wArg,
+        	sce1394TrDataIndProc read, void *rArg,
+        	sce1394TrDataIndProc lock, void *lArg
+        );
+        
+[引数]
+        offH		検出すべきリクエストのoffset_Hフィールドの値
+        offL		同じくoffset_Lフィールドの最小値
+        size		同じくoffset_Lフィールドの範囲
+        write,read,lock	リクエストパケット検出時に呼ぶ直接形式コールバッ
+        ク関数またはNULL
+        wArg,rArg,lArg	コールバック関数に渡すコンテクスト
+        		write,read,lockにNULLを指定した場合は簡易形式コールバック関数
+        
+[返り値]
+        コールバック関数の登録id（ > 0 ）を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        自ノードへのリクエスト受信時に呼出されるコールバック関数を登録し、
+        登録id（ > 0 ）を返す。
+        offHへ繰上がりの生ずるoffL / sizeの指定は不可。
+        コールバック関数の定義についてはrawCallbackFunc()およびcallbackFu
+        nc()の説明を参照のこと。
+        CSR空間などのi.LINKドライバがデフォルトで応答する空間は、あたかも
+        最初にこの関数によって登録されていたかの様に扱われる。このためユ
+        ーザーが後から設定した空間がこれと重なる場合には、ユーザーの設定
+        が優先される。
+        sce1394TrDataInd()はwrite/read/lockすべてのコールバック関数を一括
+        して登録する。例えばlockに対してNULLを渡すことはコールバック関数
+        を「登録しない」のではなく「無効ハンドラを登録」することになる。
+        したがって通常の使い方ではread用とwrite用の最低２つのコールバック
+        関数を指定することになるはずである。
+        
+
+=========================================================================
+sce1394TrDataUnInd                [TR_DATA.indication / TR_DATA.response]
+=========================================================================
+                                                   コールバック関数の削除
+[形式]
+        enum Sce1394ErrorCode sce1394TrDataUnInd(
+        	int id
+        );
+        
+[引数]
+        id		登録id
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_INVALID_ID
+        
+[解説]
+        登録済のコールバック関数を削除する。
+        
+
+ 5 TR_DATA.request / TR_DATA.confirmation
+==========================================
+
+
+=========================================================================
+sce1394TrAlloc                   [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                           トランザクションハンドルの作成
+[形式]
+        int sce1394TrAlloc(
+        	int nodeId,
+        	int mode
+        );
+        
+[引数]
+        nodeId	対象ノードのID（BUS-IDとPHY-IDを連結した16bit値）
+        mode	0を指定しなければならない
+        
+[返り値]
+        作成したトランザクションコンテクストハンドル（ > 0 ）を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_INVALID_ARGUMENT
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        
+[解説]
+        トランザクションコンテクストを作成し、その識別子（トランザクショ
+        ンコンテクストハンドル）を返す。
+        トランザクションコンテクストには次のようなデータが含まれる。
+        	generation number
+        	対象ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        	転送レート
+        	終了ステータス
+        	分割転送サイズ
+        	ユーザーデータ
+        generation numberは、その時点でsce1394SbGenNumber()が返す値で初期
+        化される。
+        転送レートは利用可能な値がデフォルトとして設定される。
+        分割転送サイズは0（分割しない）で初期化される。
+        ユーザーデータはNULLで初期化される。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrFree                    [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                       トランザクションコンテクストの解放
+[形式]
+        enum Sce1394ErrorCode sce1394TrFree(
+        	int tc
+        );
+        
+[引数]
+        tc		トランザクションコンテクストハンドル
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_INVALID_ID
+        
+[解説]
+        トランザクションコンテクストを開放する。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrGetBlockSize            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                     ブロックサイズの取得
+[形式]
+        int sce1394TrGetBlockSize(
+        	int tc
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        
+[返り値]
+        現在設定されている分割転送サイズを返す。
+        エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。
+        
+[解説]
+        トランザクションコンテクストに設定されている分割転送サイズを返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrGetDest                 [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                       対象ノードIDの取得
+[形式]
+        int sce1394TrGetDest(
+        	int tc
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        
+[返り値]
+        tcに設定されている対象ノードIDを返す。
+        エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。
+        
+[解説]
+        トランザクションコンテクストに設定されている対象ノードIDを返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrGetExtension            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                     ユーザーデータの取得
+[形式]
+        enum Sce1394ErrorCode sce1394TrGetExtension(
+        	int tc,
+        	void **extension
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        extension	取得した値を格納する領域へのポインタ
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストに設定されているユーザーデータを取得
+        する。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrGetGenNumber            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                  generation numberの取得
+[形式]
+        int sce1394TrGetGenNumber(
+        	int tc
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        
+[返り値]
+        tcに設定されているgeneration numberを返す。
+        エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。
+        
+[解説]
+        トランザクションコンテクストに設定されているgeneration numberを取
+        得する。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrGetSpeed                [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                         送信レートの取得
+[形式]
+        int sce1394TrGetSpeed(
+        	int tc
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        
+[返り値]
+        送信レートを次のいずれかの値で返す。
+        
+        +--+-------------------+
+        |値 送信レート         |
+        +  +                   +
+        |0  S100（100Mbit/sec）|
+        |1  S200（200Mbit/sec）|
+        |2  S400（400Mbit/sec）|
+        +--+-------------------+
+        
+        エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。
+        
+[解説]
+        トランザクションコンテクストに設定されている送信レートを返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrLock                    [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                   ロックトランザクション
+[形式]
+        int sce1394TrLock(
+        	int tc,
+        	int offH, u_int offL,
+        	int len,
+        	void *buff,
+        	int ex_tCode
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        offH,offL	対象アドレスオフセット
+        len	送信データバイト数
+        buff	送受信データバッファアドレス
+        ex_tCode	ロックタイプ
+        
+[返り値]
+        受信したペイロードバイト数を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_ERROR
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NOT_SUPPORTED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        SCE1394ERR_INVALID_SIZE
+        SCE1394ERR_INVALID_ADDRESS
+        SCE1394ERR_TRANSACTION_ERROR
+        SCE1394ERR_RESET_DETECTED
+        SCE1394ERR_REQUEST_DISABLED
+        SCE1394ERR_ERROR_RESPONSE
+        SCE1394ERR_TIMEOUT
+        SCE1394ERR_ACK_MISSING
+        SCE1394ERR_RETRY_LIMIT
+        SCE1394ERR_DATA_ERROR
+        SCE1394ERR_INVALID_PARAMETER
+        
+[解説]
+        トランザクションコンテクストtcに設定されているパラメータに基づき、
+        ロックトランザクションを起動し、トランザクションの終了を待つ。
+        データはネットワークバイトオーダー（BigEndian）として扱われる。
+        トランザクションコンテクストに設定されているgeneration numberとsc
+        e1394SbGenNumber()で得られる値とが一致しない状態でトランザクショ
+        ンを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。
+        コンテクストを指定したリクエストはリエントラントではないので、同
+        一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必
+        要がある。
+        
+
+=========================================================================
+sce1394TrRead / sce1394TrReadV   [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                   リードトランザクション
+[形式]
+        int sce1394TrRead(
+        	int tc,
+        	int offH, u_int offL,
+        	int len,
+        	void *buff
+        );
+        int sce1394TrReadV(
+        	int tc,
+        	int offH, u_int offL,
+        	int count,
+        	sce1394Iov *vec
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        offH,offL	対象アドレスオフセット
+        len	読出しバイト数
+        buff	データバッファアドレス
+        count	vec要素数
+        vec	バッファリスト
+        	typedef sce1394Iov {
+        		int	iov_len;	//バイト数（最終要素を除き4の倍数）
+        		void	*iov_base; //データバッファアドレス（4バイト整合）
+        	} sce1394Iov;
+        
+[返り値]
+        sce1394TrRead()は総転送バイト数を、sce1394TrReadV()は受信したペイ
+        ロードバイト数を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_ERROR
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NOT_SUPPORTED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        SCE1394ERR_INVALID_SIZE
+        SCE1394ERR_INVALID_ADDRESS
+        SCE1394ERR_TRANSACTION_ERROR
+        SCE1394ERR_RESET_DETECTED
+        SCE1394ERR_REQUEST_DISABLED
+        SCE1394ERR_FAILED_RESPONSE
+        SCE1394ERR_TIMEOUT
+        SCE1394ERR_ACK_MISSING
+        SCE1394ERR_RETRY_LIMIT
+        SCE1394ERR_DATA_ERROR
+        SCE1394ERR_INVALID_PARAMETER
+        
+[解説]
+        トランザクションコンテクストtcに設定されているパラメータに基づき、
+        リードトランザクションを起動し、トランザクションの終了を待つ。
+        データはネットワークバイトオーダー（BigEndian）として扱われる。
+        sce1394TrRead()は分割転送サイズを最大ペイロード長として、lenバイ
+        トに達するまでトランザクションを繰返し、総転送バイト数を返す。分
+        割される場合、対象アドレスオフセットは自動的にインクリメントされ
+        る。ただし、offHへ繰上がるような指定はできない。
+        sce1394TrReadV()は単一のトランザクションを起動し、受取ったデータ
+        を不連続なデータ領域に転送する。受信したペイロードバイト数を返す。
+        トランザクションコンテクストに設定されているgeneration numberとsc
+        e1394SbGenNumber()で得られる値とが一致しない状態でトランザクショ
+        ンを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。
+        コンテクストを指定したリクエストはリエントラントではないので、同
+        一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必
+        要がある。
+        
+
+=========================================================================
+sce1394TrSetBlockSize            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                     ブロックサイズの設定
+[形式]
+        int sce1394TrSetBlockSize(
+        	int tc,
+        	int size
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        size	分割転送サイズ（バイト）
+        
+[返り値]
+        直前に設定されていた分割転送サイズを返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストに分割転送サイズを設定し、直前に設定
+        されていた値を返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrSetDest                 [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                       対象ノードIDの設定
+[形式]
+        int sce1394TrSetDest(
+        	int tc,
+        	int nodeId
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        nodeId	対象ノードID
+        
+[返り値]
+        直前に設定されていた対象ノードIDを返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストに対象ノードIDを設定し、直前に設定さ
+        れていた対象ノードIDを返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrSetExtension            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                     ユーザーデータの設定
+[形式]
+        enum Sce1394ErrorCode sce1394TrSetExtension(
+        	int tc,
+        	void **extension
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        extension	設定/取得される値を格納する領域へのポインタ
+        
+[返り値]
+        次のいずれかのエラーコードを返す。
+        SCE1394ERR_OK
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストにユーザーデータとしてポインタを設定
+        し、直前に設定されていた値を取得する。
+        ドライバがユーザーデータを使用することはない。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrSetGenNumber            [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                  generation numberの設定
+[形式]
+        int sce1394TrSetGenNumber(
+        	int tc,
+        	int genNumber
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        genNumber	設定する値
+        
+[返り値]
+        直前に設定されていたgeneration numberを返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストにgeneration numberを設定し、直前に設
+        定されていた値を返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrSetSpeed                [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                         送信レートの設定
+[形式]
+        int sce1394TrSetSpeed(
+        	int tc,
+        	int speed
+        );
+        
+[引数]
+        tc		トランザクションコンテクスト
+        speed	送信レートを表す次のいずれかの値
+        
+        +--+-------------------+
+        |値 送信レート         |
+        +  +                   +
+        |0  S100（100Mbit/sec）|
+        |1  S200（200Mbit/sec）|
+        |2  S400（400Mbit/sec）|
+        +--+-------------------+
+        
+[返り値]
+        直前に設定されていた送信レートの値を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        トランザクションコンテクストに送信レートを設定し、直前に設定され
+        ていた値を返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+        
+
+=========================================================================
+sce1394TrStatus                  [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                   レスポンスコードと終了ステータスの取得
+[形式]
+        enum Sce1394ErrorCode sce1394TrStatus(
+        	int tc,
+        	int *rCode
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        rCode	直前のレスポンスに含まれていたrCodeを格納する領域へのポイン
+        タまたはNULL
+        
+[返り値]
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_TRANSACTION_ERROR
+        SCE1394ERR_RESET_DETECTED
+        SCE1394ERR_REQUEST_DISABLED
+        SCE1394ERR_FAILED_RESPONSE
+        SCE1394ERR_TIMEOUT
+        SCE1394ERR_ACK_MISSING
+        SCE1394ERR_RETRY_LIMIT
+        SCE1394ERR_DATA_ERROR
+        SCE1394ERR_INVALID_PARAMETER
+        
+[解説]
+        直前のトランザクションのレスポンスコードをrCodeの指す領域に格納し、
+        終了ステータスを返す。
+        トランザクションコンテクストを指定したリクエストはリエントラント
+        ではないので、同一のトランザクションコンテクストを複数スレッド間
+        で共有する場合は排他制御を行う必要がある。
+
+=========================================================================
+sce1394TrWrite / sce1394TrWriteV [TR_DATA.request / TR_DATA.confirmation]
+=========================================================================
+                                                   ライトトランザクション
+[形式]
+        int sce1394TrWrite(
+        	int tc,
+        	int offH, u_int offL,
+        	int len,
+        	void *buff
+        );
+        int sce1394TrWriteV(
+        	int tc,
+        	int offH, u_int offL,
+        	int count,
+        	sce1394Iov *vec
+        );
+        
+[引数]
+        tc	トランザクションコンテクスト
+        offH,offL	対象アドレスオフセット
+        len	書込みバイト数
+        buff	データバッファアドレス
+        count	vec要素数
+        vec	バッファリスト
+        	typedef sce1394Iov {
+        		int	iov_len;	//バイト数（最終要素を除き4の倍数）
+        		void	*iov_base; //データバッファアドレス（4バイト整合）
+        	} sce1394Iov;
+        
+[返り値]
+        sce1394TrWrite()は総転送バイト数、sce1394TrWriteV()は連結後のペイ
+        ロードバイト数を返す。
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_ERROR
+        SCE1394ERR_NOT_INITIALIZED
+        SCE1394ERR_NOT_SUPPORTED
+        SCE1394ERR_NO_MEMORY
+        SCE1394ERR_RESOURCE_UNAVAILABLE
+        SCE1394ERR_INVALID_ID
+        SCE1394ERR_INVALID_ARGUMENT
+        SCE1394ERR_INVALID_SIZE
+        SCE1394ERR_INVALID_ADDRESS
+        SCE1394ERR_TRANSACTION_ERROR
+        SCE1394ERR_RESET_DETECTED
+        SCE1394ERR_REQUEST_DISABLED
+        SCE1394ERR_FAILED_RESPONSE
+        SCE1394ERR_TIMEOUT
+        SCE1394ERR_ACK_MISSING
+        SCE1394ERR_RETRY_LIMIT
+        SCE1394ERR_DATA_ERROR
+        SCE1394ERR_INVALID_PARAMETER
+        
+[解説]
+        トランザクションコンテクストtcに設定されているパラメータに基づき、
+        ライトトランザクションを起動し、トランザクションの終了を待つ。
+        データはネットワークバイトオーダー（BigEndian）として扱われる。
+        sce1394TrWrite()は分割転送サイズを最大ペイロード長として、lenバイ
+        トに達するまでトランザクションを繰返し、総転送バイト数を返す。分
+        割される場合、対象アドレスオフセットは自動的にインクリメントされ
+        る。ただし、offHへ繰上がるような指定はできない。
+        sce1394TrWriteV()はメモリ上に分散したデータを連結し、単一のパケッ
+        トとしてトランザクションを起動する。連結後のペイロードバイト数を
+        返す。
+        トランザクションコンテクストに設定されているgeneration numberとsc
+        e1394SbGenNumber()で得られる値とが一致しない状態でトランザクショ
+        ンを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。
+        コンテクストを指定したリクエストはリエントラントではないので、同
+        一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必
+        要がある。
+        
+
+ 6 Config-ROM access support
+=============================
+
+
+=========================================================================
+sce1394CrCapability                           [Config-ROM access support]
+=========================================================================
+                                           ノードのケーパビリティ情報取得
+[形式]
+        int sce1394CrCapability(
+        	int nodeId
+        );
+        
+[引数]
+        nodeId	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        
+[返り値]
+        指定したノードのケーパビリティを返す。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        ノードに実装されている機能を表す、Bus_Info_Blockの第5バイトを返す。
+        nodeIdの上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされた
+        データが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノード
+        の指定となる。
+        
+
+=========================================================================
+sce1394CrEui64                                [Config-ROM access support]
+=========================================================================
+                                                              EUI64の取得
+[形式]
+        enum Sce1394ErrorCode sce1394CrEui64(
+        	int nodeId,
+        	u_int *eui64
+        );
+        
+[引数]
+        nodeId	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        eui64	EUI64を返す8バイトのバッファ
+        
+[返り値]
+        エラーとして次のいずれかのエラーコードを返す可能性がある。
+        SCE1394ERR_ERROR
+        SCE1394ERR_INVALID_ARGUMENT
+        
+[解説]
+        nodeIdで指定したノードのEUI64を取得し、eui64が指す領域にhost byte
+         orderで格納する。nodeIdに0xffffを指定すると、自分自身のEUI64を取
+        得する。
+        
+
+=========================================================================
+sce1394CrFindNode                             [Config-ROM access support]
+=========================================================================
+                                                           ノードIDの検索
+[形式]
+        int sce1394CrFindNode(
+        	u_int *eui64
+        );
+        
+[引数]
+        eui64	ノードのEUI64（host byte order）を保持するバッファ
+        
+[返り値]
+        該当するノードのノードIDを返す。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        eui64で指定した64bit Extended Unique IDを持つノードのノードID（BU
+        S-IDとPHY-IDを連結した16bit値）を返す。
+        
+
+=========================================================================
+sce1394CrFindUnit                             [Config-ROM access support]
+=========================================================================
+                                               ユニットディレクトリの検索
+[形式]
+        int sce1394CrFindUnit(
+        	int unit,
+        	int specId,
+        	int version,
+        	u_int *offset
+        );
+        
+[引数]
+        unit	通し番号
+        specId	Unit_Spec_ID
+        version	Unit_SW_Version
+        offset	ディレクトリオフセット（quadlet）
+        
+[返り値]
+        該当するノードのノードIDを返す。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        エントリUnit_Spec_ID,Unit_SW_Versionの組がspecID, versionと一致す
+        るディレクトリを検索し、unit番目に見つかったディレクトリが存在す
+        るノードのノードID（BUS-IDとPHY-IDを連結した16bit値）を返す。
+        offsetには見つかったディレクトリのConfig-ROM先頭からのオフセット
+        が設定される。
+        
+
+=========================================================================
+sce1394CrGenNumber                            [Config-ROM access support]
+=========================================================================
+                                    Config-ROM情報のgeneration number取得
+[形式]
+        int sce1394CrGenNumber();
+        
+[引数]
+        なし
+        
+[返り値]
+        Config-ROM情報のgeneration numberを取得する。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        ドライバ内部のConfig-ROM情報のgeneration numberを取得する。
+        generation numberが変化していた場合、再構成が行われる。
+        
+
+=========================================================================
+sce1394CrMaxRec                               [Config-ROM access support]
+=========================================================================
+                                                        max_rec情報の取得
+[形式]
+        int sce1394CrMaxRec(
+        	int nodeId
+        );
+        
+[引数]
+        nodeId	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        
+[返り値]
+        指定したノードのmax_rec情報をバイト数に変換して返す。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        nodeIdで指定したノードのmax_rec情報を取得し、バイト数に変換して返
+        す。
+        nodeIdの上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされた
+        データが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノード
+        の指定となる。
+        
+
+=========================================================================
+sce1394CrMaxSpeed                             [Config-ROM access support]
+=========================================================================
+                                                     最大転送レートの取得
+[形式]
+        int sce1394CrMaxSpeed(
+        	int nodeId
+        );
+        
+[引数]
+        nodeId	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        
+[返り値]
+        指定したノードの最大転送レートを次のいずれかの値で返す。
+        
+        +--+-------------------+
+        |値 送信レート         |
+        +  +                   +
+        |0  S100（100Mbit/sec）|
+        |1  S200（200Mbit/sec）|
+        |2  S400（400Mbit/sec）|
+        +--+-------------------+
+        
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+        
+[解説]
+        nodeIdで指定したノードに対して適用できる最大転送レートを返す。
+        nodeIdの上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされた
+        データが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノード
+        の指定となる。
+        
+
+=========================================================================
+sce1394CrRead                                 [Config-ROM access support]
+=========================================================================
+                                                     Config-ROMの内容取得
+[形式]
+        int sce1394CrRead(
+        	int nodeId,
+        	u_int off,
+        	int nquad,
+        	u_int *buff
+        );
+[引数]
+        nodeId	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        off	Config-ROM先頭からのオフセット（quadlet）
+        nquad	転送サイズ（quadlet）
+        buff	バッファアドレス（4byte整合）
+[返り値]
+        ノードから転送したquadlet数を返す。
+        エラーとしてSCE1394ERR_ERRORを返す可能性がある。
+[解説]
+        nodeIdで指定したノードのConfig-ROM内容を取得し、ノードから転送し
+        たquadlet数を返す。
+        データ並びはhost byte orderに変換される。
+        nodeIdの上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされた
+        データが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノード
+        の指定となる。

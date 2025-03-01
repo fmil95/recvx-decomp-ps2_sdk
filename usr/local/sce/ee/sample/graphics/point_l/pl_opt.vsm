@@ -1,0 +1,251 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                        - point light -
+ *
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : pl_opt.vsm
+ *
+ *       Version      Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       1.3.0        Dec,9,1999     thatake      1st version
+ */
+
+; ---------------------------------------------------------------------
+;
+;
+;       vu1 micro code for clipping & scissoring sample
+;
+;
+;	VF01 - VF04 	: local_screen matrix & clip_screen matrix
+;	VF05 - VF08 	: local_light matrix(3 lighting vector + 1 ambient)
+;       VF09 - VF12     : light_color matrix
+;       VF13 - VF16     : local_clip matrix
+;       VF17 - VF18     : point_light position * 2
+;	VF19 - VF20	: point_light color *2
+;       VF21            : (1.0f, 1.0f, 1.0f, 1.0f)
+;       VF22 - VF24     : free
+;	VF25 		: source vertex & st (st uses Q(Perspective 1/w))
+;	VF26 		: source normal & color (color uses lo_light*norm)
+;       VF27 - VF31     : temporary
+;
+;	VI01 : base or offset address (temporary)
+;	VI02 : pointer for gif tag / for XGKICK
+;	VI03 : pointer for vertex
+;	VI04 : pointer for normal
+;	VI05 : pointer for color
+;	VI06 : pointer for ST
+;	VI07 : store pointer for RGBAQ
+;	VI08 : free
+;	VI09 : free
+;       VI10 : counter for vertices
+;       VI11,12 : Mask & Branch frag
+;	VI13 : 0-3(triangle) or -1(strip)
+;	VI14 : stack pointer
+;	VI15 : link register
+;
+; ---------------------------------------------------------------------
+	
+	NOP	IADDIU VI01, VI00, 8    ; source(world_screen)
+	NOP	IADDIU VI02, VI00, 0    ; source(local_world)
+	NOP	IADDIU VI03, VI00, 16	; screen matrix X object matrix
+	NOP	BAL VI15, MulMatrix2
+	NOP	NOP
+	NOP	LQ.xyzw VF17, 25(VI00);25plight0
+	NOP	LQ.xyzw VF18, 26(VI00);26plight1
+	NOP	NOP
+	NOP[E]	NOP
+	NOP	NOP
+
+LOADPRIM:
+	NOP				XTOP VI01
+	NOP				ILWR.x VI12, (VI01)x
+        ADDw.xyz VF21, VF00, VF00w      IADDI VI11, VI00, 0x0003
+        ADDx.w VF21w, VF00w, VF00x      IAND  VI12, VI12, VI11		;
+	NOP[E]	NOP
+	NOP	NOP
+START:
+	NOP 	XTOP VI01
+	NOP	IADDIU VI11, VI00, 0x7fff	; set mask
+	NOP	ILWR.x VI10, (VI01)x 		; copy to VI10
+	NOP	IAND VI10, VI10, VI11		; mask.counter for vertices.
+	NOP 	LQ VF21, 0(VI01) 		; load gif tag
+	NOP	IADDIU VI03, VI01, 1		; pointer for vertices
+	NOP	IADDI VI04, VI00, -2		; clip flag stack
+	NOP	IADD VI04, VI03, VI10		; set XGKICK pointer
+	NOP	LQI  VF25, (VI03++)		; load vertex
+	NOP	IADD VI05, VI04, VI10		;
+	NOP	IADD VI06, VI05, VI10		;
+	NOP	IADD VI02, VI06, VI10		;
+	NOP 	SQ VF21, 0(VI02) 		; store gif tag
+	NOP	IADDIU VI07, VI02, 2		; set store pointer for RGBAQ
+
+        SUB.xyz VF30, VF17, VF25        NOP
+        SUB.xyz VF29, VF18, VF25        NOP
+	MULAx.xyzw ACC, VF01, VF25x	NOP ; rot/trans/pers 	 
+	MADDAy.xyzw ACC, VF02, VF25y	NOP	 
+	MUL.xyz VF28, VF29, VF29	ERSADD P, VF30
+	MADDAz.xyzw ACC, VF03, VF25z	NOP
+	MADDw.xyzw VF27, VF04, VF25w	NOP
+        NOP                             NOP
+        MULAx.y ACC, VF21y, VF28x       LQI  VF22, (VI04++); load normal
+        MADDAy.y ACC, VF21y, VF28y      NOP
+        MADDz.y VF31y, VF21y, VF28z     DIV Q, VF00w, VF27w
+	NOP				NOP
+        MUL.xyz VF30, VF22, VF30        LQI  VF25, (VI03++); load vertex
+        MUL.xyz VF29, VF22, VF29        NOP
+	NOP				LQI  VF26, (VI06++); load st
+	NOP				NOP
+	NOP				NOP
+	MULq VF24, VF27, Q		NOP
+	MULq.xyz VF27, VF26, Q		DIV  Q, vf00w, vf31y
+	NOP				NOP	
+        SUB.xyz VF23, VF17, VF25        NOP
+        SUB.xyz VF22, VF18, VF25        NOP
+	FTOI4 VF27, VF24		SQ VF27, -1(VI07)
+        NOP                             MFP.x VF31x, P
+        NOP                             NOP
+        MULq.y  VF31y, VF21y, Q         NOP
+        MULAx.x ACC, VF31x, VF30x       SQ VF27, 1(VI07) ; ---store XYZF2,3---
+        MADDAy.x ACC, VF31x, VF30y      ERSADD P, VF23
+        MADDz.x VF31x, VF31x, VF30z     NOP
+        MULAx.y ACC, VF31y, VF29x       LOI 5.0
+        MADDAy.y ACC, VF31y, VF29y      MOVE.xyz VF30, VF23 
+        MADDz.y VF31y, VF31y, VF29z     MOVE.xyz VF29, VF22 
+	MULAx.xyzw ACC, VF01, VF25x	NOP
+	MADDAy.xyzw ACC, VF02, VF25y	NOP
+	MADDAz.xyzw ACC, VF03, VF25z	LQI  VF22, (VI04++); load normal
+	MULi.xy  VF26, VF31, I		NOP
+	MADDw.xyzw VF24, VF04, VF25w	NOP
+
+LOOP:
+	MUL.xyz VF28, VF29, VF29	NOP
+        MUL.xyz VF30, VF22, VF30        NOP
+	MAXx.xy  VF26, VF26, VF00x	NOP ; cut under 0.0f
+        MUL.xyz VF29, VF22, VF29        DIV Q, VF00w, VF24w
+        MULAx.y ACC, VF21y, VF28x       NOP
+        MADDAy.y ACC, VF21y, VF28y      NOP 
+        MADDz.y VF31y, VF21y, VF28z     NOP
+	MULAx.xyzw ACC, VF19, VF26x	LQI  VF27, (VI06++); load st
+	MADDAy.xyzw ACC, VF20, VF26y	LQI  VF25, (VI03++); load vertex
+	MADDw.xyzw VF28, VF12, VF00w	NOP
+	MULq VF24, VF24, Q		MFP.x VF31x, P
+	MULq.xyz VF27, VF27, Q		DIV  Q, vf00w, vf31y
+        SUB.xyz VF23, VF17, VF25        LQI  VF26, (VI05++); load color
+	MINIw.xyzw VF28, VF28, VF00w    NOP
+        SUB.xyz VF22, VF18, VF25        IADDIU  VI07, VI07, 3
+	FTOI4 VF27, VF24		SQ VF27, -1(VI07)
+        MULAx.x ACC, VF31x, VF30x       IADDI VI10, VI10, -1	
+	MUL.xyz VF28, VF26, VF28	ERSADD P, VF23
+        MULq.y  VF31y, VF21y, Q         NOP
+        MADDAy.x ACC, VF31x, VF30y      NOP
+        MADDz.x VF31x, VF31x, VF30z     MOVE.xyz VF30, VF23 
+	FTOI0 VF28, VF28		SQ VF27, 1(VI07) ; ---store XYZF2,3---
+        MULAx.y ACC, VF31y, VF29x       NOP
+        MADDAy.y ACC, VF31y, VF29y      NOP
+        MADDz.y VF31y, VF31y, VF29z     MOVE.xyz VF29, VF22 
+	MULAx.xyzw ACC, VF01, VF25x	SQ VF28, -3(VI07)
+	MADDAy.xyzw ACC, VF02, VF25y	NOP
+	MADDAz.xyzw ACC, VF03, VF25z	LQI  VF22, (VI04++); load normal
+	MULi.xy  VF26, VF31, I		IBNE  VI10, VI00, LOOP
+	MADDw.xyzw VF24, VF04, VF25w	NOP
+	NOP   	XGKICK VI02  
+	NOP[E]  NOP   
+	NOP	NOP
+	NOP   	B START
+	NOP	NOP      
+
+
+; -------------------------------------------------------------------
+;   MulMatrix 
+;      VI01 : address of source matrix
+;      VI02 : address of source matrix
+;      VI03 : address of destination matrix
+;      VF01 - VF04 : local-screen matrix
+;      VF05 - VF08 : local-light matrix
+;      VF09 - VF12 : world-screen matrix -> light-color matrix
+;      VF13 - VF16 : local-clip matrix
+;      VF19 - VF22 : local-world matrix
+;      VF23 - VF26 : world-light matrix
+;      VF27 - VF30 : world-clip matrix
+
+MulMatrix2:
+	NOP                          	LQI.xyzw VF19, (VI02++);0local_world
+        NOP                            	LQI.xyzw VF09, (VI01++);8world_screen
+        NOP                            	LQI.xyzw VF10, (VI01++);9
+        NOP                            	LQI.xyzw VF11, (VI01++);10
+        NOP                            	LQI.xyzw VF12, (VI01++);11
+        MULAx.xyzw ACC, VF09, VF19x     LQI.xyzw VF20, (VI02++);1
+        MADDAy.xyzw ACC, VF10, VF19y    LQI.xyzw VF21, (VI02++);2
+        MADDAz.xyzw ACC, VF11, VF19z    LQI.xyzw VF22, (VI02++);3
+        MADDw.xyzw VF01, VF12, VF19w    LQI.xyzw VF23, (VI02++);4normal_light
+        MULAx.xyzw ACC, VF09, VF20x     LQI.xyzw VF24, (VI02++);5
+        MADDAy.xyzw ACC, VF10, VF20y    LQI.xyzw VF25, (VI02++);6
+        MADDAz.xyzw ACC, VF11, VF20z    LQI.xyzw VF26, (VI02++);7
+        MADDw.xyzw VF02, VF12, VF20w    LQI.xyzw VF27, (VI01++);12world_clip
+        MULAx.xyzw ACC, VF09, VF21x     LQI.xyzw VF28, (VI01++);13
+        MADDAy.xyzw ACC, VF10, VF21y    LQI.xyzw VF29, (VI01++);14
+        MADDAz.xyzw ACC, VF11, VF21z    LQI.xyzw VF30, (VI01++);15
+        MADDw.xyzw VF03, VF12, VF21w    NOP
+        MULAx.xyzw ACC, VF09, VF22x     NOP
+        MADDAy.xyzw ACC, VF10, VF22y    NOP
+        MADDAz.xyzw ACC, VF11, VF22z    NOP
+        MADDw.xyzw VF04, VF12, VF22w    NOP
+        MULAx.xyzw ACC, VF23, VF19x     LQI.xyzw VF09, (VI01++);16light_color
+        MADDAy.xyzw ACC, VF24, VF19y    LQI.xyzw VF10, (VI01++);17
+        MADDAz.xyzw ACC, VF25, VF19z    LQI.xyzw VF11, (VI01++);18
+        MADDw.xyzw VF05, VF26, VF19w    LQI.xyzw VF12, (VI01++);19
+        MULAx.xyzw ACC, VF23, VF20x     NOP
+        MADDAy.xyzw ACC, VF24, VF20y    NOP
+        MADDAz.xyzw ACC, VF25, VF20z    NOP;
+        MADDw.xyzw VF06, VF26, VF20w    NOP;
+        MULAx.xyzw ACC, VF23, VF21x     NOP
+        MADDAy.xyzw ACC, VF24, VF21y    NOP
+        MADDAz.xyzw ACC, VF25, VF21z    NOP
+        MADDw.xyzw VF07, VF26, VF21w    MOVE  VF08, VF26
+; VF24 is (0,0,0,1)(4th column of Normal_Light matrix)
+;        MULAx.xyzw ACC, VF23, VF22x     NOP
+;        MADDAy.xyzw ACC, VF24, VF22y    NOP
+;        MADDAz.xyzw ACC, VF25, VF22z    NOP
+;        MADDw.xyzw VF08, VF26, VF22w    IADDIU VI01, VI00, 4
+        MULAx.xyzw ACC, VF27, VF19x     NOP
+        MADDAy.xyzw ACC, VF28, VF19y    NOP
+        MADDAz.xyzw ACC, VF29, VF19z    NOP
+        MADDw.xyzw VF13, VF30, VF19w    NOP
+        MULAx.xyzw ACC, VF27, VF20x     NOP
+        MADDAy.xyzw ACC, VF28, VF20y    NOP
+        MADDAz.xyzw ACC, VF29, VF20z    NOP
+        MADDw.xyzw VF14, VF30, VF20w    NOP
+        MULAx.xyzw ACC, VF27, VF21x     LQI.xyzw VF17, (VI01++);20plight
+        MADDAy.xyzw ACC, VF28, VF21y    LQI.xyzw VF18, (VI01++);21
+        MADDAz.xyzw ACC, VF29, VF21z    LQI.xyzw VF19, (VI01++);22
+        MADDw.xyzw VF15, VF30, VF21w    LQI.xyzw VF20, (VI01++);23
+        MULAx.xyzw ACC, VF27, VF22x     NOP
+        MADDAy.xyzw ACC, VF28, VF22y    NOP
+        MADDAz.xyzw ACC, VF29, VF22z    NOP
+        MADDw.xyzw VF16, VF30, VF22w    NOP
+	NOP				SQ  VF01, 0(VI00)
+	NOP				SQ  VF02, 1(VI00)
+	NOP				SQ  VF03, 2(VI00)
+	NOP				SQ  VF04, 3(VI00) ;save local_screen
+        NOP                            	NOP
+        NOP                            	JR VI15
+        NOP                            	NOP
+
+
+
+
+
+
+
+
+
+
+

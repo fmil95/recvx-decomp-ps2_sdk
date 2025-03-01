@@ -1,0 +1,71 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm1_5</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm100.htm">[章目次]</A>
+<A HREF="arm104.htm">[前]</A> <A HREF="arm106.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>1.5 データ処理命令</H3>
+
+<BLOCKQUOTE>
+  <BLOCKQUOTE>
+    <P>データ処理命令は、汎用レジスタに何らかの操作を実行します。以下の3種類のデータ処理命令があります。</P>
+    <UL>
+      <LI>データ処理命令
+      <LI>乗算命令
+      <LI>ステータス・レジスタ転送命令
+    </UL>
+    <P><A NAME="anchor2310819"></A><B>算術/論理命令</B> <BR>
+    16の算術/論理命令があり、命令フォーマットは共通です。このフォーマットでは2つまでのソース・オペランドをとり、これらのオペランドに対して算術/論理命令を実行し、ほとんどの場合は結果をレジスタにストアし、（オプションで）結果に応じてコンディション・コード・フラグを更新します。</P>
+    <P>データ処理命令の中で、結果をレジスタにストアしない命令が4つあります。これらの命令は、ソース・オペランドの値を比較して、コンディション・コード・フラグを更新します。</P>
+    <P>2つソース・オペランドのうち：</P>
+    <UL>
+      <LI>1つは常にレジスタであり、
+      <LI>もう1つは、次の2つの基本形式を持っています。 <BR>
+      - イミディエイト値 <BR>
+      - <A NAME="anchor35529"></A>レジスタ値（オプションで<A NAME="anchor3751383"></A>シフト付き）
+    </UL>
+    <P>オペランドが<A NAME="anchor11155"></A>シフトされたレジスタの場合、シフト量はイミディエイト値または別のレジスタの値となり、4種類のシフトを指定できます。したがって、すべてのデータ処理命令はデータ処理とシフト操作を実行できます。そのため、ARMにはシフト専用の命令はありません。</P>
+    <P>プログラム・カウンタ（PC）は汎用レジスタであり、このクラスのデータ処理命令では結果を直接PCに書き込むことができるため、各種ジャンプ命令を容易にインプリメントできます。</P>
+    <H5><A NAME="anchor1791846"></A>乗算命令</H5>
+    <P>乗算命令は2つのクラスに分類されます。どちらのタイプも、2つの32ビット・レジスタ値を乗算して、結果をストアします。
+    <TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" HEIGHT="87"
+    WIDTH="90%">
+      <TR>
+        <TD WIDTH="16%">
+        （通常）</TD> 
+        <TD WIDTH="22%">
+        32ビットの結果</TD> 
+        <TD WIDTH="62%">
+        32ビットの結果をレジスタにストアします。</TD> 
+      </TR>
+      <TR>
+        <TD>
+        （ロング）</TD> 
+        <TD>
+        64ビットの結果</TD> 
+        <TD>
+        64ビットの結果を2つのレジスタにストアします。</TD> 
+      </TR>
+    </TABLE>どちらの乗算命令もオプションで累積演算を実行することができます。</P>
+    <H5><A NAME="anchor159414"></A>ステータス・レジスタ転送命令</H5>
+    <P>ステータスレジスタ転送命令は、<A NAME="anchor3220651"></A>CPSRまたは<A NAME="anchor117219"></A>SPSRと汎用レジスタの間でレジスタの内容を転送します。CPSRに書き込んで、コンディション・コード・フラグと割り込み<A
+    NAME="anchor4069995"></A>イネーブル・フラグの値をセットし、プロセッサ・モードを設定することもできます。</P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm100.htm">[章目次]</A>
+<A HREF="arm104.htm">[前]</A> <A HREF="arm106.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

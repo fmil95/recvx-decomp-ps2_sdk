@@ -1,0 +1,298 @@
+<HTML>
+<HEAD>
+<TITLE> DECI2 ライブラリ概要</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="libd2.htm" SELECTED> DECI2 ライブラリ概要
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+DECI2 ライブラリ概要<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> EE の場合<BR></A><BR>
+    <A HREF="#Heading4_1_2"> IOP の場合<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 関連ファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 関数一覧<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> プロトコルの登録・制御<BR></A><BR>
+    <A HREF="#Heading4_2_2"> DECI2 パケットの送受信<BR></A><BR>
+    <A HREF="#Heading4_2_3"> イベントハンドラからのスレッド同期 (IOPのみ)<BR></A><BR>
+    <A HREF="#Heading4_2_4"> イベントハンドラ内のデバック用プリント (IOPのみ)<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 エラーコード<BR></A>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    DECI2 ライブラリは、DECI2 Manager を制御してホスト &lt;-&gt; ターゲット間通信を行うための関数群で、ターゲット上のプロトコルドライバ作成を支援する目的で用意されています。<BR>
+    <BR>
+    プロトコルドライバは、DECI2 Manager から通知されるイベントを処理するイベントハンドラ部分とそれ以外の部分から構成されます。イベントハンドラは、通常のシステム状態とは異なる状態で呼び出されるのでそのプログラミングにはいくつかの制限があります。DECI2 Manager に用意された関数で、イベントハンドラから呼び出せる関数には名前に Ex を付けて、イベントハンドラ外から呼出せる関数と明確に区別されています。なお DCMP パケットは、イベントとして通知されます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>EE の場合</B>
+</A>
+</H3>
+<blockquote>
+    イベントハンドラは、割込みハンドラと同じような方法で呼び出されます。<BR>
+    ただし、イベントハンドラ実行中は、EE Kernel が提供する関数を利用することができません。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>IOP の場合</B>
+</A>
+</H3>
+<blockquote>
+    イベントハンドラは、IOP のシステムソフトウエアの管理外の特殊な状態で呼び出されます。したがって、プロトコルドライバから見た場合、システムは以下の三つの状態をもちます。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> スレッド部実行中<BR>通常のシステムサービスが利用可能な状態<BR>
+         <LI VALUE= 2> スレッド独立部実行中(割り込み処理ルーチンなど)<BR>スレッド独立部専用の制限されたシステムサービスが利用可能な状態<BR>
+         <LI VALUE= 3> DECI2 イベントハンドラ実行中<BR>
+    </OL>
+    <BR>
+    DECI2 イベントハンドラ実行中は、システムサービス関数は利用できません<BR>
+    (例外として、ctype.h、memory.h、string.h で宣言されているライブラリ関数は利用可能です)。<BR>
+    また、DECI2 イベントハンドラ実行中は、CPU は kernel mode で、割り込み禁止状態です。イベントハンドラ内では、使用スタックは極力少なくしてください。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    DECI2 ライブラリに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libkernl.a (EEのみ)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">deci2.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>関数一覧</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    DECI2 ライブラリに含まれる関数は次のとおりです。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>プロトコルの登録・制御</B>
+</A>
+</H3>
+<blockquote>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2Open</TD>
+<TD valign="TOP">プロトコルドライバの登録</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2Close</TD>
+<TD valign="TOP">プロトコルドライバの削除</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExLock</TD>
+<TD valign="TOP">他のプロトコルのロック</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExUnLock</TD>
+<TD valign="TOP">ロックの解除</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>DECI2 パケットの送受信</B>
+</A>
+</H3>
+<blockquote>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExRecv</TD>
+<TD valign="TOP">DECI2 パケットの受信</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExSend</TD>
+<TD valign="TOP">DECI2 パケットの送信</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ReqSend</TD>
+<TD valign="TOP">DECI2_WRITE イベントの要求</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExReqSend</TD>
+<TD valign="TOP">DECI2_WRITE イベントの要求</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>イベントハンドラからのスレッド同期 (IOPのみ)</B>
+</A>
+</H3>
+<blockquote>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExWakeupThread</TD>
+<TD valign="TOP">スリープ中のスレッドの起床</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExSignalSema</TD>
+<TD valign="TOP">セマフォへのシグナル発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExSetEventFlag</TD>
+<TD valign="TOP">イベントフラグのセット</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>イベントハンドラ内のデバック用プリント (IOPのみ)</B>
+</A>
+</H3>
+<blockquote>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceDeci2ExPanic</TD>
+<TD valign="TOP">イベントハンドラ内からの printf</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>エラーコード</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    <BR>
+    DECI2_ERR_INVALID     -1  // invalid argument<BR>
+    DECI2_ERR_INVALSOCK   -2  // invalid socket descriptor<BR>
+    DECI2_ERR_ALREADYUSE  -3  // protocol number already used<BR>
+    DECI2_ERR_MFILE       -4  // too many open protocols<BR>
+    DECI2_ERR_INVALADDR   -5  // invalid address for buffer<BR>
+    DECI2_ERR_PKTSIZE     -6  // buffer is too small<BR>
+    DECI2_ERR_WOULDBLOCK  -7  // blocks inspite of asynchronous<BR>
+    DECI2_ERR_ALREADYLOCK -8  // already locked<BR>
+    DECI2_ERR_NOTLOCKED   -9  // not locked<BR>
+    DECI2_ERR_NOROUTE    -10  // no route to host<BR>
+    DECI2_ERR_NOSPACE    -11  // no room left on manager<BR>
+    DECI2_ERR_INVALHEAD  -12  // invalid deci2 header<BR>
+    DECI2_ERR_NOHOSTIF   -13  // No interface to Host
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

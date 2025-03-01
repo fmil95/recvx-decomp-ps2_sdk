@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm602</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm601.htm">[前]</A> <A HREF="arm603.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>6.2 Thumbについて</H3>
+
+<BLOCKQUOTE>
+  <P>ThumbはARMアーキテクチャの基礎的な構造は変更しません。ARMアーキテクチャに制限付きでアクセスするだけです。すべてのThumbデータ処理命令は、フル32ビット値を扱い、フル32ビット・ビット・アドレスは、データ・アクセス命令によって、また命令フェッチに対して生成されます。</P>
+  <P>プロセッサがThumbを実行するときには、8つの汎用整数レジスタR0～R7を利用できます。これはARMを実行するときと同じ物理レジスタR0～R7です。また、一部のThumb命令は、プログラム・カウンタ（ARMレジスタ15）、リンク・レジスタ（ARMレジスタ14）、およびスタック・ポインタ（ARMレジスタ13）にアクセスします。さらに、ARMレジスタ8～15（上位レジスタとして知られる）への制限付きアクセスが可能な命令があります。</P>
+  <P>R15が読み出されると、ビット[0]はゼロになり、ビット[31:1]にはPCが含まれます。R15が書き込まれると、ビット[0]は無視され、ビット[31:1]はPCに書き込まれます。使い方によって、PCの値は命令のアドレス＋4か、または予測不能なものになります。</P>
+  <P>Thumbは（ARMのMSR命令やMRS命令のように）CPSRやSPSRに直接アクセスはできません。Thumbの実行は、<A
+  NAME="anchor3244274"></A>CPSR内のTビット（ビット5）によって以下のとおりフラグが示されます。：</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="12%">
+      T==0</TD> 
+      <TD WIDTH="88%">
+      32ビット命令がフェッチされ（PCが4インクリメントされて）、ARM命令として実行されます。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="12%">
+      T==1</TD> 
+      <TD WIDTH="88%">
+      16ビット命令がメモリからフェッチされ（PCが2インクリメントされて）、Thumb命令として実行されます。</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<H4>6.2.1 Thumbステートに入る</H4>
+
+<BLOCKQUOTE>
+  <P>Thumbの実行モードは通常、ARMのBX命令（分岐と交換命令セット）を実行して入ります。この命令は、汎用レジスタに保持されたアドレスに分岐します。このレジスタのビット[0]が1の場合、Thumbの実行が分岐先アドレスから開始されます。分岐先レジスタのビット[0]が0の場合、ARM命令の実行が分岐先アドレスから継続されます。</P>
+  <P>また、Thumbの実行モードは、SPSRのTビットをセットして、SPSRからCPSRをリストアするARM命令（SビットがセットされPCをデスティネーションとして持つデータ処理命令、またはロード・マルチプルおよびリストアCPSR命令）を実行することによっても開始されます。これにより、オペレーティング・システムは、プロセスがThumbコードを実行中であるかARMコードを実行中であるかに関係なく、自動的にプロセスを再起動することができます。</P>
+  <P>CPSRに書き込んで直接Tビットを変更した場合、結果は予測できません。</P>
+</BLOCKQUOTE>
+
+<H4>6.2.2 例外</H4>
+
+<BLOCKQUOTE>
+  <P>Thumbの実行中に発生した例外は、例外ハンドラ（ハードウェア・ベクタに最初の命令がある）を実行する前に、ARMの実行に切り替わります。Tビットの状態はSPSRに保持され、例外モードのLRは、例外がARMの実行中に発生したかThumbの実行中に発生したかに関係なく、同じリターン命令が正しく実行されるようにセットされます。</P>
+  <P>表6-1「例外リターン命令」は、Thumbの実行中に発生した例外に対する例外モードLRの値をリストします。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="33%">
+      例外</TD> 
+      <TD WIDTH="33%">
+      例外リンク・レジスタ値</TD> 
+      <TD WIDTH="34%">
+      リターン命令</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      リセット</TD> 
+      <TD WIDTH="33%">
+      予測できない値</TD> 
+      <TD WIDTH="34%">
+      MOVS PC、R14</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      未定義</TD> 
+      <TD WIDTH="33%">
+      未定義命令のアドレス+2</TD> 
+      <TD WIDTH="34%">
+      MOVS PC, R14</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      SWI</TD> 
+      <TD WIDTH="33%">
+      SWIのアドレス+2</TD> 
+      <TD WIDTH="34%">
+      MOVS PC, R14</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      プリフェッチ・アボート</TD> 
+      <TD WIDTH="33%">
+      アボートされた命令フェッチのアドレス＋4</TD> 
+      <TD WIDTH="34%">
+      SUBS PC, R14, #4</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      データ・アボート</TD> 
+      <TD WIDTH="33%">
+      アボートを生成した命令のアドレス＋8</TD> 
+      <TD WIDTH="34%">
+      SUBS PC, R14, #8</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      IRQ</TD> 
+      <TD WIDTH="33%">
+      次に実行される命令のアドレス＋4</TD> 
+      <TD WIDTH="34%">
+      SUBS PC, R14, #4</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      FIQ</TD> 
+      <TD WIDTH="33%">
+      次に実行される命令のアドレス＋4</TD> 
+      <TD WIDTH="34%">
+      SUBS PC, R14, #4</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表6-1：例外リターン命令</FONT></P>
+
+<P><BR>
+<HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm601.htm">[前]</A> <A HREF="arm603.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

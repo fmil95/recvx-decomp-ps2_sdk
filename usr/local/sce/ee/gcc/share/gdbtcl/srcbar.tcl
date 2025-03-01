@@ -1,17 +1,5 @@
+#
 # GDBSrcBar
-# Copyright 1997, 1998, 1999 Cygnus Solutions
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 # ----------------------------------------------------------------------
 # Implements a toolbar that is attached to a source window.
 #
@@ -28,6 +16,9 @@
 #
 #
 # ----------------------------------------------------------------------
+#   AUTHOR:  Tom Tromey                tromey@cygnus.com   
+#            Copyright (C) 1997, 1998, 1999  Cygnus Solutions   
+#
 
 class GDBSrcBar {
   inherit GDBToolBar
@@ -35,9 +26,7 @@ class GDBSrcBar {
   # ------------------------------------------------------------------
   #  CONSTRUCTOR - create widget
   # ------------------------------------------------------------------
-  constructor {src args} {
-    GDBToolBar::constructor $src
-  } {
+  constructor {args} {
     eval itk_initialize $args
     add_hook gdb_trace_find_hook "$this trace_find_hook"
   }
@@ -54,6 +43,9 @@ class GDBSrcBar {
   #
   #  PUBLIC DATA
   #
+
+  # This is a handle on our parent source window.
+  public variable source {}
 
   # This is the command that should be run when the `update'
   # checkbutton is toggled.  The current value of the checkbutton is
@@ -91,7 +83,7 @@ class GDBSrcBar {
 
   # This is true if the inferior is running, or false if it is
   # stopped.
-  public variable runstop normal {
+  public variable runstop 0 {
     if {$ButtonFrame != ""} {
 	_set_runstop
     }
@@ -139,8 +131,8 @@ class GDBSrcBar {
 
     }
     
-    add_menu_command Other "Target Settings..." "set_target_name" \
-      -underline 0
+    add_menu_command Other "Target Settings..." \
+      {set_target_name ""} -underline 0
     add_menu_separator
     add_menu_command None "Exit" gdbtk_quit -underline 1
     
@@ -270,59 +262,25 @@ class GDBSrcBar {
   }
 
   # ------------------------------------------------------------------
-  #  METHOD:  create_run_menu - Creates the standard run menu, 
-  #  or reconfigures it if it already exists.
+  #  METHOD:  create_run_menu - Creates the standard run menu
   # ------------------------------------------------------------------
   
   method create_run_menu {} {
+    set run_menu [new_menu run "Run" 0]
 
-    if {![menu_exists Run]} {
-      set run_menu [new_menu run "Run" 0]
-    } else {
-      set run_menu [clear_menu Run]
-    }
-    
-    set is_native [TargetSelection::native_debugging]
-
-    # If we are on a Unix target, put in the attach options.  "ps" doesn't
-    # give me the Windows PID yet, and the attach also seems flakey, so 
-    # I will hold off on the Windows implementation for now.
-
-    if {$is_native} {
-      if {[string compare $::tcl_platform(platform) windows] != 0} {
-	add_menu_command Attach "Attach to process" \
-	  [code $this do_attach $run_menu] \
-	  -underline 0 -accelerator "Ctrl+A"
-      }
-    } else {
-      add_menu_command Other "Connect to target" \
-	"$this do_connect $run_menu" -underline 0
-    }
+    add_menu_command Other "Connect to target" \
+      "$this do_connect $run_menu" -underline 0
 
     if {[pref get gdb/control_target]} {
-      if {!$is_native} {
-	add_menu_command Other "Download" Download::download_it \
-	  -underline 0 -accelerator "Ctrl+D"
-      }
-      add_menu_command Other "Run" [code $source inferior run] -underline 0 \
+      add_menu_command Other "Download" Download::download_it \
+	-underline 0 -accelerator "Ctrl+D"
+      add_menu_command Other "Run" run_executable -underline 0 \
 	-accelerator R
     }
 
-    if {$is_native} {
-      if {[string compare $::tcl_platform(platform) windows] != 0} {
-	add_menu_command Detach "Detach" [code $this do_detach $run_menu] \
-	  -underline 0 -state disabled
-      }
-    } else {
-      add_menu_command Other "Disconnect"  \
-	[code $this do_disconnect $run_menu] -underline 0 -state disabled
-    }
+    add_menu_command Other "Disconnect"  "$this do_disconnect $run_menu" \
+      -underline 0 -state disabled
 
-    if {$is_native} {
-      add_menu_separator
-      add_menu_command Control "Kill" [code $this do_kill $run_menu] \
-	-underline 0 -state disabled
-    }
 
     if { [pref get gdb/mode] } {
       add_menu_separator 
@@ -357,23 +315,24 @@ class GDBSrcBar {
   # ------------------------------------------------------------------
   public method _set_runstop {} {
     switch $runstop {
-      busy {
+      3 {
 	$ButtonFrame.stop configure -state disabled
       }
-      downloading {
+      2 {
+	# Download
 	$ButtonFrame.stop configure -state normal -image stop_img \
-	  -command [code $this cancel_download]
+	  -command "$this cancel_download"
 	balloon register $ButtonFrame.stop "Stop"
       }
-      running {
+      1 {
 	$ButtonFrame.stop configure -state normal -image stop_img \
-	  -command [code $source inferior stop]
+	  -command "catch {gdb_stop}"
 	balloon register $ButtonFrame.stop "Stop"
 	
       }
-      normal {
+      0 {
 	$ButtonFrame.stop configure -state normal -image run_img \
-	  -command [code $source inferior run]
+	  -command run_executable
 	balloon register $ButtonFrame.stop "Run (R)"
       }
       default {
@@ -409,6 +368,60 @@ class GDBSrcBar {
     if {$source != ""} {
       eval $source $args
     }
+  }
+
+  # ------------------------------------------------------------------
+  # METHOD:  enable_ui - enable/disable the appropriate buttons and menus
+  # Called from the busy, idle, and no_inferior hooks.
+  #
+  # on must be:
+  # value      Control    Other    Trace    State
+  #   0          off       off      off     gdb is busy
+  #   1          on        on       off     gdb has inferior, and is idle
+  #   2          off       on       off     gdb has no inferior, and is idle
+  # ------------------------------------------------------------------
+  public method enable_ui {on} {
+    global tcl_platform
+
+    # Do the enabling so that all the disabling happens first, this way if a
+    # button belongs to two groups, enabling takes precedence, which is probably right.
+
+    switch $on {
+      0 {
+	set enable_list {Control disabled Other disabled Trace disabled}
+      }
+      1 {
+	if {!$Browsing} {
+	  set enable_list {Trace disabled Control normal Other normal}
+	  set ostate normal
+	  set cstate normal
+	  set tstate disabled
+	  # set the states of stepi and nexti correctly
+	  _set_stepi
+	} else {
+	  set enable_list {Control disabled Other normal Trace normal}
+	}
+
+      }
+      2 {
+	set enable_list {Control disabled Trace disabled Other normal}
+	set ostate normal
+	set cstate disabled
+	set tstate disabled
+      }
+      default {
+	debug "Unknown type: $on in enable_ui"
+	return
+      }
+    }
+
+    foreach {type state} $enable_list {
+      foreach button [set ${type}Buttons] {
+	$button configure -state $state
+      }
+      eval change_menu_state \$${type}Menus \$state
+    }
+
   }
 
   # ------------------------------------------------------------------
@@ -466,91 +479,19 @@ class GDBSrcBar {
   }
 
   # ------------------------------------------------------------------
-  # METHOD:  do_attach: attach to a running target
-  # ------------------------------------------------------------------
-  method do_attach {menu} {
-      gdbtk_attach_native
-  }
-
-  # ------------------------------------------------------------------
-  # METHOD:  do_detach: detach from a running target
-  # ------------------------------------------------------------------
-  method do_detach {menu} {
-    ::disconnect
-    gdbtk_idle
-  }
-
-  # ------------------------------------------------------------------
-  # METHOD:  do_kill: kill the current target
-  # ------------------------------------------------------------------
-  method do_kill {menu} {
-    gdb_cmd "kill"
-    run_hooks gdb_no_inferior_hook
-  }
-  
-  # ------------------------------------------------------------------
   # METHOD:  do_connect: connect to a remote target 
-  #                      in asynch mode if async is 1
+  #                           in asynch mode if async is 1.
+  #                      
   # ------------------------------------------------------------------
   method do_connect {menu {async 0}} {
-    global file_done
+    debug "$menu $async"
 
-    debug "do_connect: menu=$menu async=$async"
+    set result [connect $async]
 
-    gdbtk_busy
-
-    set result [gdbtk_attach_remote]
-    switch $result {
-      ATTACH_ERROR {
-	set successful 0
+    if {$result} {
+	$menu entryconfigure "Connect to target" -state disabled
+	$menu entryconfigure "Disconnect" -state normal
       }
-
-      ATTACH_TARGET_CHANGED {
-	if {[pref get gdb/load/check] && $file_done} {
-	  set err [catch {gdb_cmd "compare-sections"} errTxt]
-	  if {$err} {
-	    set successful 0
-	    tk_messageBox -title "Error" -message $errTxt \
-	      -icon error -type ok
-	    break
-	  }
-	}
-
-	tk_messageBox -title "GDB" -message "Successfully connected" \
-	  -icon info -type ok
-	set successful 1
-      }
-
-      ATTACH_CANCELED {
-	tk_messageBox -title "GDB" -message "Connection Canceled" -icon info \
-	  -type ok
-	set successful 0
-      }
-
-      ATTACH_TARGET_UNCHANGED {
-	tk_messageBox -title "GDB" -message "Successfully connected" \
-	  -icon info -type ok
-	set successful 1
-      }
-
-      default {
-	dbug E "Unhandled response from gdbtk_attach_remote: \"$result\""
-	set successful 0
-      }
-    }
-
-    gdbtk_idle
-
-    if {$successful} {
-      $menu entryconfigure "Connect to target" -state disabled
-      $menu entryconfigure "Disconnect" -state normal
-    } else {
-      $menu entryconfigure "Connect to target" -state normal
-      $menu entryconfigure "Disconnect" -state disabled
-    }
-
-    # Whenever we attach, we need to do an update
-    gdbtk_update
   }
 
 

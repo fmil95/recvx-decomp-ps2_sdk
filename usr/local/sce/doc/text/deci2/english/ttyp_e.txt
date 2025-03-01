@@ -1,0 +1,61 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                                Jul 19, 1999
+
+TTYP Specification                       
+===================
+
+   This document provides description of the TTYP, one of higher level 
+   protocols than the DECI2 protocol.
+
+
+Contents
+=========
+1.  Overview
+2.  Message Format
+
+
+1.  Overview
+=================
+  The TTYP is a protocol to transmit and receive the standard I/O data 
+  of the program on the target between the target and the host. 
+
+  The protocol numbers of the TTYP are as follows. 
+  The generic name of the undermentioned protocol is defined as TTYP. 
+
+    IOP TTY: I0TTYP=0x0110 ... I9TTYP=0x0119
+             IKTTYP=0x011f                   
+
+    EE  TTY: E0TTYP=0x0210 ... E9TTYP=0x0219
+             EKTTYP=0x021f
+
+
+2.  Message Format
+===================
+  The TTYP message is transmitted by using a basic DECI2 header.  
+  The TTYP message does not have a special header.  It is composed 
+  only of 4-byte reserved area and data as follows.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         Flush Request                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                                          Data ...  |
+                                                         -+-+-+-+-+-+
+
+                         Figure 1  TTYP Message
+
+  Flush Request
+    Be sure to specify 0 for ordinary standard I/O data. 
+    
+    When 1 is specified, among the standard output packets sent from 
+    the target to the dsnetm, the packet not yet transmitted to 
+    the application is deleted. 
+    Specify 'H' to the Destination field of the DECI2 header at this 
+    time. 
+
+  When the connection with the host has not been established, all 
+  the standard output data from the target program is lost. 

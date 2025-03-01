@@ -1,0 +1,1531 @@
+<HTML>
+<CENTER>
+
+<!-- 見出し 2,章見出し -->
+<HEAD>
+<TITLE> ＰＤＡ仕様書 第2版</TITLE>
+</HEAD>
+<BODY BGCOLOR=#ffffff>
+<A NAME="Top"></A>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM>
+<SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="pdaspec1.htm">PDA仕様書
+<OPTION VALUE="index.htm"> PDA
+<OPTION VALUE="../arm/arm_gtoc.htm">ARM
+<OPTION VALUE="../../deci2/index.htm"> DECI2
+<OPTION VALUE="../../ee/libref/index.htm"> EE Library Reference
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../ee/overview/index.htm"> EE Overview
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../index.htm">TOP MENU
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<P>
+<A NAME="Heading2_1">
+<H1>
+ＰＤＡ仕様書 第2版
+</H1>
+</A>
+
+</CENTER>
+<blockquote>
+<H2>
+        <B>目次</B>
+</H2>
+</blockquote>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1_1"> 1 記述方法</A><BR>
+<P><A HREF="#Heading3_1_2"> 2 システム構成</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_2_1"> デバイスレジスタ</A><BR>
+    <A HREF="#Heading4_1_2_2"> アクセス</A><BR>
+    <A HREF="#Heading4_1_2_3"> リセットシーケンス</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_3"> 3 プロセッサコア</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_3_1"> エンディアン</A><BR>
+    <A HREF="#Heading4_1_3_2"> Embedded ICE</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_4"> 4 メモリ</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_4_1"> スタティックRAM</A><BR>
+    <A HREF="#Heading4_1_4_2"> ブートメモリ</A><BR>
+    <A HREF="#Heading4_1_4_3"> フラッシュメモリ</A><BR>
+    <A HREF="#Heading4_1_4_4"> システムシグナチャ</A><BR>
+    <A HREF="#Heading4_1_4_5"> メモリマップ</A><BR>
+    <A HREF="#Heading4_1_4_6"> 仮想フラッシュメモリ</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_5"> 5 電源</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_5_1"> 電源切り替え</A><BR>
+    <A HREF="#Heading4_1_5_2"> 電源供給元の検出</A><BR>
+    <A HREF="#Heading4_1_5_3"> 電源スイッチ</A><BR>
+    <A HREF="#Heading4_1_5_4"> 低電圧への対応</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_6"> 6 割り込みコントローラ</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_6_1"> 割り込みソース</A><BR>
+    <A HREF="#Heading4_1_6_2"> 割り込み優先度</A><BR>
+    <A HREF="#Heading4_1_6_3"> メカニズム</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_7"> 7 ホストインタフェース</A><BR>
+<P><A HREF="#Heading3_1_8"> 8 システムクロック管理モジュール</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_8_1"> システムクロック周波数</A><BR>
+    <A HREF="#Heading4_1_8_2"> クロック変更所要時間</A><BR>
+    <A HREF="#Heading4_1_8_3"> リセット</A><BR>
+    <A HREF="#Heading4_1_8_4"> スタンバイモード</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_9"> 9 電圧低下検出モジュール</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_9_1"> メカニズム</A><BR>
+    <A HREF="#Heading4_1_9_2"> 省電力のための機能</A><BR>
+    <A HREF="#Heading4_1_9_3"> リセット</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_10"> 10 液晶表示機能</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_10_1"> ビデオメモリ（VRAM）</A><BR>
+    <A HREF="#Heading4_1_10_2"> フレームレート</A><BR>
+    <A HREF="#Heading4_1_10_3"> 表示反転</A><BR>
+    <A HREF="#Heading4_1_10_4"> 省電力のための機能</A><BR>
+    <A HREF="#Heading4_1_10_5"> リセット</A><BR>
+    <A HREF="#Heading4_1_10_6"> 表示オン／オフ手順</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_11"> 11 サウンド</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_11_1"> メカニズム</A><BR>
+    <A HREF="#Heading4_1_11_2"> 省電力のための機能</A><BR>
+    <A HREF="#Heading4_1_11_3"> リセット</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_12"> 12 ボタンスイッチ</A><BR>
+<P><A HREF="#Heading3_1_13"> 13 赤外通信モジュール</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_13_1"> サブキャリア変調</A><BR>
+    <A HREF="#Heading4_1_13_2"> 受光部</A><BR>
+    <A HREF="#Heading4_1_13_3"> 発光部</A><BR>
+    <A HREF="#Heading4_1_13_4"> 省電力のための機能</A><BR>
+    <A HREF="#Heading4_1_13_5"> リセット</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_14"> 14 リアルタイムクロック</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_14_1"> カウンタ</A><BR>
+    <A HREF="#Heading4_1_14_2"> カウンタの設定</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_15"> 15 カウンタ</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_15_1"> メカニズム</A><BR>
+    <A HREF="#Heading4_1_15_2"> プリスケール値</A><BR>
+    <A HREF="#Heading4_1_15_3"> 初期値設定</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_16"> 16 汎用IOポート</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_16_1"> 双方向ポート</A><BR>
+    <A HREF="#Heading4_1_16_2"> アクセス</A><BR>
+    <A HREF="#Heading4_1_16_3"> LED</A><BR>
+    <A HREF="#Heading4_1_16_4"> PIO4</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_17"> 17 ハードウェア補足</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_17_1"> 赤外通信モジュール</A><BR>
+    <A HREF="#Heading4_1_17_2"> 液晶表示</A><BR>
+    <A HREF="#Heading4_1_17_3"> 消費電流</A><BR>
+    </UL>
+</UL>
+<HR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_1">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 1 <B>記述方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    レジスタ名称を&lt;&gt;でくくって記述する。<BR>
+    （例） レジスタAbc→＜Abc＞<BR>
+    <BR>
+    ビットフィールド名称を&lt;&gt;でくくって記述する。<BR>
+    （例） ビットフィールドXyz→&lt;Xyz&gt;<BR>
+    <BR>
+    特定のレジスタの特定のビットフィールドはレジスタ名称とビットフィールド名称を.（ピリオド）で連結して記述する。<BR>
+    （例） レジスタAbc中のビットフィールドXyz→＜Abc＞.&lt;Xyz&gt;<BR>
+    <BR>
+    レジスタ番号を[]でくくって記述する。<BR>
+    （例） Abc[0..2]→Abc0、Abc1、Abc2<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_2">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 2 <B>システム構成</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムのブロック図を以下に示す。<BR>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspf1.gif">
+<P>
+    <B>図 1 システムブロック図</B><BR>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_1">
+<A HREF="#Heading3_1_2"> 2. </A>1 <B>デバイスレジスタ</B>
+</A>
+</H3>
+<blockquote>
+    すべてのデバイスはメモリマップされた「デバイスレジスタ」として設定・参照される。デバイスレジスタの詳細については後続の各章および付録Ａを参照のこと。
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_2">
+<A HREF="#Heading3_1_2"> 2. </A>2 <B>アクセス</B>
+</A>
+</H3>
+<blockquote>
+    デバイスレジスタは32ビットのアドレス境界にアラインされた32ビットレジスタである。デバイスレジスタはワード（32ビット）デバイスとしてアクセスされなくてはならず、バイト（8ビット）またはハーフワード（16ビット）アクセスは禁止される。<BR>
+    メモリコントローラのデバイスレジスタ（&lt;REGRemap&gt;、&lt;FLASHREMAPStatus&gt;、&lt;FLASHACTIVEBlocks&gt;、&lt;FLASHVIRTUALAddrX[X=0..15]&gt;）は 1バスクロックサイクルでアクセスできる。それ以外のデバイスレジスタへのアクセスには2バスクロックサイクルを要する。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_2_2_1">
+(1) <B>ビットフィールド</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ひとつのデバイスレジスタで複数のデバイスへのアクセスを行う場合、デバイスレジスタは相当数のビットフィールドに分割される。<BR>
+      未定義ビットフィールドはすべて0として読み取られる。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_2_2_2">
+(2) <B>アドレスとビットフィールド</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      デバイスレジスタのメモリアドレスとビットフィールド構成を付録Ｂに示す。<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_3">
+<A HREF="#Heading3_1_2"> 2. </A>3 <B>リセットシーケンス</B>
+</A>
+</H3>
+<blockquote>
+    当システムは、電源のオフ→オン操作およびリセットスイッチ操作によりリセットされる。リセットは以下のような過程（リセットシーケンス）として実現される。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> 実行中の命令があれば、それがキャンセルされる。
+         <LI VALUE= 2> すべてのデバイスが各個にスタンバイモードとなる。
+         <LI VALUE= 3> すべての割り込みソースからの割り込み要求がマスクされる。
+         <LI VALUE= 4> システムクロックが32.768kHz に設定される。
+         <LI VALUE= 5> メモリコントローラが「リセット直後」モードに設定される。
+         <LI VALUE= 6> プログラムカウンタにゼロが設定され、命令の実行が開始される。
+    </OL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_3">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 3 <B>プロセッサコア</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムはプロセッサコアとしてARM7TDMIを搭載する。ARM7TDMIの仕様および命令セットについては「ARM Architecture Reference Manual」を参照のこと。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3_1">
+<A HREF="#Heading3_1_3"> 3. </A>1 <B>エンディアン</B>
+</A>
+</H3>
+<blockquote>
+    当システム中のARM7TDMIプロセッサコアはリトルエンディアンモードでのみ作動する。リトルエンディアンモードにおいては、各ワード（32ビット）データの最低アドレスバイトにはそのワード中の最低位バイトが位置し、ワードデータは最低位バイトのアドレスにより指定される。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3_2">
+<A HREF="#Heading3_1_3"> 3. </A>2 <B>Embedded ICE</B>
+</A>
+</H3>
+<blockquote>
+    ARM7TDMIプロセッサコアは"ARM Standard Embedded In Circuit Emulation"を内蔵する。このオンチップICEモジュールはJTAGポートを経由してホストシステムと接続される。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_4">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 4 <B>メモリ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムには、スタティックRAM、ブートメモリ、フラッシュメモリ、システムシグナチャの四種のメモリが搭載されている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_1">
+<A HREF="#Heading3_1_4"> 4. </A>1 <B>スタティックRAM</B>
+</A>
+</H3>
+<blockquote>
+    2KByteのスタティックRAMは32ビットデバイスであり、ウェートサイクルを挿入することなしに、8・16・32 ビット単位でのリード（命令フェッチを含む）・ライトアクセスを行うことができる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_2">
+<A HREF="#Heading3_1_4"> 4. </A>2 <B>ブートメモリ</B>
+</A>
+</H3>
+<blockquote>
+    16KByteのブートメモリは16ビットデバイスであり、4MHz以下のシステムクロックを選択する場合にはウェイトサイクルなしで、8MHz時には1ウェイトサイクルを挿入して、16ビット単位でのリード（命令フェッチを含む）アクセスが行える。ウェイトサイクルの管理はソフトウェアにて行う。また、32ビットアクセスの場合には、16ビットアクセスの2倍のサイクルを要する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_3">
+<A HREF="#Heading3_1_4"> 4. </A>3 <B>フラッシュメモリ</B>
+</A>
+</H3>
+<blockquote>
+    フラッシュメモリは、ソフトウェア的にプログラム（書き込み）可能かつ消去可能な読取専用メモリである。このメモリは、ブートメモリと同様に16ビットデバイスである。<BR>
+    <BR>
+    データ容量は128KByte。メモリ全体は128byteのセクタと呼ばれる領域の集合であり、データの消去・書き込みはセクタ毎に行われる。また、メモリコントローラによるブロック（8KByte）単位での仮想アドレス空間へのマップが可能である。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_3_1">
+(1) <B>リードアクセス</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      フラッシュメモリはブートメモリと同様にリード（命令フェッチを含む）アクセスできる。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_3_2">
+(2) <B>ライトアクセス</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      フラッシュメモリは1024個のセクタに分割されている。各セクタは128Byteにアラインされた先頭アドレスを有する連続した128Byteのメモリ空間である。下記の手順によりセクタ毎にデータを書き込める。データ書き込みシーケンス中はフラッシュメモリデバイスからのデータ読み取り・命令フェッチを行ってはならない。<BR>
+      </BLOCKQUOTE>
+    <BR>
+    <OL>
+         <LI VALUE= 1> &lt;FLASHDataController&gt;.&lt;LOADPAGE&gt;と&lt;FLASHDataController&gt;.&lt;ENPRG&gt;に1を設定する。
+         <LI VALUE= 2> アドレス0x080055AAにハーフワードデータ0xFFAAを書き込む。
+         <LI VALUE= 3> アドレス0x08002A54にハーフワードデータ0xFF55を書き込む。
+         <LI VALUE= 4> アドレス0x080055AAにハーフワードデータ0xFFA0を書き込む。
+         <LI VALUE= 5> ターゲットセクタに64までのハーフワードデータを書き込む。<BR>最後のデータ書き込みの約100マイクロ秒後にデバイスへの実際の書き込みが始まる。<BR>&lt;FLASHDataController&gt;.&lt;BUSY&gt;をテストすることにより書き込み完了を検出することができる。（書き込み完了までに約20ミリ秒かかる。）
+         <LI VALUE= 6> &lt;FLASHDataController&gt;.&lt;LOADPAGE&gt;と&lt;FLASHDataController&gt;.&lt;ENPRG&gt;に0を設定する。
+    </OL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_4">
+<A HREF="#Heading3_1_4"> 4. </A>4 <B>システムシグナチャ</B>
+</A>
+</H3>
+<blockquote>
+    システムシグナチャは、機体毎にユニークなIDを保持するための、ソフトウェア的にプログラム（書き込み）可能かつ消去可能な読取専用4バイトメモリである。<BR>
+    このメモリへのアクセスは、システムコールを経由して行う。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_5">
+<A HREF="#Heading3_1_4"> 4. </A>5 <B>メモリマップ</B>
+</A>
+</H3>
+<blockquote>
+    メモリマップには「リセット直後」と「リマップ後」の2つのモードがある。リセット直後は「リセット直後」モードとなり、&lt;REGRemap&gt;.&lt;GENREM&gt;へ1を書き込むことにより、メモリマップは「リマップ後」モードへ移行する。逆方向のモード移行はサポートされない。<BR>
+    <BR>
+    「リマップ後」モードのメモリマップにおいては割り込みベクトルがスタティックRAMに配置されるため、ユーザによるベクトルのフック、再定義、動的書き換えが可能となる。<BR>
+    <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspf2.gif">
+<P>
+    <B>図 2 メモリマップ</B><BR>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4_6">
+<A HREF="#Heading3_1_4"> 4. </A>6 <B>仮想フラッシュメモリ</B>
+</A>
+</H3>
+<blockquote>
+    フラッシュメモリ128KByteは8KByteに境界整合された8KByteの連続したメモリ領域に分割される。各領域を「ブロック」と呼ぶ 。ブロックは低アドレス側から振られた「ブロック番号」で識別される。&lt;FLASHVIRTUALAddrX[X=0..15]&gt;により、任意のブロックに任意のベースアドレス（8KByte単位）を指定して仮想フラッシュメモリ領域へマップできる。&lt;FLASHACTIVEBlocks&gt;により、仮想フラッシュメモリ領域にマップするブロックを選択できる。<BR>
+    <BR>
+    仮想フラッシュメモリ領域へのマップの有無に関わらず、フラッシュメモリ全体は物理アドレス領域に常時マップされる。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_6_1">
+(1) <B>マップ操作手順</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      マップ操作手順を以下に示す。<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> 任意の&lt;FLASHVIRTUALAddrX[X=0..15]&gt;.&lt;VIRTUALADDR&gt;に再配置を要するブロックについてブロックベースアドレスを設定する。
+         <LI VALUE= 2> &lt;FLASHACTIVEBlocks&gt;に仮想フラッシュメモリ領域へマップするブロックのブロック番号を設定する。
+         <LI VALUE= 3> &lt;REGRemap&gt;.&lt;FLASHVIR&gt;に1を設定する。
+         <LI VALUE= 4> &lt;REGRemap&gt;.&lt;FLASHVIR&gt;が1となっていることを確認する。
+    </OL>
+    <BR>
+     上記(1)において不正な設定が行われていた場合は、仮想フラッシュメモリ領域へのマップは行われず、このビットが0となる。不正が検出された場合は、&lt;FLASHREMAPStatus&gt;の各ビットを元に設定エラーを分析し、上記手順を再度実行する。<BR>
+    <BR>
+    &lt;REGRemap&gt;.&lt;FLASHVIR&gt;に0を設定することにより、仮想フラッシュメモリ領域へマップを中止できる。<BR>
+    <BR>
+    マップが行われていない仮想フラッシュメモリ領域へ通常のメモリアクセスは、「プロセッサ例外 (アクセスタイプによるデータフェッチ ) 」を生成する。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_6_2">
+(2) <B>マップ例</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      マップ例を以下に示す。<BR>
+      <BR>
+      ゴール：<BR>
+      ブロック13とブロック8を、この順に、仮想フラッシュメモリ空間の最下位位置へ連続して配置する。<BR>
+      <BR>
+      設定操作：<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> &lt;FLASHVIRTUALAddr13&gt;に0x0を設定する。
+         <LI VALUE= 2> &lt;FLASHVIRTUALAddr8&gt;に0x1を設定する。
+         <LI VALUE= 3> &lt;FLASHACTIVEBlocks&gt;に0x2100を設定する。
+         <LI VALUE= 4> &lt;REGRemap&gt;に0x2を設定する。
+         <LI VALUE= 5> &lt;REGRemap&gt;.&lt;FLASHVIR&gt;が1となっているかどうかをテストする。
+    </OL>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_5">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 5 <B>電源</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは、バッテリとPSインタフェースの2種類の電源供給元を備えている。電源切り替えは、PSインタフェースからの電源電圧検出をトリガとして、自動的に行われる。PSインタフェースからの電源は両エッジ型割り込みソースとなっている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5_1">
+<A HREF="#Heading3_1_5"> 5. </A>1 <B>電源切り替え</B>
+</A>
+</H3>
+<blockquote>
+    PSインタフェースから給電が行われておらず、かつ、バッテリが内蔵されていると、バッテリが電源となる。この状態でPSインタフェースから給電が開始されると、電源供給元は自動的にバッテリからPSインタフェースに切り替わる。<BR>
+    PSインタフェースから給電されていると、バッテリの状態によらず、PSインタフェースが電源供給元となる。この状態でPSインタフェースからの給電が停止すると、電源供給元は自動的にPSインタフェースからバッテリに切り替わる。<BR>
+    バッテリが内蔵されていない状態でPSインタフェースからの給電が開始されると、PSインタフェースが電源供給元となり、システムが起動する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5_2">
+<A HREF="#Heading3_1_5"> 5. </A>2 <B>電源供給元の検出</B>
+</A>
+</H3>
+<blockquote>
+    PSインタフェースから供給される電源電圧は、リードオンリ汎用IOポートPIO4を経由して両エッジ型割り込みソース（ソース番号11）となっている。よって、割り込みもしくは割り込みコントローラのデバイスレジスタをポーリングすることにより、電源供給元の判別および電源供給元の切り替えを検出できる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5_3">
+<A HREF="#Heading3_1_5"> 5. </A>3 <B>電源スイッチ</B>
+</A>
+</H3>
+<blockquote>
+    当システムは電源スイッチを有しない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5_4">
+<A HREF="#Heading3_1_5"> 5. </A>4 <B>低電圧への対応</B>
+</A>
+</H3>
+<blockquote>
+    電源電圧が低下すると、まずフラッシュメモリへの書き込みが行えなくなる。さらに電圧が低下するとプロセッサコアが不定な状態となる。いったん不定状態となったプロセッサは、リセットによってのみ正常状態へ復帰し、電源電圧が回復しても正常な状態に復帰しない。このため、プロセッサコアが不定状態にある時、PSインタフェースから電源供給が行われると、フラッシュメモリの内容がプロセッサにより破壊される可能性がある。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_6">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 6 <B>割り込みコントローラ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ARM7TDMIプロセッサコアはFIQ（アドレス0x1C）とIRQ（アドレス0x18）の2つの割り込みベクトルをサポートする。当システムでは、FIQには同期シリアル通信モジュールとカウンタ第2チャネルが、IRQには他のすべての割り込みソース（12種）が接続されている。2つのベクトルにはそれぞれ独立した割り込みコントローラが用意されている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_6_1">
+<A HREF="#Heading3_1_6"> 6. </A>1 <B>割り込みソース</B>
+</A>
+</H3>
+<blockquote>
+    割り込みソースにはそれらが接続されているベクトルによらない通し番号である「ソース番号」が振られている。<BR>
+    <BR>
+    割り込みソースは、割り込み要求を発生する条件により、「正エッジ」、「両エッジ」、「レベル」、の3種類に分類される。これらの条件はソース毎に固定されており変更できない。<BR>
+    正エッジソースは割り込み要求条件が成立する毎に各１回だけ割り込みを要求する。両エッジソースは割り込み要求条件が成立する毎および不成立となる毎に各１回だけ割り込みを要求する。レベルソースは割り込み要求条件が成立している間、割り込みを要求し続ける。<BR>
+    <BR>
+    割り込みコントローラのデバイスレジスタは操作毎に独立している。操作対象割り込みソースの指定は、ソースに対応したビット位置への値設定に行う。<BR>
+    <BR>
+    各割り込みソースの詳細を以下に示す。<BR>
+<CENTER>
+        <H4><B>表 1 割り込みソース</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">ソース番号</TD><TD ALIGN="center">シンボル</TD><TD ALIGN="center">ベクトル</TD><TD ALIGN="center">種類</TD><TD ALIGN="center">ソース名称</TD><TR>
+    <TD ALIGN="center">0</TD><TD ALIGN="center">EXT0IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>決定ボタン</TD><TR>
+    <TD ALIGN="center">1</TD><TD ALIGN="center">EXT1IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>右方向ボタン</TD><TR>
+    <TD ALIGN="center">2</TD><TD ALIGN="center">EXT2IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>左方向ボタン</TD><TR>
+    <TD ALIGN="center">3</TD><TD ALIGN="center">EXT3IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>下方向ボタン</TD><TR>
+    <TD ALIGN="center">4</TD><TD ALIGN="center">EXT4IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>上方向ボタン</TD><TR>
+    <TD ALIGN="center">5</TD><TD ALIGN="center">EXT5IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">レベル</TD><TD>未使用</TD><TR>
+    <TD BGCOLOR=#cccccc ALIGN="center">6</TD><TD BGCOLOR=#cccccc ALIGN="center">SPIIRQ</TD><TD BGCOLOR=#cccccc ALIGN="center">FIQ</TD><TD BGCOLOR=#cccccc ALIGN="center">正エッジ</TD><TD BGCOLOR=#cccccc>同期シリアル通信モジュール</TD><TR>
+    <TD ALIGN="center">7</TD><TD ALIGN="center">TC0IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">正エッジ</TD><TD>カウンタ０</TD><TR>
+    <TD ALIGN="center">8</TD><TD ALIGN="center">TC1IRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">正エッジ</TD><TD>カウンタ１</TD><TR>
+    <TD ALIGN="center">9</TD><TD ALIGN="center">RTCIRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">正エッジ</TD><TD>リアルタイムクロック</TD><TR>
+    <TD ALIGN="center">10</TD><TD ALIGN="center">VOLIRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">正エッジ</TD><TD>電圧低下検出モジュール</TD><TR>
+    <TD ALIGN="center">11</TD><TD ALIGN="center">BATIRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">両エッジ</TD><TD>PSインタフェース電源供給線</TD><TR>
+    <TD ALIGN="center">12</TD><TD ALIGN="center">IFIRQ</TD><TD ALIGN="center">IRQ</TD><TD ALIGN="center">両エッジ</TD><TD>赤外通信モジュール</TD><TR>
+    <TD ALIGN="center">13</TD><TD ALIGN="center">TC2FIQ</TD><TD ALIGN="center">FIQ</TD><TD ALIGN="center">正エッジ</TD><TD>カウンタ２</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_6_2">
+<A HREF="#Heading3_1_6"> 6. </A>2 <B>割り込み優先度</B>
+</A>
+</H3>
+<blockquote>
+    以下において、「割り込み処理中」とは、割り込み発生による割り込みベクトルへのジャンプから割り込み元へのリターン処理実行完了までを指す。
+<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_6_2_1">
+(1) <B>ベクトル間</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      IRQ割り込み処理中、IRQ割り込みが自動的にマスクされる。<BR>
+      FIQ割り込み処理中は、IRQ割り込みとFIQ割り込みが自動的にマスクされる。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_6_2_2">
+(2) <B>割り込みソース間</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ひとつの割り込みベクトルに接続された割り込みソース間には優先順位は存在しない。<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_6_3">
+<A HREF="#Heading3_1_6"> 6. </A>3 <B>メカニズム</B>
+</A>
+</H3>
+<blockquote>
+    各割り込みソースには2つのビットレジスタ、「ラッチレジスタ」と「マスクレジスタ」が用意されている。<BR>
+    <BR>
+    ラッチレジスタはソースからの割り込み要求によりセットされ、&lt;INTSourceClear&gt;中のソース対応するビットへの1書き込みでクリアされる。この値は&lt;INTStatus&gt;を読み出すことで知ることができる。<BR>
+    <BR>
+    マスクレジスタは&lt;INTEnableSet&gt;中の対応するビットへの1書き込みでセットされ、&lt;INTEnableReset&gt;中のソースに対応するビットへの1書き込みでクリアされる。このレジスタの内容は&lt;INTEnableSet&gt;を読み出すことで知ることができる。<BR>
+    <BR>
+    ラッチレジスタとマスクレジスタのそれぞれの内容を論理積(AND)演算した結果を、各ベクトルに接続された全割り込みソースについて論理和(OR)した結果が、プロセッサコアへの割り込み要求信号となる。<BR>
+    <BR>
+    ラッチ前の割り込み要求状態を「割り込み要求ステータス」と呼ぶ。割り込み要求ステータスはINTRawStatusを読み出すことで知ることができる。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_7">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 7 <B>ホストインタフェース</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ホストシステムとのインタフェースは、当システムをスレーブ局とする同期シリアル通信モジュールと、ホストシステムからの電源供給検出機能（｢電源｣の項参照）から構成される。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_8">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 8 <B>システムクロック管理モジュール</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    消費電力低減のため、当システムではシステムクロック周波数をプログラムから動的に変更できる。また、液晶表示機能とRTCを除いた全ハードウェアの動作を停止するスタンバイモードも用意されている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_8_1">
+<A HREF="#Heading3_1_8"> 8. </A>1 <B>システムクロック周波数</B>
+</A>
+</H3>
+<blockquote>
+    システムクロック周波数として9つの値を設定できる。&lt;PMFrequence&gt;.&lt;FREQ&gt;へのクロック値指定ビットパタン書き込みによりシステムクロック値が変更される。以下のクロック値とそれに対応する指定ビットパタン、実測クロック周波数、消費電力を示す。<BR>
+<CENTER>
+        <H4><B>表 2 システムクロック周波数</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">クロック値</TD><TD ALIGN="center">指定ビットパタン</TD><TD ALIGN="center">実測値</TD><TD ALIGN="center">消費電力＊</TD><TR>
+    <TD>32.768 KHz</TD><TD ALIGN="center">0000</TD><TD>32.768 KHz</TD><TD>0.363 mA</TD><TR>
+    <TD>62.5 KHz</TD><TD ALIGN="center">0001</TD><TD>63.488 KHz</TD><TD>0.772 mA</TD><TR>
+    <TD>125 KHz</TD><TD ALIGN="center">0010</TD><TD>126.976 KHz</TD><TD>0.998 mA</TD><TR>
+    <TD>250 KHz</TD><TD ALIGN="center">0011</TD><TD>253.952 KHz</TD><TD>1.26 mA</TD><TR>
+    <TD>500 KHz</TD><TD ALIGN="center">0100</TD><TD>507.904 KHz</TD><TD>1.6 mA</TD><TR>
+    <TD>1 MHz</TD><TD ALIGN="center">0101</TD><TD>1.015808 MHz</TD><TD>2 mA</TD><TR>
+    <TD>2 MHz</TD><TD ALIGN="center">0110</TD><TD>1.998848 MHz</TD><TD>3.1 mA</TD><TR>
+    <TD>4 MHz</TD><TD ALIGN="center">0111</TD><TD>3.9977 MHz</TD><TD>5.4 mA</TD><TR>
+    <TD>8 MHz</TD><TD ALIGN="center">1xxx</TD><TD>7.9977 MHz</TD><TD>10.8 mA</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+        <BLOCKQUOTE><UL>
+        ＊ 電源電圧3.0V、LEDは消灯、赤外通信モジュールとサウンドDAコンバータは<BR>
+        スタンバイモード。<BR>
+        </BLOCKQUOTE></UL>
+    <BR>
+    システムクロック周波数を切り替えをARMモードで行った場合、システムの動作が不安定になる為、システムクロック周波数の切り替えはARM Thumbモードで行わなければならない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_8_2">
+<A HREF="#Heading3_1_8"> 8. </A>2 <B>クロック変更所要時間</B>
+</A>
+</H3>
+<blockquote>
+    PMFrequence.FREQ書き込みからシステムクロック変更が完了するまでには、32KHzから他のクロック周波数に切換える場合、32サイクル（約1ミリ秒）が、クロック周波数32KHz以外から切換える場合には、数サイクルが必要である。システムクロックを変更した場合には、&lt;PMFrequency&gt;.&lt;LOCK&gt;が１になっていることを確認してから以降の処理を行う必要がある。
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_8_3">
+<A HREF="#Heading3_1_8"> 8. </A>3 <B>リセット</B>
+</A>
+</H3>
+<blockquote>
+    リセット直後、システムクロックは32.768KHzである。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_8_4">
+<A HREF="#Heading3_1_8"> 8. </A>4 <B>スタンバイモード</B>
+</A>
+</H3>
+<blockquote>
+    &lt;PMStandby&gt;.&lt;STDBY&gt;に1を設定することにより当システムはスタンバイモードに移行する。<BR>
+    スタンバイモードでは、液晶表示機能とRTCを除く全ハードウェアを停止させることができる。スタティックRAMやレジスタの内容は保持される。液晶表示機能には別途消費電力低減のための機能が用意されている。RTCを停止させることはできない。<BR>
+    <BR>
+    決定ボタン押し下げ（ソース番号0）、RTC（ソース番号9）、電圧低下検出(ソース番号10)、およびPSインタフェース電源供給(ソース番号11)による割り込み要求によって、当システムはスタンバイモードからアクティブモードへ移行する。このプロセスを「ウェイク」と呼ぶ。ウェイク直後、システムクロックは一時的に32.768KHzとなり、その後スタンバイモード移行前のクロック値に移行する。<BR>
+    <BR>
+    ただし、RTCと電圧低下検出については、IntRawStatusがHighの時にスタンバイモードに移行した場合、これら２種類の要因でウェイクした際に、割り込みが発生しない。従って、これら２種類の要因によってウェイクしたことを検知する場合には、スタンバイモードへ移行する処理の直後で、これら２種類のIntRawStatusを監視する必要がある。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_9">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 9 <B>電圧低下検出モジュール</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは電源電圧の低下を検出する電圧低下検出モジュールを備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_9_1">
+<A HREF="#Heading3_1_9"> 9. </A>1 <B>メカニズム</B>
+</A>
+</H3>
+<blockquote>
+    電圧低下検出モジュールは、電源電圧がフラッシュメモリ書き込みに必要な下限電圧近くまで低下したことを検出し、検出の約1ミリ秒後に正エッジ型割り込み（ソース番号10）を要求する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_9_2">
+<A HREF="#Heading3_1_9"> 9. </A>2 <B>省電力のための機能</B>
+</A>
+</H3>
+<blockquote>
+    消費電力低減のため、電圧低下検出モジュールは2つのハードェア停止機能と定期テストモードを備えている。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_9_2_1">
+(1) <B>ハードウェア停止機能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      &lt;LVDControl&gt;.&lt;BGSTBY&gt;に1を設定すると電圧低下検出の基準となる「参照電圧発生」を、&lt;LVDControl&gt;.&lt;COMPSTBY&gt;に1を設定すると検出動作そのものである「電圧比較」を、それぞれ停止することができる。「参照電圧」は液晶表示機能でも使用されるため、「参照電圧」の発生を停止すると液晶表示が正常に行われなくなる。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_9_2_2">
+(2) <B>定期テストモード</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      &lt;LVDControl&gt;.&lt;AUTCNT&gt;に1を設定すると、電圧低下検出モジュールはRTCと連動して1秒に1回だけ検出動作を行う、つまり定期的に「電圧比較」を行う、定期テストモードに移行する。この場合、&lt;LVDControl&gt;の他のビットフィールドの値は無視される。<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_9_3">
+<A HREF="#Heading3_1_9"> 9. </A>3 <B>リセット</B>
+</A>
+</H3>
+<blockquote>
+    リセット直後、「参照電圧発生」・「電圧比較」のいずれも停止した状態となる。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_10">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 10 <B>液晶表示機能</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは、縦横各32ドットのモノクロ2諧調液晶ディスプレイを備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_1">
+<A HREF="#Heading3_1_10"> 10. </A>1 <B>ビデオメモリ（VRAM）</B>
+</A>
+</H3>
+<blockquote>
+    ビデオメモリ（以下VRAMと呼ぶ）は32本のデバイスレジスタ（R/W可能、32ビットアクセスのみ可能）&lt;BackPlanen[n=0..31]&gt;としてメモリ空間にマップされる。<BR>
+    <BR>
+    画面最上行の32ピクセルが&lt;BackPlane0&gt;に、画面最下行の32ピックセルが&lt;BackPlane31&gt;に対応する。また、画面左端のピクセルが&lt;BackPlanen[n=0..31]&gt;の最下位ビットに、画面右端のピクセルが&lt;BackPlanen[n=0..31]&gt;の最上位ビットに対応する。<BR>
+    <BR>
+    VRAMへのアクセスはディスプレイの状態によらず行うことができる。ディスプレイ表示のためにハードウェアにより行われるVRAM読み出しとソフトウェアによるVRAM書き込みとの間には、同期・調停機能は用意されていない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_2">
+<A HREF="#Heading3_1_10"> 10. </A>2 <B>フレームレート</B>
+</A>
+</H3>
+<blockquote>
+    VRAM中のデータが表示のためにハードウェアにより読み出され頻度を「フレームレート」、読み出し操作の最小単位を「フレーム」と呼ぶ。1フレームの間にVRAM中のデータの対応した信号が液晶装置へ2回送られる。各回の転送を「フィールド」と呼ぶ。フレームおよびフィールドの転送タイミング・状態を参照することはできない。<BR>
+    <BR>
+    &lt;LCDControl&gt;.&lt;FR&gt;への設定により16,32,64Hzの3種のフレームレートを選択できる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_3">
+<A HREF="#Heading3_1_10"> 10. </A>3 <B>表示反転</B>
+</A>
+</H3>
+<blockquote>
+    &lt;LCDControl&gt;.&lt;ROT&gt;に0が設定された状態では、PSインタフェースコネクタを下、赤外通信モジュール受発光部を上と置いた状態で正常に見えるよう表示が行われる。&lt;LCDControl&gt;.&lt;ROT&gt;に1を設定すると液晶画面表示が180度回転した状態で行われるようになる。<BR>
+    <BR>
+    &lt;LCDControl&gt;.&lt;ROT&gt;が0である場合の表示を「正表示」、&lt;LCDControl&gt;.&lt;ROT&gt;が1である場合を「逆表示」と呼ぶ。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_4">
+<A HREF="#Heading3_1_10"> 10. </A>4 <B>省電力のための機能</B>
+</A>
+</H3>
+<blockquote>
+    システム全体がスタンバイモードに移行しても液晶表示はアクティブモードのままである。液晶表示により消費される電力を低減するため、表示の停止、液晶表示装置への電力供給の停止、液晶表示装置供給される参照電圧発生の停止、のそれぞれを独立して行うことができる。また、表示領域面積を半分もしくは1/4にすることができる。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_10_4_1">
+(1) <B>電力供給停止</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      &lt;LDCControl&gt;.&lt;CPEN&gt;に0を設定することにより、液晶表示装置への電力供給を停止することができる。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_10_4_2">
+(2) <B>参照電圧発生停止</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      &lt;LVDControl&gt;.&lt;BGSTBY&gt;に1を設定することにより、液晶表示装置への電力供給を停止することができる。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_10_4_3">
+(3) <B>表示領域制限</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      消費電力低減のため、画面を縦方向に4つの小領域に等分し、各小領域個別もしくは隣接した2つの小領域に表示を限定することができる。小領域を「セグメント」と呼ぶ。各セグメントには画面上から順に1から4の「セグメント番号」がふられる。<BR>
+      &lt;LDCControl&gt;.&lt;DISMOD&gt;への対応するビットパタンの設定により全画面、1/2もしくは1/4画面表示を選択できる。<BR>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>表 3 液晶表示領域</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">ビットパタン</TD><TD ALIGN="center">表示セグメント</TD><TR>
+    <TD ALIGN="center">000</TD><TD ALIGN="center">1+2+3+4</TD><TR>
+    <TD ALIGN="center">001</TD><TD ALIGN="center">1</TD><TR>
+    <TD ALIGN="center">010</TD><TD ALIGN="center">2</TD><TR>
+    <TD ALIGN="center">011</TD><TD ALIGN="center">3</TD><TR>
+    <TD ALIGN="center">100</TD><TD ALIGN="center">4</TD><TR>
+    <TD ALIGN="center">101</TD><TD ALIGN="center">1+2</TD><TR>
+    <TD ALIGN="center">110</TD><TD ALIGN="center">2+3</TD><TR>
+    <TD ALIGN="center">111</TD><TD ALIGN="center">3+4</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_5">
+<A HREF="#Heading3_1_10"> 10. </A>5 <B>リセット</B>
+</A>
+</H3>
+<blockquote>
+    リセット直後、表示と電力供給はオフされ、電圧低下モジュールと兼用する「参照電圧」発生が停止した状態となる。<BR>
+    <BR>
+    VRAMはリセットおよび表示オン／オフ操作によって特定な状態に設定されることがない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_10_6">
+<A HREF="#Heading3_1_10"> 10. </A>6 <B>表示オン／オフ手順</B>
+</A>
+</H3>
+<blockquote>
+    表示オン手順を以下に示す。<BR>
+    <OL>
+         <LI VALUE= 1> &lt;LCDControl&gt;.&lt;DISON&gt;に0、&lt;LCDControl&gt;.&lt;FR&gt;に希望フレームレート指定ビットパタン、&lt;LCDControl&gt;.&lt;CPEN&gt;に1を設定する。
+         <LI VALUE= 2> &lt;LCDControl&gt;.&lt;DISON&gt;に1、他のビットフィールドにそれぞれの値を設定する。
+    </OL>
+    <BR>
+    表示オフ手順を以下に示す。<BR>
+    <OL>
+         <LI VALUE= 1> &lt;LCDControl&gt;.&lt;DISON&gt;に0を設定する。
+         <LI VALUE= 2> フレーム途中であればそれが完了するまで待機した後、表示がオフされる。
+    </OL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_11">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 11 <B>サウンド</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムはPCM方式に基づいたサウンド機能を備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_11_1">
+<A HREF="#Heading3_1_11"> 11. </A>1 <B>メカニズム</B>
+</A>
+</H3>
+<blockquote>
+    PCMデータをスピーカーへのアナログ信号に変換するDAコンバータのデジタル入力部は&lt;DACData&gt;.&lt;DACV&gt;にマップされている。このビットフィールドに設定されている値が2の補数表現の符号付き10ビット整数として解釈され、スピーカーへの電流値が決定される。整数の値が0の場合は電流が流れず、0x1FF・0x200の場合は最大電流が流れる。&lt;DACData&gt;.&lt;DACV&gt;の値が負の場合は電流方向が反転する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_11_2">
+<A HREF="#Heading3_1_11"> 11. </A>2 <B>省電力のための機能</B>
+</A>
+</H3>
+<blockquote>
+    消費電力低減のため、DAコンバータとスピーカはそれぞれ独立したスタンバイ／アクティブモードを備えている。スタンバイ中、&lt;DACData&gt;の内容は保持される。<BR>
+    DAコンバータのモード選定は&lt;DACControl&gt;.&lt;STDBY&gt;により、スピーカのモード選択は汎用IOポート5により、それぞれ行うことができる。。<BR>
+    <BR>
+    スタンバイモードはミュート機能実現のためにも使うことができる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_11_3">
+<A HREF="#Heading3_1_11"> 11. </A>3 <B>リセット</B>
+</A>
+</H3>
+<blockquote>
+    リセット直後、DAコンバータはスタンバイモードとなる。&lt;DACData&gt;.&lt;DACV&gt;の内容は0となる<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_12">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 12 <B>ボタンスイッチ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    5個のボタンスイッチはそれぞれ独立したレベル型割り込みソースとなっている。<BR>
+    <BR>
+<CENTER>
+        <H4><B>表 4 割り込みソースへのボタン割り当て</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">割り込みソース番号</TD><TD ALIGN="center">ボタン名称</TD><TR>
+    <TD ALIGN="center">0</TD><TD ALIGN="center">決定</TD><TR>
+    <TD ALIGN="center">1</TD><TD ALIGN="center">右方向</TD><TR>
+    <TD ALIGN="center">2</TD><TD ALIGN="center">左方向</TD><TR>
+    <TD ALIGN="center">3</TD><TD ALIGN="center">下方向</TD><TR>
+    <TD ALIGN="center">4</TD><TD ALIGN="center">上方向</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_13">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 13 <B>赤外通信モジュール</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは、半2重通信を実現するために必要なビット単位の赤外線受光発光機能を備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_13_1">
+<A HREF="#Heading3_1_13"> 13. </A>1 <B>サブキャリア変調</B>
+</A>
+</H3>
+<blockquote>
+    対ノイズ特性を改善し通信有効距離を伸ばす効果のあるサブキャリア変調をプログラムから有効にすることができる。システムクロックが1MHz以上の場合、サブキャリア周波数は40KHzとなる。40KHzサブキャリア変調は俗に赤外リモコンと呼ばれる機器で使用されている手法である。サブキャリア変調により対ノイズ特性は改善されるが、トレードオフとしてデータ転送レートが低下する。IrDAプロトコルと同様にサブキャリア変調を行わない場合には、これとは逆のトレードオフが発生する。<BR>
+    <BR>
+    サブキャリア変調された赤外光を受光するためには、汎用IOポート6によりサブキャリア除去フィルタを有効にする。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_13_2">
+<A HREF="#Heading3_1_13"> 13. </A>2 <B>受光部</B>
+</A>
+</H3>
+<blockquote>
+    受光部は両エッジ型割り込みソースである。暗→明、明→暗、両方の状態遷移をトリガとして割り込みが要求される。ポーリングによる受光操作は、割り込みコントローラのデバイスレジスタを参照することを実現できる。<BR>
+    <BR>
+    赤外通信モジュールの受光部はノイズを除去するためのフィルタを備えている。このフィルタを有効にするためには&lt;IFStaticControl&gt;.&lt;BFLT&gt;に0を設定する。フィルタを有効とした場合、フィルタリング周波数4サイクル以上の長さの受光だけが通知される。フィルタリング周波数は、システムクロックが1MHz以上の場合は40KHz固定、システムクロックが1MHz未満の場合はその周波数の1/25となる。<BR>
+    <BR>
+    発光中、受光操作は行えない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_13_3">
+<A HREF="#Heading3_1_13"> 13. </A>3 <B>発光部</B>
+</A>
+</H3>
+<blockquote>
+    &lt;IFDynamicControl&gt;.&lt;T_EN&gt;に1を設定することで、発光部は発光する。<BR>
+    <BR>
+    &lt;IFStaticControl&gt;.&lt;BGEN&gt;に0が設定されている状態で発光ではサブキャリア変調が行われる。サブキャリア周波数は、システムクロックが1MHz以上の場合は40KHz固定、システムクロックが1MHz未満の場合はその周波数の1/25となる。<BR>
+<CENTER>
+        <H4><B>表 5 システムクロックとサブキャリア周波数</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD>システムクロック（公称）</TD><TD>（実際）</TD><TD>サブキャリア周波数（実際）</TD><TR>
+    <TD ALIGN="center">1 MHz</TD><TD ALIGN="center">1.015808 MHz</TD><TD ALIGN="center">40.6 KHz</TD><TR>
+    <TD ALIGN="center">2 MHz</TD><TD ALIGN="center">1.998848 MHz</TD><TD ALIGN="center">39.97 KHz</TD><TR>
+    <TD ALIGN="center">4 MHz</TD><TD ALIGN="center">3.997700 MHz</TD><TD ALIGN="center">39.97 KHz</TD><TR>
+    <TD ALIGN="center">8 MHz</TD><TD ALIGN="center">7.995392 MHz</TD><TD ALIGN="center">39.97 KHz</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    受光中、発光操作は行えない。
+<BR>
+    発光部の発光強度は、汎用IOポート６によってサブキャリア変調モード(低出力)とIrDAモード(高出力)とを切換える。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_13_4">
+<A HREF="#Heading3_1_13"> 13. </A>4 <B>省電力のための機能</B>
+</A>
+</H3>
+<blockquote>
+    消費電力低減のため、赤外通信モジュールは独立したスタンバイ／アクティブモードを備えている。赤外通信モジュールは、&lt;IFStaticControl&gt;.&lt;STDBY&gt;に1を設定することによりスタンバイモードに、0を設定することでアクティブモードになる。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_13_5">
+<A HREF="#Heading3_1_13"> 13. </A>5 <B>リセット</B>
+</A>
+</H3>
+<blockquote>
+    リセット直後、赤外通信モジュールはスタンバイモードとなる。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_14">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 14 <B>リアルタイムクロック</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    リアルタイムクロック（以下RTC）は、システムクロックの設定に依存することなく、実時間を1秒単位でカウントするデバイスである。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_14_1">
+<A HREF="#Heading3_1_14"> 14. </A>1 <B>カウンタ</B>
+</A>
+</H3>
+<blockquote>
+    年・月・日および曜日・時・分・秒の2組のBCD(Binary Coded Decimal)表現32ビットレジスタを備える。時間は24時間制で表現される。<BR>
+    <BR>
+    カウンタ値を読む出す前に&lt;INTStatus&gt;.&lt;RTCIRQ&gt;が1になるを待つことを推奨する。<BR>
+    <BR>
+    カウンタ読み取りがカウンタ内容更新とバッティングした場合には、読み取り内容の正確さは保証されない。よって2回連続して同じ値が読み取れるまで、読み取りを反復することを推奨する。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_14_2">
+<A HREF="#Heading3_1_14"> 14. </A>2 <B>カウンタの設定</B>
+</A>
+</H3>
+<blockquote>
+    RTCに値を設定する時には、&lt;RTCControl&gt;.&lt;PRGSEL&gt;に1を設定してRTCをプログラミングモードに移行させる。このモードでは、4KHzの間隔で&lt;INTStatus&gt;.&lt;RTCIRQ&gt;が１となり割り込みが発生する。ここで2回繰り返して&lt;RTCInc&gt;.&lt;INCCNT&gt;に1を設定すると、&lt;RTCControl&gt;.&lt;CNTLSEL&gt;により指定されたカウンタが１インクリメントされる。（インクリメントは2KHzの周期で行われる。）<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_15">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 15 <B>カウンタ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは3チャネルの16ビットカウンタを備えている。各カウンタは割り込みソースであり、初期値自動再設定機能を備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_15_1">
+<A HREF="#Heading3_1_15"> 15. </A>1 <B>メカニズム</B>
+</A>
+</H3>
+<blockquote>
+    各カウンタは、2,32,512でプリスケールされたシステムクロックに従ってカウントダウンされる。カウンタの現在値はデバイスレジスタ&lt;TIMERnValue[n=0..2]&gt;に格納される。このレジスタは読み出すことができる。<BR>
+    各カウンタは、独立した割り込みソースとして割り込みコントローラに接続されており、カウンタ値が0になると割り込みを要求する。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_15_2">
+<A HREF="#Heading3_1_15"> 15. </A>2 <B>プリスケール値</B>
+</A>
+</H3>
+<blockquote>
+    プリスケール値は&lt;TIMERControl&gt;.&lt;CLKDIV&gt;に以下の各値を設定することで選択する。<BR>
+<CENTER>
+        <H4><B>表 6 カウンタプリスケール値</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD>ビットパタン</TD><TD>プリスケール値</TD><TR>
+    <TD ALIGN="center">00</TD><TD ALIGN="center">2</TD><TR>
+    <TD ALIGN="center">01</TD><TD ALIGN="center">32</TD><TR>
+    <TD ALIGN="center">10</TD><TD ALIGN="center">512</TD><TR>
+    <TD ALIGN="center">11</TD><TD ALIGN="center">（未定義）</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_15_3">
+<A HREF="#Heading3_1_15"> 15. </A>3 <B>初期値設定</B>
+</A>
+</H3>
+<blockquote>
+    カウンタへの値の設定はデバイスレジスタ&lt;TIMERnLoad[n=0..2]&gt;への書き込みにより行う。これらのレジスタの値はリセットもしくは次回の設定まで保持される。&lt;TIMERnLoad[n=0..2]&gt;への書き込みは、カウンタが停止している場合のみ行うことができる。<BR>
+    &lt;TIMERnControl[n=0..2]&gt;.&lt;ENTIMER&gt;への1設定によりカウントダウンが開始される。カウンタ値が0に達すると割り込み要求され、&lt;TIMERnLoad[n=0..2]&gt;の値が&lt;TIMERnValue[n=0..2]&gt;にコピーされカウントダウンが継続される。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_16">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 16 <B>汎用IOポート</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    当システムは7チャネルの汎用IOポート（PIO0～PIO6）を備えている。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_16_1">
+<A HREF="#Heading3_1_16"> 16. </A>1 <B>双方向ポート</B>
+</A>
+</H3>
+<blockquote>
+    PIO0からPIO3までの4つの汎用IOポートについては、&lt;PIOControl&gt;への設定により入力・出力のいずれかを指定することができる。入出力同時指定は行えない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_16_2">
+<A HREF="#Heading3_1_16"> 16. </A>2 <B>アクセス</B>
+</A>
+</H3>
+<blockquote>
+    &lt;PIOSetOutputData&gt;の対応ビットへ1を設定することにより、汎用IOポートへのHigh Level出力を行うことができる。<BR>
+    &lt;PIOClearOutputData&gt;の対応ビットへ1を設定することにより、汎用IOポートへのLow Level出力を行うことができる。<BR>
+    &lt;PIOReadInputData&gt;の対応ビットの読み取りにより、汎用IOポートからの入力を参照することができる。<BR>
+    <BR>
+<CENTER>
+        <H4><B>表 7 汎用IOポート接続デバイス</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">対応ビット番号</TD><TD ALIGN="center">ポート名称</TD><TD ALIGN="center">特性</TD><TD ALIGN="center">接続デバイス</TD><TR>
+    <TD ALIGN="center">0</TD><TD ALIGN="center">PIO0</TD><TD ALIGN="center">双方向</TD><TD>なし</TD><TR>
+    <TD ALIGN="center">1</TD><TD ALIGN="center">PIO1</TD><TD ALIGN="center">双方向</TD><TD>LED</TD><TR>
+    <TD ALIGN="center">2</TD><TD ALIGN="center">PIO2</TD><TD ALIGN="center">双方向</TD><TD>なし</TD><TR>
+    <TD ALIGN="center">3</TD><TD ALIGN="center">PIO3</TD><TD ALIGN="center">双方向</TD><TD>なし</TD><TR>
+    <TD ALIGN="center">4</TD><TD ALIGN="center">PIO4</TD><TD ALIGN="center">入力</TD><TD>PSインタフェース（電源供給線）</TD><TR>
+    <TD ALIGN="center">5</TD><TD ALIGN="center">PIO5</TD><TD ALIGN="center">出力</TD><TD>スピーカー（スタンバイ／アクティブスイッチ）</TD><TR>
+    <TD ALIGN="center">6</TD><TD ALIGN="center">PIO6</TD><TD ALIGN="center">出力</TD><TD>赤外通信モジュール（サブキャリア光用フィルタスイッチ）</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_16_3">
+<A HREF="#Heading3_1_16"> 16. </A>3 <B>LED</B>
+</A>
+</H3>
+<blockquote>
+    双方向ポートPIO1にはLEDが接続されている。PIO0を出力方向にすると、LEDの発光スイッチとなる。
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_16_4">
+<A HREF="#Heading3_1_16"> 16. </A>4 <B>PIO4</B>
+</A>
+</H3>
+<blockquote>
+    リードオンリ汎用IOポートPIO4にはPSインタフェース中の電源供給線が接続されており、レベル型割り込みソース（ソース番号11）となっている。
+<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_17">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 17 <B>ハードウェア補足</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_17_1">
+<A HREF="#Heading3_1_17"> 17. </A>1 <B>赤外通信モジュール</B>
+</A>
+</H3>
+<blockquote>
+    赤外通信モジュールには、IrDAモードとリモコンモードの2つのモードが存在する。ここではそれぞれのモードにおける、送受信波形の概要を説明する。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_1_1">
+(1) <B>IrDAモード</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspn1.gif">
+<P>
+</CENTER>
+      </BLOCKQUOTE>
+    <BR>
+    (注1)<BR>
+    20μs以上のパルスの光入力を受信感度ぎりぎりの放射強度で受けると上記のようにオシレーションが発生します。<BR>
+    (注2)<BR>
+    スタンバイからの復帰後、最大500μs後から正常に動作します。<BR>
+    その間ノイズが発生しますのでそのノイズを見ないようにして下さい。<BR>
+    (注3)<BR>
+    発光後、最大100μs間自発光をうけて受光部が誤動作します。<BR>
+    その間のRXD信号を見ないようにして下さい。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_1_2">
+(2) <B>リモコンモード</B>
+</A>
+</H4>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspn2.gif">
+<P>
+</CENTER>
+    <BR>
+    (注1)<BR>
+    スタンバイから復帰後、最大20msたってから正常に動作します。その間ノイズが発生しますので、その信号は見ないようにして下さい。<BR>
+    (注2)<BR>
+    リモコン受光部は非常に感度が高いため太陽光下、及び蛍光灯下モジュール上面にて1000Lx以上の環境下においてMAX300μsのランダムノイズが発生します。ソフト的に回避していただけるようにお願いします。<BR>
+    (注3)<BR>
+    一部インバーター蛍光灯で40kHz周辺の周波数をもつものがあり、そのもとで誤動作し、到達距離が短くなります。<BR>
+    (注4)<BR>
+    屋外等の6000Lxを超える環境下では、到達距離が短くなります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_1_3">
+(3) <B>その他の特性</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>表 8 赤外通信モジュールの特性</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center"></TD><TD ALIGN="center">発光部</TD><TD ALIGN="center">受光部</TD><TD ALIGN="center">PDA対PDA到達距離</TD><TR>
+    <TD ALIGN="center">IrDAモード</TD><TD ALIGN="center">発光波長875nm</TD><TD ALIGN="center">40KHzキャリア復調</TD><TD ALIGN="center">20cm(電池初期)</TD><TR>
+    <TD ALIGN="center">リモコンモード<BR></TD><TD ALIGN="center">発光波長875nm<BR></TD><TD ALIGN="center">ベースバンド<BR></TD><TD ALIGN="center">平均5m(電池初期、<BR>蛍光灯下600lx)</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_17_2">
+<A HREF="#Heading3_1_17"> 17. </A>2 <B>液晶表示</B>
+</A>
+</H3>
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_2_1">
+(1) <B>ハードウェア特性</B>
+</A>
+</H4>
+<CENTER>
+        <H4><B>表 9 LCD仕様</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">方式</TD><TD ALIGN="center">ＳＴＮ</TD><TR>
+    <TD ALIGN="center">Total Speed</TD><TD ALIGN="center">１９０ｍｓ</TD><TR>
+    <TD ALIGN="center">視野角</TD><TD ALIGN="center">±３０度</TD><TR>
+    <TD ALIGN="center">使用温度範囲</TD><TD ALIGN="center">－５℃～４５℃</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    ＊7.2V駆動、液晶正面９０度からの視点を０度<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_2_2">
+(2) <B>ビデオメモリ</B>
+</A>
+</H4>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspf3.gif">
+<P>
+      <BLOCKQUOTE>
+      <B>図 3 液晶表示ビデオメモリ</B><BR>
+</CENTER>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_17_3">
+<A HREF="#Heading3_1_17"> 17. </A>3 <B>消費電流</B>
+</A>
+</H3>
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_3_1">
+(1) <B>CPU消費電流</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      下表に、各動作モードにおけるCPU消費電流の理論値を示す。<BR>
+      <BR>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>表 10 CPU消費電流
+</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">液晶表示</TD><TD ALIGN="center">システムクロック</TD><TD ALIGN="center">消費電流(mA)</TD><TD ALIGN="center">動作時間(Hour)</TD><TD ALIGN="center">動作時間(Day)</TD><TR>
+    <TD ALIGN="center" ROWSPAN= 9>なし</TD><TD>ｽﾀﾝﾊﾞｲﾓｰﾄﾞ</TD><TD>0.05</TD><TD>1700</TD><TD>70.8</TD><TR>
+    <TD>32KHz</TD><TD>0.36</TD><TD>400</TD><TD>16.7</TD><TR>
+    <TD>62.5KHz</TD><TD>0.72</TD><TD>220</TD><TD>9.2</TD><TR>
+    <TD>125KHz</TD><TD>1.00</TD><TD>140</TD><TD>5.8</TD><TR>
+    <TD>250KHz</TD><TD>1.26</TD><TD>100</TD><TD>4.2</TD><TR>
+    <TD>500KHz</TD><TD>1.60</TD><TD>70</TD><TD>2.9</TD><TR>
+    <TD>1MHz</TD><TD>2.00</TD><TD>52</TD><TD>2.2</TD><TR>
+    <TD>2MHz</TD><TD>3.10</TD><TD>20</TD><TD>0.8</TD><TR>
+    <TD>4MHz</TD><TD>5.40</TD><TD>4</TD><TD>0.2</TD><TR>
+    <TD ALIGN="center" ROWSPAN= 9>あり</TD><TD>ｽﾀﾝﾊﾞｲﾓｰﾄﾞ</TD><TD>0.15</TD><TD>1000</TD><TD>41.7</TD><TR>
+    <TD>32KHz</TD><TD>0.46</TD><TD>330</TD><TD>13.8</TD><TR>
+    <TD>62.5KHz</TD><TD>0.82</TD><TD>180</TD><TD>7.5</TD><TR>
+    <TD>125KHz</TD><TD>1.10</TD><TD>120</TD><TD>5.0</TD><TR>
+    <TD>250KHz</TD><TD>1.36</TD><TD>90</TD><TD>3.8</TD><TR>
+    <TD>500KHz</TD><TD>1.70</TD><TD>65</TD><TD>2.7</TD><TR>
+    <TD>1MHz</TD><TD>2.10</TD><TD>45</TD><TD>1.9</TD><TR>
+    <TD>2MHz</TD><TD>3.20</TD><TD>19</TD><TD>0.8</TD><TR>
+    <TD>4MHz</TD><TD>5.50</TD><TD>4</TD><TD>0.2</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_3_2">
+(2) <B>デバイス消費電流</B>
+</A>
+</H4>
+<CENTER>
+        <H4><B>表 11 デバイス消費電流
+</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD></TD><TD ALIGN="center">TYP</TD><TD ALIGN="center">MAX</TD><TD ALIGN="center">MAX条件</TD><TR>
+    <TD>オーディオ部消費電流</TD><TD ALIGN="center">10.5mA</TD><TD ALIGN="center">12mA</TD><TD ALIGN="center">矩形波2.7Vpp出力</TD><TR>
+    <TD>LCD消費電流</TD><TD ALIGN="center">0.10mA</TD><TD ALIGN="center">0.15mA</TD><TD ALIGN="center">8.5V市松模様</TD><TR>
+    <TD>発光LED</TD><TD ALIGN="center">4mA</TD><TD ALIGN="center">6mA</TD><TD ALIGN="center">-</TD><TR>
+    <TD>Irリモコン 発光</TD><TD ALIGN="center">25mA</TD><TD ALIGN="center">45mA</TD><TD ALIGN="center">40KHzバースト</TD><TR>
+    <TD>リモコン 受光</TD><TD ALIGN="center">0.3mA</TD><TD ALIGN="center">0.5mA</TD><TD ALIGN="center">アイドル時</TD><TR>
+    <TD>IrDA    発光</TD><TD ALIGN="center">4mA</TD><TD ALIGN="center">15mA</TD><TD ALIGN="center">3/16 duty</TD><TR>
+    <TD>IrDA    受光</TD><TD ALIGN="center">0.3mA</TD><TD ALIGN="center">0.5mA</TD><TD ALIGN="center">アイドル時</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_17_3_3">
+(3) <B>電池寿命</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+<P>
+<IMG SRC ="gif/pdaspf4.gif">
+<P>
+      </BLOCKQUOTE>
+    <B>図 4 電池特性</B><BR>
+</CENTER>
+      <BLOCKQUOTE>
+      注）上記のグラフは連続使用したときの時間です。断続的に使用すると上記のグラフ以上長持ちします。<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A>
+<HR>
+
+<DIV ALIGN=right>
+Copyright (c) 2000 Sony Computer Entertainment Inc. All Rights Reserved.<BR>
+SCEI CONFIDENTIAL</DIV>
+</BODY>
+</HTML>

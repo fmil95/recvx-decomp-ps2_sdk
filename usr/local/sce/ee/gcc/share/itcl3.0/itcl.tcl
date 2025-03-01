@@ -9,7 +9,7 @@
 #            mmclennan@lucent.com
 #            http://www.tcltk.com/itcl
 #
-#      RCS:  $Id: itcl.tcl,v 1.3 2000/03/27 19:35:02 spolk Exp $
+#      RCS:  $Id: itcl.tcl,v 1.2 1999/01/27 18:56:08 jingham Exp $
 # ----------------------------------------------------------------------
 #            Copyright (c) 1993-1998  Lucent Technologies, Inc.
 # ======================================================================

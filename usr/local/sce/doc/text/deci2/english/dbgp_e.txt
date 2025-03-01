@@ -1,0 +1,920 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                      Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                        All Rights Reserved
+                                                                Aug 19, 1999
+
+DBGP Specification(version 3)                       
+==============================
+
+  This document provides description of the DBGP, one of the higher 
+  level protocols than the DECI2 protocol.
+
+
+Contents
+=========
+1.  Overview
+2.  Message Format
+3.  Message
+3.1 Configuration (GETCONF/GETCONFR)
+3.2 Register      (GETREG/GETREGR/PUTREG/PUTREGR)
+3.3 Memory        (RDMEM/RDMEMR/WRMEM/WRMEMR)
+3.4 Breakpoint    (GETBRKP/GETBRKPTR/PUTBRKPT/PUTBRKPTR)
+3.5 Execution     (BREAK/BREAKR/CONTINUE/CONTINUER/RUN/RUNR)
+3.6 XGKICK Trace  (XGKTCTL/XGKTCTLR/XGKTDATAR)
+3.7 Debug Control (DBGCTL/DBGCTLR)
+3.8 GS StoreImage (RDIMG/RDIMGR)
+3.9 Break Function(SETBPFUNC/SETBPFUNCR)
+Appendix A (IOP register kind, number)
+Appendix B (EE register kind, number)
+
+
+1.  Overview
+============
+  This document describes the debugging protocol used at each of System 
+  and Thread levels of the IOP and the EE.  (Thread-related matters are 
+  not described in the current state.)
+
+  The protocol numbers of the DBGP are as follows.
+  The following four debugging protocols are available.
+
+
+    IOP System Debugger: ISDBGP = 0x0130
+    IOP Thread Debugger: ITDBGP = 0x0140 (Reserved, to be implemented)
+    EE  System Debugger: ESDBGP = 0x0230
+    EE  Thread Debugger: ETDBGP = 0x0240 (Reserved, not to be implemented)
+
+  The generic name of the above four protocols is defined as the DBGP.
+
+
+
+2.  Message Format
+===========================
+  The DBGP message always has the DBGP header shown below following 
+  the DECI2 header.  The data format following the DBGP header depends 
+  on the message type.
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |     code      |     type      |              id               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |           unused              |     count     |    result     |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 1  Basic DBGP Message Header
+
+  id
+    This shows which of the processors CPU, VU0, and VU1 a message is 
+    sent to.  As for the protocols other than the ESDBGP, the id is 
+    undefined (=0).
+
+    DBGP_CPUID_CPU             0	// CPU (ESDBGP)
+    DBGP_CPUID_VU0             1	// VU0 (ESDBGP)
+    DBGP_CPUID_VU1             2	// VU1 (ESDBGP)
+
+  type
+    This shows the message type by indicating the object (memory, 
+    register, or execution) and distinction (between request and reply) 
+    of the message.  
+
+  code
+    This shows the code within the same message type, and indicates 
+    distinction between Step and Next in an execution command etc.
+
+    The type and code messages are as follows.
+
+    DBGP_TYPE_GETCONF           0x00	// Get Configuration Request
+    DBGP_TYPE_GETCONFR          0x01	// Get Configuration Reply
+    DBGP_TYPE_GETREG            0x04	// Get Register Request
+    DBGP_TYPE_GETREGR           0x05	// Get Register Reply
+    DBGP_TYPE_PUTREG            0x06	// Put Register Request
+    DBGP_TYPE_PUTREGR           0x07	// Put Register Reply
+    DBGP_TYPE_RDMEM             0x08	// Read Memory Request
+    DBGP_TYPE_RDMEMR            0x09	// Read Memory Reply
+    DBGP_TYPE_WRMEM             0x0a	// Write Memory Request
+    DBGP_TYPE_WRMEMR            0x0b	// Write Memory Reply
+    DBGP_TYPE_GETBRKPT          0x10	// Get Breakpoint Request
+    DBGP_TYPE_GETBRKPTR         0x11	// Get Breakpoint Reply
+    DBGP_TYPE_PUTBRKPT          0x12	// Put Breakpoint Request
+    DBGP_TYPE_PUTBRKPTR         0x13	// Put Breakpoint Reply
+    DBGP_TYPE_BREAK             0x14	// Break Request
+    DBGP_TYPE_BREAKR            0x15	// Break Reply
+       DBGP_CODE_OTHER            0xff	//   not-DBGP_TYPE_CONTINUE
+    DBGP_TYPE_CONTINUE          0x16	// Continue Request
+       DBGP_CODE_CONT             0x0	//   Continue
+       DBGP_CODE_STEP             0x1	//   Step
+       DBGP_CODE_NEXT             0x2	//   Next
+    DBGP_TYPE_CONTINUER         0x17	// Continue Reply
+    DBGP_TYPE_RUN               0x18	// Run Request (ESDBGP only)
+    DBGP_TYPE_RUNR              0x19	// Run Reply (ESDBGP only)
+    DBGP_TYPE_XGKTCTL           0x20	// XGKICK Trace Control Request (ESDBGP)
+    DBGP_TYPE_XGKTCTLR          0x21	// XGKICK Trace Control Reply (ESDBGP)
+    DBGP_TYPE_XGKTDATAR         0x23	// XGKICK Trace Data Reply (ESDBGP)
+    DBGP_TYPE_DBGCTL            0x24	// Debug Control Request (ESDBGP)
+    DBGP_TYPE_DBGCTLR           0x25	// Debug Control Reply (ESDBGP)
+    DBGP_TYPE_RDIMG             0x28    // read GS image request (ESDBGP)
+    DBGP_TYPE_RDIMGR            0x29    // read GS image response (ESDBGP)
+    DBGP_TYPE_SETBPFUNC         0x2e    // set break point function request
+    DBGP_TYPE_SETBPFUNCR        0x2f    // set break point function response
+
+  result
+    In the messages from the target to the host, the result code shown in 
+    the following table enters.  In the messages to be transmitted from 
+    the host to the target, 0 is always set. 
+
+    DBGP_RESULT_GOOD            0x00	// Good
+    DBGP_RESULT_INVALREQ        0x01	// Invalid Request
+    DBGP_RESULT_UNIMPREQ        0x02	// Unimplemented Request
+    DBGP_RESULT_ERROR           0x03	// Error
+    DBGP_RESULT_INVALCONT       0x04	// Invalid Continue
+    DBGP_RESULT_TLBERR          0x10	// TLB mod/load/store while cmd exec
+    DBGP_RESULT_ADRERR          0x11	// Address Error for WRMEM/RDMEM
+    DBGP_RESULT_BUSERR          0x12	// Bus Error for WRMEM/RDMEM
+    DBGP_RESULT_INVALSTATE      0x20	// Invalid State
+    DBGP_RESULT_BREAKED         0x21	// Breaked
+    DBGP_RESULT_BRKPT           0x22	// Breakpoint
+    DBGP_RESULT_STEPNEXT        0x23	// Step or Next
+    DBGP_RESULT_EXCEPTION       0x24	// Exception
+    DBGP_RESULT_PROGEND         0x25	// normal end of program (EE)
+    DBGP_RESULT_BUSYSTATE       0x26	// busy/critical state
+    DBGP_RESULT_DEBUG_EXCEPTION 0x27	// Debug Exception
+    DBGP_RESULT_TIMEOUT         0x28    // timeout
+
+     In the case the target has received a message of an unrecognizable 
+    type, it returns a message of result=DBGP_RESULT_INVALREQ, which has 
+    the same type as the received message.  Only in the case of this 
+    "unrecognizable type", the target returns the request type as it is 
+    as a reply type.
+
+    In the case the target has judged the already recognized type to be 
+    an illegal request afterward or has received a message of a 
+    recognizable but unimplemented type, it returns a message of a reply 
+    type to an appropriate type.
+
+  count
+    This shows number of the message operations, e.g. number of register 
+    blocks if the operation object is a register, number of executions if 
+    the message requires program execution.  The values are unsigned 
+    values between 0 to 255.  The "count" above may simply be indicated 
+    as "N". 
+     
+  To the fields not specified in this document, the transmitting side 
+  should always set 0.  In the case the receiving side has obtained 
+  a value other than 0, it should treat the value as an error as much 
+  as possible. 
+
+3.  Message
+===============
+
+3.1 Configuration (GETCONF/GETCONFR)
+-------------------------------------
+  These messages read the set value of the debugging function on 
+  the target side.
+  They are composed of the following headers and data.
+
+  DBGP_TYPE_GETCONF:  DECI2 Header + DBGP Header + DBGP_CONF_DATA
+  DBGP_TYPE_GETCONFR: DECI2 Header + DBGP Header + DBGP_CONF_DATA
+
+  The set value might be different according to the implementation of 
+  each debugging module on the target side, so the host side should 
+  always read this setting and issue the command corresponding to 
+  the value.  The action allowing the host side to use only a minimum 
+  function might cause a remarkable performance decrease in 
+  data-transfer speed etc., and is not recommended.   
+
+  When checking the DBGP_CONF_DATA size, it should be "bigger than" 
+  (not "equal to") the number of data in this document for 
+  compatibility in future specification expansion.  This applies even 
+  to the application on the host side corresponding only to the specific 
+  major_ver.
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        major_ver                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        minor_ver                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        target_id                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        reserved1                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        mem_align                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        reserved2                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        reg_size                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        nreg                                   |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        nbrkpt                                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        ncont                                  |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        nstep                                  |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        nnext                                  |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        mem_limit_align                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        mem_limit_size                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        run_stop_state                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        hdbg_area_addr                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        hdbg_area_size                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+              Figure 2  DBGP Configuration Data (DBGP_CONF_DATA)
+
+ major_ver
+    The protocol version of the DBGP is set.  (Always 3 in the current 
+    specification.)  It is used for reference in future DBGP_CONF_DATA 
+    format expansion.
+    
+  minor_ver
+    The implementation version on the target side is set.  Only 
+    the first implementation version is set to 0 and no other 
+    definitions are given in this document.  This can be displayed with
+    an application, but do not check it. 
+  
+  target_id
+    The protocol number of the DBGP is set.
+
+  mem_align
+    The align value combination supported by the target in 
+    the memory-related message is set.  It is expressed by 
+    the combination of the align values within the DBGP_MEM header, which 
+    is described later in this document.  For example, when supporting 
+    three values in byte, half-word, and word, 0x07 is set.  
+    ((mem_align & 1) == 1) holds at least.
+
+  reserved2
+    1 is set to keep compatibility.
+
+  reg_size
+    The value to show the size of register data in register-related 
+    messages is set.  For the IOP, 5 is set.  For the EE, 7 is set.
+
+    DBGP_CF_REG_SIZE_WORD       5   // (1 << 5) =  32bit (IOP)
+    DBGP_CF_REG_SIZE_QUAD       7   // (1 << 7) = 128bit (EE)
+
+  nreg
+    The upper limit of the number of register blocks in the 
+    register-related messages is set within the range of 1-255.     
+
+  nbrkpt
+    The upper limit of the number of addresses in the breakpoint-related 
+    messages is set within the range of 0-255.    
+
+  ncont
+    The upper limit of the number of executions in continuous execution 
+    is set.  1 is always set.
+
+  nstep
+    The upper limit of the number of specified instructions in Step 
+    execution is set within the range of 0-255.
+   
+  nnext
+    The upper limit of the number of specified instructions in Next 
+    execution is set within the range of 0-255.
+ 
+  mem_limit_align
+  mem_limit_size
+    In the messages related to the memory, the size of the packet might 
+    be limited by the align.  In the mem_limit_align, the combination in 
+    the align of the message on which size limitation is imposed is set.  
+    (The method of specifying the combination is the same as that of 
+    mem_align). In mem_limit_size, the number of the maximum bytes of 
+    the entire DECI2 packets including the DECI2, DBGP and DBGP_MEM 
+    headers of the message on which size limitation is imposed is set.
+
+    For example, when mem_limit_align=0x1f and mem_limit_size=0x400, 
+    the upper limit of the packet size of the memory-related messages of 
+    16 bytes or less is 1 Kbytes.  
+    The upper limit of other align values is (64K-1) bytes, the upper limit 
+    of the DECI2 packet.
+ 
+  run_stop_state
+    Run and stop states of the target are set. The run_stop_state is 
+    referred to to know the initial state of the target on the host side. 
+    The target sets the "present state" to this field in 
+    the DBGP_TYPE_GETCONFR message in any state.  As for the host, however, 
+    it is desirable that the status is judged from the transmitted and 
+    received packets after issuing the DBGP_TYPE_GETCONF once.
+
+    DBGP_CF_RSS_RUNNING         1  // running state
+    DBGP_CF_RSS_STOPPED         2  // stopped state
+
+  hdbg_area_addr
+  hdbg_area_size
+    The memory area on the target, which can be used freely by the host 
+    side debugger, is set.  The hdbg_area_addr is an address specifiable 
+    with a memory-related message in the virtual address.  It is aligned 
+    on the word boundary and can be used for instruction fetch and data 
+    access when the CPU is in kernel mode.  The hdbg_area_size is 
+    the number of bytes. When a value other than 0 is set, the lower limit 
+    is 256 bytes. 
+
+    This memory area is intended for securing the work area to realize 
+    high-speed functions such as pattern fill and pattern search from 
+    the host to the memory by sending a very small module to the target 
+    side and executing this. 
+
+
+3.2 Register (GETREG/GETREGR/PUTREG/PUTREGR)
+---------------------------------------------
+  These are messages to read and set register values on the target and 
+  the response messages to them.  They are composed of the following headers 
+  and data.
+
+  DBGP_TYPE_GETREG:  DECI2 Header + DBGP Header + (DBGP_REG + <reg>) * N
+  DBGP_TYPE_GETREGR: DECI2 Header + DBGP Header + (DBGP_REG + <reg>) * N
+  DBGP_TYPE_PUTREG:  DECI2 Header + DBGP Header + (DBGP_REG + <reg>) * N
+  DBGP_TYPE_PUTREGR: DECI2 Header + DBGP Header + (DBGP_REG + <reg>) * N
+
+  The <reg> is register data which follows the DBGP_REG header.  
+  The size is not that of the actual register.  It is set to the fixed 
+  size according to each target by the reg_size of the DBGP_CONF_DATA. 
+  For the IOP, 32 bits are always set.  For the EE, 128 bits are always set.
+
+  When the number of bits of an actual register is less than that of 
+  reg_size, the valid data should be put on the lower side of the data.  
+  It is desirable to set 0 to non-effective part but is not indispensable.
+
+  When accessing the VU0 and VU1 registers, it is necessary to specify 
+  each processor ID to the id of the DBGP header.  Therefore, the EE 
+  register and the VU0 register cannot be accessed at the same time with 
+  one message. 
+
+  In the DBGP_TYPE_GETREG message, the <reg> value is not referred to on 
+  the target side.  To omit the area securing processing on the target 
+  side, however, dummy data is transmitted.  0 is desirable as the <reg> 
+  value sent from the host side, but is not indispensable.   
+    
+  In the DBGP_TYPE_PUTREG message, the target side sets the <reg> value 
+  in the specified register and returns the DBGP_TYPE_PUTREGR message 
+  with the <reg> kept as it is. 
+
+  The target side returns 0 to the request to read a nonexistent 
+  undefined register and abandons the request to write to it.  In 
+  neither case, an error is notified. 
+
+  The upper limit of the number of registers operable by one 
+  DBGP_TYPE_GETREG/DBGP_TYPE_PUTREG message becomes the value of 
+  the nreg in the DBGP_CONF_DATA.  It depends on implementation on 
+  the target side, but 1 <= nreg is secured. 
+ 
+  The DBGP_REG header has the following format.
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            reserved           |     number    |     kind      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 3  DBGP Register Header (DBGP_REG)
+
+  kind
+    This shows the register type code.  Even the registers of the same 
+    name differ in code in the EE and the IOP. 
+
+  number
+    This shows register number.
+
+  For concrete numerical values for kind and number, refer to Appendixes 
+  A and B to this document. 
+
+
+3.3 Memory (RDMEM/RDMEMR/WRMEM/WRMEMR)
+---------------------------------------
+  These are messages to read and write the memory on the target and 
+  the response messages to them.  They are composed of the following 
+  headers and data.
+
+  DBGP_TYPE_RDMEM:  DECI2 Header + DBGP Header + DBGP_MEM
+  DBGP_TYPE_RDMEMR: DECI2 Header + DBGP Header + DBGP_MEM + <pad> + <data>
+  DBGP_TYPE_WRMEM:  DECI2 Header + DBGP Header + DBGP_MEM + <pad> + <data>
+  DBGP_TYPE_WRMEMR: DECI2 Header + DBGP Header + DBGP_MEM
+
+  The <data> is memory data, which is actually read and written by 
+  this message.  The <data> should be aligned from the beginning of 
+  the packet by the specification in the align field of the DBGP_MEM 
+  header.
+ 
+  The <pad> is padding data, which is generated by the alignment.
+
+  The total size of each header of the DECI2, DBGP, and DBGP_MEM is 
+  28 bytes.  Therefore, if the align is any of BYTE, HALF and WORD, 
+  the <pad> size becomes 0.  When the align is 1KB, the <pad> size 
+  becomes 1024-28 bytes. 
+
+  When the target side returns an error via the  DBGP_TYPE_RDMEMR 
+  message, there is a possibility that the part "<pad> + <data>" 
+  might be omitted.
+
+  The number of data readable/writable at a time is either the size 
+  set in the mem_limit_align or mem_limit_size of the DBGP_CONF_DATA 
+  or the upper limit of the DECI2 packet, (64K - 1) bytes.  (Refer 
+  to the corresponding part of the DBGP_CONF_DATA.)
+
+  The count field of the DBGP header should always be set to 1. 
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |           reserved            |     align     |     space     |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           address                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           length                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 4  DBGP Memory Header (DBGP_MEM)
+
+  space
+    A space code of the memory address. Specify any of the following.
+
+    DBGP_SPACE_MAIN_MEMORY  0	// main memory
+    DBGP_SPACE_VU_MEM       1	// VU memory(ESDBGP)
+    DBGP_SPACE_VU_UMEM      2	// VU micro memory(ESDBGP)
+
+    When specifying DBGP_SPACE_VU_MEM or DBGP_SPACE_VU_UMEM, it is necessary to
+    specify the desired read/write processor ID(in this case, specify 
+    DBGP_CPUID_VU0 or DBGP_CPUID_VU1) to the CPU ID of the DBGP header.
+
+    Main memory can be read or written at all times.  However, in the case of 
+    DBGP_SPACE_VU_MEM or DBGP_SPACE_VU_UMEM, a target debugger determines if
+    the received packet is readable/writable on receiving and if the received 
+    packet is not readable/writable, the debugger returns 
+    DBGP_RESULT_BUSYSTATE.      
+
+  align
+    An align value to specify how the target should access the memory space.
+    Byte=0, Halfword=1, Word=2, Double=3, Qword=4 and 1KB=10.
+    When the corresponding bit is set off in the DBGP_CONF_DATA, a 
+    DBGP_RESULT_INVALREQ error is occured. 
+	4 shall always be set, if DBGP_SPACE_VU_MEM is specified to the space, 
+     	and 3 shall always be set if DBGP_SPACE_VU_UMEM is specified.   
+
+  address
+    A memory address in byte units.  When it is not aligned according to the
+    specification in the align field, a DBGP_RESULT_INVALREQ error is occured.
+ 
+  length
+     A size of memory data in byte units. When it is not aligned according to 
+     the specification in the align field, a DBGP_RESULT_INVALREQ error is
+     occured. 
+
+
+3.4 Breakpoint (GETBRKP/GETBRKPTR/PUTBRKPT/PUTBRKPTR)
+------------------------------------------------------
+  These are messages to read the break point setting and present 
+  setting and the response messages to them.  They are composed of 
+  the following headers and data.
+
+  DBGP_TYPE_GETBRKPT:  DECI2 Header + DBGP Header
+  DBGP_TYPE_GETBRKPTR: DECI2 Header + DBGP Header + (<adr> + <cnt>) * N
+  DBGP_TYPE_PUTBRKPT:  DECI2 Header + DBGP Header + (<adr> + <cnt>) * N
+  DBGP_TYPE_PUTBRKPTR: DECI2 Header + DBGP Header
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                             adr                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                             cnt                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 5  DBGP Breakpoint Data
+
+The <adr> shows an address of the break point. 
+
+  The <cnt> shows the number of passing through the address defined by 
+  the <adr>.  With the DBGP_TYPE_PUTBRKPT message, the initial value is 
+  set.  With the DBGP_TYPE_GETBRKPTR message, the value gained by 
+  subtracting the already-passed number from the initial value is set 
+  and returned by the target side.
+
+  The <cnt> is an unsigned 32-bit number.  When the <cnt>, which is 
+  decremented every time the <adr> is passed, changes from 1 to 0, 
+  the target enters the stopped state and returns 
+  the DBGP_TYPE_BREAKR(DBGP_RESULT_BRKPT) message. 
+  
+  When the <cnt> is set to 0xffffffff as a special value, the passed number 
+  is not decremented. Whenever the <adr> is passed, the target enters 
+  the stopped state and returns the DBGP_TYPE_BREAKR (DBGP_RESULT_BRKPT) 
+  message.   
+
+  The target considers the break point whose present value in 
+  the <cnt> is 0 to be a disabled state. 
+
+  The upper limit of the number of break points which can be set becomes 
+  the nbrkpt value in the  DBGP_CONF_DATA.  When the count value (=N) in 
+  the DBGP header exceeds the nbrkpt in the DBGP_TYPE_PUTBRKPT message, 
+  the target side returns a DBGP_RESULT_INVALREQ error.
+
+  Breakpoints cannot be added/deleted partially with 
+  the DBGP_TYPE_PUTBRKPT message.  Setting always means updating 
+  all the settings.  When deleting all the breakpoints, it is necessary 
+  to specify N=0. 
+
+  The target does not notify a partial success/error of the setting 
+  requested by the DBGP_TYPE_PUTBRKPT.  All end normally, or all result 
+  in errors. 
+
+  The count value (=N) in the DBGP header returned from the target in 
+  the DBGP_TYPE_GETBRKPTR message is an actual set number. 
+
+  In the DBGP_TYPE_GETBRKPT and  DBGP_TYPE_PUTBRKPTR messages, the count 
+  in the DBGP header should be set to 0 respectively. 
+
+
+
+3.5 Execution (BREAK/BREAKR/CONTINUE/CONTINUER/RUN/RUNR)
+---------------------------------------------------------
+  These are messages to execute and stop the target programs and 
+  the response messages to them.  They are composed of the following 
+  headers and data.
+
+  DBGP_TYPE_BREAK:     DECI2 Header + DBGP Header
+  DBGP_TYPE_BREAKR:    DECI2 Header + DBGP Header
+  DBGP_TYPE_CONTINUE:  DECI2 Header + DBGP Header
+  DBGP_TYPE_CONTINUER: DECI2 Header + DBGP Header
+  DBGP_TYPE_RUN:       DECI2 Header + DBGP Header + DBGP_EERUN + <args>...
+  DBGP_TYPE_RUNR:      DECI2 Header + DBGP Header
+
+  DBGP_TYPE_BREAK is a target program stop request message.
+  The target returns DBGP_TYPE_BREAKR(DBGP_RESULT_BREAKED) when in running,
+  and returns DBGP_TYPE_BREAKR(DBGP_RESULT_INVALSTATE) when in stopped.
+ 
+  The DBGP_TYPE_CONTINUE message becomes a request for any of 
+  the continued execution, Step execution and Next execution according 
+  to the code field. 
+  If there is no error when the target receives the DBGP_TYPE_CONTINUE, 
+  it returns the DBGP_TYPE_CONTINUER first and then starts the following 
+  execution operation.  It there is an error, the target notifies it 
+  via the DBGP_TYPE_CONTINUER and stays in the stopped state without 
+  starting the operation execution.
+
+ - DBGP_CODE_CONT is continued execution, and N is always 1.
+    - DBGP_CODE_STEP is Step execution of instructions, and N is 
+      the number of Steps.  (Unit: Number of instructions)
+    - DBGP_CODE_NEXT is Next execution of instructions, and N is 
+      the number of Nexts.  (Unit: Number of instructions)
+
+  The target returns the DBGP_TYPE_BREAKR(DBGP_RESULT_STEPNEXT) at 
+  the end of the Step/Next execution without exception generation etc.
+
+  The result=DBGP_RESULT_GOOD is never returned via the DBGP_TYPE_BREAKR 
+  message.  When the DBGP_TYPE_BREAKR message is returned, the target 
+  program is always in the stopped state and is waiting for a command 
+  from the host. 
+
+  In the case of DBGP_TYPE_BREAKR message has been caused by 
+  the DBGP_TYPE_CONTINUE message, the value obtained by subtracting 
+  the number of actually-completed operations from the specified count 
+  value of the DBGP_TYPE_CONTINUE is set to the count value of 
+  the DBGP_TYPE_BREAKR message.  At the same time, the code value of 
+  the DBGP_TYPE_CONTINUE is set in the code field of the DBGP_TYPE_BREAKR 
+  message.  When transmitting the DBGP_TYPE_BREAKR message due to 
+  the stop immediately after reset etc., the DBGP_CODE_OTHER is set in 
+  the code field to show "the execution has not been started by 
+  the DBGP_TYPE_CONTINUE".
+
+  When the end of the Step/Next execution (in the case the instructions 
+  for the number of the Steps/Nexts have been executed) and 
+  the establishment of the break point condition (in the case 
+  the specified number of passing has been met) occur at the same time, 
+  the target returns the DBGP_TYPE_BREAKR(DBGP_RESULT_BRKPT) and 
+  the code field becomes the DBGP_CODE_STEP/DBGP_CODE_NEXT. 
+
+  The following are examples of DBGP_TYPE_BREAKR messages returned from 
+  the target.
+
+    Ex.1) Case where count=3 is specified in the DBGP_TYPE_CONTINUE and 
+	  DBGP_CODE_STEP and a bus error is occured during the Step 
+	  execution of the first instruction
+          -> DBGP_TYPE_BREAKR, DBGP_RESULT_EXCEPTION, DBGP_CODE_STEP, count=3
+
+    Ex.2) Case where count=8 is specified in the DBGP_TYPE_CONTINUE and 
+	  DBGP_CODE_STEP and a break point (<cnt>=1) is encountered 
+	  after the Step execution of 1 instruction
+          -> DBGP_TYPE_BREAKR, DBGP_RESULT_BRKPT, DBGP_CODE_STEP, count=7
+
+    Ex.3) Case where count=2 is specified in the DBGP_TYPE_CONTINUE and 
+          DBGP_CODE_NEXT and a break point (<cnt>=1) is encountered 
+          after the Next execution of 2 instructions
+          -> DBGP_TYPE_BREAKR, DBGP_RESULT_BRKPT, DBGP_CODE_NEXT, count=0
+
+  When interrupted by the D-bit of the VU0 or VU1, the target returns
+  DBGP_CPUID_VU0 or DBGP_TYPE_BREAKR (DBGP_RESULT_EXCEPTION) that is set by
+  DBGP_CPUID_VU1 to CPUID of the DBGP header.
+ 
+
+  The DBGP_TYPE_RUN is a message to request for execution of the target 
+  program on the EE.  The DBGP_TYPE_RUN has the following header.
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           entry                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            gp                                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         reserved1                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         reserved2                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           argc                                |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 6  DBGP EE Run Header (DBGP_EERUN)
+
+ entry
+    This specifies the program start address. 
+
+  gp
+    This specifies the GP register value.
+
+  argc
+    This specifies the number of arguments.
+
+  The format of the argument data following the DBGP_EERUN header is 
+  as below. 
+  
+    Array to show the length of each argument (4 bytes * argc)
+    (Length includes the null at the end of each argument.)
+
+    Each of null-terminated arguments (irregular byte * argc)
+
+
+3.6 XGKICK Trace  (XGKTCTL/XGKTCTLR/XGKTDATAR)
+-----------------------------------------------
+  This is a message that executes/stops the GIF packet data trace with the 
+  VU1 XGKICK command, and a response message to it.  This is also a response 
+  message to the trace data.  It consists of headers and data shown below.
+
+  DBGP_TYPE_XGKTCTL:   DECI2 Header + DBGP Header + DBGP_XGKT_CTL
+  DBGP_TYPE_XGKTCTLR:  DECI2 Header + DBGP Header + DBGP_XGKT_CTL
+  DBGP_TYPE_XGKTDATAR: DECI2 Header + DBGP Header + DBGP_XGKT_DATA
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           flag                                |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           off                                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           cnt                                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 7  DBGP XGKICK Trace Control (DBGP_XGKT_CTL)
+
+  The DBGP_TYPE_XGKTCTL message is a XGKICK trace start request.
+  Trace the GIF packet data by the XGKICK command for the specified count 
+  <cnt> from the specified offset(in a case where <off>=0, tracing starts
+  from the next XGKICK command, and in where <off>=1, it starts from the 
+  second XGKICK command).
+ 
+  To execute the XGKICK trace, the D-bit must be established in advance in 
+  the upper command of the XGKICK command.
+  Specify DBGP_CPUID_VU1 to an id field of the DBGP header.
+
+  
+  flag
+    Shows an operation option and it is OR of the following bit values.
+
+    DBGX_VBS0           0x00000001    // VU0  busy
+    //DBGX_VIF0         0x00000010    // VIF0 busy   (reserved)
+    //DBGX_VBS1         0x00000100    // VU1  busy   (reserved)
+    DBGX_VIF1           0x00001000    // VIF1 busy
+    //DBGX_GIF          0x00010000    // GIF  busy   (reserved)
+
+    When a specified bit of the <flag> is OFF, the target waits without a 
+    time limit until the condition is cleared.  If the <flag> is ON and the 
+    condition is satisfied, a reason for "not having been processed" is 
+    displayed with a flag corresponding bit without the tracing process.
+    
+
+  A DBGP_TYPE_XGKTCTLR message is a response to the XGKICK trace start 
+  reequest.
+  <flag>, <off> and <cnt> returns the same value as the one DBGP_TYPE_XGKTCTL 
+  returns.
+
+
+  A DBGP_TYPE_XGKTDATAR message is a trace data sent from the target to the
+  host.
+
+
+     3                   2                   1
+   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           flag                                |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           length                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           offset                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           sequence                            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                      GIF Packets Data                         |
+  |                              ....                             |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 8  DBGP XGKICK Trace Data (DBGP_XGKT_DATA)
+
+  flag
+    When any of the DBGP_TYPE_XGKTCTL <flag> bit values is ON with the 
+    condition satisfied, and in case where the further trace process is not 
+    performed, the corresponding bit turns ON(in this case, alwasy length=0).
+
+  length
+    Byte number of the GIF packet data.  
+    Byte number of the entire GIF packet data sent by the identical <offset>.  
+
+  offset
+    An offset number of the continued GIF packet data corresponding to the 
+    XGKICK command which starts with 0.  For example, when the <off> of 
+    DBGP_TYPE_XGKTCTL is 2, the <offset> within the the first DBGP_XGKT_DATA
+    is 2.       
+
+  sequence
+    A GIF packet data corresponding to one XGKICK command can be divided into 
+    two or more DECI2 packets.  sequence is a division number starting from 0
+    (later than the second division of the flag, length and offset always 
+    have the same value as the value the first division has). 
+
+  GIF Packets Data
+    A traced GIF packet data. 
+
+
+3.7 Debug Control (DBGCTL/DBGCTLR)
+-----------------------------------
+  This is a message that switches the debug mode on/off of every target 
+  processor.  It consists of the headers and data shown below.
+
+
+  DBGP_TYPE_DBGCTL:  DECI2 Header + DBGP Header + flag(32bit)
+  DBGP_TYPE_DBGCTLR: DECI2 Header + DBGP Header + flag(32bit)
+ 
+  A target processor shall be specified in the id field of the DBGP header.
+  In an on-state, it enables the D-bit of the VU0 and VU1 and permits an 
+  interruption.  In an off-state, it disables the D-bit.  Nothing is 
+  performed against DBGP_CPUID_CPU.
+
+ 
+  flag
+    1 in an on-state 
+    0 in an off-state 
+
+
+3.8 GS StoreImage (RDIMG/RDIMGR)
+---------------------------------
+  These are messages to read out the image data from the GS local memory,
+  and the response messages to them. They are composed of the following 
+  headers and data.
+
+  DBGP_TYPE_RDIMG:  DECI2 Header + DBGP Header + DBGP_RDIMG
+  DBGP_TYPE_RDIMGR: DECI2 Header + DBGP Header + DBGP_RDIMG_DATA
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |              sbp              |            reserved           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |              spsm             |              sbw              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |               y               |               x               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |               h               |               w               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 9  DBGP StoreImage header (DBGP_RDIMG)
+
+  A DBGP_TYPE_RDIMG message is a request to read out the GS image data.
+  It is necessary that size of the image data, w x h x pixel size, be a 
+  multiple of 16 bytes, and 32767 x 16 bytes or less. When the pixel size 
+  is 8 bits, it is necessary that x and w be a multiple of 2. When the 
+  pixel size is 4 bits, it is necessary that x and w be a multiple of 4.
+
+  sbp
+    Transfer buffer base address (Actual address is sbp x 64.)
+
+  sbw
+    Transfer buffer width (Actual width is sbw x 64.)
+
+  spsm
+    Pixel format of transfer data
+
+          0 : PSMCT32  (pixel size:32bit)
+          1 : PSMCT24  (pixel size:24bit)
+          2 : PSMCT16  (pixel size:16bit)
+          10: PSMCT16S (pixel size:16bit)
+          19: PSMT8    (pixel size:8bit)
+          20: PSMT4    (pixel size:4bit)
+          27: PSMT8H   (pixel size:8bit)
+          36: PSMT4HL  (pixel size:4bit)
+          44: PSMT4HH  (pixel size:4bit)
+          48: PSMZ32   (pixel size:32bit)
+          49: PSMZ24   (pixel size:24bit)
+          50: PSMZ16   (pixel size:16bit)
+          58: PSMZ16S  (pixel size:16bit)
+
+  x, y
+    Upper left point of trasfer area
+
+  w, h
+    Width and height of transfer are (pixel units)
+
+  The DBGP_TYPE_RDIMGR message includes the image data sent from the
+  target to the host. If the image data is bigger than buffer size on 
+  the debugger of the target, it is sent after dividing it into two or 
+  more packets.
+  
+       3                   2                   1
+   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                            length                             |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           sequence                            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           reserved                            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           reserved                            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                         GS Image Data                         |
+  |                             ....                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 10 DBGP StoreImage Data (DBGP_RDIMG_DATA)
+
+  length
+    Number of bytes of whole image data
+
+  sequence
+    The GS image data may be divided into two or more DECI2 packets.
+    sequence is division number, and starts from 0. (Length of the 
+    second packet or after has the same value as the first packet.)
+    
+  GS Image Data
+    GS image data read out
+
+
+3.9 Break Function(SETBPFUNC/SETBPFUNCR)
+-----------------------------------------
+  These are messages to set a function executed when passing through the 
+  breakpoint, and the response messages to them. They are composed of the 
+  following headers and data.
+
+  DBGP_TYPE_SETBPFUNC:  DECI2 Header + DBGP Header + <adr>
+  DBGP_TYPE_SETBPFUNCR: DECI2 Header + DBGP Header + <adr>
+
+  The DBGP_TYPE_SETBPFUNC message is a request to set a funtion executed when
+  passing through the breakpoint. For example, a value of a variable on passing 
+  through the breakpoint is traceable by following the procedures below.
+  
+  	Preparing for a function to store a value of a variable.
+  	Setting the function with this message.
+  	Executing it after setting the breakpoint with <cnt>.
+ 
+  With this message, compared with the procedure setting the function call 
+  statically in a program, the function can be called from anywhere without 
+  re-compiling.
+  
+  The address of the fuction which should be called is set to <adr>. When
+  0 is set to <adr>, setting is cleared.
+
+
+Appendix A (IOP register kind, number)
+---------------------------------------
+  ISDBGP_KIND_HL	1	// hi,lo
+     ISDBGP_NUM_LO	  0
+     ISDBGP_NUM_HI	  1
+  ISDBGP_KIND_GPR	2	// general purpose register
+  ISDBGP_KIND_SCC	3	// system control register
+  ISDBGP_KIND_GTER	6	// GTE register
+  ISDBGP_KIND_GTEC	7	// GTE control register
+
+
+Appendix B (EE register kind, number)
+--------------------------------------
+  ESDBGP_KIND_GPR	0	// general purpose register (128bit x 32)
+  ESDBGP_KIND_HLS	1	// hi,lo,sa
+     ESDBGP_NUM_HI	  0	//   hi  (64bit)
+     ESDBGP_NUM_LO	  1	//   lo  (64bit)
+     ESDBGP_NUM_HI1	  2	//   hi1 (64bit)
+     ESDBGP_NUM_LO1	  3	//   lo1 (64bit)
+     ESDBGP_NUM_SA	  4	// shift amount (32bit)
+  ESDBGP_KIND_SCR	2	// system control register (32bit x 32)
+  ESDBGP_KIND_PCR	3	// performance counter (32bit x 3)
+  ESDBGP_KIND_HDR	4	// hardware debug register (32bit x 8)
+  ESDBGP_KIND_FPR	5	// floating point register (32bit x 32)
+  ESDBGP_KIND_FPC	6	// floating point control (32bit x 2)
+  ESDBGP_KIND_V0F	7	// VU0 floating point register (128bit x 32)
+  ESDBGP_KIND_V0I	8	// VU0 integer/control register (32bit x 32)
+  ESDBGP_KIND_V1F	9	// VU1 floating point register (128bit x 32)
+  ESDBGP_KIND_V1I	10	// VU1 integer/control register (32bit x 32)
+

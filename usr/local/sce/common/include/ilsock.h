@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                         i.LINK Library
@@ -54,9 +54,9 @@ extern "C" {
 #else /* SCEILSOCK_NO_PACKET_SIZE_EXTENSION */
 #define SCEILSOCK_MAX_PACKET_SIZE	512
 #endif /* SCEILSOCK_NO_PACKET_SIZE_EXTENSION */
-#define SCEILSOCK_MAX_PAYLOAD_SIZE	(SCEILSOCK_MAX_PACKET_SIZE - 24)
+#define SCEILSOCK_MAX_PAYLOAD_SIZE	(SCEILSOCK_MAX_PACKET_SIZE - 20)
 						/* 20: sizeof(dp_header) */
-#define SCEILSOCK_MAX_PAYLOAD_SIZE_DEFAULT	(64 - 24)
+#define SCEILSOCK_MAX_PAYLOAD_SIZE_DEFAULT	(64 - 20)
 
 
 typedef unsigned int	sceILsock_addr_t;

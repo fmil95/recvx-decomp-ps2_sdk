@@ -1,0 +1,2933 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CD(DVD)-ROMライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CD(DVD)-ROMライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceCdCLOCK>sceCdCLOCK </A><BR>
+</TD><TD> </TD>
+<TD>年月日・時刻格納構造体</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdlFILE>sceCdlFILE </A><BR>
+</TD><TD> </TD>
+<TD>ファイルディスクリプタ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdlLOCCD>sceCdlLOCCD </A><BR>
+</TD><TD> </TD>
+<TD>CD-ROM読み込みロケーション</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdRMode>sceCdRMode </A><BR>
+</TD><TD> </TD>
+<TD>CD(DVD)-ROM 読み込みモード</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceCdBreak>sceCdBreak </A><BR>
+</TD><TD> </TD>
+<TD>コマンドの中断</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdCallback>sceCdCallback </A><BR>
+</TD><TD> </TD>
+<TD>sceCdSyncコールバック関数を定義する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdChangeThreadPriority>sceCdChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>EE側リクエスト処理モジュールのIOPスレッドプライオリティ変更</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdDiskReady>sceCdDiskReady </A><BR>
+</TD><TD> </TD>
+<TD>ドライブの状態をチェックする</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdGetDiskType>sceCdGetDiskType </A><BR>
+</TD><TD> </TD>
+<TD>メディアのフォーマットを得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdGetError>sceCdGetError </A><BR>
+</TD><TD> </TD>
+<TD>ドライブのエラー情報を得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdGetReadPos>sceCdGetReadPos </A><BR>
+</TD><TD> </TD>
+<TD>sceCdRead()関数の進行状況を調査する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdGetToc>sceCdGetToc </A><BR>
+</TD><TD> </TD>
+<TD>TOCリード</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdInit>sceCdInit </A><BR>
+</TD><TD> </TD>
+<TD>CD(DVD)-ROMサブシステムの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdInitEeCB>sceCdInitEeCB </A><BR>
+</TD><TD> </TD>
+<TD>EE側コールバックスレッドの初期化（EE側のみの関数）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdIntToPos>sceCdIntToPos </A><BR>
+</TD><TD> </TD>
+<TD>CD-ROMロジカルセクタナンバから分・秒・セクタを得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdMmode>sceCdMmode </A><BR>
+</TD><TD> </TD>
+<TD>読み取りメディアを指定する。</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdPause>sceCdPause </A><BR>
+</TD><TD> </TD>
+<TD>CD(DVD)-ROMのヘッドのポーズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdPosToInt>sceCdPosToInt </A><BR>
+</TD><TD> </TD>
+<TD>CD-ROM分・秒・セクタからロジカルセクタナンバを得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdRead>sceCdRead </A><BR>
+</TD><TD> </TD>
+<TD>データリード</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdReadChain>sceCdReadChain </A><BR>
+</TD><TD> </TD>
+<TD>一括データリード(EE側のみの関数)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdReadClock>sceCdReadClock </A><BR>
+</TD><TD> </TD>
+<TD>年月日および時刻の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdReadIOPm>sceCdReadIOPm </A><BR>
+</TD><TD> </TD>
+<TD>IOPメモリへのデータリード（EE側のみの関数）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdSearchFile>sceCdSearchFile </A><BR>
+</TD><TD> </TD>
+<TD>ファイル名から位置とサイズを獲得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdSeek>sceCdSeek </A><BR>
+</TD><TD> </TD>
+<TD>CD(DVD)-ROMのヘッドの移動</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStandby>sceCdStandby </A><BR>
+</TD><TD> </TD>
+<TD>メディア回転開始</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStatus>sceCdStatus </A><BR>
+</TD><TD> </TD>
+<TD>ドライブの状態を得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStInit>sceCdStInit </A><BR>
+</TD><TD> </TD>
+<TD>ストリーマ初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStop>sceCdStop </A><BR>
+</TD><TD> </TD>
+<TD>メディア回転停止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStPause>sceCdStPause </A><BR>
+</TD><TD> </TD>
+<TD>ストリームの一時停止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStRead>sceCdStRead </A><BR>
+</TD><TD> </TD>
+<TD>ストリームデータの読み込み</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStResume>sceCdStResume </A><BR>
+</TD><TD> </TD>
+<TD>ストリームの再開</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStSeek>sceCdStSeek </A><BR>
+</TD><TD> </TD>
+<TD>ストリーム位置の変更</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStStart>sceCdStStart </A><BR>
+</TD><TD> </TD>
+<TD>ストリーミング開始</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStStat>sceCdStStat </A><BR>
+</TD><TD> </TD>
+<TD>ストリームデータ読み込み状況取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdStStop>sceCdStStop </A><BR>
+</TD><TD> </TD>
+<TD>ストリーミングの終了</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdSync>sceCdSync </A><BR>
+</TD><TD> </TD>
+<TD>コマンドの終了を待つ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceCdTrayReq>sceCdTrayReq </A><BR>
+</TD><TD> </TD>
+<TD>トレイのオープン / クローズ</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceCdCLOCK>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdCLOCK
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        年月日・時刻格納構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_char <I>stat</I>;
+	u_char <I>second</I>;
+	u_char <I>minute</I>;
+	u_char <I>hour</I>;
+	u_char <I>pad</I>;
+	u_char <I>day</I>;
+	u_char <I>month</I>;
+	u_char <I>year</I>;
+} <B>sceCdCLOCK</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>stat</I>	0:正常 それ以外はエラー
+<I>second</I>	秒（BCD値）
+<I>minute</I>	分（BCD値）
+<I>hour</I>	時（BCD値）
+<I>pad	</I>アライメントによって生じるパディングデータ
+<I>day</I>	日（BCD値）
+<I>month</I>	月（BCD値）
+<I>year</I>	年（BCD値）
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    年月日および時刻をBCD値にて格納する構造体。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdReadClock">sceCdReadClock</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdlFILE>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdlFILE
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルディスクリプタ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_int <I>lsn</I>;
+	u_int <I>size</I>;
+	char <I>name</I>[16];
+	u_char <I>date</I>[8];
+} <B>sceCdlFILE</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn</I>	ファイルのロジカルセクタナンバ
+<I>size</I>	ファイルサイズ（バイト単位）
+<I>name</I>	ファイル名
+<I>date</I>	1th  秒
+	2th  分
+	3th  時
+	4th  日
+	5th  月
+	6th 7th  年(４桁)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMファイルの位置・サイズを表す構造体。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSearchFile">sceCdSearchFile</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdlLOCCD>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdlLOCCD
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD-ROM読み込みロケーション
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_char <I>minute</I>;
+	u_char <I>second</I>;
+	u_char <I>sector</I>;
+	u_char <I>track</I>;
+} <B>sceCdlLOCCD</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>minute</I>	分
+<I>second</I>	秒
+<I>sector</I>	セクタ
+<I>track</I>	トラック番号
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD-ROMの読み込み位置（ヘッド位置）を表す構造体。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CDの読み込み位置を分秒セクタで算出するためのみに存在する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdIntToPos">sceCdIntToPos</a>(), <a href="./cdvd_rf.htm#sceCdPosToInt">sceCdPosToInt</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdRMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdRMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD(DVD)-ROM 読み込みモード
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_char <I>trycount</I>;
+	u_char <I>spindlctrl</I>;
+	u_char <I>datapattern</I>;
+	u_char <I>pad</I>;
+} <B>sceCdRMode</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>trycount</I>		読み取りトライ回数（エラーリトライ回数 + １）の値
+					（0は255回トライを行う）
+<I>spindlctrl</I>	SCECdSpinStm:	ストリーム推奨回転速度
+		SCECdSpinNom:	最高回転数でデータ読み出しを開始し、読み出しエラー
+				の際には読み出しが行なえるまで回転数を落とす
+<I>datapattern</I>	SCECdSecS2048:	データサイズ2048byte
+		SCECdSecS2328:	            2328byte
+		SCECdSecS2340:	            2340byte
+<I>pad		</I>アライメントによって生じるパディングデータ
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMの読み取りモードを指定する構造体。 <BR>
+    DVDメディア読み取り時のdatapatternは、SCECdSecS2048のみ有効。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdRead">sceCdRead</a>()
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceCdBreak>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdBreak
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンドの中断
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdBreak</B> ( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    実行中のコマンド（sceCdPause(), sceCdRead(), sceCdSeek(), sceCdStandby(), sceCdSstatus(), sceCdstop()等）を中断する。 <BR>
+    各コマンドの処理は中断され、コールバック等が設定してある場合はコールバック関数が呼び出される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdCallback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdCallback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        sceCdSyncコールバック関数を定義する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdCallback</B> (
+	void (*<I>func</I>)()
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>func</I>	コールバック関数のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    前回設定したコールバック関数のアドレス。未設定の場合は０が返る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノンブロック関数の終了時に呼ばれるコールバックfuncを設定する。 <BR>
+    コールバックを設定するとノンブロック関数終了時に関数funcが呼び出される。 <BR>
+    関数funcはIOP側では割り込みハンドラで、ＥＥ側ではコールバックスレッドとしてよびだされる。 <BR>
+    funcに０を指定した場合およびコマンド発行に失敗した場合はコールバックは発生しない。 <BR>
+    コールバック関数の第一引数には、コールバックの要因となった関数のコードを渡す。 <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>第一引数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdFuncRead</TD>
+<TD valign="TOP">sceCdRead()関数が終了した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdFuncSeek</TD>
+<TD valign="TOP">sceCdSeek()関数が終了した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdFuncStandby</TD>
+<TD valign="TOP">sceCdStandby()関数が終了した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdFuncStop</TD>
+<TD valign="TOP">sceCdStop()関数が終了した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdFuncPause</TD>
+<TD valign="TOP">sceCdPause()関数が終了した</TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+<B>コールバック関数内での注意事項</B>
+    <OL>
+         <LI VALUE= 1> ＥＥ側では、コールバック中にではsceCdRead()関数等、コールバックを発生する関数の再呼び出しはサポートしておりません。
+         <LI VALUE= 2> IOP側では、コールバック関数は割り込みハンドラ中に割り込み禁止状態で呼ばれるため、できる限り早く処理を終える必要がある。また、ライブラリにて割り込み処理専用の関数が用意されている場合、その関数を使用する必要がある。
+    </OL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EE側リクエスト処理モジュールのIOPスレッドプライオリティ変更
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdChangeThreadPriority</B>(
+	int <I>priority</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>priority</I>	EE側リクエスト処理モジュールのIOPスレッドプライオリティ値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE側リクエスト処理モジュールのIOPスレッドプライオリティ値を設定する。 <BR>
+    デフォルトのEE側リクエスト処理モジュールのIOPスレッドプライオリティ値は８１です。 <BR>
+    またIOPスレッドプライオリティ値を変更する場合、他のモジュールのプライオリティに対して細心の注意を払う必要があります。そのため、安易にIOPスレッドプライオリティ値を変更する事はお勧めいたしません。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdDiskReady>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdDiskReady
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ドライブの状態をチェックする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdDiskReady</B> (
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	チェックモード（0: ブロック型、1: ノンブロック型）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdComplete</TD>
+<TD valign="TOP">コマンドを発行できる状態にある</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdNotReady</TD>
+<TD valign="TOP">ドライブはコマンドを受け付けられない</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ドライブの状態をチェックし、コマンドが発行できるかどうかを調べる。 <BR>
+    ドライブにメディアが挿入されていない場合はSCECdNotReadyとなる。 <BR>
+    ブロック型の場合は、ドライブの回転が安定していなければ安定するまでホールドしてリターンする。ノンブロック型の場合は、ステータスを調べてただちにリターンする。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdGetDiskType>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdGetDiskType
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メディアのフォーマットを得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdGetDiskType </B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdIllgalMedia</TD>
+<TD valign="TOP">再生禁止Disc</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdPS2DVD</TD>
+<TD valign="TOP">DiscはPS2用DVDである</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdPS2CD</TD>
+<TD valign="TOP">DiscはPS2用CDである</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdPS2CDDA</TD>
+<TD valign="TOP">DiscはPS2用CDである(CDDA付き)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdPSCD</TD>
+<TD valign="TOP">DiscはPS用CDである</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdPSCDDA</TD>
+<TD valign="TOP">DiscはPS用CDである(CDDA付き)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdDVDV</TD>
+<TD valign="TOP">DiscはDVD Videoである</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdCDDA</TD>
+<TD valign="TOP">Discは音楽CDである</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdDETCT</TD>
+<TD valign="TOP">判別動作中</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdNODISC</TD>
+<TD valign="TOP">Diskが入っていない</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    メディアのフォーマットを得る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdGetError>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdGetError
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ドライブのエラー情報を得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdGetError </B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErFAIL</TD>
+<TD valign="TOP">sceCdGetError()関数の発行に失敗した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErNO</TD>
+<TD valign="TOP">エラーは発生していない</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErEOM</TD>
+<TD valign="TOP">再生中に最外周に達した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErTRMOPN</TD>
+<TD valign="TOP">再生中にトレイが開けられた</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErREAD</TD>
+<TD valign="TOP">読み出し中問題が発生した</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErCUD </TD>
+<TD valign="TOP">ドライブ中のディスクには不適切</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErNORDY </TD>
+<TD valign="TOP">コマンド処理中</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdErABRT </TD>
+<TD valign="TOP">アボートコマンドを受け取った</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ドライブのエラー情報を得る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdGetReadPos>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdGetReadPos
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        sceCdRead()関数の進行状況を調査する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceCdGetReadPos</B> ( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceCdRead()関数の進行状況を、バッファに転送したデータのサイズ（バイト数）で返す。 <BR>
+    sceCdRead()関数が終了している場合は０を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP側から呼ばれ、かつ、メディアがCDの場合は１セクタ単位の値（2048の倍数）を返す。 <BR>
+    それ以外（EE側から呼ばれた場合、またはIOP側から呼ばれてメディアがDVD）の場合は16セクタ単位の値（32768の倍数）を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdGetToc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdGetToc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        TOCリード
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdGetToc</B> (
+	u_char <I>*toc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>toc</I>	ロケーションテーブル情報の返されるアドレス（1024bytesの領域が必要）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD-ROMのTOCのセクタ情報を得る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD(DVD)-ROMサブシステムの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdInit </B>(
+	int <I>init_mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>init_mode</I>	ライブラリ初期化モード
+	SCECdINIT	ライブラリの初期化を行いコマンドの発行が可能な
+		状態になるまでブロックする。
+	SCECdINoD	ライブラリの初期化のみ行う。
+	SCECdEXIT	ライブラリの終了処理を行う。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ０：初期化に失敗した。 <BR>
+    １：正常に初期化を行なった。 <BR>
+    ２：初期化は行なったがIOP側にデフォルトモジュールを検出した。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMサブシステムを初期化する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    標準入出力（sceRead()等）を使用する場合でも最初にsceCdInit()による初期化が必要。 <BR>
+    sceCdInit()による初期化後、必ずsceCdMmode()を呼び、メディア(CDかDVD)を指定するようにしてください。 <BR>
+    IOPのデフォルトモジュール内のcdvdman.irx、cdvdfsv.irxの置き換えが行われないまま、当関数を使用すると２を返します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdMmode">sceCdMmode</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdInitEeCB>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdInitEeCB
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EE側コールバックスレッドの初期化（EE側のみの関数）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdInitEeCB </B>(
+	int <I>cb_prio</I>,
+	void *<I>stack_addr</I>;
+	int <I>stack_size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>cb_prio</I>	コールバックスレッドのプライオリティ
+	自スレッドよりプライオリティの高い	値に設定する必要がある
+<I>stack_addr</I>	コールバックスレッドのスタックアドレス
+<I>stack_size</I>	コールバックスレッドのスタックサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0：コールバックは初期化済みでありプライオリティの変更のみ行なった。 <BR>
+    1：コールバックの初期化を行なった。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE側コールバックスレッドの初期化をおこなう。EE側にてコールバックを利用する際にはsceCdInit()関数等の直後に必ず実行する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スタックに使用するアドレスは16バイトアライメントで、サイズは16の倍数で指定する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdIntToPos>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdIntToPos
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD-ROMロジカルセクタナンバから分・秒・セクタを得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceCdlLOCCD *<B>sceCdIntToPos </B>(
+	int <I>i</I>, 
+	sceCdlLOCCD *<I>p</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>i	</I>ロジカルセクタナンバ
+<I>p	</I>分・秒・セクタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceCdlLOCCDのアドレスを返す <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ロジカルセクタナンバから分・秒・セクタの値を計算する。 <BR>
+    メディアがDVDのときは意味をなさない。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdMmode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdMmode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        読み取りメディアを指定する。
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdMmode</B>(
+	int <I>media</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>media</I>	読み取りメディア
+	SCECdCD	読み取りメディアとしてＣＤを指定する。
+	SCECdDVD	読み取りメディアとしてＤＶＤを指定する。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMサブシステムに対して読み取りメディアを指定する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceCdInit()関数呼び出し後に必ず当関数にて読み込みメディアの指定が必要です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdInit">sceCdInit</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdPause>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdPause
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD(DVD)-ROMのヘッドのポーズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdPause</B> ( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMのヘッドをその場でポーズ状態にする。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノンブロック関数であるため、実際にヘッドがポーズ状態になったことはsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdPosToInt>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdPosToInt
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD-ROM分・秒・セクタからロジカルセクタナンバを得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdPosToInt </B>(
+	sceCdlLOCCD *<I>p</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>p	</I>分・秒・セクタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ロジカルセクタナンバ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    分・秒・セクタの値からロジカルセクタナンバを計算する。 <BR>
+    メディアがDVDのときは意味をなさない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データリード
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdRead</B> ( 
+	u_int <I>lsn</I>,
+	u_int <I>sectors</I>, 
+	void *<I>buf</I>, 
+	sceCdRMode *<I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn</I>	読み込み開始ロジカルセクタナンバ
+<I>sectors	</I>読み込むセクタ数
+<I>buf	</I>読み込みバッファ
+<I>mode</I>	読み込みモード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>lsn</I>で示された読み込み開始位置にシークを行い、CD(DVD)-ROMのStartPointから<I>sectors</I>のセクタデータを読み込み、指定メモリの<I>buf</I>以下に展開する。その後、ヘッドはポーズ状態となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD-DAデータおよびDVD-videoデータの読み込みは不可。 <BR>
+    ノンブロック関数であるため、実際の転送の終了はsceCdSync()で検出する必要がある。 <BR>
+        </BLOCKQUOTE>
+<B>IOP側から当関数を使用する際の注意点</B>
+        <BLOCKQUOTE>
+    ディスク表面に激しい傷等があると、本関数の終了がsceCdSync()にて検出できない場合がある。その場合はsceCdBreak()関数を使用して本関数をアボート処理する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdReadChain>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdReadChain
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        一括データリード(EE側のみの関数)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdReadChain</B> ( 
+	u_int *<I>tag</I>,
+	sceCdRMode *<I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	読み込みパラメータ格納データ列へのポインタ。
+	データ列の構造は次のとおり。
+	tag= {lsn,   sectors,   buf,
+	      lsn,   sectors,   buf,
+	       :        :     :    最大64列まで
+	      0xffffffff,  0xffffffff,  0xffffffff };
+	データ列終端には0xffffffffを置く。
+	u_int lsn:   読み込み開始ロジカルセクタナンバ
+	u_int sectors:   読み込むセクタ数
+	u_int buf:    読み込みバッファの位置を表す次のような値
+	     bit31..bit2:   読み込みバッファアドレスの上位30ビット
+	     bit0:     0:EEメモリ
+	               1:IOPメモリ
+<I>mode</I>	読み込みモード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    読み込みパラメータ格納データ列の内容に沿って、最大64組のデータを一括して読み出す。CD-DAデータおよびDVD-videoデータの読み込みは不可。 <BR>
+    読み込みバッファとしてEEメモリを指定する場合、アドレスは64バイトアライメントに沿っていなければならない。 <BR>
+    ノンブロック関数であるため、実際の転送の終了はsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdReadClock>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdReadClock
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        年月日および時刻の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdReadClock</B> ( 
+	sceCdCLOCK *<I>rtc</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>*rtc</I>	年月日および時刻格納構造体アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    "PlayStation 2"内蔵のリアルタイムクロックから年月日および時刻を取得する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    当関数はドライブ関係の処理を行うコントローラを使用するため、連続で呼び出す場合は300msec程度の間隔を開ける必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdReadIOPm>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdReadIOPm
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPメモリへのデータリード（EE側のみの関数）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdReadIOPm</B> ( 
+	u_int <I>lsn</I>,
+	u_int <I>sectors</I>, 
+	void *<I>buf</I>, 
+	sceCdRMode *<I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn</I>	読み込み開始ロジカルセクタナンバ
+<I>sectors	</I>読み込むセクタ数
+<I>buf	</I>読み込みバッファ（IOPメモリ）
+<I>mode</I>	読み込みモード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>lsn</I>で示される読み込み開始位置にシークを行い、CD(DVD)-ROMのStartPointから<I>sectors</I>のセクタデータを読み込み、IOPメモリの<I>buf</I>以下に展開する。その後、ヘッドはポーズ状態となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD-DAデータのDVD-videoデータの読み込みは不可。 <BR>
+    ノンブロック関数であるため、実際の転送の終了はsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdSearchFile>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdSearchFile
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイル名から位置とサイズを獲得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdSearchFile</B> (
+	sceCdlFILE *<I>fp</I>, 
+	char<I> </I>*<I>name </I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fp</I>	CD(DVD)-ROMファイル構造体のポインタ
+<I>name	</I>ファイル名
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0：ファイルが見つからない。 <BR>
+    1：ファイル構造体のポインタの獲得に成功した。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROM上のファイル名から絶対位置LSN（論理セクタナンバ）とサイズを知る。結果は*<I>fp</I>に格納される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイル名はすべて絶対パスで指定する必要がある。 <BR>
+    nameで指定されたファイルと同じディレクトリにあるファイルの位置情報はメモリにキャッシュされる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdSeek>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdSeek
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CD(DVD)-ROMのヘッドの移動
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdSeek</B> ( 
+	u_int <I>lsn</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn</I>	目標ロジカルセクタナンバ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMのヘッドを目標位置まで移動し、ポーズ状態に設定する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノンブロック関数であるため、ヘッド移動の終了はsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStandby>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStandby
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メディア回転開始
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStandby</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMのメディアを回転させ、ヘッドを最内周に置いてポーズ状態に設定する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノンブロック関数であるため、実際の動作の終了はsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ドライブの状態を得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStatus</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合-1を、成功の場合下記のステータスを返す。 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatShellOpen </TD>
+<TD valign="TOP">トレイが開いている</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatStop </TD>
+<TD valign="TOP">ストップ状態</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatSpin </TD>
+<TD valign="TOP">スピンドルが回転している</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatRead </TD>
+<TD valign="TOP">リード実行中</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatPause </TD>
+<TD valign="TOP">ポーズ状態（参照不可）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatSeek </TD>
+<TD valign="TOP">シーク中</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCECdStatEmg </TD>
+<TD valign="TOP">異常ストップ</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ドライブの現在の状態を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリーマ初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStInit</B>(
+	u_int <I>bufmax</I>,
+	u_int <I>bankmax</I>,
+	u_int <I>iop_bufaddr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>bufmax</I>		ストリームバッファ全体の容量（2048byte単位のセクタ数にて指定する）
+<I>bankmax</I>	ストリームバッファの分割数（リングバッファのバッファの数）3以上
+		分割したバッファのサイズは16セクタ程度の容量が望ましい。
+<I>iop_bufaddr	</I>ストリームバッファのIOPメモリアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリーマの初期化およびストリームバッファの登録（リングバッファの作成）を行う。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームバッファ等IOP側メモリをEE側から取得するにはsceSifAllocIopHeap()等の関数を使用する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceSifAllocIopHeap">sceSifAllocIopHeap</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(),
+    <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStop>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStop
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メディア回転停止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStop</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CD(DVD)-ROMのメディアの回転を停止する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノンブロック関数であるため、実際の動作の終了はsceCdSync()で検出する必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdSync">sceCdSync</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStPause>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStPause
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリームの一時停止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStPause</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームバッファの内容を保持したままストリームデータの読み込みを一時停止する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームデータの読み込み再開はsceCdStResume()関数にて行う。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdRead">sceCdRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリームデータの読み込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStRead</B>(
+	u_int <I>sectors</I>,
+	u_int *<I>buf</I>,
+	u_int <I>mode</I>,
+	u_int *<I>err</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sectors</I>	ストリームバッファからのデータ読み込みセクタ数
+<I>buf</I>	データ読み込みアドレス（EE側から呼び出す場合は必ず64バイトアライメントの領
+	域であること）
+<I>mode</I>	データ読み込みモード
+	STMNBLK :現在ストリームバッファの中にあるデータのみを返す。
+	STMBLK  :<I>sectors</I>にて指定したデータ数が読み込み終了するかエラーが発生する
+	までブロックして読み込みを行う。
+<I>err</I>	読み取り時エラーコード格納アドレス
+	エラーコードはsceCdGetError()で取得するエラーコードと同様
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    データ読み込み数をセクタ数（2048byte単位）で返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームバッファからのデータ読み込みを行う。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStResume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStResume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリームの再開
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStResume</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームデータの読み込みを再開する（sceCdStPause()関数による一時停止を解除する）。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>()
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStSeek>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStSeek
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリーム位置の変更
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStSeek</B>(
+	u_int <I>lsn</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn	</I>ストリーム変更位置（ロジカルセクタナンバにて指定）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームバッファの内容を破棄し現在のストリーム位置を変更する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStStart>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStStart
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリーミング開始
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStStart</B>(
+	u_int <I>lsn</I>,
+	sceCdRMode *<I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lsn	</I>ストリーム開始位置（ロジカルセクタナンバにて指定）
+<I>mode	</I>読み込みモード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリーム開始位置よりストリームバッファに読み込みを開始する。 <BR>
+    ストリーミングを開始するとCD(DVD)-ROMからストリーミングバッファへ、バックグラウンドにて再帰的にデータ読み込みが行われるため、sceCdStStop()によってストリーミング処理を終了させるまで、sceCdRead()等を使用してCD(DVD)-ROMからの読み込みはできなくなる。 <BR>
+    modeのdatapatternに指定できる値はSCECdSecS2048のみ。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStStat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStStat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリームデータ読み込み状況取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStStat</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合はすでにストリーマに蓄積されたデータ数をセクタ数(2048byte単位)で返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリームデータの現在の読み込み状況を取得する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStop">sceCdStStop</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdStStop>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdStStop
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストリーミングの終了
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdStStop</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合は1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ストリーミングを終了する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdStInit">sceCdStInit</a>(), <a href="./cdvd_rf.htm#sceCdStRead">sceCdStRead</a>(), <a href="./cdvd_rf.htm#sceCdStSeek">sceCdStSeek</a>(), <a href="./cdvd_rf.htm#sceCdStStart">sceCdStStart</a>(), <a href="./cdvd_rf.htm#sceCdStStat">sceCdStStat</a>(), <a href="./cdvd_rf.htm#sceCdStPause">sceCdStPause</a>(), <a href="./cdvd_rf.htm#sceCdStResume">sceCdStResume</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdSync>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdSync
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コマンドの終了を待つ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdSync</B> (
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode	</I>0x00: コマンドの終了を待つ（ブロック型）
+	0x01: 現在の状態を調べて即座にリターンする（ノンブロック型）
+	0x10: ＥＥ側から発行したコマンドの終了を含めてコマンドの終了を待つ
+	    （IOP側から呼び出し時のみの引数、ブロック型）
+        0x11: ＥＥ側から発行したコマンドの状態も含め、現在の状態を調べて即座にリター
+              ンする（IOP側から呼び出し時のみの引数、ノンブロック型）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0: 終了 <BR>
+    1: 未終了 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>mode</I>に0x00を指定した場合は、実行中のコマンドが終了するのを待ち、0を返す。 <BR>
+    <I>mode</I>に0x01を指定した場合は、コマンドの実行状態を調べて、0 / 1のいずれかを返す。 <BR>
+    <I>mode</I>に0x10を指定した場合は、ＥＥ側から発行したコマンドの終了を含めて実行中のコマンドが終了するのを待ち、0を返す。(IOP側から呼び出し時のみ有効) <BR>
+    <I>mode</I>に0x01を指定した場合は、ＥＥ側から発行したコマンドの状態も含めてコマンドの実行状態を調べて、0 / 1のいずれかを返す。(IOP側から呼び出し時のみ有効) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./cdvd_rf.htm#sceCdRead">sceCdRead</a>(), <a href="./cdvd_rf.htm#sceCdSeek">sceCdSeek</a>(), <a href="./cdvd_rf.htm#sceCdStop">sceCdStop</a>(), <a href="./cdvd_rf.htm#sceCdStandby">sceCdStandby</a>(), <a href="./cdvd_rf.htm#sceCdGetToc">sceCdGetToc</a>()
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceCdTrayReq>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceCdTrayReq
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        トレイのオープン / クローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceCdTrayReq</B>(
+	int <I>mode</I>,
+	u_int *<I>traycnt</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	トレイ制御モード
+	0:トレイオープン
+	1:トレイクローズ
+	2:トレイ状態変化取得
+<I>traycnt	</I>トレイ状態変化の有無が返されるアドレス
+	０:オープン動作は行われていない
+	１:オープン動作を行なった。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コマンド発行失敗の場合0を、成功の場合1を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数<I>mode</I>の指定に応じて、CD(DVD)-ROMドライブのトレイを開閉する。 <BR>
+    <I>mode</I>に2を指定した場合はトレイ状態変化取得モードとなり、その前にトレイ状態変化取得モードで呼び出されたときからトレイがオープンしたかどうかを、<I>*traycnt</I>に返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ディスクが挿入されたあと、コマンドを受け付けられる状態になったかどうかの調査はsceCdDiskReady()にて行う。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

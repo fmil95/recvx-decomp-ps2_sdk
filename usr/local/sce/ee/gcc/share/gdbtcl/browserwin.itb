@@ -1,21 +1,12 @@
-# Browswer window for GDBtk.
-# Copyright 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# BrowserWin
 # ----------------------------------------------------------------------
 # Implements Browser window for gdb
 #
 # ----------------------------------------------------------------------
+#   AUTHOR:  Keith Seitz <keiths@cygnus.com>
+#   Copyright (C) 1998 Cygnus Solutions
+#
 
 # ------------------------------------------------------------------
 #  CONSTRUCTOR - create new browser window
@@ -132,7 +123,7 @@ body BrowserWin::_build_win {} {
   # Files Listbox for the Browser frame
   itk_component add file_box {
     iwidgets::scrolledlistbox $itk_component(browser).files \
-      -selectmode extended -exportselection false \
+      -height 1 -width 1 -selectmode extended -exportselection false \
       -labeltext "Files" -labelpos nw -labelrelief groove \
       -labelborderwidth 2 -ipadx 8 -ipady 6 \
       -childsitepos s -hscrollmode none -textbackground white
@@ -178,7 +169,7 @@ body BrowserWin::_build_win {} {
 
   itk_component add func_box {
     iwidgets::scrolledlistbox $itk_component(browser).funcs \
-      -selectmode extended \
+      -height 1 -width 1 -selectmode extended \
       -exportselection false \
       -labeltext "Functions" -labelpos nw -labelrelief groove \
       -labelborderwidth 2 -ipadx 8 -ipady 6 \
@@ -701,16 +692,11 @@ body BrowserWin::do_all_bp {onp} {
 
   foreach f $funcs {
     if {[catch {gdb_loc $f} linespec]} {
-      dbug W "Could not gdb_loc \"$f\""
       return
     }
     set bpnum [bp_exists $linespec]
     if {$bpnum == -1 && $onp} {
-
-      # FIXME: gdb_set_bp is the preferred method, but it requires
-      # a file and line number. This doesn't work very well for
-      # templates...
-      gdb_cmd "break $f"
+      gdb_cmd [list break $f]
     } elseif {!$onp} {
       catch {gdb_cmd "delete $bpnum"}
     }
@@ -732,10 +718,7 @@ body BrowserWin::_toggle_bp {y} {
     }
     set bpnum [bp_exists $linespec]
     if {$bpnum == -1} {	
-      # FIXME: gdb_set_bp is the preferred method, but it requires
-      # a file and line number. This doesn't work very well for
-      # templates...
-      gdb_cmd "break $f"
+      gdb_cmd [list break $f]
     } else {
       catch {gdb_cmd "delete $bpnum"}
     }

@@ -1,0 +1,135 @@
+<HTML>
+<HEAD>
+<!-- 関数名 -->
+<TITLE>
+    FLASHDataController
+</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="100%">
+<TD ALIGN="left">
+<A HREF="pdaspec1.htm">PDA仕様書 </A>
+</TD><TD ALIGN="center">
+<ADDRESS><A HREF="../pda/index.htm">PDA </A></ADDRESS>
+</TD><TD ALIGN="right">
+<A HREF="pdaspec3.htm">デバイスレジスタ一覧</A>
+</TD></TABLE>
+<HR NOSHADE SIZE="8">
+
+<H1>
+    FLASHDataController
+<HR SIZE="5">
+</H1>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        フラッシュコントロールレジスタ
+</DIV><P>
+</PRE>
+</blockquote>
+
+<!-- アクセス型 -->
+<B>アクセス型</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+<PRE>Read/Write
+</PRE>
+</blockquote>
+
+<!-- リセット値 -->
+<B>リセット値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0x00000014 <BR>
+<BR>
+</blockquote>
+
+<!-- 機能 -->
+<B>機能</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このレジスタはフラッシュメモリのプログラム機能を管理するためのビットスイッチ群を内蔵する。 <BR>
+<BR>
+</blockquote>
+
+<!-- ビット詳細 -->
+<B>ビット詳細</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    <B>第0ビット</B> <BR>
+    ビット名称：ENPRG(Enable Flash Programming) <BR>
+    リード値：0：プログラムが禁止されている。 <BR>
+    <blockquote>
+    	：1：プログラムが許可されている。 <BR>
+    </blockquote>
+    ライト値：0：プログラムを禁止する。 <BR>
+    <blockquote>
+    	：1：プログラムを許可する。 <BR>
+    </blockquote>
+    <B>第1ビット</B> <BR>
+    ビット名称：LOCK(Lock Bit Protection Mode) <BR>
+    リード値：（リード不可） <BR>
+    ライト値：0：プログラムを許可する。 <BR>
+    <blockquote>
+    	：1：データ書き込みを禁止する。 <BR>
+    </blockquote>
+    <B>第2ビット</B> <BR>
+    ビット名称：BUSY：(Flag status of FLASH write) <BR>
+    ビット機能：フラッシュメモリプログラミング終了検出フラグ。ポーリングは必須ではない。 <BR>
+    リード値：0：書き込みシーケンス中。 <BR>
+    <blockquote>
+    	：1：書き込みシーケンス外。 <BR>
+    </blockquote>
+    ライト値：0：（書き込み不可） <BR>
+    <B>第3ビット</B> <BR>
+    ビット名称：STDBY(Flash Standby Mode) <BR>
+    ビット機能：消費電力低減のためフラッシュメモリデバイスの動作を再開可能な形で停止させた状態であるスタンバイモード移行のためのビットスイッチ。解除後10ミリ秒間の起動時間が必要。 <BR>
+    リード値：0：スタンバイモードでない。 <BR>
+    <blockquote>
+    	：1：スタンバイモードである。 <BR>
+    </blockquote>
+    ライト値：0：スタンバイモードを解除する。 <BR>
+    <blockquote>
+    	：1：スタンバイモードに設定する。 <BR>
+    </blockquote>
+    <B>第4ビット</B> <BR>
+    ビット名称：WAIT(WAIT state for Flash access) <BR>
+    ビット機能：フラッシュメモリへのリード・ライトアクセスに1ウェイトサイクルを挿入することをソフトウェア的に選択するためのビットスイッチ。システムクロック8MHz時にフラッシュメモリへアクセスする場合には1を、それ以外は0を設定する。 <BR>
+    リード値：0：デバイスアクセス時にウェイトサイクルが挿入されていない。 <BR>
+    <blockquote>
+    	：1：デバイスアクセス時に1ウェイトサイクルが挿入されている。 <BR>
+    </blockquote>
+    ライト値：0：デバイスアクセス時にウェイトサイクルを挿入しない。 <BR>
+    <blockquote>
+    	：1：デバイスアクセス時に1ウェイトサイクルを挿入する。 <BR>
+    </blockquote>
+    <B>第5ビット</B> <BR>
+    ビット名称：LOADPAGE(LOAD PAGE) <BR>
+    リード値：0：ページ（セクタ）書き込みが禁止されている。 <BR>
+    <blockquote>
+    	：1：ページ（セクタ）書き込みが許可されている。 <BR>
+    </blockquote>
+    ライト値：0：ページ（セクタ）書き込みを禁止する。 <BR>
+    <blockquote>
+    	：1：ページ（セクタ）書き込みを許可する。 <BR>
+    </blockquote>
+    <B>第6ビット</B> <BR>
+    ビット名称：LOADSGN(LOAD system SiGNature) <BR>
+    リード値：0：システムシグナチャ書き込みが禁止されている。 <BR>
+    <blockquote>
+    	：1：システムシグナチャ書き込みが許可されている。 <BR>
+    </blockquote>
+    ライト値：0：システムシグナチャ書き込みを禁止する。 <BR>
+    <blockquote>
+    	：1：システムシグナチャ書き込みを許可する。 <BR>
+    </blockquote>
+<BR>
+</blockquote>
+<HR>
+<DIV ALIGN="right">
+<ADDRESS>
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.
+</ADDRESS>
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,472 @@
+<HTML>
+<HEAD>
+<TITLE> GS基本ライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libgraph.htm" SELECTED> GS基本ライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+GS基本ライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 構造体一覧<BR></A><BR>
+    <A HREF="#Heading4_1_4"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 使用上の注意<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 初期化シーケンス例<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 注意：DMA転送とキャッシュの整合性について<BR></A><BR>
+    <A HREF="#Heading4_2_3"> 制限：BGCOLORの設定について<BR></A><BR>
+    <A HREF="#Heading4_2_4"> PALモードへの対応<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 構造解説<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 参考資料<BR></A><BR>
+    <A HREF="#Heading4_3_2"> ダブルバッファリング<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libgraphはGraphics Synthesizer（GS）を制御するための基本的なライブラリです。<BR>
+    GSチップのバージョンによる差異を吸収するとともに、表示や描画に必要な環境情報をGSに転送できる適切なデータ構造に整形する機能を持ちます。libgraphの関数で生成したデータに適宜タグ情報を付加し、GIF経由でGSに転送することによって、GSの表示機能・描画機能を制御することができます。<BR>
+    このほかlibgraphが提供する機能としては、Vsyncやデータ転送との同期制御、GSローカルメモリ上でのダブルバッファリングのサポート、簡易版のイメージデータ転送機能があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libgraphに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libgraph.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libgraph.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>構造体一覧</B>
+</A>
+</H3>
+<blockquote>
+    libgraphの多くの関数は先に述べたように、構造体にデータをセットする関数とそのデータに基づいてGSに対して設定を行う関数に分けて把握することができます。構造体と関数の組み合わせを次に示します。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>構造体</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データをセットする関数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>発行する関数</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDispEnv</TD>
+<TD valign="TOP">sceGsSetDefDispEnv</TD>
+<TD valign="TOP">sceGsPutDispEnv</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDrawEnv1</TD>
+<TD valign="TOP">sceGsSetDefDrawEnv</TD>
+<TD valign="TOP">sceGsPutDrawEnv</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDrawEnv2</TD>
+<TD valign="TOP">sceGsSetDefDrawEnv2</TD>
+<TD valign="TOP">sceGsPutDrawEnv</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsTexEnv</TD>
+<TD valign="TOP">sceGsSetDefTexEnv</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsTexEnv2</TD>
+<TD valign="TOP">sceGsSetDefTexEnv2</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsAlphaEnv</TD>
+<TD valign="TOP">sceGsSetDefAlphaEnv</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsAlphaEnv2</TD>
+<TD valign="TOP">sceGsSetDefAlphaEnv2</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsClear</TD>
+<TD valign="TOP">sceGsSetDefClear</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsClear</TD>
+<TD valign="TOP">sceGsSetDefClear2</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDrawEnv1</TD>
+<TD valign="TOP">sceGsSetHalfOffset</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDrawEnv2</TD>
+<TD valign="TOP">sceGsSetHalfOffset2</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDBuff</TD>
+<TD valign="TOP">sceGsSetDefDBuff</TD>
+<TD valign="TOP">sceGsSwapDBuff</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsDBuffDc</TD>
+<TD valign="TOP">sceGsSetDefDBuffDc</TD>
+<TD valign="TOP">sceGsSwapDBuffDc</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsLoadImage</TD>
+<TD valign="TOP">sceGsSetDefLoadImage</TD>
+<TD valign="TOP">sceGsExecLoadImage</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceGsStoreImage</TD>
+<TD valign="TOP">sceGsSetDefStoreImage</TD>
+<TD valign="TOP">sceGsExecStoreImage</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libgraphの関数は多くのサンプルプログラムで使用されています。たとえばsce/ee/sample/basic3dを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>使用上の注意</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>初期化シーケンス例</B>
+</A>
+</H3>
+<blockquote>
+    libgraphを使用する場合、初期化やダブルバッファの切替え処理はほとんどのプログラムで同じ手順を踏んで行うことになります。これらの典型的なプログラム例を以下に示します。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_1">
+(1) <B>FRAMEモード時の初期化シーケンス</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      // DMACの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceDmaReset(1);
+</PRE>
+      <BLOCKQUOTE>
+      // VIF1, VU1, GIFの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsResetPath();
+</PRE>
+      <BLOCKQUOTE>
+      // GS, libgraphの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsResetGraph(0, SCE_GS_INTERLACE, SCE_GS_NTSC, SCE_GS_FRAME);
+</PRE>
+      <BLOCKQUOTE>
+      // 表示、描画環境の初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsSetDefDBuff(&db, SCE_GS_PSMCT32, 640, 224, SCE_GS_ZGEQUAL,
+        	SCE_GS_PSMZ24, SCE_GS_CLEAR);
+</PRE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_2">
+(2) <B>FRAMEモード時のダブルバッファ切り替え処理</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      // 描画終了同期<BR>
+      </BLOCKQUOTE>
+<PRE>        if(sceGsSyncPath(0, 0) != 0){
+        	// Error処理
+        }
+</PRE>
+      <BLOCKQUOTE>
+      // VSync同期<BR>
+      </BLOCKQUOTE>
+<PRE>        oddeven = !sceGsSyncV(0);
+</PRE>
+      <BLOCKQUOTE>
+      // 半ピクセルずらし<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsSetHalfOffset((frame&1)?(&db.draw1):(&db.draw0),
+        	2048, 2048, oddeven);
+        	FlushCache(WRITEBACK_DCACHE);
+</PRE>
+      <BLOCKQUOTE>
+      // ダブルバッファ切り替え<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsSwapDBuff(&db, frame);
+</PRE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_3">
+(3) <B>FIELDモード時の初期化シーケンス</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      // DMACの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceDmaReset(1);
+</PRE>
+      <BLOCKQUOTE>
+      // VIF1, VU1, GIFの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsResetPath();
+</PRE>
+      <BLOCKQUOTE>
+      // GS, libgraphの初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsResetGraph(0, SCE_GS_INTERLACE, SCE_GS_NTSC, SCE_GS_FIELD);
+</PRE>
+      <BLOCKQUOTE>
+      // 表示、描画環境の初期化<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsSetDefDBuff(&db, SCE_GS_PSMCT32, 640, 448,
+        	SCE_GS_ZGEQUAL, SCE_GS_PSMZ24, SCE_GS_CLEAR);
+</PRE>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_4">
+(4) <B>FIELDモード時のダブルバッファ切り替え</B>
+</A>
+</H4>
+<PRE>        u_long	scandata[4] __attribute__((aligned(16))) = {
+        	SCE_GS_SET_TAG(1, 1, 0, 0, 0, 1), 0xe,
+        	0, SCE_GS_SCANMSK};
+</PRE>
+      <BLOCKQUOTE>
+      // 描画終了同期<BR>
+      </BLOCKQUOTE>
+<PRE>        if(sceGsSyncPath(0, 0) != 0){
+        	// Error処理
+        }
+</PRE>
+      <BLOCKQUOTE>
+      // VSync同期<BR>
+      </BLOCKQUOTE>
+<PRE>        oddeven = !sceGsSyncV(0);
+</PRE>
+      <BLOCKQUOTE>
+      // SCANMASK切り替え<BR>
+      </BLOCKQUOTE>
+<PRE>        scandata[2] = ((oddeven&1)?2:3);
+        DPUT_GIF_FIFO(*(u_long128 *)&scandata[0]);
+        DPUT_GIF_FIFO(*(u_long128 *)&scandata[2]);
+</PRE>
+      <BLOCKQUOTE>
+      // ダブルバッファ切り替え<BR>
+      </BLOCKQUOTE>
+<PRE>        sceGsSwapDBuff(&db, frame);
+</PRE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>注意：DMA転送とキャッシュの整合性について</B>
+</A>
+</H3>
+<blockquote>
+    libgraphの多くの関数は、構造体変数のポインタを渡すとその構造体変数にデータをセットして返すしくみになっています。GIFtagやDMAtagを付加すればこの構造体変数をそのままGSへ転送できますが、セットしたデータがメモリに書き込まれてから転送が行われるように注意してください。つまり、構造体変数がCached領域にあるときはデータキャッシュをフラッシュしてからDMA転送を起動するようにしなければなりません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>制限：BGCOLORの設定について</B>
+</A>
+</H3>
+<blockquote>
+    GS特権レジスタのうち、BGCOLORレジスタに設定する値は０固定、つまり背景色は黒とする制限が設けられています。これは、以下で説明するように、TVモニタの機種によらず適切な表示を得るために必要な規定です。<BR>
+    TVモニタは、表示期間の前に黒レベルを決定する期間があり、この期間の入力信号によって輝度の基準値を調整するしくみになっています。この期間の長さがTVによって異なり、場合によっては表示期間の一部・背景色部分が含まれることがあります。このような場合、背景色が黒でないと輝度の基準値がずれてしまい、画面全体の明るさが他のTVで表示した場合と大きく異なる（暗く表示される）結果になります。これを避けるため、BGCOLORレジスタには必ず0を指定してください。<BR>
+<P>
+<IMG SRC ="gif/grapn1.gif">
+<P>
+    また、GS特権レジスタのDISPLAYn.DXを0などの非常に小さな値に設定すると、同様のしくみで黒レベルが影響を受けるおそれがあります。<BR>
+<P>
+<IMG SRC ="gif/grapn2.gif">
+<P>
+    DISPLAYn.DXに設定されるデフォルトの値はsceGsSetDefDispEnv関数の説明に示されていますが、独自に設定する場合は536以上の値を設定してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>PALモードへの対応</B>
+</A>
+</H3>
+<blockquote>
+    PALモードではTVモニタに関する基本的な設定を変更する必要があります。<BR>
+    ヘッダファイルeestruct.h中の次の箇所で「// #define GS_PAL_MODE」とコメントアウトされている１行を有効にすれば、SCE_GS_SET_DISPLAY / SCE_GS_SET_DISPLAY_INTERLACE / SCE_GS_SET_DISPLAY_NOINTERLACEマクロがそれぞれPALモード用の設定になります。<BR>
+    <BR>
+<PRE>        #define SCE_GS_SET_DISPLAY	SCE_GS_SET_DISPLAY_INTERLACE
+        // #define GS_PAL_MODE　←ここを有効にする
+        #ifdef GS_PAL_MODE
+        // PAL, NOINTERLACE
+        (途中省略）
+        #endif  // GS_PAL_MODE
+</PRE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>構造解説</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>参考資料</B>
+</A>
+</H3>
+<blockquote>
+    libgraphの処理内容を理解するための参考資料として、「GS User's Manual」とともに「EE User's Manual」の5.「GIF:GSインタフェース」を参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>ダブルバッファリング</B>
+</A>
+</H3>
+<blockquote>
+    libgraphはGSローカルメモリ上でのダブルバッファリングをサポートし、描画途中の画像が表示されないようにしています。<BR>
+    ダブルバッファの設定はsceGsSetDefDBuff()またはsceGsSetDefDBuffDc()を用いて行います。次の図は、sceGsSetDefDBuff()によって設定したダブルバッファ（シングルコンテキスト用）を表しています。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/grapn3.gif">
+<P>
+    sceGsSwapDBuff()を呼び出すことによって、バッファの設定が入れ替わり、A / B各領域の役割が入れ替わります。したがって、次のようにV-blank期間の始めにバッファを入れ替え、前のフレームで描画した画像を表示している間に次のフレームの画像をもうひとつのバッファに描く、という処理を行います。<BR>
+<P>
+<IMG SRC ="gif/grapn4.gif">
+<P>
+    <B>ハーフピクセルずらし処理</B>
+    libgraphはインタレースモードに対応するため、描画バッファのオフセットを1/2ピクセルずらして設定する機能を持っています。<BR>
+    インターレースモードでは、oddフレームとevenフレームが走査線間隔の1/2だけ縦にずれて表示されることで、画面全体として448ラインの縦解像度を持つしくみになっています。したがって、描画バッファモードがFRAMEモードの場合、つまり両フレームの描画バッファが別になっている場合は、それぞれのバッファに1/2ピクセル分ずれた画像を描画すれば、448ラインの縦解像度を得られることになります。<BR>
+    ずれた画像を描画するためには、プリミティブ座標からウィンドウ座標へ変換する際のオフセットに差を持たせればよいので、sceGsSetHalfOffset() / sceGsSetHalfOffset2()では引数halfoffの指定によって、オフセットに1/2ピクセルに相当する8を加算することができるようになっています。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/grapn5.gif">
+<P>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Sample 1:  sky_main.c</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Sample 1:  sky_main.c</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-23.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-23.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-25.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-1007505"></A>Sample 1:  <A NAME="sample code"></A>sky_main.c</H2>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006787"></A>/* sky_main.c                              */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018133"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018134"></A>extern int printf(const char *, ...);</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018142"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018135"></A>extern char My_dma_start[];</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006790"></A>extern char gpu_refresh;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006791"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006793"></A>/* ------------- VU defines ---------------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006794"></A>#define VPU_STAT_VBS1_MASK 0x00000100</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006795"></A>/* ----------end of VU defines ------------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1007635"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1007636"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1007637"></A>/* ------------- VIF defines --------------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006799"></A>#define VIF1_STAT   (volatile int *) 0xb0003C00</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006800"></A>#define VIF1_STAT_FQC_MASK 0x1F000000</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006801"></A>#define VIF1_STAT_PPS_MASK 0x00000003</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006802"></A>/* ----------end of VIF defines -----------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006803"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006805"></A>/* -------------- DMA defines -------------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006806"></A>#define DMA_D0_CHCR  (volatile int*)0xb0008000</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006807"></A>#define DMA_D0_MADR  (volatile int*)0xb0008010</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006808"></A>#define DMA_D0_QWC   (volatile int*)0xb0008020</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006809"></A>#define DMA_D0_TADR  (volatile int*)0xb0008030</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006810"></A>#define DMA_D0_ASR0  (volatile int*)0xb0008040</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006811"></A>#define DMA_D0_ASR1  (volatile int*)0xb0008050</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006812"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006813"></A>#define DMA_D1_CHCR  (volatile int*)0xb0009000</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006814"></A>#define DMA_D1_MADR  (volatile int*)0xb0009010</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006815"></A>#define DMA_D1_QWC   (volatile int*)0xb0009020</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006816"></A>#define DMA_D1_TADR  (volatile int*)0xb0009030</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006817"></A>#define DMA_D1_ASR0  (volatile int*)0xb0009040</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006818"></A>#define DMA_D1_ASR1  (volatile int*)0xb0009050</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006819"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006820"></A>#define DMA_D2_CHCR  (volatile int*)0xb000a000</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006821"></A>#define DMA_D2_MADR  (volatile int*)0xb000a010</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006822"></A>#define DMA_D2_QWC   (volatile int*)0xb000a020</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006823"></A>#define DMA_D2_TADR  (volatile int*)0xb000a030</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006824"></A>#define DMA_D2_ASR0  (volatile int*)0xb000a040</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006825"></A>#define DMA_D2_ASR1  (volatile int*)0xb000a050</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006826"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006827"></A>#define DMA_D_CTRL   (volatile int*)0xb000e000</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006828"></A>#define DMA_D_STAT   (volatile int*)0xb000e010</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006829"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006830"></A>/* Dn_CHCR definition values               */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006831"></A>#define MODE_NORM       0</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006832"></A>#define MODE_CHAIN      (1 &lt;&lt; 2)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006833"></A>#define MODE_INTR       (2 &lt;&lt; 2)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006834"></A>#define DMA_START       (1 &lt;&lt; 8)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006835"></A>#define DMA_Dn_CHCR__TTE  0x00000040</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018145"></A>#define DMA_Dn_CHCR__DIR  0x00000001</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006836"></A>/* ----------end of DMA defines -----------*/</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006837"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006838"></A>void DMA_enable (void)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006839"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006840"></A>  *DMA_D_CTRL = 0x01;   /* DMA enable.     */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006841"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006842"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006843"></A>/* If DMA mode is source chain.            */ </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006844"></A>void start_DMA_ch1_source_chain (void* data)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006845"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006846"></A>  *DMA_D_CTRL  = 0x01;  /* DMA enable.     */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006847"></A>  *DMA_D1_QWC  = 0x00;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006848"></A>  *DMA_D1_TADR = (int)data; </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018153"></A>  *DMA_D1_CHCR = MODE_CHAIN | DMA_START | DMA_Dn_CHCR__TTE | DMA_Dn_CHCR__DIR;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006849"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006850"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006851"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006852"></A>/* If DMA mode is normal.                  */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006853"></A>void start_DMA_ch1_normal (void* data, int qwc)</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006854"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006855"></A>  *DMA_D_CTRL  = 0x01;  /* DMA enable.     */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006856"></A>  *DMA_D1_QWC  = qwc;   /* 8 is sample.    */</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006857"></A>  *DMA_D1_MADR = (int)data; </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006858"></A>  *DMA_D1_CHCR = MODE_NORM | DMA_START | DMA_Dn_CHCR__TTE | DMA_Dn_CHCR__DIR;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006859"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006860"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006861"></A>void enable_cop2() </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006862"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006863"></A>  asm (&quot;mfc0 $3,$12; dli $2,0x40000000; or $3,$2,$2; mtc0 $3,$12&quot;);</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006864"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006865"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006866"></A>int check_VPU_STAT() </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006867"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006868"></A>  asm (&quot;cfc2 $2, $29&quot;);</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006869"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006870"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006871"></A>void wait_until_idle()</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006872"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006873"></A>  int vif1_stat, vpu_stat;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006874"></A>  </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006875"></A>  do </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006876"></A>  {</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006877"></A>    vif1_stat = *VIF1_STAT;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006878"></A>    vpu_stat = check_VPU_STAT();</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006879"></A>  } while (!( (vif1_stat &amp; VIF1_STAT_PPS_MASK) == 0</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006880"></A>           &amp;&amp; (vif1_stat &amp; VIF1_STAT_FQC_MASK) == 0</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006881"></A>           &amp;&amp; (vpu_stat  &amp; VPU_STAT_VBS1_MASK) == 0));</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006882"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006883"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006884"></A>void wait_a_while ()</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006885"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006886"></A>  int i;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006887"></A>  for (i=0; i&lt;200000; i++) {}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006888"></A>}</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006889"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006890"></A>int main() </P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006891"></A>{</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006892"></A>  enable_cop2();</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018164"></A>  start_DMA_ch1_source_chain(&amp;My_dma_start);</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018166"></A>  wait_until_idle();</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018167"></A>  start_DMA_ch1_source_chain(&amp;gpu_refresh);</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1018168"></A>  wait_a_while();</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006893"></A>&nbsp;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006902"></A>  return 0;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-1006903"></A>}</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Sample 1:  sky_main.c</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-23.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-23.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-25.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

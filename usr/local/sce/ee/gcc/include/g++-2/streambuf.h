@@ -482,9 +482,7 @@ inline ios::~ios() {
 #ifndef _IO_NEW_STREAMS
     if (!(_flags & (unsigned int)ios::dont_close)) delete rdbuf();
 #endif
-// It is safe to use naked operator delete[] as we know elements have no
-// dtor, and g++ does not add a new[] cookie for such cases.
-operator delete[] (_arrays);
+    if (_arrays) delete [] _arrays;
 }
 } // extern "C++"
 #endif /* _STREAMBUF_H */

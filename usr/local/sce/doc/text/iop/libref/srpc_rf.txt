@@ -1,0 +1,606 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                        SIF Remote Procedure Call
+                       ==========================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceSifClientData                                                 [構造体]
+=========================================================================
+                                                     RPC クライアント情報
+[構造]
+        typedef struct _sif_client_data {
+        	struct _sif_rpc_data	rpcd;
+        	unsigned int	command;
+        	void		*buff;
+        	void		*cbuff;
+        	sceSifEndFunc	func;
+        	void		*para;
+        	struct _sif_serve_data	*serve;
+        } sceSifClientData;
+        
+[解説]
+        sceSifBindRpc()で取得したクライアント情報を格納する構造体です。こ
+        の時メンバは自動設定される為、プログラム側で設定する必要はありま
+        せん。
+        sceSifCallRpc()でサービス関数を呼び出す際にも使用する。
+        
+[関連項目]
+        sceSifBindRpc(), sceSifCallRpc(), sceSifCheckStatRpc()
+        
+
+=========================================================================
+sceSifEndFunc                                                    [構造体]
+=========================================================================
+                                                              RPC終了関数
+[構造]
+        typedef void (* sceSifEndFunc)(
+        	void *data
+        );
+        
+[メンバ]
+        data	関数コール時に渡されるデータアドレス
+        
+[解説]
+        RPCサービス関数が終了したときに割り込み領域で呼ばれる関数。その際、
+        dataのアドレスが渡される。
+        
+[関連項目]
+        sceSifCallRpc()
+        
+
+=========================================================================
+sceSifQueueData                                                  [構造体]
+=========================================================================
+                                                RPCリクエストキューデータ
+[構造]
+        typedef struct _sif_queue_data {
+        	int	key;
+        	int	active;
+        	struct _sif_serve_data	*link;
+        	struct _sif_serve_data	*start;
+        	struct _sif_serve_data	*end;
+        	struct _sif_queue_data	*next;
+        } sceSifQueueData;
+        
+[解説]
+        サーバ側で受信したリクエストをキューイングするためのデータ構造で
+        す。この時メンバは自動設定される為、プログラム側で設定する必要は
+        ありません。
+        
+[関連項目]
+        sceSifSetRpcQueue(),sceSifRegisterRpc(),sceSifGetNextRequest(),sc
+        eSifRpcLoop()
+        
+
+=========================================================================
+sceSifReceiveData                                                [構造体]
+=========================================================================
+                                                    RPCデータレシーブ情報
+[構造]
+        typedef struct _sif_receive_data {
+        	struct _sif_rpc_data	rpcd;
+        	void		*src;
+        	void		*dest;
+        	int		size;
+        } sceSifReceiveData;
+        
+[解説]
+        相手側のデータをDMAで受け取るときの制御データを格納するデータ構造
+        です。この時メンバは自動設定される為、プログラム側で設定する必要
+        はありません。
+        
+[関連項目]
+        sceSifCheckStatRpc(), sceSifGetOtherData()
+        
+
+=========================================================================
+sceSifRpcData                                                    [構造体]
+=========================================================================
+                                              RPCクライアントデータヘッダ
+[構造]
+        typedef struct _sif_rpc_data {
+        	void		*paddr;
+        	unsigned int	pid;
+        	int		tid;
+        	unsigned int	mode;
+        } sceSifRpcData;
+        
+[メンバ]
+        paddr	パケットのアドレス
+        pid	パケットID
+        tid	スレッドID
+        mode	呼び出しモード
+        
+[解説]
+        RPCクライアント共通のデータヘッダです。
+        
+[関連項目]
+        sceSifClientData(), sceSifReceiveData(),sceSifCheckStatRpc()
+        
+
+=========================================================================
+sceSifRpcFunc                                                    [構造体]
+=========================================================================
+                                                          RPCサービス関数
+[構造]
+        typedef  void * (* sceSifRpcFunc)(
+        	unsigned int	fno,
+        	void		*data,
+        	int		size
+        );
+        
+[メンバ]
+        fno	sceSifCallRpc()のfno
+        data	受信データの格納されているアドレス
+        size	受信データのサイズ
+        
+[解説]
+        サーバ側で実行されるRPCサービス関数です。sceSifRegisterRpc() で登
+        録し、リクエストを受けてsceSifExecRequest() で実行します。
+        この関数の返り値は、リクエストを発したクライアントに返信するデー
+        タのアドレスとなります。返信先のアドレスとデータサイズは、クライ
+        アントによって指示されます。
+        
+[関連項目]
+        sceSifRegisterRpc()
+        
+
+=========================================================================
+sceSifServeData                                                  [構造体]
+=========================================================================
+                                                          RPCサーバデータ
+[構造]
+        typedef struct _sif_serve_data {
+        	unsigned int	command;
+        	sceSifRpcFunc	func;
+        	void		*buff;
+        	int		size;
+        	sceSifRpcFunc	cfunc;
+        	void		*cbuff;
+        	int		csize;
+        	sceSifClientData	*client;
+        	void		*paddr;
+        	unsigned int	fno;
+        	void		*receive;
+        	int		rsize;
+        	int		rmode;
+        	unsigned int	rid;
+        	struct _sif_serve_data	*link;
+        	struct _sif_serve_data	*next;
+        	struct _sif_queue_data	*base;
+        } sceSifServeData;
+        
+[解説]
+        サーバ側で受け付けるリクエストを識別するための識別子、サービス関
+        数、受信データのアドレス等を登録するデータ構造です。この時メンバ
+        は自動設定される為、プログラム側で設定する必要はありません。
+        
+[関連項目]
+        sceSifExecRequest(),sceSifGetNextRequest(), sceSifRegisterRpc()
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceSifBindRpc                                                      [関数]
+=========================================================================
+                                             RPC サービス関数データの検索
+[形式]
+        int sceSifBindRpc(
+        	sceSifClientData	*bd,
+        	unsigned int	request,
+        	unsigned int	mode
+        )
+        
+[引数]
+        bd	クライアント情報を受け取る構造体のポインタ
+        request	リクエスト識別子
+        mode	呼び出しモード。通常は0、必要に応じて次の定数を指定する
+        
+        +---------------+----------+
+        |定数            機能      |
+        +               +          +
+        |SIF_RPCM_NOWAIT 非同期実行|
+        +---------------+----------+
+        
+[返り値]
+        0	サーバ側への通知成功
+        負(<0)	発行失敗
+        
+[解説]
+        リクエストを送るために必要なクライアント情報をサーバから取得しま
+        す。
+        クライアント側で必要な関数です。
+        この関数を呼び出すと、requestで指定したリクエスト識別子のサービス
+        関	数が登録されているかどうかをサーバ側で調べ、登録されていれば、
+        呼び出しのキーとなるクライアント情報をbdで指定したsceSifClinetDat
+        a構造体に返してきます。
+        通常、この関数を呼び出したスレッドはサーバからの返答があるまでス
+        リープ状態になります。mode に SIF_RPCM_NOWAIT を指定しておくとス
+        リープせずにそのまま抜けます。この場合、サーバ側で処理が終了した
+        かどう	かは、sceSifCheckStatRpc()で確認できます。
+        
+        < 注意 >
+        Release 1.4からEEではスリープではなく内部的に確保したセマフォを用
+        いて終了を待ちます。
+        サービス関数が登録されていたか（Bindが成功したか）どうかは、返さ
+        れたsceSifClinetDataのserveメンバが0以外の値かどうかで判別できま
+        す。以下のようなコードになります。
+           #define BIND_ID  0x12345678
+        
+           while(1){
+        	if (sceSifBindRpc( &cd0, BIND_ID, 0) < 0) {
+        	printf("bind errr\n");
+        	exit(-1);
+        	}
+        	if (cd0.serve != 0) break;
+           }
+        
+        なお、上記のようなコードでEEからIOPへ頻繁に通信を行うと、EEがかな
+        り速いためにIOPがほぼ停止状態になります。少し間をおいてリクエスト
+        を発行してください。
+        
+
+=========================================================================
+sceSifCallRpc                                                      [関数]
+=========================================================================
+                                               RPC サービス関数の呼び出し
+[形式]
+        int sceSifCallRpc(
+        	sceSifClientData	*bd,
+        	unsigned int	fno,
+        	unsigned int	mode,
+        	void		*send,
+        	int		ssize,
+        	void		*receive,
+        	int		rsize,
+        	sceSifEndFunc	*end_func,
+        	void		*end_para
+        )
+        
+[引数]
+        bd	Bind済みのクライアント情報
+        fno	呼び出されるサービス関数に渡す番号
+        mode	呼び出しモード。通常は0、必要に応じて次の定数をマスク指定す
+        る。
+        
+        +----------------+----------------------------+
+        |定数             機能                        |
+        +                +                            +
+        |SIF_RPCM_NOWAIT  非同期実行                  |
+        |SIF_RPCM_NOWBDC  キャッシュのライトバックなし|
+        +----------------+----------------------------+
+        
+        send	送信するデータバッファ(EE/IOPで16/4バイトアライメント)
+        ssize	送信するデータサイズ(byte。EE/IOP で16/4byte単位)
+        receive	受信するデータバッファ(EE/IOPで16/4バイトアライメント)
+        rsize	受信するデータサイズ(byte。EE/IOP で16/4byte単位)
+        end_func		終了時に割り込み禁止区間で実行される関数
+        end_para	end_func のパラメータのアドレス
+        
+[返り値]
+        0	サーバ側への通知成功
+        負(<0)	発行失敗
+[解説]
+        登録されているサービス関数を呼び出します。クライアント側で使用す
+        る関数です。
+        引数bdには、あらかじめsceSifBindRpc()でBind済みのクライアント情報
+        の構造体を指定します。
+        send で指定したデータ ssizeバイトがサーバ側に送られ、サービス関数
+        に	第2 /第3引数として渡されます。fno が第１引数となります。
+        サービス関数の実行後、その返値のアドレスにあるデータ rsize バイト
+        が、receive で指定した領域に送り返されます。
+        終了時に end_func で指定した関数が割り込み禁止区間で呼び出されま
+        す。
+        通常、sceSifCallRpc() を呼び出したスレッドはサーバからの返答があ
+        るまでスリープ状態になります。mode に SIF_RPCM_NOWAIT をマスクし
+        ておくと、スリープせずにそのまま抜けます。この場合、サーバの処理
+        終了は	sceSifCheckStatRpc() で確認できます。
+        
+        <注意>
+        Release 1.4 から EE ではスリープではなく内部的に確保したセマフォ
+        を用いて終了を待ちます。EE の場合、キャッシュ上に載っているデータ
+        を send/receive するときに	はメモリへ write-back しますが、 mode
+        に SIF_RPCM_NOWBDC をマスクしておくと write-back を行いません。
+        現在の実装では、サービス関数は再入不可能です。必ず終了を確認して、
+        次を呼んでください。
+        
+[備考]
+        ssize/rsize の上限は、１回で送れる DMA の上限 1Mbyte - 16byteです。
+        終了処理関数end_funcは割り込みハンドラとして実行されるため、プロ
+        グラミングに際していくつか特別な注意が必要です。割り込みハンドラ
+        の記述について、\overview\eekernelに注意事項が記載されていますの
+        で参照してください。
+
+=========================================================================
+sceSifCheckStatRpc                                                 [関数]
+=========================================================================
+                                                           処理状況の判定
+[形式]
+        int sceSifCheckStatRpc(
+        	sceSifRpcData *bd
+        )
+        
+[引数]
+        bd	sceSifRpcData 構造体へのポインタ
+        
+[返り値]
+        1	実行中
+        0	終了
+        
+[解説]
+        sceSifBindRpc()/sceSifCallRpc()/sceSifGetOhterData() の状態を判別
+        する関数です。主に、SIF_RPCM_NOWAIT で発行したときの終了判定に使
+        用します。
+        引数bdには sceSifClientData/sceSifReceiveData を、sceSifRpcData
+        へキャストして指定してください。
+
+=========================================================================
+sceSifExecRequest                                                  [関数]
+=========================================================================
+                                                       サービス関数の実行
+[形式]
+        void  sceSifExecRequest(
+        	sceSifServeData *sd
+        );
+        
+[引数]
+        sd	リクエストを指すポインタ
+        
+[返り値]
+        なし
+        
+[解説]
+        リクエストに対応するサービス関数を実行します。
+        サーバとして機能するために必要な関数です。
+        
+
+=========================================================================
+sceSifGetNextRequest                                               [関数]
+=========================================================================
+                                                     RPC リクエストの取得
+[形式]
+        sceSifServeData * sceSifGetNextRequest(
+        	sceSifQueueData *dp
+        )
+        
+[引数]
+        dp	sceSifSetRpcQueue() で設定したリクエスト受信キューへのポインタ
+        
+[返り値]
+        0	リクエストなし
+        0以外	リクエストを指すポインタ
+        
+[解説]
+        受信キューから、受信したリクエストを表す sceSifQueueData 構造体を
+        取	出します。サーバとして機能するために必要な関数です。
+        返り値が0以外であれば、その値を sceSifExecRequest() へ渡すとサー
+        ビス関数が実行されます。
+        
+
+=========================================================================
+sceSifGetOtherData                                                 [関数]
+=========================================================================
+                                                相手側のデータを 受け取る
+[形式]
+        int  sceSifGetOtherData(
+        	sceSifReceiveData	*bd,
+        	void		*src,
+        	void		*dest,
+        	int		size,
+        	unsigned int	mode
+        );
+        
+[引数]
+        bd	sceSifReceiveData 構造体のポインタ
+        src	相手側のデータアドレス(EE/IOPで16/4バイトアライメント)
+        dest	転送先のアドレス(EE/IOPで16/4バイトアライメント)
+        size	転送するサイズ
+        mode	呼び出しモード。通常は0、必要に応じて次の定数をマスクする
+        
+        +---------------+----------+
+        |定数            機能      |
+        +               +          +
+        |SIF_RPCM_NOWAIT 非同期実行|
+        +---------------+----------+
+[返り値]
+        0	相手側への通知成功
+        負(<0)	発行失敗
+        
+        相手側のアドレス src からこちらのアドレス dest へデータを転送する
+        関数です。
+        通常、sceSifReceiveRpc() を呼び出したスレッドは相手からの返答があ
+        るまでスリープ状態になります。mode に SIF_RPCM_NOWAIT をマスクし
+        ておけばスリープせずにそのまま抜けます。この場合、処理の終了はsce
+        SifCheckStatRpc()で確認できます。
+        < 注意 >
+        Release 1.4 から EE ではスリープではなく内部的に確保したセマフォ
+        を用いて終了を待ちます。
+
+=========================================================================
+sceSifInitRpc                                                      [関数]
+=========================================================================
+                                                     SIF RPC API の初期化
+[形式]
+        void  sceSifInitRpc(
+        	unsigned int mode
+        );
+        
+[引数]
+        mode	起動モード（現在の実装では0 固定）
+        
+[返り値]
+        なし
+        
+[解説]
+        SIF RPC API の初期化を行います。
+        内部変数を初期化し、リクエストを処理するためのコマンド関数を SIF
+        Command API のシステムバッファに登録します。
+        サーバ/クライアントの両方で行う必要があります。
+        内部で sceSifInitCmd() を呼びますので、同期のため片方が呼ばれるま
+        でもう一方はこの関数内で待ちに入ります。
+        
+
+=========================================================================
+sceSifRegisterRpc                                                  [関数]
+=========================================================================
+                                                    RPCサービス関数の登録
+[形式]
+        void sceSifRegisterRpc(
+        	sceSifServeData	*serve,
+        	unsigned int	request,
+        	sceSifRpcFunc	func,
+        	void		*buff,
+        	sceSifRpcFunc	cfunc,
+        	void		*cbuff,
+        	sceSifQueueData	*qd
+        )
+        
+[引数]
+        serve	サービス関数情報を格納する構造体のポインタ
+        request	リクエスト識別子
+        func	リクエストを受けたときに実行するサービス関数
+        buff	funcの引数となるデータアドレス。
+        cfunc	sceSifCancelRpc()のとき、割り込み禁止区間で実行される関数
+        cbuff	cfuncの引数となるバッファ
+        qd	serveの構造体を登録する受信キュー構造体
+        
+[返り値]
+        なし
+        
+[解説]
+        リクエスト識別子とサービス関数を受信キュー構造体に登録します。サ
+        ーバとして機能するために必要な関数です。
+        リクエスト識別子は、sceSifBindRpc() でサービス関数を探すために使
+        用されるものです。最上位ビット（bit31）が1の値を指定することはで
+        きません（システム使用とします）。
+        クライアント側からsceSifCallRpc() が呼ばれると、SIF Command APIで
+        登録した関数によってリクエストが受信キューに入れられます。割り込
+        み関数として実行されるSIF Command関数が終了したあと、通常のコンテ
+        クストで受信キューからリクエストが取出されて、サービス関数funcが
+        実行されます。funcの実行が終了すると、その返値のアドレスのデータ
+        が、sceSifCallRpc()の引数receiveで指定されたアドレスに、同じくrsi
+        zeで指定されたサイズ分だけ返送されます。
+        現在の実装では、サービス関数は再入不可能です。必ず終了を確認して、
+        次を呼んでください。関数自体が再入可能であってもキューイングの構
+        造とEE <-> IOP間の通信量を減らすためにそうなっています。
+        sceSifCancelRpc()は、現在未実装です。
+        
+
+=========================================================================
+sceSifRemoveRpc                                                    [関数]
+=========================================================================
+                                                    RPCサービス関数の削除
+[形式]
+        sceSifServeData *sceSifRemoveRpc(
+        	sceSifServeData	*serve,
+        	sceSifQueueData	*qd
+        )
+        
+[引数]
+        serve	サービス関数情報を格納する構造体のポインタ
+        qd	serveの構造体を登録する受信キュー構造体
+        
+[返り値]
+        NULLなら失敗（受信キューに登録されていない）
+        NULL以外なら成功
+        
+[解説]
+        リクエスト識別子とサービス関数を受信キュー構造体から削除します。
+        
+
+=========================================================================
+sceSifRemoveRpcQueue                                               [関数]
+=========================================================================
+                                              RPC受信キューの登録をはずす
+[形式]
+        sceSifQueueData *sceSifRemoveRpcQueue(
+        	sceSifQueueData *dq,
+        )
+        
+[引数]
+        dq	受信キューの構造体
+        
+[返り値]
+        NULLなら失敗（登録されていない）
+        NULL以外なら成功
+        
+[解説]
+        RPCリクエストの受信キューをRPCシステムから削除します。
+        
+
+=========================================================================
+sceSifRpcLoop                                                      [関数]
+=========================================================================
+                                                         リクエストを待つ
+[形式]
+        void sceSifRpcLoop(
+        	sceSifQueueData *pd
+        );
+        
+[引数]
+        pd	sceSifSetRpcQueue()で設定したリクエスト受信キューへのポインタ
+        
+[返り値]
+        なし（この関数からは戻らない）
+        
+[解説]
+        リクエスト待ちとサービス実行を繰り返すループに入ります。サーバと
+        して機能するために必要な関数です。この関数を呼び出すと、実行スレ
+        ッドはクライアントからのリクエストを受けるまでSleepし、リクエスト
+        を受けるとWakeupしてサービス関数を実行し、終了後再びSleepするとい
+        うサイクルに入ります。したがって、pdで指定するリクエスト受信キュ
+        ーは、sceSifSetRpcQueue()で登録する際に第２引数にスレッドIDを指定
+        したものでなければなりません。参考として、sceSifRpcLoop()のソース
+        コードを示します。
+        
+        void sceSifRpcLoop(sceSifQueueData *qd)
+        {
+        	sceSifServeData *rdp;
+        
+        	while(1) {
+        	/* 処理関数を取得 */
+        	while ((rdp = sceSifGetNextRequest(qd))){
+        		/* 関数の実行 */
+        		sceSifExecRequest(rdp);
+        	}
+        	/* 次のコマンドが来るまで眠る */
+        	SleepThread();
+        
+        	}
+        	return;
+        }
+        
+
+=========================================================================
+sceSifSetRpcQueue                                                  [関数]
+=========================================================================
+                                                      RPC受信キューの登録
+[形式]
+        void sceSifSetRpcQueue(
+        	sceSifQueueData *dq,
+        	int key
+        )
+        
+[引数]
+        dq	受信キューの構造体
+        key	スレッドID。ビジーウェイトするときは負数(<0)
+        
+[返り値]
+        なし
+        
+[解説]
+        RPCリクエストの受信キューをRPCシステムに登録します。
+        サーバとして機能するために必要な関数です。
+        引数keyには通常はスレッドIDを指定し、クライアントからのリクエスト
+        を受けるたびにWakeupがかかるようにします。keyに負数(<0)を指定した
+        場合はWakeupしないので、ビジーウェイトする場合に使用します。

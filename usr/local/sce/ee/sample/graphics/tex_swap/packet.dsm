@@ -1,0 +1,378 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - tex_swap -
+ *
+ *                         Version 0.3.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : packet.dsm
+ *                     Description : data packets to send to path1/path2.
+ *
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.4.0          Jun, 4, 1999    munekis     first verison
+ */
+
+.include "vumacros.h"
+.global My_dma_start
+.global My_matrix
+.global My_light_matrix
+.global My_light_color_matrix
+.global My_rot_trans_matrix
+.global My_rect_start
+.global My_dma_next
+.global My_no_mip
+.global My_position0
+.global My_position1
+
+.global matrix_sphere0
+.global matrix_sphere1
+
+.data
+
+; -------- dma --------
+.align 4
+My_dma_start:
+DmaRef *, My_microcode
+
+; draw grid
+DmaRef *, My_environment
+DmaRef *, set_buf0
+DmaRef *, picture0
+DmaRef *, set_buf1
+DmaRef *, model1
+
+; draw spheres
+DmaRef *, My_environment0
+DmaRef *, set_buf2
+DmaRef *, picture1
+DmaRef *, model0
+
+
+DmaRef *, My_environment1
+DmaRef *, set_buf0
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment2
+DmaRef *, set_buf1
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment3
+DmaRef *, set_buf2
+DmaRef *, picture4
+DmaRef *, model0
+
+DmaRef *, My_environment4
+DmaRef *, set_buf0
+DmaRef *, picture1
+DmaRef *, model0
+
+DmaRef *, My_environment5
+DmaRef *, set_buf1
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment6
+DmaRef *, set_buf2
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment7
+DmaRef *, set_buf0
+DmaRef *, picture4
+DmaRef *, model0
+
+DmaRef *, My_environment8
+DmaRef *, set_buf1
+DmaRef *, picture1
+DmaRef *, model0
+
+DmaRef *, My_environment9
+DmaRef *, set_buf2
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment10
+DmaRef *, set_buf0
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment11
+DmaRef *, set_buf1
+DmaRef *, picture4
+DmaRef *, model0
+
+DmaRef *, My_environment12
+DmaRef *, set_buf2
+DmaRef *, picture1
+DmaRef *, model0
+
+DmaRef *, My_environment13
+DmaRef *, set_buf0
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment14
+DmaRef *, set_buf1
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment15
+DmaRef *, set_buf2
+DmaRef *, picture4
+DmaRef *, model0
+
+DmaRef *, My_environment16
+DmaRef *, set_buf0
+DmaRef *, picture1
+DmaRef *, model0
+
+DmaRef *, My_environment17
+DmaRef *, set_buf1
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment18
+DmaRef *, set_buf2
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment19
+DmaRef *, set_buf0
+DmaRef *, picture4
+DmaRef *, model0
+
+DmaRef *, My_environment20
+DmaRef *, set_buf1
+DmaRef *, picture1
+DmaRef *, model0
+
+DmaRef *, My_environment21
+DmaRef *, set_buf2
+DmaRef *, picture2
+DmaRef *, model0
+
+DmaRef *, My_environment22
+DmaRef *, set_buf0
+DmaRef *, picture3
+DmaRef *, model0
+
+DmaRef *, My_environment23
+DmaRef *, set_buf1
+DmaRef *, picture4
+DmaRef *, model0
+DMAend
+
+; ---------- micro code ------------
+.DmaData My_microcode
+MPG 0, *
+.include "m_opt.vsm"  ; optimized micro code
+;.include "m.vsm"     ; non-optimized micro code 
+.EndMPG
+.EndDmaData
+
+
+; ----------------- matrix environment -----------------
+.DmaData My_environment
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.200000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.200000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 2.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 1.0, -1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT COLOR MATRIX
+My_light_color_matrix:
+fxyzw 0.8, 0.2, 0.2, 0.0
+fxyzw 0.2, 0.8, 0.2, 0.0
+fxyzw 0.2, 0.2, 0.8, 0.0
+fxyzw 0.2, 0.2, 0.2, 1.0
+.EndUnpack
+
+
+MSCAL 0         ; 
+BASE 20          ; sets the vif1 base register
+OFFSET 502      ; sets the vif1 offset register
+.EndDmaData
+
+
+.DmaData My_environment0
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX & LIGHT VECTOR MATRIX
+matrix_sphere0:
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+.EndUnpack
+MSCAL 0         ; 
+.EndDmaData
+
+.DmaData My_environment1
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX & LIGHT VECTOR MATRIX
+matrix_sphere1:
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+.EndUnpack
+MSCAL 0         ; 
+.EndDmaData
+
+.DmaData My_environment2
+.include "matrix.dsm"
+.DmaData My_environment3
+.include "matrix.dsm"
+.DmaData My_environment4
+.include "matrix.dsm"
+.DmaData My_environment5
+.include "matrix.dsm"
+.DmaData My_environment6
+.include "matrix.dsm"
+.DmaData My_environment7
+.include "matrix.dsm"
+.DmaData My_environment8
+.include "matrix.dsm"
+.DmaData My_environment9
+.include "matrix.dsm"
+.DmaData My_environment10
+.include "matrix.dsm"
+.DmaData My_environment11
+.include "matrix.dsm"
+.DmaData My_environment12
+.include "matrix.dsm"
+.DmaData My_environment13
+.include "matrix.dsm"
+.DmaData My_environment14
+.include "matrix.dsm"
+.DmaData My_environment15
+.include "matrix.dsm"
+.DmaData My_environment16
+.include "matrix.dsm"
+.DmaData My_environment17
+.include "matrix.dsm"
+.DmaData My_environment18
+.include "matrix.dsm"
+.DmaData My_environment19
+.include "matrix.dsm"
+.DmaData My_environment20
+.include "matrix.dsm"
+.DmaData My_environment21
+.include "matrix.dsm"
+.DmaData My_environment22
+.include "matrix.dsm"
+.DmaData My_environment23
+.include "matrix.dsm"
+
+
+
+
+; -------- model No.0 (sphere) ---------
+.DmaData model0
+.align 7 
+.include "sphere.dsm"
+.EndDmaData
+
+; -------- model No.1 (grid) ---------
+.DmaData model1
+.align 7
+.include "grid.dsm"
+.EndDmaData
+
+
+; --------- texture no.0 -----------
+.DmaData picture0
+DIRECT *
+.include "mat.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.1 -----------
+
+.DmaData picture1
+DIRECT *
+.include "no1.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.2 -----------
+.DmaData picture2
+DIRECT *
+.include "no2.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.3 -----------
+.DmaData picture3
+DIRECT *
+.include "no3.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.4 -----------
+.DmaData picture4
+DIRECT *
+.include "no4.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- buffer no.0 -----------
+.DmaData set_buf0
+DIRECT *
+.include "buff0.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- buffer no.1 -----------
+.DmaData set_buf1
+DIRECT *
+.include "buff1.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- buffer no.2 -----------
+.DmaData set_buf2
+DIRECT *
+.include "buff2.dsm"
+.ENDDIRECT
+.EndDmaData
+
+
+
+
+
+

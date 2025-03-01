@@ -1,0 +1,183 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - mug -
+
+ *              -- modified for antialiasing demo --
+ *                -- double vertical resolution --
+ *
+ *                        Version 0.4.0
+ *
+ *
+ *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Description : main procedures
+ *
+ *       Version   Date           Design              Log
+ *  --------------------------------------------------------------------
+ *       0.4.0     Aug, 3rd ,1999 munekis            first version
+ *                 Apr, 28th,2000 NOBsasaki          for aa demo
+ */
+
+.include "vumacros.h"
+.global My_dma_setup
+.global My_tex_setup
+.global My_dma_start
+.global My_dma_line_start
+.global My_matrix
+.global My_light_matrix
+.global My_light_color_matrix
+.global My_rot_trans_matrix
+.global My_rect_start
+.global My_dma_next
+.global My_no_mip
+.global My_position0
+.global My_position1
+
+.global matrix_sphere0
+.global matrix_sphere1
+
+.data
+
+; --- GS setup ---
+.align 4
+My_dma_setup:
+DmaRef *, My_microcode
+DmaRef *, set_buf0
+DmaRef *, picture0
+DmaRef *, set_buf1
+DMAend
+
+; --- set texture mode  ---
+.align 4
+My_tex_setup:
+DmaRef *, set_buf1
+DMAend
+
+; --- draw ---
+My_dma_start:
+DmaRef *, My_environment
+DmaRef *, model1
+DmaRef *, model0
+DMAend
+
+; --- draw line ---
+My_dma_line_start:
+DmaRef *, My_environment
+DmaRef *, model1_line
+DmaRef *, model0_line
+DMAend
+
+
+
+
+; ---------- micro code ------------
+.DmaData My_microcode
+.align 4
+MPG 0, *
+.include "r_opt.vsm"     ; non-optimized micro code 
+;.include "r.vsm"     ; non-optimized micro code 
+.EndMPG
+.EndDmaData
+
+
+; ----------------- matrix environment -----------------
+.DmaData My_environment
+.align 4
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.200000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.200000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 2.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 1.0, -1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT COLOR MATRIX
+My_light_color_matrix:
+fxyzw 0.8, 0.2, 0.2, 0.0
+fxyzw 0.2, 0.8, 0.2, 0.0
+fxyzw 0.2, 0.2, 0.8, 0.0
+fxyzw 0.2, 0.2, 0.2, 1.0
+.EndUnpack
+
+MSCAL 0         ; 
+BASE 20          ; sets the vif1 base register
+OFFSET 502      ; sets the vif1 offset register
+.EndDmaData
+
+
+
+; -------- model No.0 ---------
+.DmaData model0
+.align 7 
+.include "mug_tex.dsm"
+.EndDmaData
+
+; -------- model No.1 ---------
+.DmaData model1
+.align 7
+.include "mug.dsm"
+.EndDmaData
+
+
+; -------- model line No.0 ---------
+.DmaData model0_line
+.align 7
+.include "mug_tex_line.dsm"
+.EndDmaData
+
+; -------- model line No.1 ---------
+.DmaData model1_line
+.align 7
+.include "mug_line.dsm"
+.EndDmaData
+
+
+; --------- texture no.0 -----------
+.DmaData picture0
+DIRECT *
+.include "reftex.dsm"
+.ENDDIRECT
+.EndDmaData
+
+
+; --------- buffer no.0 -----------
+.DmaData set_buf0
+DIRECT *
+.include "buff0.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- buffer no.1 -----------
+.DmaData set_buf1
+DIRECT *
+.include "buff1.dsm"
+.ENDDIRECT
+.EndDmaData
+
+
+
+
+
+
+

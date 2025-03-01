@@ -1,17 +1,13 @@
 #
 #  IOP hello program Makefile
 #
-#  $Id: Makefile,v 1.11 2001/05/20 09:23:33 tei Exp $
+#  $Id: Makefile,v 1.10 2000/08/02 14:46:48 tei Exp $
 #
 
 #----------- customize section --------------
-DBGFLAG  = -g
-#OPTFLAG  = -O2
-CFLAGS   = -Wall $(DBGFLAG) $(OPTFLAG)
-ASFLAGS  = $(DBGFLAG)
-LDFLAGS  = $(DBGFLAG)
-LOADLIBES=
-
+CFLAGS   =  -Wall -g
+ASFLAGS  =
+LOADLIBES= 
 PROGNAME = hello.irx
 OBJS	 = $(PROGNAME:%.irx=%.o) # add here other objects
 

@@ -1,21 +1,12 @@
-# Watch window for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# WatchWin
 # ----------------------------------------------------------------------
 # Implements watch windows for gdb. Inherits the VariableWin
 # class from variables.tcl. 
 # ----------------------------------------------------------------------
+#   AUTHOR:  Keith Seitz <keiths@cygnus.com>
+#   Copyright (C) 1997, 1998 Cygnus Solutions
+#
 
 class WatchWin {
   inherit VariableWin
@@ -105,17 +96,6 @@ class WatchWin {
   }
 
   # ------------------------------------------------------------------
-  #  METHOD: clear_file - Clear out state so that a new executable
-  #             can be loaded. For WatchWins, this means deleting
-  #             the Watched list, in addition to the normal
-  #             VariableWin stuff.
-  # ------------------------------------------------------------------
-  method clear_file {} {
-    VariableWin::clear_file
-    set Watched {}
-  }
-
-  # ------------------------------------------------------------------
   # DESTRUCTOR - delete watch window
   # ------------------------------------------------------------------
   destructor {
@@ -200,7 +180,16 @@ class WatchWin {
   method update {} {
     global Update Display
     debug "START WATCH UPDATE CALLBACK"
+    set err [catch {getLocals} locals]
+    if {$err} {return}
+    if {"$locals" != "$Locals"} {
+      # Context switch, delete the tree and repopulate it
+      deleteTree
+      set Locals $locals
+    }
+
     catch {populate {}} msg
+    debug "Did populate with return \"$msg\""
     catch {VariableWin::update} msg
     debug "Did VariableWin::update with return \"$msg\""
 
@@ -216,7 +205,13 @@ class WatchWin {
   # METHOD: add - add a variable to the watch window
   # ------------------------------------------------------------------
   method add {name} {
-      debug "Trying to add \"$name\" to watch"
+
+    # We must make sure that we make convert the variable (structs, in
+    # particular) to a more acceptable form for the entry. For example,
+    # if we want to watch foo.bar, we need to make sure this is entered
+    # as foo-bar (or else we will be missing the parent "foo").
+#    set var [string trim $name \ \r\n\;]
+#    regsub -all \\. $var - name
  
     # Strip all the junk after the first \n
     set var [split $name \n]
@@ -245,6 +240,11 @@ class WatchWin {
 	if {$msg == "void"} {
 	  return 0
 	}
+
+#	regsub -all \\. $var - a
+#	regsub -all \\$ $a % name
+      } else {
+#	regsub -all \\. $var - name
       }
 
       debug "In add, going to add $name"
@@ -252,11 +252,20 @@ class WatchWin {
       set err [catch {set foo($name) 1}]
       set err [expr {$err + [catch {expr {$foo($name) + 1}}]}]
       if {!$err} {
+	set found 0
+	foreach var $Watched {
+	  if {[$var name] == $name} {
+	    set found 1
+	    break
+	  }
+	}
+	if {!$found} {
 	  set var [gdb_variable create -expr $name]
 	  set ::Update($this,$var) 1
 	  lappend Watched $var
 	  update
 	  return 1
+	}
       }
     }
 

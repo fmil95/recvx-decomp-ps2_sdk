@@ -1,0 +1,3078 @@
+<html>
+<head> 
+<title> PlayStation Develop 2000</title>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#336699" alink="#FF6699" vlink="#008080">
+
+<A NAME="Top">
+
+
+<A NAME="0008252">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/25</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>SIF RPC についての補足</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                2000/08/25
+                                                (株)SCE ソフトウェア開発部
+
+
+                            SIF RPC についての補足
+
+
+ここでは SIF RPC の処理についての補足説明と、RPC を使用するEEライブラリ関数
+についての詳細を挙げます。
+
+
+■１■ WAIT 実行と NOWAIT 実行
+
+RPC クライアント側の処理において、要とも言える関数が sceSifCallRpc() です。
+sceSifCallRpc() は、サーバ側で登録済のサービス関数を呼び出します。
+sceSifCallRpc() WAIT 実行時の処理は、大まかに以下のようになっています。
+
+  1. 内部(ライブラリで確保した)の通信パケットを一つ手にいれる
+  2. 通信パケットを ClientData に付加する
+  3. CreateSema() を行う
+  4. DMA で通信パケットをサーバへ送る（sceSifSendCmd()）
+  5. WaitSema() を行う
+  6. サービス関数終了を知らせる DMA 割り込みが起きる
+  7. ライブラリが登録した割り込みハンドラ内で、通信パケットを開放して
+     ClientData  から外し、iSignalSema() を行う
+  8. 割り込みハンドラから復帰後 DeleteSema() を行う
+
+以上のように、通常 sceSifCallRpc() を実行したスレッドはサーバからの返答が
+あるまでセマフォ待ち（WAIT状態）になります。
+但し、sceSifCallRpc() 第３引数 mode に SIF_RPCM_NOWAIT をマスク指定すると
+NOWAIT 実行となり、サーバの処理終了を待たずに抜けます。この場合終了は
+sceSifCheckStatRpc() で確認できます。 
+
+sceSifCallRpc() 及び sceSifBindRpc(), sceSifGetOtherData() は、同時に32個
+までしか発行できません。サーバ側への発行が失敗した場合の返り値は以下です。
+
+    内部のパケットデータが確保出来ない                  -1
+    sceSifSendCmd() が失敗した(DMA のキューイング失敗)  -2
+    待ちのセマフォが確保できない                        -3
+
+
+■２■ RPC サービス関数は再入不可能
+
+サーバ側である ServeData として割り当てたサービス関数は、再入不可能です。
+（サービス関数自体が再入可能な構造であっても、RPC 経由での再入はできない
+仕様になっています）
+これをクライアント側から見ると、
+
+  ・ある ClientData を使用した sceSifCallRpc() の処理がが終了していない
+    うちに、同じ ClientData を使用する sceSifCallRpc() を実行する事はで
+    きない
+
+という事になります。再入が起きた場合の症状は、主に以下のようになります。
+
+  サーバ側：
+    サービス関数が繰り返し実行されてしまう
+    正しいデータが来ない
+  クライアント側：
+    ライブラリ内部関数 _sceRpcFreePacket() でハングアップする(EE)
+    正しいデータが返らない
+
+
+■３■ 再入が起きる例
+
+同じ ClientData の sceSifCallRpc() を複数のスレッドから実行する場合は、
+再入が起きないよう特に注意する必要があります。再入が起きる例を以下に挙げ
+ます。
+
+  (case 1)
+  1. あるスレッド(A) で sceSifCallRpc(&bd) を WAIT 実行する
+  2. sceSifCallRpc(&bd) 内部でセマフォ待ちに入る
+  3. 別スレッド(B) に実行権が移る
+  4. その直後スレッド(B) で sceSifCallRpc(&bd) を実行する
+
+  (case 2)
+  1. あるスレッド(A) で sceSifCallRpc(&bd) を NOWAIT 実行する
+  2. sceSifCallRpc(&bd) の処理が終了する前に何らかの割り込みが起こり、
+     割り込みハンドラが実行される
+  3. 割り込みハンドラ内部で、スレッド(A) より優先度の高いスレッド(B)
+     を起こす
+  4. 割り込みハンドラから復帰後は スレッド(B) に実行権が移る
+  5. その直後スレッド(B) で sceSifCallRpc(&bd) を実行する
+
+
+■４■ 再入の防止
+
+再入を防止するには、以下に挙げるいずれかのような方法があります。
+
+  ・ 同じ ClientData を使用する sceSifCallRpc() は、単一のスレッドで
+     まとめて実行するような構造にする
+
+  ・ 同じ ClientData を使用する sceSifCallRpc() を複数のスレッドから
+     実行したい場合は、セマフォ等を用いて排他制御を行うようにする
+     （スレッドセーフな構造）
+
+
+■５■ RPC を使用するEEライブラリ関数
+
+以下に挙げる EE ライブラリは、内部で RPC を使用します。一つのライブラリ内
+の各関数は、同一の CliantData を使用すると考えて下さい。
+以下のライブラリ関数を複数スレッドから実行する場合は、再入の防止を考慮に
+入れる必要があります。
+
+     libpad
+     libmtap
+     libmc
+     libmcx
+     libcdvd
+     libsdr
+     標準 IOP サービス
+     入出力サービス
+
+なお libcdvd 関数については、内部でセマフォによる排他制御を行っており、
+セマフォ資源が獲得できなかった場合はエラー(0)を返す仕様になっています。
+よって libcdvd は（処理が破綻せずにエラーを認識するという意味で）スレッ
+ドセーフな構造であると言えます。
+
+
+■６■ EEライブラリ別関数分類（Release 2.0(*1) において）
+
+(1) 非 RPC 関数
+   sceSifBindRpc() や sceSifCallRpc() を実行しない関数です。RPC の再入を
+   考慮せずに使用できます。（以下の関数自体が再入可能という意味ではあり
+   ません）以下のシステム状態で使用できます。
+     ・スレッド（割り込み許可状態）
+     ・スレッド（割り込み禁止状態）
+     ・割り込みハンドラ（一部関数を除く）
+
+  [libpad] 
+    scePadRead
+    scePadGetState
+    scePadGetReqState
+    scePadInfoAct
+    scePadInfoComb
+    scePadInfoMode
+    scePadReqIntToStr
+    scePadStateIntToStr
+  [libmtap]
+    なし
+  [libcdvd]
+    sceCdIntToPos
+    sceCdPosToInt
+    sceCdInitEeCB（割り込みハンドラでは実行できません）
+    sceCdCallback
+  [libsdr]
+    sceSdTransToIOP（割り込みハンドラでは実行できません）
+    sceSdCallBack
+  [libmc]
+    なし
+  [libmcx]
+    なし
+  [標準IOPサービス]
+    sceSifLoadFileReset
+  [入出力サービス]
+    sceFsReset
+
+(2) RPC NOWAIT 関数
+   sceSifBindRpc() や sceSifCallRpc() を NOWAIT 実行する関数です。前述
+   ■３■(case 2) に注意する必要があります。以下のシステム状態で使用でき
+   ます。
+     ・スレッド（割り込み許可状態）
+     ・スレッド（割り込み禁止状態）
+
+  [libpad]
+    なし
+  [libmtap]
+    なし
+  [libcdvd]（sceCdSync() で終了を検出する関数）
+    sceCdReadChain()
+    sceCdRead()
+    sceCdReadIOPm()
+    sceCdSeek()
+    sceCdStandby()
+    sceCdStop()
+    sceCdPause()
+  [libsdr]
+    sceSdRemote(0, ...)
+  [libmc]
+    sceMcInit() を除く全ての関数
+  [libmcx]
+    sceMcxInit() を除く全ての関数
+  [標準IOPサービス]
+    なし
+  [入出力サービス]（sceOpen() での NOWAIT 指定による）
+    sceClose()
+    sceLseek()
+    sceRead()
+    sceWrite()
+
+(3) RPC WAIT 関数
+   sceSifBindRpc() や sceSifCallRpc() を WAIT 実行する関数です。前述
+   ■３■(case 1) に注意する必要があります。以下のシステム状態で使用でき
+   ます。
+     ・スレッド（割り込み許可状態）
+
+  [libpad]
+    scePadEnd()
+    scePadEnterPressMode()
+    scePadExitPressMode()
+    scePadGetSlotMax()
+    scePadInfoPressMode()
+    scePadInit()
+    scePadPortClose()
+    scePadPortOpen()
+    scePadSetActAlign()
+    scePadSetActDirect()
+    scePadSetMainMode()
+  [libmtap]
+    全ての関数
+  [libcdvd]
+    sceCdBreak()
+    sceCdDiskReady()
+    sceCdGetDiskType()
+    sceCdGetError()
+    sceCdGetReadPos()
+    sceCdGetToc()
+    sceCdInit()
+    sceCdReadClock()
+    sceCdSearchFile()
+    sceCdStatus()
+    sceCdStInit()
+    sceCdStPause()
+    sceCdStRead()
+    sceCdStResume()
+    sceCdStSeek()
+    sceCdStStart()
+    sceCdStStat()
+    sceCdStStop()
+    sceCdTrayReq()
+  [libsdr]
+    sceSdRemote(1, ...)
+    sceSdRemoteInit()
+    sceSdRemoteCallbackInit()
+  [libmc]
+    sceMcInit()
+  [libmcx]
+    sceMcxInit()
+  [標準IOPサービス]
+    sceSifLoadModule()
+    sceSifLoadElf()
+    sceSifLoadElfPart()
+    sceSifInitIopHeap()
+    sceSifAllocIopHeap()
+    sceSifFreeIopHeap()
+    sceSifLoadIopHeap()
+  [入出力サービス]
+    sceOpen()
+    sceClose()
+    sceLseek()
+    sceRead()
+    sceWrite()
+
+(4) RPC チェック関数
+  sceSifCheckStatRpc() を実行する関数です。
+
+  [libcdvd]
+    sceCdSync()
+  [libmc]
+    sceMcSync()
+  [入出力サービス]
+    sceIoctl()
+
+
+(*1)8/25 現在において未リリースとなっておりますが、近日中に SCE-NET
+    へ登録致します。
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0008251">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/25</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>割り込みハンドラとスレッドについての補足</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                2000/08/25
+                                                (株)SCE ソフトウェア開発部
+
+
+                  割り込みハンドラとスレッドについての補足
+
+
+ここでは、割り込みハンドラとスレッド、及び割り込み処理としてユーザが登録する
+関数について補足いたします。
+
+
+● 割り込みハンドラとスレッド
+
+・スレッド（スレッド部）
+  スレッドとは、並行処理の観点から見たプログラムの論理的な単位です。各スレ
+  ッドはカーネルが管理し、カーネルは各スレッドをユーザプログラムの一部分と
+  して実行します。
+
+・割り込みハンドラ（スレッド独立部）
+  INTC や DMAC からの割り込みをトリガとして、カーネルが実行します。割り込み
+  ハンドラには「自スレッド」の概念はありません。また、割り込みハンドラ実行
+  中は「割り込み禁止状態」であり、他の割り込みが入る事はありません。
+
+ユーザが作成するプログラムは、スレッド／割り込みハンドラのいずれかですが、それ
+ぞれ異なったシステム状態のもとで実行されることを意識してプログラミングしなけれ
+ばなりません。特に、割り込みハンドラにおいては「プログラミング上の制約」があり
+ます。詳しくは以下のドキュメントを御参照下さい。
+
+  sce/doc/html/ee/overview/eekernl.htm : 3.3 割り込みハンドラの記述
+  sce/doc/html/iop/overview/iopkernl.htm : 4.1 スレッド部とスレッド独立部
+  sce/doc/html/iop/libref/ikrnl_rf.htm : RegisterIntrHandler() の項
+
+
+● 割り込み処理：ユーザ関数の登録
+
+割り込み処理としてユーザが登録する関数には、割り込みハンドラとして動作する
+ものと、スレッドとして動作するものの２種類が存在します。
+以下にその種別を示します。
+
+
+(1) 割り込みハンドラ動作
+
+  ・以下の関数で登録したユーザ関数は、割り込みハンドラとして動作するため
+    前述した「プログラミング上の制約」を受けます。
+       [EE]
+        EE kernel  : AddIntcHandler(), AddIntcHandler2(), AddDmacHandler(),
+                     AddDmacHandler2(), AddSbusIntcHandler()
+        libgraph   : sceGsSyncVCallback()
+        libsdr     : sceSdCallBack()
+       [IOP]
+        IOP kernel : RegisterIntrHandler(), RegisterVblankHandler()
+        libsd      : sceSdSetIRQCallback(), sceSdSetSpu2IntrHandler(),
+                     sceSdSetTransCallback(), sceSdSetTransIntrHandler()
+        cdvdman    : sceCdCallback()(*0)
+       [EE/IOP]
+        SIF        : sceSifAddCmdHandler(), sceSifCallRpc()(*1)
+
+
+(2) スレッド動作
+
+  ・以下の関数で登録したユーザ関数は、ライブラリがコールバック用スレッドを
+    起床させる事により呼び出されます。EE側の関数については、コールバック用
+    スレッド生成関数を別途用意しています。
+       [EE]
+        libsdr     : sceSdRemote(rSdSetIRQCallback, ...),
+                     sceSdRemote(rSdSetSpu2IntrHandler, ...),
+                     sceSdRemote(rSdSetTransCallback, ...),
+                     sceSdRemote(rSdSetTransIntrHandler, ...)
+        libcdvd    : sceCdCallback()(*0)
+       [IOP]
+        usbd       : sceUsbdTransferPipe()(*2)
+
+  ・以下の関数で登録したユーザ関数は、ライブラリ関数の実行中に呼び出され
+    ます。コールバック用スレッドを生成する必要はありません。
+       [EE]
+        libmpeg    : sceMpegAddCallback()(*3)
+
+  (*0) sceCdCallback() の登録関数は EE 側と IOP 側で動作が異なる。
+  (*1) RPC 終了時に呼び出される関数(引数 end_func)
+  (*2) パイプに対しての転送終了時に呼び出される関数(引数 done_cb)
+  (*3) sceMpegGetPicture(), sceMpegGetPictureRAW8() から呼び出される。
+
+
+● その他
+
+CSL MIDIシーケンサ、及び CSL ソフトウェア・シンセサイザ については、
+「割り込みハンドラ動作／スレッド動作」のどちらになるかは、ユーザの実装形態に
+依存します。（通常はスレッド動作にするのが一般的です）
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0008250">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/25</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 メモリーカードファイルシステム運用規定 Ver.2.3</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                2000/08/25
+                                                (株)SCE ソフトウェア開発部
+
+
+              PS2 メモリーカードファイルシステム運用規定 Ver.2.3
+
+
+  PS2 におけるメモリーカードを扱う上での運用規定について、仕様を公開致します。
+以下の内容は、'00/08/25 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 メモリーカード対応
+  PS2 で扱えるメモリーカードは以下の通りです。
+  ・"PlayStation 2"専用メモリーカード(8MB)
+  ・ポケットステーション
+  ・メモリーカード
+
+  各メモリーカードに対する PS/PS2 の対応は以下のようになります。
+
+                      |     PlayStation 2     |     PlayStation       
+                      |-----------------------+-----------------------
+                      | ゲーム |メモリーカード| ゲーム |メモリーカード
+                      |タイトル| 本体ブラウザ |タイトル| 本体管理画面 
+  --------------------+--------+--------------+--------+--------------
+  メモリーカード(8MB) |   ○   |      ○      |   ×   |      ×      
+  ポケットステーション| ○(*1) |    ○(*3)    |   ○   |      ○      
+  メモリーカード      | ×(*2) |    ○(*3)    |   ○   |      ○      
+  --------------------------------------------------------------------
+
+  (*1) PS2 タイトルにおいて、ポケットステーションへのアクセスは、ポケット
+       ステーション対応(ポケットステーション用アプリケーションを保有)の場合
+       に限り、リード、ライトを許可します。よって、ポケットステーションの
+       アプリケーションを伴わない PS2 タイトルにおいては、接続チェックを除く
+       いかなるアクセスも禁止します。
+       なお、現時点では、PS2 からポケットステーションの機能を使用するライブ
+       ラリを提供しておりません。
+       (データファイルのアクセスのみ可、将来対応予定)
+  (*2) PS2 ゲームタイトルでは、従来の容量 128KB のメモリーカードへのリード、
+       ライトを禁止します。
+  (*3) PS2 本体のブラウザ画面では、ポケットステーションおよびメモリーカード
+       と、メモリーカード(8MB) との双方向コピーが可能です。
+       ただし、扱えるファイルは、PS 用データファイル形式のみとし、PS2 専用
+       データは、コピーすることができません。
+
+2.メモリーカードファイルシステム
+  2-1 メモリーカード(8MB)
+      PS2 専用メモリーカードファイルシステムを採用
+      ディレクトリ構造あり、1KB 単位のファイル管理
+  2-2 ポケットステーションおよびメモリーカード
+      PS 用メモリーカードファイルシステムに準拠
+      ディレクトリ構造なし、データファイルはブロック(8KB)単位で扱う。
+      ただし、表記は KB を単位とする。
+      また、PS 用データファイル形式には、従来のメモリーカードファイルヘッダ
+      と、ポケットステーション用メモリーカード拡張ファイルヘッダの 2 種類が
+      あります。
+
+3.メモリーカード(8MB) におけるファイル作成規定
+  3-1 各アプリケーションは、ルートディレクトリに任意の数のサブディレクトリを
+      作成することが可能。
+  3-2 ディレクトリの階層は、ルートディレクトリを含め、2 階層までとする。よっ
+      て、サブディレクトリ中にさらにサブディレクトリを作成することは禁止する。
+  3-3 ひとつのサブディレクトリの中にセーブできるユーザーデータ(ゲームデータ)
+      のファイル数は、PS2 ファイル形式の場合は任意、PS ファイル形式の場合は
+      ひとつのみとする。
+  3-4 ディレクトリ名、ファイル名は後述の命名規定に従う。
+  3-5 各サブディレクトリ内には、以下のファイルを格納する。
+      ・PS2 ファイル形式の場合
+        icon.sys (ファイル名：小文字)  アイコン管理用ファイル (必須)
+        アイコンファイル               3D アイコン表示用データ
+                                       定義ファイルは以下の 3 種類
+                                       一覧表示用アイコン     (必須)
+                                       コピー中表示用アイコン (任意/兼用可)
+                                       削除中表示用アイコン   (任意/兼用可)
+        ユーザーデータ                 ゲームデータ等、データフォーマットは任意
+                                       (ファイル名規定あり)
+      ・PS ファイル形式の場合
+        ユーザーデータ                 ゲームデータ等、PS 用ファイル形式準拠
+                                       (ファイル名規定あり)
+  3-6 PS2 本体ブラウザでの認識について
+      ・PS2 ファイル形式の場合
+        ディレクトリを新規作成するとき、必ず icon.sys、アイコンファイルが存在
+        している必要があります。削除するときは、該当するディレクトリごと削除
+        するか、ユーザーデータのみを削除してください。
+      ・PS ファイル形式の場合
+        ディレクトリを新規作成するとき、必ずユーザーデータが存在する必要があり
+        ます。削除するときは、該当するディレクトリごと削除してください。
+        (注)ディレクトリのみ作成すると、破損データになります。
+
+4.メモリーカード(8MB) におけるディレクトリ名、ファイル名の命名規定
+  4-1 ディレクトリ名、ファイル名とも、大文字、小文字の区別あり
+  4-2 ディレクトリ名、ファイル名の命名規定
+      Key Code (2byte) + 商品型番 (10byte) + 任意文字列 (Max 8byte) 
+      ディレクトリ名の終端は Null ターミネート (0x00) する。
+      使用可能な文字は、ASCII コード 0x20～0x7Eの範囲内の文字のうち、
+      "?"(0x3F)、"*"(0x2A)、"/"(0x2F) の 3 文字以外の文字とする。
+
+      Key Code   商品型番
+      BI         SLPS-xxxxx     SCEI 向けライセンスタイトル
+      BI         SCPS-xxxxx     SCEI 向け SCEI タイトル
+      BI         SIPS-xxxxx     SCEI 向け SCEI タイトル
+      BA         SLUS-xxxxx     SCEA 向けライセンスタイトル
+      BA         SCUS-xxxxx     SCEA 向け SCEA タイトル
+      BE         SLES-xxxxx     SCEE 向けライセンスタイトル
+      BE         SCES-xxxxx     SCEE 向け SCEE タイトル
+      BPLAYSTATION              Sound Scope (PlayStation 本体)
+      その他、SCEI/SCEA/SCEE が指定した商品型番を適用してください。
+
+      (注) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+           イルヘッダを使用しているときは、ディレクトリ名の先頭から 7byte 目
+           の "-"(0x2D) を "P"(0x50) とする。
+
+  4-3 ファイル名の命名規定
+      ・PS2 ファイル形式の場合
+        icon.sys                      ファイル名固定：すべて小文字
+        アイコンファイル              任意 ASCII Max 63byte + 0x00
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ただし、ディレクトリ内に複数のユーザー
+                                      データが存在する場合は、そのうちのひとつ
+                                      は、必ず格納するディレクトリ名と一致させ
+                                      る。
+      ・PS ファイル形式の場合
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ファイル名は、必ず格納するディレクトリ名
+                                      と一致させる。
+       (注2) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+             イルヘッダを使用しているときは、ファイル名の先頭から 7byte 目の
+             "-"(0x2D) を "P"(0x50) とする。
+
+  4-4 ファイルの格納例
+      商品型番 SLPS-12345 の場合、以下のようになります。
+
+      ・PS2 ファイル形式：
+        /BISLPS-12345xxx/icon.sys
+                        /アイコンファイル(1 ～ 3)
+                        /BISLPS-12345xxx
+      ・PS ファイル形式：
+        /BISLPS-12345yyy/BISLPS-12345yyy
+      ・PS ファイル形式 (メモリーカード拡張ファイルヘッダ対応)：
+        /BISLPSP12345zzz/BISLPSP12345zzz
+
+5.ポケットステーションにおけるファイル作成規定
+  従来の PS におけるファイルシステムに準拠します。ただし PS2 タイトルにおいて
+  は以下の制限があります。
+ 
+      ・ポケットステーション非対応タイトルの場合：
+        （ポケットステーション用アプリケーションを保有しないタイトル）
+        ポケットステーションに対して、接続チェックを除くいかなるアクセスも
+        禁止します。
+
+      ・ポケットステーション対応タイトルの場合：
+        （ポケットステーション用アプリケーションを保有するタイトル）
+        ポケットステーションに対して、接続チェック及びリード／ライトアクセス
+        が行えます。但しリード／ライトはファイル種別毎に以下の制限があります。
+
+                      |          |  拡張ファイルヘッダ |
+                      |   通常   |---------------------+
+                      |  データ  |   MCX0   |   CRD0   |
+         -------------+----------+----------+----------+
+          リード      |    ×    |    ○    |    ○    |
+          ライト      |    ×    |    ○    |    ×    |
+         -------------+----------+----------+----------+
+
+(備考)
+icon.sys およびアイコンファイルのデータフォーマットについては別途ライブラリ
+ドキュメントをご参照ください。
+
+(変更履歴)
+Ver2.2 -> 2.3 (2000/8/25)
+・ポケットステーションへのライトアクセスをファイル種別 MCX0 に限定した。
+  それに伴い、5. においてファイル種別毎のアクセス制限表を追加した。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0008150">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/15</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic9.gif" align=middle><td><font size=+2><b>マスターディスク作成用 DVD-R ドライブのファームウェアアップデートについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                               2000年8月15日
+                             　 株式会社ソニー・コンピュータエンタテインメント
+                                                           ソフトウェア開発部
+ 
+
+          "PlayStation 2" マスターディスク作成用 DVD-R ドライブの
+                      ファームウェアアップデートについて
+
+
+"PlayStation 2" マスターディスク作成のためには DVD-R ドライブのファームウェ
+アを専用のものにしていただく必要があります。現時点でファームウェアには 2
+バージョンありますが、新しいファームウェア入手後は速やかにアップデートを行っ
+ていただき、最新の環境にて作業していただけますようお願いします。
+ファームウェアのバージョンとオーサリングソフトウェアのバージョンとの関係は
+以下のとおりです。
+
+ハードウェア：　パイオニア(株)製 DVD-R ドライブ DVR-S201
+
+○ファームウェアバージョンが 2.02 以降の場合
+
+- "PlayStation 2" Programmer Tool CD/DVD-ROM Generator Version 1.10 以上
+- "PlayStation 2" Programmer Tool Master Disc Checker Version 1.10 以上
+
+
+まだお手元に version 2.02 がない場合は以下の環境となります。
+
+○ファームウェアバージョンが 0.X1 の場合
+
+- "PlayStation 2" Programmer Tool CD/DVD-ROM Generator Version 1.00 以上
+- "PlayStation 2" Programmer Tool Master Disc Checker Version 1.03 以上
+
+ご注意：
+海外向けにマスターディスクを作成される場合には、CD/DVD-ROM Generator,
+Master Disc Checker は共に Version 1.10 以上をご利用ください。
+
+
+                                                            以上
+</pre></blockquote>
+
+<A NAME="0008041">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/04</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>"PlayStation 2" タイトルアプリケーションにおける機種判別の禁止について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                                        00.08.04
+                                                           SCEIソフトウェア開発部
+
+      "PlayStation 2" タイトルアプリケーションにおける機種判別の禁止について
+
+
+"PlayStation 2" タイトルアプリケーションにおいて、"PlayStation 2" Development Tool
+DTL-T10000,"PlayStation 2" Debugging Station,"PlayStation 2" 本体を判別して処理内
+容を変更するプログラムを、マスター納品されるプログラムに組み込むことを禁止致します。
+機種判別による処理を行われた場合、将来的な "PlayStation 2" 機種間の互換性は保証され
+ません。なお、機種判別の禁止につきましては TRC に追加させていただく予定となっており
+ます。
+
+
+                                                                          以上
+
+</pre></blockquote>
+
+<A NAME="0008040">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/04</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>IOP モジュール入れ替えの徹底について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                                         00.08.04
+                                                           SCEIソフトウェア開発部
+
+                      IOP モジュール入れ替えの徹底について
+
+
+2000/1/21 付技術情報「デフォルトモジュールの置き換えについて」にてお知らせしておりま
+すように"PlayStation 2" タイトルアプリケーションにおいては「デフォルトのIOPモジュー
+ルの置き換え」を行う事が必須となっております。
+モジュール入れ替え処理は将来的な "PlayStation 2" 機種間の互換性維持のため重要な処理
+となっており、この処理が行われていない場合互換性が保証されません。マスター DISC 納品
+に際しましては、モジュール入れ替えが正常に実行されていることを再確認の上納品してくだ
+さい。
+
+
+○ モジュール入れ替えの確認方法
+
+DTL-T10000 の dsidb (IOP 側コンソール) にて、入れ替え時に表示されるメッセージを確認
+してください。
+
+正常実行時
+
+dsidb&gt;
+
+    Update reboot complete 
+
+
+失敗時の例（ファイル名を誤っている）
+
+dsidb&gt;
+
+    Update rebooting..
+    open file name ********.***;1
+    file 'cdrom0:********.***;1' can't open
+    ***Resetted
+
+
+○推奨プログラム例
+
+#include  &lt;eekernel.h&gt;
+#include  &lt;eeregs.h&gt;
+#include  &lt;sifdev.h&gt;
+#include  &lt;stdio.h&gt;
+#include  &lt;libcdvd.h&gt;
+
+#define DISK_BOOT  /* ディスクから起動する場合（T10000 での開発中は外す）*/
+
+int main()
+{
+         sceSifInitRpc(0);
+         /* DiskReady 待ち */
+         sceCdInit(SCECdINIT);
+         sceCdMmode(SCECdCD);   /* Media: CD-ROM */
+       #ifdef DISK_BOOT
+         /* IOPリブート・デフォルトモジュールの置き換え */
+         while ( !sceSifRebootIop("cdrom0:\\IOPRP165.IMG;1") ); /* （重要）無限リトライ */
+         while( !sceSifSyncIop() );
+         /* 再初期化 */
+         sceSifInitRpc(0);
+         sceCdInit(SCECdINIT);
+         sceCdMmode(SCECdCD);   /* Media: CD-ROM */
+         sceFsReset();
+       #endif
+         /* デフォルト以外のモジュールの起動 */
+         while (sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1",0,NULL) &lt; 0);
+         while (sceSifLoadModule("cdrom0:\\PADMAN.IRX;1",0,NULL) &lt; 0);
+           :
+           :
+}
+
+
+                                                                           以上
+
+
+</pre></blockquote>
+
+<A NAME="0008010">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/08/01</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>GS ローカルメモリーへのテクスチャ転送時の制限事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                        00.08.01
+                                                           SCEIソフトウェア開発部
+
+
+             GS ローカルメモリーへのテクスチャ転送時の制限事項
+
+
+GS ローカルメモリーへのテクスチャ転送に際しまして、以下の制約事項が判明しましたの
+でお伝えいたします。
+
+
+○ 制約事項
+
+GS ローカルメモリーへのテクスチャ転送を行う場合、使用されるテクセルフォーマット
+に応じて設けられている、テクスチャの横幅に対する制限を拡張させていただきます。
+
+   テクセルフォーマット  　　         テクスチャの横幅
+
+	PSMCT32                         2 PIXELの倍数
+        PSMCT24                         8 PIXELの倍数
+	PSMCT16,16S                     4 PIXELの倍数
+	PSMT8,8H                        8 PIXELの倍数
+	PSMT4,4HH,4HL                  16 PIXELの倍数
+
+
+※参考　従来の制限内容
+
+   テクセルフォーマット  　　         テクスチャの横幅
+
+	PSMCT32                        制限なし
+        PSMCT24                        制限なし
+	PSMCT16,16S                    制限なし
+	PSMT8,8H                       2 PIXELの倍数
+	PSMT4,4HH,4HL                  4 PIXELの倍数
+
+
+○ 解説
+
+上記制約を満たさない転送が行われた場合、GS の不具合によりまれにデータの一部が欠落し
+た状態で転送が行われる場合がある。データが欠落した部分は、以前書きこまれていたデータ
+がそのまま残っている状態になり、データ欠落部分以降のデータについては転送位置のずれは
+発生しない。
+
+
+○ アプリケーションでの対策
+
+GS ローカルメモリーへのテクスチャ転送時には、必ず上記制限を満たす形で実行して下さる
+ようお願いします。（後日 TRC にも反映する予定です）
+
+
+○ ライブラリ側の対策
+
+sceGsSetDefLoadImage() 実行時に、テクセルフォーマットに応じた横幅で転送が行われて
+いるかのチェック機構の導入を検討しております。導入時期については未定となっております。
+
+
+                                                                         以上
+
+</pre></blockquote>
+
+<A NAME="0007260">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/07/26</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>libcdvd : 1.6.5 における読みこみ方法の変更について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                                  00.07.26
+                                                    SCEIソフトウェア開発部
+
+
+             libcdvd : 1.6.5 における読みこみ方法の変更について
+
+
+libcdvd ver.1.6.5 において読みこみ方法を変更した為、お知らせします。
+
+
+○ 今回の変更点
+
+不正ディスク作成防止の為に読み込みメディアを制限する関数 sceCdMmode() を
+追加しました。sceCdInit() を発行後、sceCdMmode() を使用して読みこむメデ
+ィア（CDかDVD）を必ず指定するようにしてください。
+なお、詳細は、ドキュメント(cdvd_rf.doc) を参照してください。
+
+例１）CDの場合
+
+int main()
+{
+    sceSifInitRpc(0);
+    sceCdInit(SCECdINIT);
+    sceCdMmode(SCECdCD);
+
+    while ( !sceSifRebootIop("cdrom0:\\IOPRP165.IMG;1") );
+    while( !sceSifSyncIop() );
+    
+    sceSifInitRpc(0);
+    sceCdInit(SCECdINIT);
+    /*CD からデータを読みこむ場合*/
+    sceCdMmode(SCECdCD);
+    sceFsReset();
+    /* 他の処理 */
+    .
+    .
+    .
+}
+
+例２）DVDの場合
+
+int main()
+{
+    sceSifInitRpc(0);
+    sceCdInit(SCECdINIT);
+    sceCdMmode(SCECdDVD);
+
+    while ( !sceSifRebootIop("cdrom0:\\IOPRP165.IMG;1") );
+    while( !sceSifSyncIop() );
+    
+    sceSifInitRpc(0);
+    sceCdInit(SCECdINIT);
+    /*DVD からデータを読みこむ場合*/
+    sceCdMmode(SCECdDVD);
+    sceFsReset();
+    /* 他の処理 */
+    .
+    .
+    .
+}
+
+○ 注意
+
+この変更により 1.6.4 以前のデータ読み込み方法のまま、1.6.5 ライブラリを使用
+しますとリード系関数（sceOpen()、sceRead()、sceCdRead()、sceCdSearchFile()等）
+のコマンド発行に失敗してしまいます。
+これを回避するためには、必ず上記の sceCdMmode() を使用して読みこむメディア
+（CDかDVD）を指定して下さい。
+
+○ 備考
+
+DVD の場合は sceCdMmode() をアプリケーション内で適宜呼ぶ事によりコピー対策効果
+が得られます。
+
+
+
+○ 変更履歴
+
+00/08/07  サンプル例にて、sceSifRebootIop() を発行する以前に sceCdMmode() を
+          発行しておりませんでしたので追加しました。
+
+
+以上
+</pre></blockquote>
+
+<A NAME="0007180">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/07/18</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>アイコンファイルのモデル属性における制約事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.07.18
+                                                    SCEIソフトウェア開発部
+
+
+                 アイコンファイルのモデル属性における制約事項
+
+
+"PlayStation 2"専用メモリーカード(8MB) 上のアイコンファイルのモデル属性につ
+いて、新たに以下のような制約事項を設けます。
+
+
+○ 制約事項
+
+アイコンファイルのモデル属性の ANTI フィールドは必ず "1(ON)" にしてください。
+
+
+○ 解説
+
+海外モデルのブラウザではこの ANTI フィールドを 1 として読み込み、アイコン
+を表示する仕様となります。
+
+ANTI フィールドが 0 だった場合でも、海外モデルのブラウザではアンチエイリア
+シング処理が行われますが、ユーザアプリ側のメモリーカードブラウザでこの属性
+を考慮していない場合や、現行の国内モデルのブラウザにおいては、アンチエイリ
+アシングが行われず、新しいブラウザでの見え方と異なるという現象が発生いたし
+ます。
+
+「見え方」の統一のため、今後の開発におきましてはこの制約事項をお守りください。
+尚、国内モデルのブラウザにおいてもこの仕様に変更される予定です。
+
+
+○ ユーザアプリ側での対策
+
+アンチエイリアシング効果を使用するにあたり注意事項がありますので、以下を参考
+にモデルやパラメータを調整してください。
+以下の内容は次回のリリースでライブラリドキュメントにも反映されます。
+
+  ・同じアイコンオブジェクト中の各ポリゴンについてはソーティングを行わないた
+    め、ポリゴン間でのアンチエイリアシングはかからない場合があります。
+
+  ・AA1 をかけるためにバックフェイスクリップを行っていますが、このため、頂点
+    順序からいって裏側になる面は見えません。これは AA1 をかけない場合も同様
+    ですので、ポリゴンの裏面も表示したい場合は、裏面に相当するポリゴンを別に
+    定義してください。
+
+  ・面が視線ベクトルに対して大きく傾いている場合、AA1 によって膨らませるピク
+    セルの z 値の補間がうまくいかず、誤った z 値が求められて後ろ側にあるポリ
+    ゴンが描画されてしまう場合があります。これを防ぐため、大きく傾いているポ
+    リゴンを描画の際に判定してクリップする処理が含まれています。実際には計算
+    処理を軽くするために、スクリーン上のポリゴンの面積が小さい場合に、ポリゴ
+    ンが傾いているとみなしています。
+    この判定基準となる面積の閾値はアイコンファイル中（ BFACE ）で指定するこ
+    とができます。値が大きいほど、ポリゴンがクリップされます。1.0 程度の値で
+    試してみて、モデルの形状に応じて調整してください。0.0 で通常のバックフェ
+    イスクリップになります。なお、モデル形状によっては、この問題は完全に除去
+    できないことがあります。
+
+  ・細長いポリゴンや、非常に微小なポリゴンは AA1 による描画ごみを引き起こし
+    やすいので、なるべく使用しないでください。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0007110">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/07/11</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>アーティストツール対応アプリケーションの開発について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+                                                                  00.07.11
+                                                    SCEIソフトウェア開発部
+
+
+            アーティストツール対応アプリケーションの開発について
+
+
+先日 "Artist Tool Sound Previewer Release 1.0" をリリース致しました。
+
+"Artist Tool Sound Previewer Release 1.0" パッケージには、アーティストツー
+ル対応アプリケーション開発用のサンプルコード、及びドキュメント類を同梱して
+おります。
+
+独自のアーティスト向けアプリケーション開発を行われる場合は、下記のパッケー
+ジをダウンロードして下さるよう、お願いいたします。
+
+     ダウンロード → サウンドアーティストツール
+     → Artist Tool Sound Previewer Release 1.0
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006300">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/30</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>libsd : sceSdGetAddr() に関する制約事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.30
+                                                    SCEIソフトウェア開発部
+
+
+                 libsd : sceSdGetAddr() に関する制約事項
+
+
+sceSdGetAddr() において、以下に挙げる使用上の制約事項をお伝えいたします。
+
+
+○ 制約事項
+
+関数 sceSdGetAddr() の使用時においては、以下「ユーザアプリでの対策」に
+挙げる処理を行って下さい。
+
+
+○ 解説
+
+SPU2 のハードウェア仕様に起因する問題として、以下の２つの条件を同時に満た
+している場合、関数 sceSdGetAddr() の返り値として正しい値が得られないこと
+があります。
+
+  ・SD_VA_NAX を指定している
+
+  ・NAX アドレスを得たいボイスに割り当てられている波形データが SPU2 ロー
+    カルメモリの 128 KB 境界 (バイト単位で 0x20000 の倍数) をまたいでいる
+
+
+○ ユーザアプリでの対策
+
+SD_VA_NAX にてアドレスを参照する必要のある波形データを配置する場合は、以下
+の何れかの方法にて対応して下さい。
+
+  ・NAX アドレスを得たいボイスに割り当てられている波形データが SPU2 ロー
+    カルメモリの 128 KB 境界をまたがないようにする
+
+  ・２回以上 関数 sceSdGetAddr() を発行し、同値が返るまで繰り返す
+
+
+○ 今後の対応
+
+将来的にライブラリ側で吸収できるよう検討しております。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006161">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>ライブラリ作成に使用するコンパイラについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.16
+                                                    SCEIソフトウェア開発部
+
+
+                  ライブラリ作成に使用するコンパイラについて
+
+
+Runtime Library Release 1.6.2 より、ライブラリ作成時に使用するコンパイラに
+ついて、以下のように方針を定めました。
+
+  ・リリース後一定の期間が経過し、深刻な不具合が無いと判断できる、又は
+    不具合に対する回避方法が明確になっているバージョンを使用する。
+
+これは、コンパイラの不具合によるライブラリへの影響を軽減するための処置です。
+今後弊社でのライブラリ作成に使用するコンパイラは、必ずしも最新のバージョン
+ではありません。
+従って、ソース公開のライブラリ（libvu0 等）を再ビルドする場合には十分ご注意
+下さい。
+
+以下にライブラリのバージョンと、それを作成するのに使用したコンパイラのバージ
+ョン一覧を挙げます。
+
+
+     ライブラリ                       使用したee-gcc   使用したiop-gcc
+     ---------------------------------------------------------------
+     Runtime Library Release 1.5      2.9-ee-990721    2.8.1
+     Runtime Library Release 1.5.X    2.9-ee-990721    2.8.1
+     Runtime Library Release 1.6      2.9-ee-991111    2.8.1
+     Runtime Library Release 1.6.1    2.9-ee-991111    2.8.1
+     Runtime Library Release 1.6.2    2.9-ee-990721    2.8.1
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006160">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>ライブラリ／コンパイラリリース形態の変更について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.16
+                                                    SCEIソフトウェア開発部
+
+
+                ライブラリ／コンパイラリリース形態の変更について
+
+
+今後のライブラリ／コンパイラのリリース形態におきまして、以下の点を変更いた
+します。
+
+
+  1) Tool Chain（ee-gcc,iop-gcc 等）のリリースについては、ライブラリのバー
+     ジョンアップとは独立して行う。
+
+
+  2) バージョンの呼称を、以下例のように統一する。
+
+     （例）
+                          バージョン呼称
+     -----------------------------------
+     Runtime Library      1.6 又は 1.6.X
+     Sample Data          1.6 又は 1.6.X
+     Tool Chain EE        2.9-ee-990721
+     Tool Chain IOP       2.8.1
+
+
+  3) 従来 Tool Chain に統合されていた ee-gcc と iop-gcc を、以下のように
+     分けてリリースする。
+
+     （従来）
+     リリースパッケージ名         内容
+     --------------------------------------------------
+     Tool Chain Release 1.6    sce/ee/gcc
+                               sce/iop/gcc
+     GCC Source Release 1.6    sce/ee/gcc/src
+                               sce/iop/gcc/src
+
+     （変更後）
+     リリースパッケージ名                     内容
+     ------------------------------------------------------
+     Tool Chain EE 2.9-ee-990721            sce/ee/gcc
+     Tool Chain IOP 2.8.1                   sce/iop/gcc
+     Tool Chain EE 2.9-ee-990721 (Source)   sce/ee/gcc/src
+     Tool Chain IOP 2.8.1 (Source)          sce/iop/gcc/src
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006070">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/07</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>EEプログラミング：命令とデータの境界についての制約事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.07
+                                                    SCEIソフトウェア開発部
+
+
+          EEプログラミング：命令とデータの境界についての制約事項
+
+
+EEの仕様による、プログラミング上の制約事項が判明いたしましたのでお伝えいた
+します。
+
+
+○ 制約事項
+
+命令（テキスト）とデータの境界には nop 命令を２個以上挿入するようにして下
+さい。
+
+
+○ 解説
+
+命令列直後に配置されたデータのビットパターンが、パイプラインを乱すような
+EE特権命令（COP命令、cache命令など）と同じ形式のビットパターンであった場合
+正常動作を保証いたしません。
+
+	（動作が保証されないコード例）
+	ld	$ra,32($sp)
+	jr	$ra
+	addiu	$sp,$sp,48
+	.word	0x438ccccd	; COP0 命令と同じ形式のビットパターン
+	.word	0xbe2aaaab
+
+	（動作が保証されるコード例）
+	ld	$ra,32($sp)
+	jr	$ra
+	addiu	$sp,$sp,48
+	.word	0x238ccccd	; addi 命令と同じ形式のビットパターン
+	.word	0xbe2aaaab
+
+
+○ 回避方法
+
+命令とデータの境界に nop 命令を２個以上挿入する事で回避できます。
+
+	（動作が保証されるコード例）
+	ld	$ra,32($sp)
+	jr	$ra
+	addiu	$sp,$sp,48
+	nop
+	nop
+	.word	0x438ccccd	; COP0 命令と同じ形式のビットパターン
+	.word	0xbe2aaaab
+
+
+○ ユーザアプリでの対応
+
+ユーザアプリ側での対応として、回避方法の具体的な例を挙げます。
+ユーザの皆様には以下の対応をお願いいたします。
+
+・アセンブラソースについて
+  一つのファイル中にテキストとデータが混在しているようなアセンブラソースが
+  ないか御確認下さい。もしあった場合は、命令とデータの境界に nop 命令を２個
+  以上挿入するようにして下さい。
+  また、テキストとデータを同一セクションに配置するような構成であった場合も
+  上記問題に該当していないか御確認下さい。
+
+・C/C++ ソースについて
+  C/C++ では自動的にセクションが割り振られるので、リンカスクリプトファイル
+  (sce/ee/lib/app.cmd など）を以下のように修正する事によって回避できます。
+
+	（例１）
+	SECTIONS {
+	.text		0x00100000: {
+		crt0.o(.text)
+		*(.text)
+		QUAD(0)
+	}
+
+	（例２）
+	SECTIONS {
+	.text		0x00100000: {
+		crt0.o(.text)
+		./*.o(.text)
+	}
+	.text_nop	: { QUAD(0) }
+           :
+	OVERLAY : {
+		.balls {
+			balls/*.o(.text)
+			QUAD(0)
+			balls/*.o(.data .rodata .scommon .bss COMMON)
+		}
+           :
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006010">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/01</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>割込みハンドラからの復帰時の制約事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                                  00.06.01
+                                                    SCEIソフトウェア開発部
+
+
+                    割込みハンドラからの復帰時の制約事項
+
+
+割込みハンドラからの復帰時につきまして、以下の制約事項が判明しましたので
+お伝えいたします。
+
+
+○ 制約事項
+
+割り込みハンドラからの復帰時には、必ず ExitHandler() を呼ぶ、又は同等の処
+理を行ってから復帰する必要がある。
+
+
+○ 解説
+
+EEのバスが極端に混んだ状態では、割込みハンドラが発行する全てのストア系命令
+の処理が終了するよりも前に、割込みから復帰してしまう事が稀に起こります。
+これにより、プログラムの構造によっては、割込みの取りこぼし等、ユーザの期待
+に反する動作を引き起こす可能性があります。
+この問題を回避するには、割込みハンドラ終了時の処理として SYNC.L 命令を実行
+する必要があります。
+
+
+○ ライブラリ側の対策
+
+Runtime Library Release 1.6 にて、sce/ee/include/eekernl.h に以下のマクロを
+追加しました。
+
+     #define   ExitHandler()   asm volatile("sync.l; ei")
+
+
+○ ユーザアプリ側の対策
+
+割込みハンドラ終了時の処理として必ず ExitHandler() を実行して下さるよう
+お願いします。（後日 TRC にも反映する予定です）
+
+なおこれまでは、割込みハンドラ終了時に必ずマクロ EI() を呼ぶ、という制約が
+ありました。（下記参照）
+
+  [ 技術情報 → 開発に関するご注意点 '00
+                 → DI マクロによる割り込み禁止の注意事項 ] (00/01/27)
+
+新たに追加した ExitHandler() は EI() も含んだ形となっています。既に EI() 
+を御使用の場合は、代わりに ExitHandler() を呼ぶように変更して下さい。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="0004170">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/04/17</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>GS特権レジスタの使用制限について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                           2000/04/17
+                                           (株)SCE ソフトウェア開発部
+
+
+                    GS特権レジスタの使用制限について
+
+・内容
+
+BGCOLOR は０(黒)固定とする
+
+・理由
+
+TVには表示期間の前に黒レベルを決定する期間があるのですが、この期間の
+長さがTVによって異なる為、場合によっては表示領域までも黒レベルの決定
+期間と判断してしまう事がある、という事が分かりました。その為、BGCOLOR
+に０以外の値を設定した場合は、TVによって、輝度値が大きく変化する恐れ
+があります(BGCOLORに白を設定すると全体の輝度値が下がって表示される等)。
+
+上記のような理由から、BGCOLORは必ず、０固定として輝度に差がでないよう
+にして下さい。
+
+=======================================================================
+&lt;例：問題ない場合&gt;
+
+黒Lv決定期間    表示領域
+             +------------------------+ +
+    -------&gt; |                        | |DY
+    -------&gt; |       BGCOLOR          | |
+    -------&gt; |    +--------------+    | +
+    -------&gt; |    |              |    | |DH+1
+    -------&gt; |    |              |    | |
+    -------&gt; |    |              |    | |
+    -------&gt; |    |              |    | |
+    -------&gt; |    +--------------+    | +    
+    -------&gt; |                        |
+    -------&gt; |                        |
+             +------------------------+
+             +----+--------------+
+              DX   DW+1
+
+&lt;例：問題となる場合&gt;
+
+黒Lv決定期間    表示領域
+             +------------------------+ +
+    ----------&gt;                       | |DY
+    ----------&gt;      BGCOLOR          | |
+    ----------&gt;   +--------------+    | +
+    ----------&gt;   |              |    | |DH+1
+    ----------&gt;   |              |    | |
+    ----------&gt;   |              |    | |
+    ----------&gt;   |              |    | |
+    ----------&gt;   +--------------+    | +
+    ----------&gt;                       |
+    ----------&gt;                       |
+             +------------------------+
+             +----+--------------+
+              DX   DW+1
+
+=======================================================================
+
+
+・捕捉
+
+BGCOLORに０を指定していた場合でも、GS特権レジスタの DISPLAYn.DX を０
+等の非常に小さな値にしていたりしますと、同様の原理で輝度値に影響が出
+る恐れがあります。
+
+=======================================================================
+
+&lt;例：問題となる場合&gt;
+
+黒Lv決定期間    表示領域
+             +------------------------+ +
+    ----------&gt;                       | |DY
+    ----------&gt;      BGCOLOR          | |
+    ----------&gt;------------------+    | +
+    ----------&gt;                  |    | |DH+1
+    ----------&gt;                  |    | |
+    ----------&gt;                  |    | |
+    ----------&gt;                  |    | |
+    ----------&gt;------------------+    | +
+    ----------&gt;                       |
+    ----------&gt;                       |
+             +------------------------+
+             +-------------------+
+              DW+1
+              (DX=0)
+
+=======================================================================
+
+よって、独自に設定される場合には DISPLAYn.DX を 536 以上にして下さい。
+ 
+以上
+</pre></blockquote>
+
+<A NAME="0003180">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/03/18</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>"PlayStation 2" メモリーカード(8MB)上でのファイル数に関するご注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                2000/03/18
+                                                (株)SCE ソフトウェア開発部
+
+
+   "PlayStation 2" メモリーカード(8MB)上でのファイル数に関するご注意点
+
+
+メモリーカード(8MB)にユーザーデータをセーブする際のファイルには、icon.sys、
+アイコンファイル、ディレクトリ名と同じ名前を持つファイル、その他データファイル、
+がありますが、これらの合計が 18 ファイルを超えないようにしてください。つまり、
+一つのサブディレクトリ内のファイル数を 18 個以下に制限します。
+例えば、アイコンファイルが 3 個あった場合、
+
+icon.sys が 1 個
+アイコンファイル が 3 個
+ディレクトリ名と同じ名前を持つファイル が 1 個
+
+ですので、
+
+その他データファイル は 13 個以内
+
+ということになります。
+またこの時、sceMcGetDir() で取得するエントリ数は、カレントディレクトリと
+親ディレクトリが含まれますので、20 以下となります。
+
+以上
+</pre></blockquote>
+
+<A NAME="0002140">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/02/14</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>マスター納品用ディスクのデュプリケート禁止について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                               2000/02/14
+                                               (株)SCE ソフトウェア開発部
+
+          マスター納品用ディスクのデュプリケート禁止について
+
+  マスターディスクを弊社に納品される際のご注意点をお知らせ致します。必ず
+厳守されますようお願い致します。なお、以下の規定は TRC においても記載されて
+いる内容です。
+
+(1) CD-R 納品の場合
+SCEI においては、マスターディスク 8 枚のうちベリファイ済みのディスクは 3 枚
+以上としています。このベリファイ済み 3 枚（以上）については、必ず CD/DVD-ROM
+Generator を使用して CD-R を焼いてください。他社のデュプリケータ等を使用
+されたメディアの場合、PS2 の規格違反のディスクと判定し、マスターディスクとして
+お受けできません。
+
+(2) DVD-R 納品の場合
+DVD-R でのマスター納品用ディスクにつきましては、現時点でデュプリケータ等の
+使用はいっさい認めておりません。必ず CD/DVD-ROM Generator を使用するよう
+お願い致します。
+
+                                                          以上
+
+</pre></blockquote>
+
+<A NAME="0002080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/02/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>"PlayStation 2" メモリーカード(8MB)上でのファイル名に関するご注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                2000/02/08
+                                                (株)SCE ソフトウェア開発部
+
+
+   "PlayStation 2" メモリーカード(8MB)上でのファイル名に関するご注意点
+
+
+メモリーカード(8MB)にデータをセーブする際の、ユーザーデータファイルのうち、
+ディレクトリ名と同じ名前を持つもの以外の、名前に規定が無いものについては、
+ファイル名の長さを 31 文字までといたします。
+sceMcOpen() の引数 name において、パス名を除いたファイル名のみの長さは、
+31 文字までとして下さい。このため、全てのファイル、ディレクトリに対する
+sceMcTblGetDir 構造体のメンバ EntryName[32] は、必ず NULL ターミネートされ
+て返されることになります。
+
+以上
+</pre></blockquote>
+
+<A NAME="0002040">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/02/04</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>"PlayStation 2" メモリーカード(8MB)上でのデータの大きさに関する解説</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                2000/02/04
+                                                (株)SCE ソフトウェア開発部
+
+
+   "PlayStation 2" メモリーカード(8MB)上でのデータの大きさに関する解説
+
+
+メモリーカード(8MB)へデータをセーブする際に最低必要となる空き容量の求め方
+と、ゲーム中でのデータの大きさ表記についてご説明致します。
+
+
+● 必要空き容量について
+
+  詳細は複雑になるため、ここでは計算式と例を挙げておきます。
+  1 クラスタは 1024byte(1KB) です。除算による端数は全て切り捨てです。
+
+・必要空きクラスタ数
+  ＝(   ([ファイル 1 のサイズ] + 1023）/ 1024  各ファイルの消費クラスタ
+      + ([ファイル 2 のサイズ] + 1023）/ 1024           :
+      :            :                                   :
+      + ([ファイル n のサイズ] + 1023）/ 1024           :
+      + (n + 1)/2                   ファイルエントリの消費クラスタ(*1)
+      + 2 ）                        ディレクトリエントリの消費クラスタ(*2)
+
+  (*1)ファイルエントリの消費クラスタ数は使用状況によって変化します。
+      n/2 の場合もあります。 
+  (*2)ディレクトリエントリの消費クラスタ数は使用状況によって変化します。
+      1 の場合もあります。 
+
+・必要空き容量(KB) ＝ 必要空きクラスタ数
+
+  （例）
+   icon.sys    976 byte =  0.953 KB =  1 クラスタ
+   test.ico  91182 byte = 89.045 KB = 90 クラスタ
+   slps-xxx  10244 byte = 10.003 KB = 11 クラスタ
+  ------------------------------------------------
+     計     102402 byte              102 クラスタ
+   必要空き容量 = 102 + (3+1)/2 + 2 = 106 KB
+
+
+● PlayStation2 本体のブラウザ画面で表示されるサイズについて
+
+・サイズ
+  上の例の場合、ブラウザ画面でのサイズ表示は、3 つのファイルサイズのみを
+  バイト単位で合計した値が KB 単位で表示されます。エントリ分は加算されま
+  せん。そのため、実際に消費されている容量より小さい値が表示されています。
+
+・空き容量
+  (実際の空き容量 -2) の値を表示しています。例えば、実際の空き容量が
+  106KB の場合は、ブラウザ画面上では "空き容量 104 キロバイト" と表示さ
+  れます。
+
+
+● ゲームタイトル中での「必要空き容量」表示について
+
+・セーブデータの必要空き容量表示
+  ゲーム画面や説明書などに記載する「必要空き容量」は、基本的には上記の式
+  で求められる実際の値を使用して下さい。もし、切りの良い数字にするために、
+  例えば 106KB を 110KB とするためにマージンを取りたいということでしたら、
+  実際の値よりもマージンを加えた値が小さくならないという条件で、自由とし
+  ます。
+
+・メモリーカード(8MB)の空き容量表示
+  前述の通り、ブラウザ画面でのメモリーカード(8MB)の空き容量表示は実際の
+  値よりも 2KB 小さく表示されています。よって、ゲーム画面中の空き容量表
+  示もそれに合わせて、(実際の空き容量 -2) として下さい。実際の空き容量
+  が 2KB 以下の場合を 0KB、空き容量なしとして下さい。
+
+
+● 空き容量チェックについて
+
+  実際の空き容量で判定して下さい。上の例ですと 106KB より少なければセー
+  ブできないという判定になります。マージンがある場合はマージン後の値でチ
+  ェックして下さい。
+  また、ゲーム起動時に空き容量チェックを行う事は必須事項となっています
+  （TRC Ver.1.1 12.5.9.1）。この際も上記判定に基づいて下さい。
+
+以上
+</pre></blockquote>
+
+<A NAME="0002010">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/02/01</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 上での IOPメモリアクセスチェックについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/02/01
+                                               (株)SCE ソフトウェア開発部
+
+
+            DTL-T10000 上での IOPメモリアクセスチェックについて
+
+
+DTL-T10000 上で、IOPメモリ 2Mbyte 以上の領域のアクセスチェックを行う方法に
+ついて解説致します。
+「デバッギングステーション DTL-H10000 で正常に動作しない」などの不具合が発生
+した場合に、このチェックを行う事は有効なデバッグ手段の一つです。
+
+
+○ 手順
+
+  1) IOPモジュール "mem2MB.irx" を起動し、その直後にIOPリブートをかける
+     ようにEE側をプログラムする。タイトル固有のIOPモジュールを起動する前に
+     break 命令でプログラムが停止するようにしておく。（タイミングが掴める
+     なら、dsedb から break コマンドで停止させても構わない）
+
+     なお "mem2MB.irx" は以下の場所に登録しています。
+       ・ダウンロード → プログラマツール → 
+         IOPメモリアクセスチェック用モジュール
+
+       （例）
+       #include &lt;eekernel.h&gt;
+       #include &lt;eeregs.h&gt;
+       #include &lt;sifdev.h&gt;
+       #include &lt;stdio.h&gt;
+       #include &lt;libcdvd.h&gt;
+
+       int main()
+       {
+         sceSifInitRpc(0);
+         /* DiskReady 待ち */
+         sceCdInit(SCECdINIT);
+
+         /* mem2MB の起動 */
+         while ( sceSifLoadModule("host0:mem2MB.irx",0,NULL) &lt; 0);
+
+         /* IOPリブート・デフォルトモジュールの置き換え */
+         while ( !sceSifRebootIop("cdrom0:\\IOPRP14.IMG;1") );
+         while( !sceSifSyncIop() );
+         /* 再初期化 */
+         sceSifInitRpc(0);
+         sceCdInit(SCECdINIT);
+         sceFsReset();
+         /* デフォルト以外のモジュールの起動 */
+         while (sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1",0,NULL) &lt; 0);
+         while (sceSifLoadModule("cdrom0:\\PADMAN.IRX;1",0,NULL) &lt; 0);
+           :
+         /* プログラム一時停止 */
+         asm ("break");
+           :
+         /* タイトル固有モジュールの起動 */
+         while (sceSifLoadModule("cdrom0:\\MAIN.IRX;1", 0, NULL) &lt; 0);
+           :
+           :
+       }
+
+
+  2) dsedb, dsidb の両方を立ち上げ、dsedb 側でEEプログラムを実行する。
+     dsidb 側で mem2MB のメッセージを確認して下さい。
+
+      （例：dsedb 側）
+      dsedb S&gt; run main.elf
+      Loading program (address=0x00200000 size=0x0000c6c6) ...
+             :
+      *** Resetted
+      *** No Connect
+      *** Resetted
+             :
+      *** Unexpected reply - type=BREAKR result=EXCEPTION
+      *** Target program stopped. Check the location by dr command.
+      dsedb S&gt;
+
+      （例：dsidb 側）
+             :
+      loadmodule: fname host0:mem2MB.irx args 0 arg 
+      mem2MBpre: Memory limit was changed 8MB to 2MB
+      loadmodule: id 31, ret 1
+      Get Reboot Request From EE
+      *** Resetted
+      Update rebooting..
+             :
+
+
+  3) EEプログラムが停止したら、dsidb 上でハードウェアブレーク機能を使用
+     して、2M-4M 間のアクセスが発生した場合にブレークするよう設定する。
+
+      （例：dsidb 側）
+      dsidb R&gt; hbp dauk:00200000,50200000
+      dsidb R&gt; hbp pcuk:00200000,50200000
+
+
+  4) EEプログラムをコンティニューする。
+
+      （例：dsedb 側）
+      dsedb S&gt; sr $epc $epc+4
+      dsedb S&gt; cont
+
+
+  5) IOPモジュール実行中に 2M-4M 間のアクセスが発生した場合は、dsidb 側に
+     以下のように出力されてブレークする。
+
+      （例：dsidb 側）
+      *** Unexpected reply - type=BREAKR code=ff result=DEBUG_EXCEPTION
+      *** Target program stopped. Check the location by dr command.
+      dsidb S&gt; 
+      dsidb S&gt; dr
+       at=00020024  v0-1=00200000,11111111  a0-3=00000001,...
+             :
+       $cr=0x10000024 [ CE1 Breakpoint ]
+       $sr=0x00000404 [ IM0 IEp ]
+        0x00066e9c: 0x3c031111  lui     $v1,0x1111  # 0x11111111
+        0x00066ea0: 0x34631111  ori     $v1,$v1,0x1111
+      -&gt;0x00066ea4: 0xac430000  sw      $v1,0($v0)
+             :
+
+
+  6) 上と同様に、今度は 4M-8M 間のアクセスが発生した場合にブレークする
+     よう設定してテストする。
+
+      （例：dsidb 側）
+      dsidb R&gt; hbp dauk:00400000,50400000
+      dsidb R&gt; hbp pcuk:00400000,50400000
+
+
+
+  [変更履歴]
+  99/01/29  登録
+  99/02/01  一部訂正しました。
+
+以上
+
+</pre></blockquote>
+
+
+<A NAME="0001292">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/29</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 上での EEメモリアクセスチェックについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/28
+                                               (株)SCE ソフトウェア開発部
+
+
+            DTL-T10000 上での EEメモリアクセスチェックについて
+
+
+DTL-T10000 上で、EEメモリ 32Mbyte 以上の領域のアクセスチェックを行う方法に
+ついて解説致します。
+「デバッギングステーション DTL-H10000 で正常に動作しない」などの不具合が発生
+した場合に、このチェックを行う事は有効なデバッグ手段の一つです。
+
+
+○ 手順
+
+  1) /usr/local/sce/ee/lib/app.cmd の 1,2 行目を書き換え、スタックが 32M
+     の範囲内に収まるようにビルドする。
+
+      （例）
+      _stack_size = 0x00100000;
+      _stack = 0x01f00000;
+
+
+  2) dsedb 上でハードウェアブレーク機能を使用して、32M-64M 間のアクセスが
+     発生した場合にブレークするよう設定し、実行してみる。
+
+      （例）
+      $ dsedb
+          :
+      dsedb S&gt; hbp dausk:02000000,d2000000
+      dsedb S&gt; hbp pcusk:02000000,d2000000
+      dsedb S&gt; run main.elf
+
+
+  3) 実行中に 32-64M 間のアクセスが発生した場合は、以下のように出力して
+     ブレークする。
+
+      *** Debug Exception
+       at=22000000  v0-1=00000004,00000000  a0-3=...
+               :
+       $cause   = 0x00038000 [ CE0 EXC2=Debug IP7 EXC="External Interrupt" ]
+       $status  = 0x70030c15 [ Cu210 EDI EIE IM3 IM2 KSU=User ERL IE ]
+        0x002000ec: 0x3c040021  lui     $a0,0x0021
+        0x002000f0: 0x3c012200  lui     $at,0x2200  # 0x22000000
+      -&gt;0x002000f4: 0xac300000  sw      $s0,0($at)
+               :
+
+
+  4) 2 と同様に、今度は 64M-128M 間のアクセスが発生した場合にブレークする
+    よう設定してテストする。
+
+      （例）
+      $ dsedb
+          :
+      dsedb S&gt; pload main.elf
+          :
+      dsedb S&gt; hbp dausk:04000000,d4000000
+      dsedb S&gt; hbp pcusk:04000000,d4000000
+      dsedb S&gt; run
+
+
+○ 補足
+
+   IOPリブート後は、ハードウェアブレークポイントは無効になりますので、
+   上の方法は「デフォルトモジュールの置き換え」とは併用できません。
+   IOPリブート後にハードウェアブレークポイントを有効にしたい場合は、以下に
+   挙げる方法でプログラムを停止してから hbp 設定を行って下さい。
+
+   1) 任意のタイミングで break コマンドを入力して停止し、hbp を設定して
+      コンティニューする。
+
+      （例）
+          :
+      dsedb R&gt; break
+          :
+      dsedb S&gt; hbp dausk:04000000,d4000000
+      dsedb S&gt; hbp pcusk:04000000,d4000000
+      dsedb S&gt; cont
+
+
+   2) あらかじめソース中で、IOPリブート後の任意の位置に break 命令を挿入し
+      てビルドしておく。停止してから hbp を設定してコンティニューする。
+
+      （例：C ソース）
+      asm("break");
+
+      （例：dsedb）
+      dsedb S&gt; run main.elf
+      Loading program (address=0x00200000 size=0x0000c6c6) ...
+             :
+       $cause   = 0x00000024 [ CE0 EXC2=Reset EXC="Breakpoint" ]
+       $status  = 0x70030c13 [ Cu210 EDI EIE IM3 IM2 KSU=User EXL IE ]
+        0x002000cc: 0x0c0800a6  jal     0x00200298  # &lt;__main&gt;
+        0x002000d0| 0x00000000  nop
+      -&gt;0x002000d4: 0x0000000d  break   0x0
+             :
+      dsedb S&gt; sr $epc $epc+4
+      dsedb S&gt; hbp dausk:04000000,d4000000
+      dsedb S&gt; hbp pcusk:04000000,d4000000
+      dsedb S&gt; cont
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001291">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/29</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-H10000 での起動に関するトラブルシューティング Ver.1.0</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/28
+                                               (株)SCE ソフトウェア開発部
+
+
+         DTL-H10000 での起動に関するトラブルシューティング Ver.1.0
+
+
+「デバッギングステーション DTL-H10000 で正常に動作しない」というケースに
+ついて、幾つかの該当する原因について解説致します。
+このトラブルシューティングは順次更新していく予定です。
+
+
+  ○ ケースＡ
+     DTL-T10000 で CD/DVD-ROM からブートすれば正常に動くが、
+     DTL-H10000 では「PlayStation2」のロゴも出ずにプラウザ画面になる。
+      → １）２）を御確認下さい。
+
+  ○ ケースＢ
+     DTL-T10000 で CD/DVD-ROM からブートすれば正常に動くが、
+     DTL-H10000 では「PlayStation2」のロゴ表示後暗転したままになる、または
+     アプリケーション開始後に何らかの異常がある。
+      → ６）７）８）９）を御確認下さい。
+
+  ○ ケースＣ
+     DTL-T10000 でも、CD/DVD-ROM からブートしたら正常に動かない。
+      → ３）４）５）を御確認下さい。
+
+
+なお DTL-T10000 で CD/DVD-ROM からブートする方法は、以下の場所にあります。
+
+  ・技術情報 → 開発に関するご注意点 '99 →  DTL-T10000 での CD/DVD
+    からの起動について
+
+
+
+１）ブートファイル名について
+
+  以下の２個所の内容が一致しているか。
+
+     1. CD/DVD-Generator Volume画面の DiscName 
+        "SLPS-XXXXX"
+     2. SYSTEM.CNF 中のブートファイル指定
+        "BOOT2 = cdrom0:\SLPS_XXX.XX;1"
+
+  ５桁の型番(XXXXX) が違っている場合、デバッギングステーション及び実機で
+  は起動せず、プラウザ画面となります。
+  [ 確認方法 ]
+  "PS2 Master Disc Checker(MCHECK2.EXE) ver.1.01" にて DiscName を確認で
+  きます。
+
+
+２）CD-R のデュプリケートについて
+
+  CD-R をデュプリケートする場合、デュプリケーターの設定を必ず 'CDROM-XA' 
+  (mode2/form1 および form2)にして下さい。設定を 'CDROM' (mode1)の状態で
+　デュプリケートした CD-R の場合、１と同様に起動せずプラウザ画面となります。
+
+  [ 確認方法 ]
+  作成済みディスクの判別方法はありません。
+  （デュプリケーターの設定を確認して再度デュプリケートして下さい）
+
+
+３）CD-R について
+
+  CD-R は太陽誘電製の比較的新しい物をお使い下さい。
+  （古い物はディスクの編重心にばらつきがあり読み取りにくい場合があります）
+
+
+４）リトライについて
+
+  CD/DVD-ROM アクセスは必ずリトライを行うようにして下さい。
+
+
+５）ファイル名指定について
+
+  CD/DVD-ROM のファイル名は、必ず以下の形式にして下さい。
+  「大文字／絶対ディレクトリ／'\'を使用／';1'を付加」です。
+  （例）
+  "cdrom0:\\MODULES\\SIO2MAN.IRX;1"
+
+
+６）デバイス名指定について
+
+  "host0:" もしくは "host1:" アクセスを行っていないか。
+  [ 確認方法 ]
+  T10000 上でディスクからブートし、dsedb(dsidb) のメッセージ出力で確認
+  するなど。（sceSifLoadModule() 等は dsidb にファイル名を出力します）
+
+
+７）EE メモリについて
+
+  EEメモリ 32M 以上の領域をアクセスしていないか。
+  [ 確認方法 ]
+  現状では以下の方法に従ってチェックを行って下さい。
+    ・技術情報 → 開発に関するご注意点 '00 → DTL-T10000 上での EEメモリ
+      アクセスチェックについて
+
+
+８）IOPメモリについて
+
+  IOPメモリ 2M 以上の領域をアクセスしていないか。
+  [ 確認方法 ]
+  現状では以下の方法に従ってチェックを行って下さい。
+    ・技術情報 → 開発に関するご注意点 '00 → DTL-T10000 上での IOPメモリ
+      アクセスチェックについて
+
+
+９）デフォルトモジュールの置き換えについて
+
+  起動直後に、デフォルトモジュールの置き換えが正常に行われているか。
+  [ 確認方法 ]
+  T10000 上でディスクからブートし、dsedb(dsidb) のメッセージ出力で確認
+  する。
+       （dsedb 側）            （deidb 側）
+       *** Resetted            *** Resetted
+       *** No Connect          Update rebooting.
+       *** Resetted            *** Resetted
+                               Update reboot complete
+
+  なお、デフォルトモジュールの置き換えの具体的な方法は以下にあります。
+    ・技術情報 → 開発に関するご注意点 '00 → デフォルトモジュールの
+      置き換えについて
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001290">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/29</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 メモリーカードファイルシステム運用規定 Ver.2.2</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                               2000/01/29
+                                               (株)SCE ソフトウェア開発部
+
+              PS2 メモリーカードファイルシステム運用規定 Ver.2.2
+
+  PS2 におけるメモリーカードを扱う上での運用規定について、仕様を公開致します。
+以下の内容は、'00/01/28 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 メモリーカード対応
+  PS2 で扱えるメモリーカードは以下の通りです。
+  ・"PlayStation 2"専用メモリーカード(8MB)
+  ・ポケットステーション
+  ・メモリーカード
+
+  各メモリーカードに対する PS/PS2 の対応は以下のようになります。
+
+                      |     PlayStation 2     |     PlayStation       
+                      |-----------------------+-----------------------
+                      | ゲーム |メモリーカード| ゲーム |メモリーカード
+                      |タイトル| 本体ブラウザ |タイトル| 本体管理画面 
+  --------------------+--------+--------------+--------+--------------
+  メモリーカード(8MB) |   ○   |      ○      |   ×   |      ×      
+  ポケットステーション| ○(*1) |    ○(*3)    |   ○   |      ○      
+  メモリーカード      | ×(*2) |    ○(*3)    |   ○   |      ○      
+  --------------------------------------------------------------------
+
+  (*1) PS2 タイトルにおいて、ポケットステーションへのアクセスは、ポケット
+       ステーション対応(ポケットステーション用アプリケーションを保有)の場合
+       に限り、リード、ライトを許可します。よって、ポケットステーションの
+       アプリケーションを伴わない PS2 タイトルにおいては、接続チェックを除く
+       いかなるアクセスも禁止します。
+       なお、現時点では、PS2 からポケットステーションの機能を使用するライブ
+       ラリを提供しておりません。
+       (データファイルのアクセスのみ可、将来対応予定)
+  (*2) PS2 ゲームタイトルでは、従来の容量 128KB のメモリーカードへのリード、
+       ライトを禁止します。
+  (*3) PS2 本体のブラウザ画面では、ポケットステーションおよびメモリーカード
+       と、メモリーカード(8MB) との双方向コピーが可能です。
+       ただし、扱えるファイルは、PS 用データファイル形式のみとし、PS2 専用
+       データは、コピーすることができません。
+
+2.メモリーカードファイルシステム
+  2-1 メモリーカード(8MB)
+      PS2 専用メモリーカードファイルシステムを採用
+      ディレクトリ構造あり、1KB 単位のファイル管理
+  2-2 ポケットステーションおよびメモリーカード
+      PS 用メモリーカードファイルシステムに準拠
+      ディレクトリ構造なし、データファイルはブロック(8KB)単位で扱う。
+      ただし、表記は KB を単位とする。
+      また、PS 用データファイル形式には、従来のメモリーカードファイルヘッダ
+      と、ポケットステーション用メモリーカード拡張ファイルヘッダの 2 種類が
+      あります。
+
+3.メモリーカード(8MB) におけるファイル作成規定
+  3-1 各アプリケーションは、ルートディレクトリに任意の数のサブディレクトリを
+      作成することが可能。
+  3-2 ディレクトリの階層は、ルートディレクトリを含め、2 階層までとする。よっ
+      て、サブディレクトリ中にさらにサブディレクトリを作成することは禁止する。
+  3-3 ひとつのサブディレクトリの中にセーブできるユーザーデータ(ゲームデータ)
+      のファイル数は、PS2 ファイル形式の場合は任意、PS ファイル形式の場合は
+      ひとつのみとする。
+  3-4 ディレクトリ名、ファイル名は後述の命名規定に従う。
+  3-5 各サブディレクトリ内には、以下のファイルを格納する。
+      ・PS2 ファイル形式の場合
+        icon.sys (ファイル名：小文字)  アイコン管理用ファイル (必須)
+        アイコンファイル               3D アイコン表示用データ
+                                       定義ファイルは以下の 3 種類
+                                       一覧表示用アイコン     (必須)
+                                       コピー中表示用アイコン (任意/兼用可)
+                                       削除中表示用アイコン   (任意/兼用可)
+        ユーザーデータ                 ゲームデータ等、データフォーマットは任意
+                                       (ファイル名規定あり)
+      ・PS ファイル形式の場合
+        ユーザーデータ                 ゲームデータ等、PS 用ファイル形式準拠
+                                       (ファイル名規定あり)
+  3-6 PS2 本体ブラウザでの認識について
+      ・PS2 ファイル形式の場合
+        ディレクトリを新規作成するとき、必ず icon.sys、アイコンファイルが存在
+        している必要があります。削除するときは、該当するディレクトリごと削除
+        するか、ユーザーデータのみを削除してください。
+      ・PS ファイル形式の場合
+        ディレクトリを新規作成するとき、必ずユーザーデータが存在する必要があり
+        ます。削除するときは、該当するディレクトリごと削除してください。
+        (注)ディレクトリのみ作成すると、破損データになります。
+
+4.メモリーカード(8MB) におけるディレクトリ名、ファイル名の命名規定
+  4-1 ディレクトリ名、ファイル名とも、大文字、小文字の区別あり
+  4-2 ディレクトリ名、ファイル名の命名規定
+      Key Code (2byte) + 商品型番 (10byte) + 任意文字列 (Max 8byte) 
+      ディレクトリ名の終端は Null ターミネート (0x00) する。
+      使用可能な文字は、ASCII コード 0x20～0x7Eの範囲内の文字のうち、
+      "?"(0x3F)、"*"(0x2A)、"/"(0x2F) の 3 文字以外の文字とする。
+
+      Key Code   商品型番
+      BI         SLPS-xxxxx     SCEI 向けライセンスタイトル
+      BI         SCPS-xxxxx     SCEI 向け SCEI タイトル
+      BI         SIPS-xxxxx     SCEI 向け SCEI タイトル
+      BA         SLUS-xxxxx     SCEA 向けライセンスタイトル
+      BA         SCUS-xxxxx     SCEA 向け SCEA タイトル
+      BE         SLES-xxxxx     SCEE 向けライセンスタイトル
+      BE         SCES-xxxxx     SCEE 向け SCEE タイトル
+      BPLAYSTATION              Sound Scope (PlayStation 本体)
+      その他、SCEI/SCEA/SCEE が指定した商品型番を適用してください。
+
+      (注) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+           イルヘッダを使用しているときは、ディレクトリ名の先頭から 7byte 目
+           の "-"(0x2D) を "P"(0x50) とする。
+
+  4-3 ファイル名の命名規定
+      ・PS2 ファイル形式の場合
+        icon.sys                      ファイル名固定：すべて小文字
+        アイコンファイル              任意 ASCII Max 63byte + 0x00
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ただし、ディレクトリ内に複数のユーザー
+                                      データが存在する場合は、そのうちのひとつ
+                                      は、必ず格納するディレクトリ名と一致させ
+                                      る。
+      ・PS ファイル形式の場合
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ファイル名は、必ず格納するディレクトリ名
+                                      と一致させる。
+       (注2) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+             イルヘッダを使用しているときは、ファイル名の先頭から 7byte 目の
+             "-"(0x2D) を "P"(0x50) とする。
+
+  4-4 ファイルの格納例
+      商品型番 SLPS-12345 の場合、以下のようになります。
+
+      ・PS2 ファイル形式：
+        /BISLPS-12345xxx/icon.sys
+                        /アイコンファイル(1 ～ 3)
+                        /BISLPS-12345xxx
+      ・PS ファイル形式：
+        /BISLPS-12345yyy/BISLPS-12345yyy
+      ・PS ファイル形式 (メモリーカード拡張ファイルヘッダ対応)：
+        /BISLPSP12345zzz/BISLPSP12345zzz
+
+5.ポケットステーション(メモリーカード)におけるファイル作成規定
+  従来の PS におけるファイルシステムに準拠します。
+  ただし、PS2 タイトルにおいて、ポケットステーションへのアクセスは、ポケット
+  ステーション対応(ポケットステーション用アプリケーションを保有)の場合に限り、
+  リード、ライトを許可します。よって、ポケットステーションのアプリケーション
+  を伴わない PS2 タイトルにおいては、接続チェックを除くいかなるアクセスも
+  禁止します。
+
+
+(備考)
+icon.sys およびアイコンファイルのデータフォーマットについては別途ライブラリ
+ドキュメントをご参照ください。
+
+                                                           以上
+
+</pre></blockquote>
+
+<A NAME="0001280">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/28</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 フラッシュ修復方法</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                 00/01/28
+                                               (株)SCE ソフトウェア開発部
+
+
+                       DTL-T10000 フラッシュ修復方法
+
+
+何らかの原因で DTL-T10000 のフラッシュの内容が破壊され、カーネルが正常に
+起動しなくなった場合は、以下「修復方法」に挙げる作業を行って下さい。
+（dsflash, dsreset, dsedb 等が使用できなくなった時など）
+
+なおこの方法は Library Release 1.3 以上の環境で有効です。それ以前の環境を
+御使用の場合は、以下のツールで修復を行って下さい。
+  [ダウンロード → プログラマツール → DTL-T10000用カーネル修復ツール]
+  （99/10/08 登録）
+
+
+○ 修復方法
+
+ DTL-T10000 は、TOOL/WS ２つのモードのフラッシュイメージを書き込んだ状態で
+ 出荷しています。TOOL モード側のフラッシュの内容が壊れた場合、WS モード側
+ からこれを修復できます。手順を以下に挙げます。
+
+
+  1. DTL-T10000 正面左下にある TOOL/WS 切替スイッチを WS 側にする。
+
+  2. DTL-T10000 を再起動する。（WSモードで立ち上がる）
+
+  3. dsedb 等を起動して正常にプロンプトが出るのを確認し、終了する。
+
+            （例）
+             $ dsedb -d hostname
+             *** Resetting...
+             EE DECI2 Manager version...
+               CPUID=2e12, BoardID=4126, ROMGEN=...., 128M
+             *** DBGP Version ...
+                :
+             dsedb S&gt; quit
+             $
+
+  4. 以下のコマンドを実行し、WSモード側からTOOLモードのフラッシュを
+     書き換える。
+
+             $ dsflash -mpu4shadow t10000-XXXX.bin
+
+  5. Complete! 表示が出て終了するのを確認する。
+
+  6. TOOL/WS 切替スイッチを TOOL 側に戻す。
+
+  7. DTL-T10000を再起動する。（TOOLモードで立ち上がる）
+
+  8. dsedb 等を起動して、正常にプロンプトが出るのを確認する。
+
+
+  ※ご注意
+
+  ・DTL-T10000 前面上部に TOOL/WS の LED がありますが、現在の DTL-T10000
+    の仕様では、TOOL/WS どちらで起動しても TOOL 側の LED が点灯します。
+
+  ・dsflash -mpu4shadow は TOOL モードでは実行しないで下さい。
+    最悪 TOOL/WS 両方のフラッシュ内容を壊した場合は、修理対応となります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001270">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/27</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DI マクロによる割り込み禁止の注意事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+                                                                  00.01.27
+                                                    SCEIソフトウェア開発部
+
+
+                   DI マクロによる割り込み禁止の注意事項
+
+
+当初、EE の di 命令のみで割り込み禁止を実現しておりましたが、di 命令が当初
+想定していた仕様とは異なり、 di 命令発行から実際に割り込み禁止が有効になる
+まで数サイクル必要なことが判明しました。
+
+ユーザ定義の割り込みハンドラから戻る前に EI() マクロで、割り込み許可状態に
+してから、ハンドラを終了するようにしてください。
+
+（補足）
+ 割り込みハンドラ中で iWakeupThread や iSignalSema 等の他のスレッドを
+ Ready 状態にする操作を行わない場合は不具合は起りませんが、ei 命令は 1 サ
+ イクルで実行されますので、ハンドラから戻るときに必ず実行するようにしてく
+ ださい。
+
+
+○ 修正版 libkernl.a
+
+  上の制限事項に基づいた修正版の libkernl.a を以下の場所に登録しました。
+
+  [ ダウンロード → プログラマツール
+                 → DTL-T10000用 Runtime Library Release 1.4.1 ]
+
+
+○ アセンブラプログラミングの注意点
+
+ ・以下の解説の前提条件
+
+    - EE-kernel は多重割り込みは受け付けない。
+    - EE-kernel のマルチスレッドは preemptive(実行権を横取可能)である。
+    - 問題の本質は割り込まれる側ではなく、実行権を横取りしたスレッドに
+      割り込み禁止状態が引き継がれてしまうことである。
+    - 問題の解決には割り込みハンドラでの対応が必要である。
+
+
+ ・割り込まれる側の処理
+
+    割り込みを禁止したいときは、&lt;eekernel.h&gt; の DI()マクロと同等なコードを
+    記述します。
+
+    #define DI() \
+    { \
+      u_int stat; \
+      do { \
+        asm volatile ("di"); \ &lt;---------------------------------(*1)
+        asm volatile ("sync.p"); \ &lt;-----------------------------(*2)
+        asm volatile ("mfc0     %0, $12" : "=r"(stat):); \  &lt;--- (*3)
+      } while (stat & 0x00010000); \  &lt;--------------------------(*4)
+    }
+
+    DI マクロの説明
+    ---------------
+    割り込まれなければ、(*2) の sync.p を実行することによって、
+    (*3) の mfc0 命令では、確実に Status Register の EIE ビットと
+    割り込み禁止状態が一致します。
+
+    (*1)で割り込まれた場合、di 命令自体が中断され、戻ってきた
+    ときには di 命令から再開されますので問題ありません。
+
+    (*2) または (*3)で割り込まれた場合、(*2)または(*3)への戻りは
+    eret 命令ですので、パイプラインには何も残っておらず、(*3) の
+    mfc0 命令で Status Register の EIE ビットと割り込み許可／禁止
+    状態が一致します。
+
+    (*3) EIE ビットが 0 の場合
+        (*4) で条件が不成立のとき(ループを抜ける場合)は、(*3) から
+        (*4) は、割り込み禁止状態で実行されるので、(*4)で割り込ま
+        れることはありません。
+    (*3) EIE ビットが 1 の場合
+        (*4) で条件が成立のとき(ループを続ける場合)は、(*4)で割り
+        込まれますが、割り込み側で Status Register の EIE ビットが
+        変化しても再度ループを回りますので問題はありません。
+
+    割り込みハンドラ
+    ----------------
+    (*2) で割り込みが起きた場合、Status Register の EIE ビットが 0
+    (割り込み禁止状態)で、ハンドラが呼ばれます。
+
+    このとき、ハンドラ実行後、元のアドレスに戻る場合はなにも問題が
+    ないのですが、iWakeupThread() や iSignalSema() などで、割り込
+    まれたスレッドより高い優先順位のスレッドが、Ready 状態になった
+    場合、元のアドレスには戻らず他のスレッドに実行権が移ります。
+    (ですから、EE-kernel はpreemptive(実行権が横取り可能)なマルチ
+    スレッドであると言えます)
+
+    このままだと、割り込み禁止状態のまま他のスレッドに実行権が
+    移るので問題になります。これを回避するには、割り込みハンドラ
+    から戻るときに EI() で割り込み可能状態にする必要があります。
+
+    対応
+    -----
+    割り込みハンドラから戻るときは、EI() を実行してから、戻るような
+    コードにする必要があります。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001220">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 メモリーカードファイルシステム運用規定 Ver.2.1</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                               2000/01/22
+                                               (株)SCE ソフトウェア開発部
+
+             PS2 メモリーカードファイルシステム運用規定 Ver.2.1
+
+  PS2 におけるメモリーカードを扱う上での運用規定について、仕様を公開致します。
+以下の内容は、'00/01/22 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 メモリーカード対応
+  PS2 で扱えるメモリーカードは以下の通りです。
+  ・"PlayStation 2"専用メモリーカード(8MB)
+  ・ポケットステーション
+  ・メモリーカード
+
+  各メモリーカードに対する PS/PS2 の対応は以下のようになります。
+
+                      |     PlayStation 2     |     PlayStation       
+                      |-----------------------+-----------------------
+                      | ゲーム |メモリーカード| ゲーム |メモリーカード
+                      |タイトル| 本体ブラウザ |タイトル| 本体管理画面 
+  --------------------+--------+--------------+--------+--------------
+  メモリーカード(8MB) |   ○   |      ○      |   ×   |      ×      
+  ポケットステーション| ○(*1) |    ○(*3)    |   ○   |      ○      
+  メモリーカード      | ×(*2) |    ○(*3)    |   ○   |      ○      
+  --------------------------------------------------------------------
+
+  (*1) 現時点では、PS2 からポケットステーションの機能を使用するライブラリ
+       を提供しておりません。(データファイルのアクセスのみ可、将来対応予定)
+  (*2) PS2 ゲームタイトルでは、従来の容量 128KB のメモリーカードへのリード、
+       ライトを禁止します。
+  (*3) PS2 本体のブラウザ画面では、ポケットステーションおよびメモリーカード
+       と、メモリーカード(8MB) との双方向コピーが可能です。
+       ただし、扱えるファイルは、PS 用データファイル形式のみとし、PS2 専用
+       データは、コピーすることができません。
+
+2.メモリーカードファイルシステム
+  2-1 メモリーカード(8MB)
+      PS2 専用メモリーカードファイルシステムを採用
+      ディレクトリ構造あり、1KB 単位のファイル管理
+  2-2 ポケットステーションおよびメモリーカード
+      PS 用メモリーカードファイルシステムに準拠
+      ディレクトリ構造なし、データファイルはブロック(8KB)単位で扱う。
+      ただし、表記は KB を単位とする。
+      また、PS 用データファイル形式には、従来のメモリーカードファイルヘッダ
+      と、ポケットステーション用メモリーカード拡張ファイルヘッダがありますが、
+      どちらも使用することが可能です。
+
+3.メモリーカード(8MB) におけるファイル作成規定
+  3-1 各アプリケーションは、ルートディレクトリに任意の数のサブディレクトリを
+      作成することが可能。
+  3-2 ディレクトリの階層は、ルートディレクトリを含め、2 階層までとする。よっ
+      て、サブディレクトリ中にさらにサブディレクトリを作成することは禁止する。
+  3-3 ひとつのサブディレクトリの中にセーブできるユーザーデータ(ゲームデータ)
+      のファイル数は、PS2 ファイル形式の場合は任意、PS ファイル形式の場合は
+      ひとつのみとする。
+  3-4 ディレクトリ名、ファイル名は後述の命名規定に従う。
+  3-5 各サブディレクトリ内には、以下のファイルを格納する。
+      ・PS2 ファイル形式の場合
+        icon.sys (ファイル名：小文字)  アイコン管理用ファイル (必須)
+        アイコンファイル               3D アイコン表示用データ
+                                       定義ファイルは以下の 3 種類
+                                       一覧表示用アイコン     (必須)
+                                       コピー中表示用アイコン (任意/兼用可)
+                                       削除中表示用アイコン   (任意/兼用可)
+        ユーザーデータ                 ゲームデータ等、データフォーマットは任意
+                                       (ファイル名規定あり)
+      ・PS ファイル形式の場合
+        ユーザーデータ                 ゲームデータ等、PS 用ファイル形式準拠
+                                       (ファイル名規定あり)
+  3-6 PS2 本体ブラウザでの認識について
+      ・PS2 ファイル形式の場合
+        ディレクトリを新規作成するとき、必ず icon.sys、アイコンファイルが存在
+        している必要があります。削除するときは、該当するディレクトリごと削除
+        するか、ユーザーデータのみを削除してください。
+      ・PS ファイル形式の場合
+        ディレクトリを新規作成するとき、必ずユーザーデータが存在する必要があり
+        ます。削除するときは、該当するディレクトリごと削除してください。
+      (注)ディレクトリのみ作成すると、破損データになります。
+
+4.メモリーカード(8MB) におけるディレクトリ名、ファイル名の命名規定
+  4-1 ディレクトリ名、ファイル名とも、大文字、小文字の区別あり
+  4-2 ディレクトリ名、ファイル名の命名規定
+      Key Code (2byte) + 商品型番 (10byte) + 任意文字列 (Max 8byte) 
+      ディレクトリ名の終端は Null ターミネート (0x00) する。
+      使用可能な文字は、ASCII コード 0x20～0x7Eの範囲内の文字のうち、
+      "?"(0x3F)、"*"(0x2A)、"/"(0x2F) の 3 文字以外の文字とする。
+
+      Key Code   商品型番
+      BI         SLPS-xxxxx     SCEI 向けライセンスタイトル
+      BI         SCPS-xxxxx     SCEI 向け SCEI タイトル
+      BI         SIPS-xxxxx     SCEI 向け SCEI タイトル
+      BA         SLUS-xxxxx     SCEA 向けライセンスタイトル
+      BA         SCUS-xxxxx     SCEA 向け SCEA タイトル
+      BE         SLES-xxxxx     SCEE 向けライセンスタイトル
+      BE         SCES-xxxxx     SCEE 向け SCEE タイトル
+      BPLAYSTATION              Sound Scope (PlayStation 本体)
+      その他、SCEI/SCEA/SCEE が指定した商品型番を適用してください。
+
+      (注) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+           イルヘッダを使用しているときは、ディレクトリ名の先頭から 7byte 目
+           の "-"(0x2D) を "P"(0x50) とする。
+
+  4-3 ファイル名の命名規定
+      ・PS2 ファイル形式の場合
+        icon.sys                      ファイル名固定：すべて小文字
+        アイコンファイル              任意 ASCII Max 63byte + 0x00
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ただし、ディレクトリ内に複数のユーザー
+                                      データが存在する場合は、そのうちのひとつ
+				      は、必ず格納するディレクトリ名と一致させ
+				      る。
+      ・PS ファイル形式の場合
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠。
+                                      ファイル名は、必ず格納するディレクトリ名
+				      と一致させる。
+      (注2) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+            イルヘッダを使用しているときは、ファイル名の先頭から 7byte 目の
+            "-"(0x2D) を "P"(0x50) とする。
+
+  4-4 ファイルの格納例
+      商品型番 SLPS-12345 の場合、以下のようになります。
+
+      ・PS2 ファイル形式：
+        /BISLPS-12345xxx/icon.sys
+                        /アイコンファイル(1 ～ 3)
+                        /BISLPS-12345xxx
+      ・PS ファイル形式：
+        /BISLPS-12345yyy/BISLPS-12345yyy
+      ・PS ファイル形式 (メモリーカード拡張ファイルヘッダ対応)：
+        /BISLPSP12345zzz/BISLPSP12345zzz
+
+5.ポケットステーション(メモリーカード)におけるファイル作成規定
+  従来の PS におけるファイルシステムに準拠します。
+
+
+(備考)
+icon.sys およびアイコンファイルのデータフォーマットについては別途ライブラリ
+ドキュメントをご参照ください。
+
+                                                            以上
+
+</pre></blockquote>
+
+<A NAME="0001211">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>デフォルトモジュールの置き換えについて</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/21
+                                               (株)SCE ソフトウェア開発部
+
+
+                    デフォルトモジュールの置き換えについて
+
+
+PlayStation2 タイトルアプリケーションにおいて「デフォルトのIOPモジュールの
+置き換え」を行う事が必須となります。この機能は Rel.1.4 より対応いたします。
+IOPモジュールには、大きく分けて以下の２種類があります。
+
+  ・デフォルトモジュール（カーネル内蔵のモジュール）
+    カーネルが、自動的にROMから起動するモジュール。アプリケーションからの
+    起動は不要。
+       sifcmd.irx
+       fileio.irx
+       cdvdman.irx
+       cdvdfsv.irx
+
+  ・デフォルト以外のモジュール
+    アプリケーションが sceSifLoadModule(EE側), LoadStartModule(IOP側) 等で
+    起動するモジュール
+       sce/iop/modules 以下のモジュール
+       sio2man.irx
+       padman.irx
+       mcman.irx
+       mcserv.irx
+       その他、タイトル固有のモジュールなど
+
+
+○ デフォルトモジュールの置き換え
+
+PlayStation2 実機カーネルに内蔵のデフォルトモジュールは Release 1.3.4 相当
+のものです。しかし、タイトルアプリケーションでは Release 1.4 以降のモジュ
+ールを使用する事が必須になっています（TRC 参照）。従って「デフォルトモジュ
+ールの置き換え」は必ず行う必要があります。
+デフォルトモジュールは、Release 1.4 より提供されるリプレースモジュール(イメー
+ジファイル)と置き換えることが可能です。タイトルアプリケーションでは、起動後に
+直ちにIOPリブートを行い、デフォルトモジュールをリプレースモジュールに置き換え
+て下さい。リプレースモジュールはイメージファイルとして、今後ライブラリのバー
+ジョンアップに併せて提供いたします。
+
+
+○ ライブラリ関数
+
+Release 1.4 より、以下の関数をサポート致します。
+
+  sceSifRebootIop()    IOPをリブートし、デフォルトモジュールを置き換える
+  sceSyncIop()         IOPのリブート完了を確認する
+
+sceSifRebootIop() を発行して sceSifSyncIop() が 0 以外を返すまでの間、IOP
+を介したサービス（printf()を含む）は一切行えません。ただし、GSやEEのコプロ
+セッサの制御は可能です。
+また、SIFCMD/SIFRPC および DECI の設定も全てリセットされますので、リブート
+後には sceCdInit(), sceFsReset() 等で再初期化を行ってください。
+
+
+○ DTL-T10000 上での実行について
+
+次回リリース1.4 では、DTL-T10000 用カーネルのバージョンアップを行いますので、
+DTL-T10000 上でデフォルトモジュールの置き換えを行う必要はありません。
+置き換えを行っても問題はありませんが、IOPリブート後の dsedb(dsidb) による
+Ctrl-C 停止は効かなくなります。（break コマンドでは停止します）
+
+
+○ プログラム例
+
+#include &lt;eekernel.h&gt;
+#include &lt;eeregs.h&gt;
+#include &lt;sifdev.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;libcdvd.h&gt;
+
+#define DISK_BOOT  /* ディスクから起動する場合（T10000 での開発中は外す）*/
+
+int main()
+{
+  sceSifInitRpc(0);
+  /* DiskReady 待ち */
+  sceCdInit(SCECdINIT);
+  sceCdMmode(SCECdCD);   /* Media: CD-ROM */
+#ifdef DISK_BOOT
+  /* IOPリブート・デフォルトモジュールの置き換え */
+  while ( !sceSifRebootIop("cdrom0:\\IOPRP165.IMG;1") );
+  while( !sceSifSyncIop() );
+  /* 再初期化 */
+  sceSifInitRpc(0);
+  sceCdInit(SCECdINIT);
+  sceCdMmode(SCECdCD);   /* Media: CD-ROM */
+  sceFsReset();
+#endif
+  /* デフォルト以外のモジュールの起動 */
+  while (sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1",0,NULL) < 0);
+  while (sceSifLoadModule("cdrom0:\\PADMAN.IRX;1",0,NULL) < 0);
+    :
+    :
+}
+
+
+○ 変更履歴
+
+00/07/26  Release 1.6.5 に伴い、プログラム例に sceCdMmode() を追加した。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001210">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/21</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>メモリーカード(8MB) 用アイコンファイルに関するご注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/21
+                                               (株)SCE ソフトウェア開発部
+
+
+          メモリーカード(8MB) 用アイコンファイルに関するご注意点
+
+
+MIME のキーシェイプ数が 2 個のアイコンデータを使って、複数のアイコンが混在
+する削除やコピーを繰り返すと、ポリゴンの一部に描画不正が発生することがある
+という不具合が判明しました。
+今後、キーシェイプ数が 2 個のアイコンはサポートされません。
+
+これまでに作成したアイコンがこれに該当するかどうかは「アイコンビューア」
+でチェックできます。
+該当するアイコンデータであった場合には、このビューアでは表示されませんので
+判別することが可能です。
+「アイコンビューア」を以下の場所に登録しました。
+
+  [ ダウンロード → プログラマツール → アイコンビューア Ver.1.0 ]
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001201">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/20</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>SPDIF（光デジタル）出力の設定について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/20
+                                               (株)SCE ソフトウェア開発部
+
+
+                     SPDIF（光デジタル）出力の設定について
+
+
+PS2にはSPDIF出力が装備されていますが、ここに出力される信号は、IEC958規格に
+沿ったものである必要があります。
+必要な設定のほとんどはライブラリの初期化時に行なわれますが、アプリケーショ
+ン側で設定する部分が３点ありますので、それを間違いなく設定するようにして下
+さい。sceSdSetCoreAttr() にビットマスクで指定します。どちらかのコアで設定
+すれば両方のコアに有効になります。
+
+
+　・メディア（カテゴリコード）
+        SD_SPDIF_MEDIA_DVD      メディアがDVDの場合
+        SD_SPDIF_MEDIA_CD       メディアがCDの場合（デフォルト）
+
+　・出力する種類
+        SD_SPDIF_OUT_OFF　　    SPDIFに何も出力しない
+        SD_SPDIF_OUT_PCM　　    アナログと同じ音をPCMで出力（デフォルト）
+        SD_SPDIF_OUT_BITSTREAM  Core0の入力ブロックに入力されたデータを、
+                                ビットストリームとして出力する
+
+　・デジタル録音
+        SD_SPDIF_COPY_NORMAL    通常モード（１世代録音可・デフォルト）
+        SD_SPDIF_COPY_PROHIBIT  デジタル録音禁止
+
+  （例）メディアはDVD・出力はPCM・デジタル録音は禁止
+    　sceSdSetCoreAttr(
+        SD_C_SPDIF_MODE,
+        SPU_SPDIF_MEDIA_DVD | SD_SPDIF_OUT_PCM | SD_SPDIF_COPY_PROHIBIT
+      );
+
+
+libspu2 の場合もほぼ同様です。SD_SPDIF_*　のかわりに SPU_SPDIF_* に
+なります。設定APIは SpuSetDigitalOut() です。
+
+なお、メディア設定についての記述は、現在リリースしているドキュメントにはあ
+りませんが、1.3.0以降の libsd,libspu2 では既に対応済みです。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001200">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/20</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>EE の EI/DI 命令に関するご注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/20
+                                               (株)SCE ソフトウェア開発部
+
+
+                     EE の EI/DI 命令に関するご注意点
+
+
+○ 解説
+
+EE の EI/DI 命令に関して以下の制限があることが判明しました。
+
+- EI/DI命令の直後から、命令の効果を期待する場合には、sync.p 命令が
+  必要である。
+
+すなわち、DI 命令の直後に sync.p を挿入しない場合、DI 命令の直後は割り込み
+禁止にならない場合があります。
+
+例えば、以下のコードでは mfc0 命令はクリティカルセクション（割り込み禁止区
+間）の実行とならない場合があります。
+
+  （例）
+  asm volatile ("di");
+  asm volatile ("mfc0 %0,$12" : "=r"(x2));
+       ....
+  asm volatile ("ei");
+
+DMAC など複数のレジスタを操作しなければならない場合で、その間で割り込み
+（DMA 転送の終了コールバックなど）を確実に禁止したい時は、di 命令とレジスタ
+操作の間に sync.p を挿入、かつ割り込み許可ビットが０になるまで待つ必要があ
+ります。
+
+
+○ 回避方法
+
+このような制限に従って eekernel.h 内の DI() マクロを修正いたしました。
+修正済みの eekernel.h は以下の場所に登録しました。
+
+ [ ダウンロード → プログラマツール → インクルードヘッダ eekernel.h ]
+
+
+○ 補足事項
+
+現在 printf() の使用に関して以下の制限があります。
+
+- DI() を呼び出した後の割り込み禁止状態では、printf は使用できません。
+  scePrintf をお使い下さい。
+
+この制限を守っていないプログラムは、今回 eekernel.h を変更する事によって
+正常に動作しなくなる可能性があります。改めて御確認下さい。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001192">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/19</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>PS2 メモリーカードファイルシステム運用規定 Ver.2.0</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+                                                                '00/01/19
+                                               (株)SCE ソフトウェア開発部
+
+               PS2 メモリーカードファイルシステム運用規定 Ver.2.0
+
+  PS2 におけるメモリーカードを扱う上での運用規定について、仕様を公開致します。
+以下の内容は、'00/01/19 時点のものであり、今後追加修正される可能性があります
+のでご注意ください。
+
+1.PS2 メモリーカード対応
+  PS2 で扱えるメモリーカードは以下の通りです。
+  ・メモリーカード(8MB)
+  ・ポケットステーション
+  ・メモリーカード
+
+  各メモリーカードに対する PS/PS2 の対応は以下のようになります。
+
+                      |     PlayStation 2     |     PlayStation       
+                      |-----------------------+-----------------------
+                      | ゲーム |メモリーカード| ゲーム |メモリーカード
+                      |タイトル| 本体ブラウザ |タイトル| 本体管理画面 
+  --------------------+--------+--------------+--------+--------------
+  メモリーカード(8MB) |   ○   |      ○      |   ×   |      ×      
+  ポケットステーション| ○(*1) |    ○(*3)    |   ○   |      ○      
+  メモリーカード      | ×(*2) |    ○(*3)    |   ○   |      ○      
+  --------------------------------------------------------------------
+
+  (*1) 現時点では、PS2 からポケットステーションの機能を使用するライブラリ
+       を提供しておりません。(データファイルのアクセスのみ可、将来対応予定)
+  (*2) PS2 ゲームタイトルでは、従来の容量 128KB のメモリーカードへのリード、
+       ライトを禁止します。
+  (*3) PS2 本体のブラウザ画面では、ポケットステーションおよびメモリーカード
+       と、メモリーカード(8MB) との双方向コピーが可能です。
+       ただし、扱えるファイルは、PS 用データファイル形式のみとし、PS2 専用
+       データは、コピーすることができません。
+
+2.メモリーカードファイルシステム
+  2-1 メモリーカード(8MB)
+      PS2 専用メモリーカードファイルシステムを採用
+      ディレクトリ構造あり、1KB 単位のファイル管理
+  2-2 ポケットステーションおよびメモリーカード
+      PS 用メモリーカードファイルシステムに準拠
+      ディレクトリ構造なし、データファイルはブロック(8KB)単位で扱う。
+      ただし、表記は KB を単位とする。
+      また、PS 用データファイル形式には、従来のメモリーカードファイルヘッダ
+      と、ポケットステーション用メモリーカード拡張ファイルヘッダがありますが、
+      どちらも使用することが可能です。
+
+3.メモリーカード(8MB) におけるファイル作成規定
+  3-1 各アプリケーションは、ルートディレクトリに任意の数のサブディレクトリを
+      作成することが可能。
+  3-2 ディレクトリの階層は、ルートディレクトリを含め、2 階層までとする。よっ
+      て、サブディレクトリ中にさらにサブディレクトリを作成することは禁止する。
+  3-3 ひとつのサブディレクトリの中にセーブできるユーザーデータ(ゲームデータ)
+      は 1 ファイルのみとする。よって、ファイルを複数に分ける場合は、別ディ
+      レクトリにセーブする。
+  3-4 ディレクトリ名、ファイル名は後述の命名規定に従う。
+  3-5 各サブディレクトリ内には、以下のファイルを格納する。
+      ・PS2 ファイル形式の場合
+        icon.sys (ファイル名：小文字)  アイコン管理用ファイル (必須)
+        アイコンファイル               3D アイコン表示用データ
+                                       定義ファイルは以下の 3 種類
+                                       一覧表示用アイコン     (必須)
+                                       コピー中表示用アイコン (任意/兼用可)
+                                       削除中表示用アイコン   (任意/兼用可)
+        ユーザーデータ                 ゲームデータ等、データフォーマットは任意
+                                       (ファイル名規定あり)
+      ・PS ファイル形式の場合
+        ユーザーデータ                 ゲームデータ等、PS 用ファイル形式準拠
+                                       (ファイル名規定あり)
+  3-6 PS2 本体ブラウザでの認識について
+      ・PS2 ファイル形式の場合
+        ディレクトリを新規作成するとき、必ず icon.sys、アイコンファイルが存在
+	している必要があります。削除するときは、該当するディレクトリごと削除
+        するか、ユーザーデータのみを削除してください。
+      ・PS ファイル形式の場合
+        ディレクトリを新規作成するとき、必ずユーザーデータが存在する必要があり
+        ます。削除するときは、該当するディレクトリごと削除してください。
+      (注)ディレクトリのみ作成すると、破損データになります。
+
+4.メモリーカード(8MB) におけるディレクトリ名、ファイル名の命名規定
+  4-1 ディレクトリ名、ファイル名とも、大文字、小文字の区別あり
+  4-2 ディレクトリ名、ファイル名の命名規定
+      Key Code (2byte) + 商品型番 (10byte) + 任意文字列 (Max 8byte) 
+      ディレクトリ名の終端は Null ターミネート (0x00) する。
+      使用可能な文字は、ASCII コード 0x20～0x7Eの範囲内の文字のうち、
+      "?"(0x3F)、"*"(0x2A)、"/"(0x2F) の 3 文字以外の文字とする。
+
+      Key Code   商品型番
+      BI         SLPS-xxxxx     SCEI 向けライセンスタイトル
+      BI         SCPS-xxxxx     SCEI 向け SCEI タイトル
+      BI         SIPS-xxxxx     SCEI 向け SCEI タイトル
+      BA         SLUS-xxxxx     SCEA 向けライセンスタイトル
+      BA         SCUS-xxxxx     SCEA 向け SCEA タイトル
+      BE         SLES-xxxxx     SCEE 向けライセンスタイトル
+      BE         SCES-xxxxx     SCEE 向け SCEE タイトル
+      BPLAYSTATION              Sound Scope (PlayStation 本体)
+      その他、SCEI/SCEA/SCEE が指定した商品型番を適用してください。
+
+      (注) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+           イルヘッダを使用しているときは、ディレクトリ名の先頭から 7byte 目
+           の "-"(0x2D) を "P"(0x50) とする。
+
+  4-3 ファイル名の命名規定
+      ・PS2 ファイル形式の場合
+        icon.sys                      ファイル名固定：すべて小文字
+        アイコンファイル              任意 ASCII Max 63byte + 0x00
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠
+      ・PS ファイル形式の場合
+        ユーザーデータ                上記、ディレクトリ名の命名規定に準拠
+      (注1) どちらのファイル形式でデータをセーブする場合も、格納するディレ
+            クトリ名とファイル名は一致させる。
+      (注2) PS ファイル形式でデータをセーブする場合、メモリーカード拡張ファ
+            イルヘッダを使用しているときは、ファイル名の先頭から 7byte 目の
+            "-"(0x2D) を "P"(0x50) とする。
+
+  4-4 ファイルの格納例
+      商品型番 SLPS-12345 の場合、以下のようになります。
+
+      ・PS2 ファイル形式：
+        /BISLPS-12345xxx/icon.sys
+                        /アイコンファイル(1 ～ 3)
+                        /BISLPS-12345xxx
+      ・PS ファイル形式：
+        /BISLPS-12345yyy/BISLPS-12345yyy
+      ・PS ファイル形式 (メモリーカード拡張ファイルヘッダ対応)：
+        /BISLPSP12345zzz/BISLPSP12345zzz
+
+5.ポケットステーション(メモリーカード)におけるファイル作成規定
+  従来の PS におけるファイルシステムに準拠します。
+
+
+(備考)
+icon.sys およびアイコンファイルのデータフォーマットについては別途ライブラリ
+ドキュメントをご参照ください。
+
+                                                     以上
+
+
+</pre></blockquote>
+
+<A NAME="0001191">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/19</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>メモリーカードフォーマット形式の変更について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/19
+                                               (株)SCE ソフトウェア開発部
+
+
+                メモリーカードフォーマット形式の変更について
+
+
+Runtime Library Release 1.3.4 にて、メモリーカードのフォーマット形式を最終
+仕様に変更いたしました。
+
+この変更により、1.3.3 以前の環境で作成されたセーブデータは、1.3.4 環境では
+正しく認識されません。1.3.4 環境で再度フォーマット、データ作成を行って下さ
+い。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0001190">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/01/19</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000 上での CD アクセスに関するご注意点</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                               2000/01/18
+                                               (株)SCE ソフトウェア開発部
+
+
+                DTL-T10000 上での CD アクセスに関するご注意点
+
+
+Runtime Library Release 1.3.4 からのカーネルの仕様変更により、DTL-T10000
+上での実行に関して、以下の制約事項が発生しましたのでお伝えします。
+
+
+○ 制約事項
+
+DTL-T10000 上でのプログラム起動後の最初の CD アクセスに先立って、
+ドライブ側が「コマンド発行可能な状態（SCECdComplete）」になるのを待つ
+必要がある。
+
+
+○ 解説
+
+通常 dsedb 等は起動時にシステムをリセットします。リセット後、CDドライブは
+自動的にディスクチェックを行いますが、このチェックが終了しない内に
+sceOpen() 等で CD アクセスを行うと、エラーが返ります。
+この問題は sceSifLoadModule() や libcdvd 関数等、全ての CD アクセスにおい
+て同様に発生します。
+デバッギングステーション及び実機においては問題は発生いたしませんが、互換性
+維持の観点から、常に以下の対策を取られる事をおすすめします。
+
+
+○ 対策
+
+プログラム起動後の最初の CD アクセスは、多くの場合 sceSifLoadModule()
+となります。その場合、前もって sceCdInit(SCECdINIT) を実行しておくなどの
+方法が有効です。
+
+
+
+（良い例１）
+int main(){
+    sceCdInit(SCECdINIT);
+    sceSifInitRpc(0);
+    while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+          :
+          :
+
+
+（良い例２）
+int main(){
+    sceSifInitRpc(0);
+    while ( sceSifLoadModule("host0:/usr/local/sce/iop/modules/sio2man.irx",
+     0, NULL) < 0);
+          :
+    sceCdInit(SCECdINIT);
+    fd = sceOpen(filename, SCE_RDONLY);
+          :
+
+
+（良くない例１）
+int main(){
+    sceCdInit(SCECdINoD);
+    sceSifInitRpc(0);
+    while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+          :
+          :
+
+
+（良くない例２）
+int main(){
+    sceSifInitRpc(0);
+    while ( sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1", 0, NULL) < 0);
+          :
+    sceCdInit(SCECdINIT);
+          :
+
+
+以上
+
+</pre></blockquote>
+
+<table border=0>
+<TR><TD width=580>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<h4>
+<address><center><I>Copyright (c) 2000 Sony Computer Entertainment Inc.All Rights Reserved.</I></center></address>
+</h4>
+</TD></TR>
+</TABLE>
+
+</body>
+</html>

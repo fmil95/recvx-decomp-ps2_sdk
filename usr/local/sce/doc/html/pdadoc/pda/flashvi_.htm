@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<!-- 関数名 -->
+<TITLE>
+    FLASHVIRTUALAddr[0..15]
+</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="100%">
+<TD ALIGN="left">
+<A HREF="pdaspec1.htm">PDA仕様書 </A>
+</TD><TD ALIGN="center">
+<ADDRESS><A HREF="../pda/index.htm">PDA </A></ADDRESS>
+</TD><TD ALIGN="right">
+<A HREF="pdaspec3.htm">デバイスレジスタ一覧</A>
+</TD></TABLE>
+<HR NOSHADE SIZE="8">
+
+<H1>
+    FLASHVIRTUALAddr[0..15]
+<HR SIZE="5">
+</H1>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        フラッシュ仮想アドレスレジスタ群
+</DIV><P>
+</PRE>
+</blockquote>
+
+<!-- アクセス型 -->
+<B>アクセス型</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+<PRE>Read/Write
+</PRE>
+</blockquote>
+
+<!-- リセット値 -->
+<B>リセット値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0x00000000 <BR>
+<BR>
+</blockquote>
+
+<!-- 機能 -->
+<B>機能</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このレジスタ群は、下式に基づいて各物理ブロックに適応される仮想ベースアドレスを算出するためのオフセット値を格納する。 <BR>
+    <blockquote>
+    	仮想ベースアドレス = 0x02000000 + VIRTUALADDR&lt;&lt;13 <BR>
+    </blockquote>
+    このレジスタへのライトアクセスは仮想フラッシュメモリ領域へのマップが行われていない状態でのみ正常に終了する。 <BR>
+<BR>
+</blockquote>
+
+<!-- ビット詳細 -->
+<B>ビット詳細</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    <B>第0..3ビット</B> <BR>
+    ビット名称：VIRTUALADDR(VIRTUAL offset ADDRess) <BR>
+    ビット値　：仮想ベースアドレスを算出するための物理ブロック番号（０～１５） <BR>
+<BR>
+</blockquote>
+<HR>
+<DIV ALIGN="right">
+<ADDRESS>
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.
+</ADDRESS>
+</DIV>
+</BODY>
+</HTML>

@@ -1,27 +1,15 @@
-# Source window class definition for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
+# Implements a source display widget using primitive widgets as the building
+# blocks.
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
+# The main display for SrcWin is a SrcTextWin widget.  This file should contain
+# all the code for controlling the SrcTextWin.  SrcTextWin should just display
+# the requested file and lines, without having to be very intelligent.  If 
+# there are problems, error codes should be returned and SrcWin should 
+# figure out what to do.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 # ----------------------------------------------------------------------
-# Implements a source display widget using primitive widgets as the
-# building blocks.
+#   Copyright (C) 1997, 1998 Cygnus Solutions
 #
-# The main display for SrcWin is a SrcTextWin widget.  This file
-# should contain all the code for controlling the SrcTextWin.
-# SrcTextWin should just display the requested file and lines, without
-# having to be very intelligent.  If there are problems, error codes
-# should be returned and SrcWin should figure out what to do.
-# ----------------------------------------------------------------------
 
 class SrcWin {
   inherit TopLevelWin GDBWin
@@ -49,10 +37,7 @@ class SrcWin {
     method test_get {var {private_func 0}}
     method toggle_updates {value}
     method update {}
-    method toolbar {state}
-    method inferior {action}
-    method clear_file {}
-
+    
     proc point_to_main {}
   }
 

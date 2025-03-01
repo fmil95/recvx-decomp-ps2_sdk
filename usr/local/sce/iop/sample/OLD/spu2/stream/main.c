@@ -39,8 +39,8 @@
 #define R0      	1
 #define VOICE_LIMIT 	2
 #define SPU_MALLOC_MAX	VOICE_LIMIT
-#define VAG_FILENAME_L	"host1:/usr/local/sce/data/sound/wave/tr1l_pad.vb"
-#define VAG_FILENAME_R	"host1:/usr/local/sce/data/sound/wave/tr1r_pad.vb"
+#define VAG_FILENAME_L	"host1:tr1l_pad.vb"
+#define VAG_FILENAME_R	"host1:tr1r_pad.vb"
 
 
 volatile int gEnd = 1;

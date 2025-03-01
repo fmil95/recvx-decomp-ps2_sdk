@@ -1,0 +1,81 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                      CSLソフトウェア・シンセサイザ
+                     ==============================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceSSynEnv                                                       [構造体]
+=========================================================================
+                                                                 入力環境
+[構造]
+        typedef struct {
+        	unsigned int	ee_info_addr;
+        	unsigned int	ee_buff_addr;
+        	unsigned int	ee_buff_length;
+        	unsigned int	atickCount;
+        	unsigned int	ee_buff_write_index;
+        	unsigned int	ee_buff_read_index;
+        	unsigned char	alignment_adjust_buff[16];
+        	sceSifDmaData	dma[4];
+        } sceSSynEnv;
+        
+[メンバ]
+        ee_info_addr		EE 上の管理情報のアドレス
+        ee_buff_addr		EE 上の受信バッファアドレス
+        ee_buff_length		EE 上の受信バッファサイズ
+        atickCount		EE へのデータ送信回数
+        ee_buff_write_index	EE 上の受信バッファの書き込みアドレス
+        ee_buff_read_index	EE 上の受信バッファの読み出しアドレス
+        alignment_adjust_buff	DMA 転送時のアライメント調整用バッファ
+        dma			DMA 制御用バッファ
+        
+[解説]
+        入力 buffer 毎にEEとの通信状態等を管理する為の環境バッファです。
+        alignment = 4 の整数倍でなければなりません。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceSSyn_ATick                                                      [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceSSyn_ATick(sceCslCtx *module_context)
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        割り込みから定期的に呼出される処理です。
+        入力バッファ内のデータを EE に送信します。
+        
+
+=========================================================================
+sceSSyn_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceSSyn_Init(sceCslCtx *module_context, unsigned int interval)
+        
+[引数]
+        module_context	Module Context のアドレス
+        interval	ATick()が呼出される周期をマイクロ秒で表したもの
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        EE との通信回線の確保等の初期化を行います。

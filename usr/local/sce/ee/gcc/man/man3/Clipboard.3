@@ -5,7 +5,7 @@
 '\" See the file "license.terms" for information on usage and redistribution
 '\" of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 '\" 
-'\" RCS: @(#) $Id: clipboard.n,v 1.7 1999/01/26 04:11:15 jingham Exp $
+'\" RCS: @(#) $Id: Clipboard.3,v 1.7 1999/01/26 04:11:13 jingham Exp $
 '\" 
 '\" The definitions below are for supplemental macros used in Tcl/Tk
 '\" manual entries.
@@ -243,74 +243,73 @@ Database Class:	\\fB\\$3\\fR
 .de UL
 \\$1\l'|0\(ul'\\$2
 ..
-.TH clipboard n 4.0 Tk "Tk Built-In Commands"
+.TH Tk_ClipboardClear 3 4.0 Tk "Tk Library Procedures"
 .BS
-'\" Note:  do not modify the .SH NAME line immediately below!
 .SH NAME
-clipboard \- Manipulate Tk clipboard
+Tk_ClipboardClear, Tk_ClipboardAppend \- Manage the clipboard
 .SH SYNOPSIS
-\fBclipboard \fIoption\fR ?\fIarg arg ...\fR?
+.nf
+\fB#include <tk.h>\fR
+.sp
+int
+\fBTk_ClipboardClear\fR(\fIinterp, tkwin\fR)
+.sp
+int
+\fBTk_ClipboardAppend\fR(\fIinterp, tkwin, target, format, buffer\fR)
+.SH ARGUMENTS
+.AS Tk_ClipboardClear tkwin
+.AP Tcl_Interp *interp in
+Interpreter to use for reporting errors.
+.AP Tk_Window tkwin in
+Window that determines which display's clipboard to manipulate.
+.AP Atom target in
+Conversion type for this clipboard item;  has same meaning as
+\fItarget\fR argument to \fBTk_CreateSelHandler\fR.
+.AP Atom format in
+Representation to use when data is retrieved;  has same meaning as
+\fIformat\fR argument to \fBTk_CreateSelHandler\fR.
+.AP char *buffer in
+Null terminated string containing the data to be appended to the clipboard.
 .BE
 
 .SH DESCRIPTION
 .PP
-This command provides a Tcl interface to the Tk clipboard,
-which stores data for later retrieval using the selection mechanism.
-In order to copy data into the clipboard, \fBclipboard clear\fR must
-be called, followed by a sequence of one or more calls to \fBclipboard
-append\fR.  To ensure that the clipboard is updated atomically, all
-appends should be completed before returning to the event loop.
+These two procedures manage the clipboard for Tk.
+The clipboard is typically managed by calling \fBTk_ClipboardClear\fR
+once, then calling \fBTk_ClipboardAppend\fR to add data for any
+number of targets.
 .PP
-The first argument to \fBclipboard\fR determines the format of the
-rest of the arguments and the behavior of the command.  The following
-forms are currently supported:
+\fBTk_ClipboardClear\fR claims the CLIPBOARD selection and frees any
+data items previously stored on the clipboard in this application.  
+It normally returns TCL_OK, but if an error occurs it returns
+TCL_ERROR and leaves an error message in \fIinterp->result\fR.
+\fBTk_ClipboardClear\fR must be called before a sequence of
+\fBTk_ClipboardAppend\fR calls can be issued.
 .PP
-.TP
-\fBclipboard clear\fR ?\fB\-displayof\fR \fIwindow\fR?
-Claims ownership of the clipboard on \fIwindow\fR's display and removes
-any previous contents.  \fIWindow\fR defaults to ``.''.  Returns an
-empty string.
-.TP
-\fBclipboard append\fR ?\fB\-displayof\fR \fIwindow\fR? ?\fB\-format\fR \fIformat\fR? ?\fB\-type\fR \fItype\fR? ?\fB\-\|\-\fR? \fIdata\fR
-Appends \fIdata\fR to the clipboard on \fIwindow\fR's
-display in the form given by \fItype\fR with the representation given
-by \fIformat\fR and claims ownership of the clipboard on \fIwindow\fR's
-display.
-.RS
+\fBTk_ClipboardAppend\fR appends a buffer of data to the clipboard.
+The first buffer for a given \fItarget\fR determines the \fIformat\fR
+for that \fItarget\fR.
+Any successive appends for that \fItarget\fR must have
+the same format or an error will be returned.
+\fBTk_ClipboardAppend\fR returns TCL_OK if the buffer is
+successfully copied onto the clipboard.  If the clipboard is not
+currently owned by the application, either
+because \fBTk_ClipboardClear\fR has not been called or because
+ownership of the clipboard has changed since the last call to
+\fBTk_ClipboardClear\fR,
+\fBTk_ClipboardAppend\fR returns TCL_ERROR and leaves an error message in
+\fIinterp->result\fR.
 .PP
-\fIType\fR specifies the form in which the selection is to be returned
-(the desired ``target'' for conversion, in ICCCM terminology), and
-should be an atom name such as STRING or FILE_NAME; see the
-Inter-Client Communication Conventions Manual for complete details.
-\fIType\fR defaults to STRING.
+In order to guarantee atomicity, no event handling should occur
+between \fBTk_ClipboardClear\fR and the following
+\fBTk_ClipboardAppend\fR calls (otherwise someone could retrieve
+a partially completed clipboard or claim ownership away from
+this application).
 .PP
-The \fIformat\fR argument specifies the representation that should be
-used to transmit the selection to the requester (the second column of
-Table 2 of the ICCCM), and defaults to STRING.  If \fIformat\fR is
-STRING, the selection is transmitted as 8-bit ASCII characters.  If
-\fIformat\fR is ATOM, then the \fIdata\fR is
-divided into fields separated by white space; each field is converted
-to its atom value, and the 32-bit atom value is transmitted instead of
-the atom name.  For any other \fIformat\fR,  \fIdata\fR is divided
-into fields separated by white space and each 
-field is converted to a 32-bit integer; an array of integers is
-transmitted to the selection requester.  Note that strings passed to
-\fBclipboard append\fR are concatenated before conversion, so the
-caller must take care to ensure appropriate spacing across string
-boundaries.  All items appended to the clipboard with the same
-\fItype\fR must have the same \fIformat\fR.
-.PP
-The \fIformat\fR argument is needed only for compatibility with
-clipboard requesters that don't use Tk.  If the Tk toolkit is being
-used to retrieve the CLIPBOARD selection then the value is converted back to
-a string at the requesting end, so \fIformat\fR is
-irrelevant.
-.PP
-A \fB\-\|\-\fR argument may be specified to mark the end of options:  the
-next argument will always be used as \fIdata\fR.
-This feature may be convenient if, for example, \fIdata\fR starts
-with a \fB\-\fR.
-.RE
+\fBTk_ClipboardClear\fR may invoke callbacks, including arbitrary
+Tcl scripts, as a result of losing the CLIPBOARD selection, so
+any calling function should take care to be reentrant at the point
+\fBTk_ClipboardClear\fR is invoked.
 
 .SH KEYWORDS
-clear, format, clipboard, append, selection, type
+append, clipboard, clear, format, type

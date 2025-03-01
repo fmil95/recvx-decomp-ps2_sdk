@@ -1,17 +1,5 @@
-# Utilities for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# util.tcl
 # ----------------------------------------------------------------------
 # Misc routines
 #
@@ -24,14 +12,16 @@
 #     bp_exists - does a breakpoint exist on linespec?
 #
 # ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt <hunt@cygnus.com>
+#   Copyright (C) 1997, 1998 Cygnus Solutions
 #
 
 
 # A helper procedure to keep a window on top.
 proc keep_raised {top} {
   if {[winfo exists $top]} {
-    raise $top
     wm deiconify $top
+    raise $top
     after 1000 [info level 0]
   }
 }
@@ -225,7 +215,6 @@ proc gridCGet {slave option} {
 #
 # ------------------------------------------------------------------
 proc find_iwidgets_library {} {
-  global errMsg
 
   set IwidgetsOK 1
 
@@ -245,13 +234,6 @@ proc find_iwidgets_library {} {
 
     set exec_name [info nameofexecutable]
     set curdir [pwd] 
-    if {[string compare [file type $exec_name] "link"] == 0} {
-      set exec_name [file readlink $exec_name]
-      if {[string compare [file pathtype $exec_name] "relative"] == 0} {
-	set exec_name [file join [pwd] $exec_name]
-      }
-    }
-    
     cd [file dirname $exec_name]
     set exec_name [pwd]
     cd $curdir
@@ -301,7 +283,7 @@ proc get_disassembly_flavor {} {
   if {[catch {gdb_cmd "show disassembly-flavor"} ret]} {
     return ""
   } else {
-    regexp {\"([^\"]*)\"\.} $ret dummy gdb_val
+    regexp {\"([^\"]*)\"\.} $ret dummy gdb_val  
     return $gdb_val
   }
 }
@@ -312,8 +294,7 @@ proc get_disassembly_flavor {} {
 # ------------------------------------------------------------------
 proc list_disassembly_flavors {} {
   catch {gdb_cmd "set disassembly-flavor"} ret_val
-  if {[regexp {Requires an argument\. Valid arguments are (.*)\.} \
-	 $ret_val dummy list]} {
+  if {[regexp {Requires an argument\. Valid arguments are (.*)\.} $ret_val dummy list]} {
     foreach elem  [split $list ","] {
       lappend vals [string trim $elem]
     }

@@ -1,0 +1,1437 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> PDAライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>PDAライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxTblInfo>sceMcxTblInfo </A><BR>
+</TD><TD> </TD>
+<TD>PDA情報を受け渡しするための構造体</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxTblUifs>sceMcxTblUifs </A><BR>
+</TD><TD> </TD>
+<TD>ユーザインターフェイスステータスを受け渡しするための構造体</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxChangeThreadPriority>sceMcxChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>IOPモジュール(mcxserv.irx)のスレッドプライオリティ設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxGetInfo>sceMcxGetInfo </A><BR>
+</TD><TD> </TD>
+<TD>PDA情報取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxGetMem>sceMcxGetMem </A><BR>
+</TD><TD> </TD>
+<TD>PDA内メモリの読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxGetUifs>sceMcxGetUifs </A><BR>
+</TD><TD> </TD>
+<TD>ユーザ・インタフェース・ステータス取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxHideTrans>sceMcxHideTrans </A><BR>
+</TD><TD> </TD>
+<TD>データ転送中表示解除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxInit>sceMcxInit </A><BR>
+</TD><TD> </TD>
+<TD>PDAライブラリ環境の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxReadDev>sceMcxReadDev </A><BR>
+</TD><TD> </TD>
+<TD>PDAデバイスエントリからの読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxSetInfo>sceMcxSetInfo </A><BR>
+</TD><TD> </TD>
+<TD>PDA情報更新</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxSetLed>sceMcxSetLed </A><BR>
+</TD><TD> </TD>
+<TD>LED点灯／消灯</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxSetMem>sceMcxSetMem </A><BR>
+</TD><TD> </TD>
+<TD>PDA内メモリへの書き込み</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxSetUifs>sceMcxSetUifs </A><BR>
+</TD><TD> </TD>
+<TD>ユーザ・インタフェース・ステータス更新</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxShowTrans>sceMcxShowTrans </A><BR>
+</TD><TD> </TD>
+<TD>データ転送中表示開始</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxSync>sceMcxSync </A><BR>
+</TD><TD> </TD>
+<TD>登録済み処理完了待ち</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMcxWriteDev>sceMcxWriteDev </A><BR>
+</TD><TD> </TD>
+<TD>PDAデバイスエントリへの書き込み</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceMcxTblInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxTblInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDA情報を受け渡しするための構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef 	struct {
+	short <I>AppliNo</I>;
+	short <I>Reserve1</I>;
+	int <I>AplArg</I>;
+	unsigned char <I>Speaker</I>;
+	unsigned char<I> Infrared</I>;
+	unsigned char <I>Flash</I>;
+	unsigned char<I> Led</I>;
+	struct {
+		unsigned char <I>Week, Sec, Min, Hour</I>;
+		unsigned char <I>Day, Month</I>;
+		unsigned short <I>Year</I>;
+	} <I>_Rtc</I>;
+	unsigned <I>Serial</I>;
+}  <B>sceMcxTblInfo</B>;
+#define <I>PWeek</I>	_Rtc.Week
+#define <I>PSec</I>	_Rtc.Sec
+#define <I>PMin</I>	_Rtc.Min
+#define <I>PHour</I>	_Rtc.Hour
+#define <I>PDay</I>	_Rtc.Day
+#define <I>PMonth</I>	_Rtc.Month
+#define <I>PYear</I>	_Rtc.Year
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>AppliNo</I>		実行中／実行させたいPDAアプリケーション番号
+<I>AplArg</I>		PDAアプリケーションに渡す引数
+<I>Speaker	</I>	スピーカー使用禁止
+<I>Infrared</I>		赤外線通信／リモコン 送信禁止
+<I>Flash</I>		PDAアプリケーションによるFlashメモリ書き込み禁止
+<I>Led	</I>	LED点灯禁止
+<I>PWeek</I>		RTC(リアルタイムクロック)曜日
+<I>PSec</I>		RTC秒
+<I>PMin</I>		RTC分
+<I>PHour</I>		RTC時
+<I>PDay</I>		RTC日
+<I>PMonth</I>		RTC月
+<I>PYear</I>		RTC年
+<I>Reserve1</I>		予約領域、すべて00で埋めなくてはなりません。
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcxGetInfo()を使ってPDA情報を取得したり、sceMcxSetInfo()でPDA情報を設定したりする際に受け渡しするデータの構造体です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxTblUifs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxTblUifs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザインターフェイスステータスを受け渡しするための構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef 	struct {
+	unsigned char <I>AMin, AHour</I>;
+	unsigned <I>Alarm</I>:1;
+	unsigned <I>KeyLock</I>:1;
+	unsigned <I>Volume:2</I>;
+	unsigned <I>AreaCode</I>:3;
+	unsigned <I>RtcSet</I>:1;
+	unsigned char <I>Reserve1</I>;
+	unsigned short <I>Font</I>;
+	short <I>Reserve2</I>;
+	} <B>sceMcxTblUifs</B>;
+<I>AMin		</I>アラーム時刻(分)
+<I>AHour		</I>アラーム時刻(時)
+<I>Alarm		</I>アラームON/OFF
+<I>KeyLock		</I>キーロックON/OFF
+<I>Volume		</I>スピーカ音量
+<I>AreaCode	</I>PocketStationの仕向け地区分(参照専用)
+<I>RtcSet		</I>リアルタイムクロックの信憑性(設定済みかどうか)
+<I>Font		</I>フォントアドレス(参照専用)
+<I>Reserve1</I>		予約領域、すべて00で埋めなくてはなりません。
+<I>Reserve2	</I>	予約領域、すべて00で埋めなくてはなりません。
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcxGetUifs()を使ってユーザインタフェースのステータスを取得したり、sceMcxSetUifs()でユーザインタフェースのステータスを設定したりする際に受け渡しするデータの構造体です。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceMcxChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPモジュール(mcxserv.irx)のスレッドプライオリティ設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxChangeThreadPriority</B>(
+	int <I>level</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>level</I>	スレッドプライオリティ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAライブラリのIOP側モジュールであるmcxserv.irxのスレッドプライオリティを変更します。設定可能なプライオリティは thread.h に定義されているUSER_HIGHEST_PRIORITY ～ USER_LOWEST_PRIORITY の間の値です(両端の値含む)。mcxserv.irxモージュールのスレッドプライオリティ初期値は104です。 <BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功(kerror.h:KE_OK) <BR>
+    -403:	スレッドプライオリティの値が設定可能な範囲を超えています。(kerror.h:KE_ILLEGAL_PRIORITY) <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スレッドプライオリティはsceSifLoadModule()でmcxserv.irxをロードする際にも指定することが出来ます。例えば次のようにして mcxserv.irxをロードするとスレッドプライオリティの初期値が100になります。スレッドプライオリティの文字は10進数で指定してください。 <BR>
+<BR>
+    unsigned char *param = "thpri=100"; <BR>
+    sceSifLoadModule( "host0:/usr/local/sce/iop/modules/mcxserv.irx", strlen(param)+1, param); <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxGetInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxGetInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDA情報取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxGetInfo</B>(
+	int <I>port,</I>
+<I>	</I>int<I> slot,</I>
+<I>	</I>sceMcxTblInfo<I> *info</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>info</I>	PDA情報を格納するバッファへのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAが保持している以下の値を参照することが出来ます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> 実行中のPDAアプリケーション番号<BR>PDAで実行中のアプリケーションが格納されている先頭ブロックが返ります。ただしここで言うブロックとはPlayStation用メモリーカードとしてのファイル管理単位(8kB)のフラッシュメモリ領域のことを指します。起動アプリケーションが実行中の場合は0が返りそれ以外のアプリケーションが実行中は１～１５の値が返ります。
+         <LI> ［スピーカー出力／赤外線送信／PDAアプリによるフラッシュ書き込み／LED点灯］の禁止状態<BR>それぞれの機能が使用禁止されているときは１、使用が許可されているときには０が返ります。
+         <LI> リアルタイムクロック<BR>PDAに内蔵のリアルタイムクロックを読み、年月日時分秒曜日を返します。
+         <LI> シリアル番号<BR>上位8ビットでアルファベット1文字のASCIIコードを表し、下位24ビットで8桁の10進数値を表しています。その2つを合わせてシリアル番号としてはA00000001のような表記になっています。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxGetMem>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxGetMem
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDA内メモリの読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxGetMem</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	void *<I>buff</I>,
+	unsigned <I>addr</I>,
+	unsigned <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>buff</I>	メモリの内容を読み込むバッファへのポインタ
+<I>addr</I>	読み出したいメモリの先頭アドレス
+<I>size</I>	読み出しバイトサイズ(128バイト以内)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAのメモリ内容を、指定したアドレスから、指定したバイト数分だけ読み込んでバッファに格納します。読み込み範囲が以下の領域以外の場所にかかっている場合または仮想フラッシュメモリを設定しないで0x2****** のアドレスをアクセスしようとするとPDAでバスエラーが発生してしまいますのでご注意ください。 <BR>
+<BR>
+    読み込み可能な領域： <BR>
+    0x0******, 0x2******, 0x4******, 0x6******, 0x8****** <BR>
+    0xA******, 0xB******, 0xC******, 0xD******（******は任意の6桁16進値） <BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxGetUifs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxGetUifs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザ・インタフェース・ステータス取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxGetUifs</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	sceMcxTblUifs *<I>uifs</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>uifs</I>	ユーザ・インタフェース・ステータス読み込むための
+	バッファへのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAからユーザ・インタフェース・ステータスを取り込みます。 <BR>
+<BR>
+    ユーザ・インタフェース・ステータスを受け渡しする構造体sceMcxTblUifs各メンバの意味は次のようになっています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> アラーム時刻（時）：０～２３
+         <LI> アラーム時刻（分）：０～５９
+         <LI> アラーム（ON/OFF）：０－OFF、1－ON
+         <LI> キーロック：0－ロック解除、１－ロック
+         <LI> スピーカ音量：０－大、1－小、2－切り
+         <LI> エリアコード：0－日本、1－北米、2－欧州
+         <LI> RTC設定済み：0－データ無効(リセット後RTCが未設定)、1－データ有効(リセット後RTCが設定済み)
+         <LI> フォントデータ開始アドレス：0x4000000からの相対アドレス
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxHideTrans>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxHideTrans
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ転送中表示解除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxHideTrans</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceMcxShowTrans()によって表示されたLCD画面上のデータ転送中表示を解除します。 <BR>
+<BR>
+    この関数が呼ばれると、現在実行中のPDAアプリケーションに対しPDAカーネルからの｢ファイル転送制御コールバック｣が発生します。PDAの｢ユーザーコールバック設定(swi 1)｣において「PlayStationからファイル転送中表示開始／終了設定時」に登録したサブルーチン内でPDAのLCD画面上に表示しているデータ転送中の表示を終了させます。（PDAアプリケーションで必要な処理の詳細に関しては「PDAカーネル仕様書」を参照してください。） <BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDAライブラリ環境の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxInit</B>(
+	void
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	成功 <BR>
+    -101:	初期化失敗 <BR>
+    -120:	mcxserv.irxのバージョンが古い <BR>
+    -121:	mcxman.irxのバージョンが古い <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAライブラリで使う内部変数の初期化を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxReadDev>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxReadDev
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDAデバイスエントリからの読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxReadDev</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	int devno,
+	void *<I>para</I>,
+	unsigned <I>parasize</I>,
+	void *<I>cont</I>,
+	unsigned <I>contsize</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>devno</I>	デバイスエントリ番号
+<I>para</I>	固定部パラメータを格納しているバッファへのポインタ
+<I>parasize</I>	固定部パラメータのバイト長(デバイスエントリごとに固定)
+<I>cont</I>	可変部データを格納するためのバッファへのポインタ
+<I>contsize</I>	可変部データのバイト長(128バイト以内)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDA上に用意されている予約済みデバイス、およびユーザ定義デバイスからの読み出しを行います。各デバイスに固定部パラメータを渡し、その結果返ってくる可変部データを読み込みます。デバイスによっては固定部パラメータがないものもあります。 <BR>
+<BR>
+    ユーザ定義デバイスを呼び出すには、「PDAカーネル仕様書」内の｢カーネルサービス概要：PlayStationとの通信：デバイスエントリコールバック｣の項に従ってサブルーチンを作成し、メモリーカードファイルのヘッダ内にある｢デバイスエントリテーブル｣に登録しておく必要があります。 <BR>
+<BR>
+    予約済みデバイスとしては以下の3つがあります。(マクロはlibmcx.hで定義) <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス番号</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>マクロ</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">リアルタイムクロック</TD>
+<TD valign="TOP">０</TD>
+<TD valign="TOP">sceMcxDevRtc</TD>
+</TR>
+<TR>
+<TD valign="TOP">PDAメモリ</TD>
+<TD valign="TOP">１</TD>
+<TD valign="TOP">sceMcxDevMem</TD>
+</TR>
+<TR>
+<TD valign="TOP">ユーザーインタフェースステータス</TD>
+<TD valign="TOP">２</TD>
+<TD valign="TOP">sceMcxDevUIFS</TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxSetInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxSetInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDA情報更新
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxSetInfo</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	sceMcxTblInfo <I>*info</I>,
+	unsigned <I>part</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>info</I>	更新する内容が格納されているバッファへのポインタ
+<I>part	</I>更新したいパラメータ指定
+6種類のパラメータが更新できますので更新したいパラメータに対応した
+ビットをすべて立てて渡します。(libmcx.hに定義あり)
+	sceMcxBitAppli  PDAアプリケーション実行
+	sceMcxBitSpeaker  スピーカー使用禁止状態
+	sceMcxBitInfrared  赤外線通信／リモコン 送信禁止状態
+	sceMcxBitFlash  PDAアプリケーションによるフラッシュ書込み禁止状態
+	sceMcxBitLed  LED点灯禁止状態
+	sceMcxBitDate  リアルタイムクロックの現在時刻
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDA情報を更新します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> PDAアプリケーションの実行<BR>実行したいPDAアプリケーションをPDA内に格納されている先頭ブロック番号の値でメンバAppliNoに対して指定します。AplArgに設定した値が引数としてアプリケーションに渡されます。<BR>ここで言うブロックとはPlayStation用メモリーカードとしてのファイル管理単位(8kB)のフラッシュメモリ領域のことを指します。起動アプリケーションを実行させる場合は0を渡し、ユーザーアプリケーションを実行させる場合は１～１５の値を渡します。<BR><BR>先頭ブロック番号を調べるにはまずsceMcxGetMem()を使ってPDA内のメモリから0x8000000+0x80×aplnoから1バイト読み込み、その値が0x51であるかどうかを調べます。次に0x51であったaplnoに対し0x800000A+0x80×aplnoから21バイト読み込み、起動したいアプリケーションが含まれているファイル名と一致しているかどうか調べます。一致していればそのときのaplnoが起動させたいアプリケーションの先頭ブロック番号を示しています。<BR>aplnoは1～15の間で振って検索しますが、見つからない場合には目的のアプリケーションが保存されていないことになりますのでダウンロードが必要です。<BR>PDAアプリケーションの実行を行おうとするとPDAアプリケーション側には「PDAステータス取得(swi 6)」の結果の｢bit11: PDAアプリケーション終了｣フラグとして、PlayStationからのアプリケーション終了要求が伝えられます(フラグの定期的な監視が必要)。アプリケーション終了にあたってPDAアプリケーションで必要な処理の詳細に関しては「PDAカーネル仕様書」を参照してください。<BR>このパラメータ更新では、現在実行中のPDAアプリケーションに終了要求を伝えますが、実行中のアプリケーションが終了を拒否する場合もありますので、sceMcxGetInfo()を使ってPDAアプリケーションが切り替わったことを確認してください。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> ［スピーカー出力／赤外線送信／LED点灯］の禁止状態<BR>それぞれの機能を使用禁止にするときは１、使用を許可するときには０を渡します。<BR>これらは、"PlayStation 2"が前面端子に対して供給できる電流容量に上限があるために行う制限です。PDAが"PlayStation 2"に差し込まれた直後はデフォルトですべて禁止となります。<BR><BR>各モジュールの消費電流は表のようになります。"PlayStation 2"から供給可能な最大電流はポート2つの合計で160mAですので、その値を超えない様に調整してください（特にマルチタップ使用時）。<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>モジュール名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>消費電流</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">CPUチップ</TD>
+<TD valign="TOP">10mA</TD>
+</TR>
+<TR>
+<TD valign="TOP">赤外線モジュール送信側</TD>
+<TD valign="TOP">70mA</TD>
+</TR>
+<TR>
+<TD valign="TOP">スピーカー</TD>
+<TD valign="TOP">20mA</TD>
+</TR>
+<TR>
+<TD valign="TOP">LED</TD>
+<TD valign="TOP">10mA</TD>
+</TR>
+</TABLE>
+<BR>
+</UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+        <BLOCKQUOTE>
+    PDAアプリケーション上で上記３つの機能を使おうとする場合は、まず初めに｢PDAステータス取得(swi 6)｣を用いて各機能の使用制限状態を確認しなくてはなりません。（PDAアプリケーションで必要な処理の詳細に関しては「PDAカーネル仕様書」を参照してください。） <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> PDAアプリによるフラッシュ書き込みの禁止状態<BR>PDAアプリケーションがPDAのフラッシュメモリに対して書き込むことを禁止する場合は１を、書き込みを許可する場合は０を渡します。<BR>PDAアプリケーションがフラッシュメモリへの書き込みを行っている最中に"PlayStation 2"との通信を行うことはPDA内部処理の負荷およびアクセスの競合上問題があるため、PDAアプリケーションがフラッシュへの書き込みを行う可能性がある場合に、あらかじめ"PlayStation 2"側プログラムがPDAとの通信が失敗する可能性があることを認識した上でフラッシュ書き込みを許可するための設定です。<BR><BR>ただし、この関数による禁止／許可の設定は「PDAステータス取得(swi 6)」の結果としてしかPDAアプリケーションに伝えられませんので、PDAアプリケーション側ではフラッシュメモリへの書き込みを行おうとする場合に｢PDAステータス取得(swi 6)｣を用いて書き込み許可状態を確認する必要があります。（PDAアプリケーションで必要な処理の詳細に関しては「PDAカーネル仕様書」を参照してください。）<BR><BR>デフォルトはPDAアプリケーションがフラッシュメモリへ書き込みに行くことは禁止。すなわち、"PlayStation 2"との通信が優先となっています。<BR><BR>PDAアプリケーションに対し、フラッシュメモリへの書き込みを許可している間は、フラッシュ書き込みのためにPDAが"PlayStaion 2"との通信を切っていることがありますので、PocketStationが接続されているにもかかわらずsceMcxSync() の result に「－12：PocketStationが検出できませんでした」が継続して返ることがあります。<BR>
+         <LI> リアルタイムクロック<BR>PDAに内蔵のリアルタイムクロックの年月日時分秒曜日を設定します。曜日は自動計算されますので代入は不要です。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxSetLed>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxSetLed
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LED点灯／消灯
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxSetLed</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>mode</I>	0：消灯、0以外：点灯
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    LEDを点灯または消灯します。 <BR>
+    sceMcxGetMem()やsceMcxSetMem()によってPIO0、PIO1を直接アクセスして消点灯の設定、状態の確認を行うことも出来ます。 <BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxSetMem>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxSetMem
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDA内メモリへの書き込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxSetMem</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	void *<I>buff</I>,
+	unsigned <I>addr</I>,
+	unsigned <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>buff</I>	PDAメモリに書き込むデータを格納しているバッファへのポインタ
+<I>addr</I>	書き込みたいメモリの先頭アドレス
+<I>size</I>	書き込みバイトサイズ(128バイト以内)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAのメモリへ、指定したアドレスから、指定したバイト数分だけ書き込みます。書き込み範囲が以下の領域以外の場所にかかっている場合または仮想フラッシュメモリを設定しないで0x2****** のアドレスをアクセスしようとするとPDAでバスエラーが発生してしまいますのでご注意ください。 <BR>
+<BR>
+    書き込み可能な領域：0x0******, 0x6******, 0xA****** <BR>
+    <blockquote>
+    		0xB******, 0xC******, 0xD******（******は任意の6桁16進値） <BR>
+    </blockquote>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxSetUifs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxSetUifs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザ・インタフェース・ステータス更新
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxSetUifs</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	void *<I>uifs</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>uifs</I>	更新したいユーザ・インタフェース・ステータス内容を
+	格納しているバッファへのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAのユーザインタフェースステータスを更新します。 <BR>
+    ユーザインタフェースステータスを受け渡しする構造体sceMcxTblUifsのうち以下のものが更新できます。これら以外は参照のみです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> アラーム時刻（時）：０～２３
+         <LI> アラーム時刻（分）：０～５９
+         <LI> アラーム（ON/OFF）：０－OFF、1－ON
+         <LI> キーロック：0－ロック解除、１－ロック
+         <LI> スピーカ音量：０－大、1－小、2－切り
+         <LI> RTC設定済み：0－データ無効、1－データ有効
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxShowTrans>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxShowTrans
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ転送中表示開始
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxShowTrans</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	int <I>dir,</I>
+<I>	</I>int<I> timeout</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>dir</I>	転送方向。(0：PDA→PlayStation、0以外：PlayStation→PDA)
+<I>timeout	</I>転送中表示終了要求が来ないときに、表示を解除するまでの時間
+	(起動アプリケーションでは1秒単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDAアプリケーションファイルを保存する場合は代替セクタ処理回避のため(PDAプログラムを連続したメモリに保存するため)、ファイルオープンの前に呼びます。 <BR>
+<BR>
+    libmcのsceMcFormat()は代替セクタの初期化も行いますので、メモリーカードのフォーマット時にはsceMcxShowTrans()を呼ばないでください(代替セクタの初期化が出来ずにフォーマットが失敗してしまいます)。 <BR>
+<BR>
+    この関数が呼ばれると、現在実行中のPDAアプリケーションに対しPDAカーネルからの｢ファイル転送制御コールバック｣が発生します。PDAの｢ユーザーコールバック設定(swi 1)｣において「PlayStationからファイル転送中表示開始／終了設定時」に登録したサブルーチン内で必要に応じてPDAのLCD画面上にデータ転送中の旨を表示させます。タイムアウトの設定は"PlayStation 2"が不意にリセットされたときなどにPDAアプリケーション自身が転送中表示を解除するのためのものであり、正常状態においては、ファイル転送が終わったときにsceMcxHideTrans()を呼んで転送中表示を消去するようにします。（PDAアプリケーションで必要な処理の詳細に関しては「PDAカーネル仕様書」を参照してください。） <BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxSync>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxSync
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        登録済み処理完了待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxSync</B>(
+	int <I>mode</I>,
+	int *<I>cmd</I>,
+	int *<I>result</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	0: 登録された非同期関数の終了を待つ
+	1: 非同期関数の状態を調べてすぐに返る
+<I>cmd</I>	登録されている非同期関数の関数番号を格納する変数へのポインタ
+<I>result</I>	非同期関数の実行結果を格納する変数へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	非同期関数実行中 <BR>
+    1:	非同期関数終了 <BR>
+    -1:	登録無し <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    非同期関数の終了を調べます。 <BR>
+<BR>
+    関数番号はlibmcx.hで定義されています。 <BR>
+<BR>
+    sceMcxFuncGetInfo	1 <BR>
+    sceMcxFuncSetInfo	2 <BR>
+    sceMcxFuncGetMem	3 <BR>
+    sceMcxFuncSetMem	4 <BR>
+    sceMcxFuncShowTrans	5 <BR>
+    sceMcxFuncHideTrans	6 <BR>
+    sceMcxFuncReadDev	7 <BR>
+    sceMcxFuncWriteDev	8 <BR>
+    sceMcxFuncGetUIFS	9 <BR>
+    sceMcxFuncSetUIFS	10 <BR>
+    sceMcxFuncSetLED	11 <BR>
+    sceMcxFuncChgPrior	12 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMcxWriteDev>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMcxWriteDev
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PDAデバイスエントリへの書き込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMcxWriteDev</B>(
+	int <I>port</I>,
+	int <I>slot</I>,
+	int devno,
+	void *<I>para</I>,
+	unsigned <I>parasize</I>,
+	void *<I>cont</I>,
+	unsigned <I>contsize</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>port</I>	ポート番号
+<I>slot</I>	スロット番号
+<I>devno</I>	デバイスエントリ番号
+<I>para</I>	固定部パラメータを格納しているバッファへのポインタ
+<I>parasize</I>	固定部パラメータのバイト長(デバイスエントリごとに固定)
+<I>cont</I>	可変部データをしているバッファへのポインタ
+<I>contsize</I>	可変部データのバイト長(128バイト以内)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0:	処理が登録されました <BR>
+    1以上:	実行中の関数番号(sceMcxFuncNo.....)が返ります <BR>
+    <blockquote>
+    	実行中の処理があったので登録できませんでした <BR>
+    </blockquote>
+    -1以下:	エラーが発生して登録できませんでした <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PDA上に用意されている予約済みデバイス、およびユーザ定義デバイスへの書き込みを行います。各デバイスに対し固定部パラメータを渡し、固定部パラメータによって要求される可変部データをさらに書き込みます。デバイスによっては固定部パラメータがないものもあります。 <BR>
+<BR>
+    ユーザ定義デバイスを呼び出すには、「PDAカーネル仕様書」の｢カーネルサービス概要：PlayStationとの通信：デバイスエントリコールバック｣の項に従ってサブルーチンを作成し、メモリーカードファイルのヘッダ内にある｢デバイスエントリテーブル｣に登録しておく必要があります。 <BR>
+<BR>
+    予約済みデバイスとしては以下の3つがあります。(マクロはlibmcx.hで定義) <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス番号</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>マクロ</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">リアルタイムクロック</TD>
+<TD valign="TOP">０</TD>
+<TD valign="TOP">sceMcxDevRtc</TD>
+</TR>
+<TR>
+<TD valign="TOP">PDAメモリ</TD>
+<TD valign="TOP">１</TD>
+<TD valign="TOP">sceMcxDevMem</TD>
+</TR>
+<TR>
+<TD valign="TOP">ユーザーインタフェースステータス</TD>
+<TD valign="TOP">２</TD>
+<TD valign="TOP">sceMcxDevUIFS</TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+    sceMcxSync() のresultに返る値： <BR>
+    0:		成功 <BR>
+    -12:	PocketStationが検出できませんでした <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

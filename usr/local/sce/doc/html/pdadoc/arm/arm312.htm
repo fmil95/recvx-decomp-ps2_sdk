@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm312</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm311.htm">[前]</A> <A HREF="arm313.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.12 <A NAME="anchor2729239"></A>セマフォ命令</H3>
+
+<BLOCKQUOTE>
+  <P>ARM命令セットには次の2つのセマフォ命令があります。</P>
+  <UL>
+    <LI>Swap（SWP）
+    <LI>Swap Byte（SWPB）
+  </UL>
+  <P>これらの命令はプロセス同期化のために用意されています。それぞれの命令がアトミックなロード/ストア・オペレーションを生成し、メモリ・セマフォの割り込みがないロードと変更を可能にします。</P>
+  <P>SWPとSWPBには1種類のアドレッシング・モードがあります。このアドレスはレジスタの内容です。ストアする値とロードのデスティネーション指定には、異なるレジスタを使用します。同じレジスタが指定されていると、SWPはレジスタの値とメモリの値を交換します。</P>
+  <P>セマフォ命令では、比較と条件付きライト機能はありません。これは明示的に行う必要があるためです。</P>
+  <P><B>例</B></P>
+  <PRE>SWP     R12, R10, [R9]     ; load R12 from address R9 and
+                              ; store R10 to address R9
+SWPB   R3, R4, [R8]        ; load byte to R3 from address R8 and
+                              ; store byte from R4 to address R8
+SWP     R1, R1, [R2]       ; Exchange value in R1 and address in R2</PRE>
+</BLOCKQUOTE>
+
+<H4>3.12.1. <A NAME="anchor2130475"></A>セマフォ命令の一覧</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_swp.htm"><B>SWP</B></A> スワップ<BR>
+  <B><A HREF="a_swpb.htm">SWPB</A></B> スワップ・バイト<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm311.htm">[前]</A> <A HREF="arm313.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

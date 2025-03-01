@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+<TITLE> TTYP Specification </TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="ttyp.htm" SELECTED> TTYP
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+TTYP Specification <BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> メッセージフォーマット<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつであるTTYP について説明します。<BR>
+    <BR>
+    TTYP は、ターゲット上のプログラムの標準入出力データをターゲット ⇔ ホスト間で送受信を行うためのプロトコルで、プロトコル番号は以下のようになります。<BR>
+    下記のプロトコルの総称を TTYP とします。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      IOP TTY: I0TTYP=0x0110 ... I9TTYP=0x0119<BR>
+       IKTTYP=0x011f<BR>
+      EE TTY: E0TTYP=0x0210 ... E9TTYP=0x0219<BR>
+       EKTTYP=0x021f<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>メッセージフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    TTYP メッセージは、基本的な DECI2 ヘッダを使用して送信されます。<BR>
+    TTYP メッセージは、特別なヘッダを持ちません。以下のように 4 bytes の予約領域とデータのみで構成されます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/ttypf1.gif">
+<P>
+    <B>図 1 TTYP メッセージ</B>
+</DIV>
+
+     <H4><B>Flush Request</B></H4>
+
+      <BLOCKQUOTE>
+      通常の標準入出力データの場合は必ず 0 を指定してください。<BR>
+      <BR>
+      1 を指定すると、ターゲットから dsnetm に送られた標準出力パケットのうち、まだアプリケーションに送信されていないパケットを削除します。<BR>
+      このときの DECI2 ヘッダの Destination フィールドには、'H' を指定してください。<BR>
+      ホストとのコネクションが確立されていない場合、ターゲットプログラムの標準出力データはすべて失われます。
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

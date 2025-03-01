@@ -1,0 +1,176 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm310</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm309.htm">[前]</A> <A HREF="arm311.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.10 ハーフワードのロード/ストア命令と符号付きバイトのロード命令</H3>
+
+<BLOCKQUOTE>
+  <P>ロード命令はメモリから1つの値をロードし、汎用レジスタに書き込みます。</P>
+  <P>ストア命令は汎用レジスタから値を読み出し、メモリにストアします。<BR>
+  ハーフワードのロードとストア命令と符号付きバイトのロード命令は、次の形式で記述されます。</P>
+  <PRE>LDR|STR{&lt;cond&gt;}H|SH|SB  Rd, &lt;addressing_mode&gt;</PRE>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015004"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015006"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015008"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015010"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015012"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015014"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015016"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015018"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015020"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015022"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015024"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015026"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015028"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015030"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015032"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015034"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015036"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015038"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015040"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015042"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015044"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015046"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015048"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015050"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015052"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015054"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015056"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015058"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015060"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015062"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015064"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015066"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015068"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015076"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015078"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015080"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015082"></A><BR>
+    P</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015084"></A><BR>
+    U</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015086"></A><BR>
+    I</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015088"></A><BR>
+    W</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015090"></A><BR>
+    L</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015092"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015100"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015108"></A><BR>
+    addr_mode</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015116"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015118"></A><BR>
+    S</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015120"></A><BR>
+    H</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015122"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015124"></A><BR>
+    addr_mode</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>addr_modeビット</B>：これらのビットはアドレッシング・モード固有です。</P>
+  <P><B>I、P、U、Wビット</B>：これらのビットは&lt;addressing_mode&gt;の型を指定します。（3.18節「ハーフワードのロード/ストア、または符号付きバイトのロード・アドレッシング・モード」を参照してください。）</P>
+  <P><B>Lビット</B>：このビットはロード命令（L==1）とストア命令（L==0）を区別します。</P>
+  <P><B>Sビット</B>：このビットは符号付き（S==1）と符号なし（S==0）ハーフワード・アクセスを区別します。</P>
+  <P><B>Hビット</B>：このビットはハーフワード（H==1）と符号付きバイト（H==0）アクセスを区別します。</P>
+</BLOCKQUOTE>
+
+<H4>3.10.1 <A NAME="anchor1562635"></A>ハーフ･ワードのロード/ストア命令と符号付きバイトのロード命令のリスト</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_ldrh.htm"><B>LDRH</B></A> 符号なしハーフワードのロード<BR>
+  <B><A HREF="a_ldrsb.htm">LDRSB</A></B> 符号付きバイトのロード<BR>
+  <B><A HREF="a_ldrsh.htm">LDRSH</A></B> 符号付きハーフワードのロード<BR>
+  <B><A HREF="a_strh.htm">STRH</A></B> ハーフワードのストア</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm309.htm">[前]</A> <A HREF="arm311.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

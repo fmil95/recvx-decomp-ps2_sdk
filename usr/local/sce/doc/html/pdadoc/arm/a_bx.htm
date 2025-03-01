@@ -1,0 +1,209 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_bx</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bic.htm">[前]</A> <A HREF="a_cdp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">BX</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>分岐</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">BX{&lt;cond&gt;} Rm</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>BX（Branch and Exchange命令セット）は、ARMアーキテクチャ・バージョン4では未定義です。ARMアーキテクチャ・バージョン4Tでは、この命令は分岐し、分岐先で命令をデコードするのに使用する命令セット・デコーダを選択します。分岐先アドレスはレジスタRmの値です。<A
+  NAME="anchor487329"></A>Tフラグは、レジスタRmの値のビット0で更新されます。</P>
+  <P>BXは<A NAME="anchor2533926"></A>ARMコードと<A NAME="anchor437452"></A>THUMBコード間で分岐するのに使用します。ARMアーキテクチャ4では、これによってTHUMB命令セットをエミュレートできる未定義命令例外が発生します。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致する場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385532"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385534"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385536"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385538"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385540"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385542"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385544"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385546"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385548"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385550"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385552"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385554"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385556"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385558"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385560"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385562"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385564"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385566"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385568"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385570"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385572"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385574"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385576"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385578"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385580"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385582"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385584"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385586"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385588"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385590"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385592"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385594"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" ALIGN="CENTER">
+    <A NAME="1385596"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER">
+    <A NAME="1385604"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385606"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385608"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385610"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385612"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385614"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385616"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385618"></A><BR>
+    0</TD> 
+    <TD COLSPAN="4" ALIGN="CENTER">
+    <A NAME="1385620"></A><BR>
+    SBO</TD>
+     
+    <TD COLSPAN="4" ALIGN="CENTER">
+    <A NAME="1385628"></A><BR>
+    SBO</TD>
+     
+    <TD COLSPAN="4" ALIGN="CENTER">
+    <A NAME="1385636"></A><BR>
+    SBO</TD>
+     
+    <TD ALIGN="CENTER">
+    <A NAME="1385644"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385646"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385648"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER">
+    <A NAME="1385650"></A><BR>
+    1</TD> 
+    <TD COLSPAN="4" ALIGN="CENTER">
+    <A NAME="1385652"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        T Flag = Rm[0]
+        PC = Rm[31:1] &lt;&lt; 1</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード<BR>
+  Sはコンディション・コード・フラグN、Z、Cを更新します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>THUMBへの遷移：</B>THUMB命令セットに遷移する場合、PCのビット[0]はクリアされ（ゼロにセット）、ビット[31:1]はRmからPCにコピーされます。</P>
+  <P><B>ARMへの遷移：</B>ARM命令セットに遷移する場合、PCのビット[0]はクリアされ（ゼロにセット）、ビット[31:1]はRmからPCにコピーされます。Rmのビット[1]がセットされている場合、結果は予測できません。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bic.htm">[前]</A> <A HREF="a_cdp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

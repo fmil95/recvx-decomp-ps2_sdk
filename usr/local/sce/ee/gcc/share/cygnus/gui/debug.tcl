@@ -50,7 +50,7 @@ namespace eval ::debug {
       set logfile $file
     } else {
       set logfile [open $file w+]
-      fconfigure $logfile -buffering line -blocking 0
+      fconfigure $logfile -buffering line
     }
   }
 

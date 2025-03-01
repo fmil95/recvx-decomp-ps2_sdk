@@ -1,0 +1,314 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                    Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                       All Rights Reserved
+                                                             June 11, 1999
+
+DCMP Specification                       
+===================
+
+  This document provides description of the DCMP, one of the higher 
+  level protocols than the DECI2 protocol.
+
+
+Contents
+========
+1.  Overview
+2.  Message Format
+3.  Message
+3.1 DCMP_TYPE_CONNECT
+3.2 DCMP_TYPE_ECHO
+3.3 DCMP_TYPE_STATUS
+3.3 DCMP_TYPE_ERROR
+
+
+1.  Overview
+============
+  The DECI2 protocol is not equipped with functions such as error 
+  detection, and is not perfectly reliable.  In order to reinforce 
+  the reliability of the DECI2, the DCMP provides a means of 
+  notification when an error occurs.  The protocol number of the DCMP 
+  protocol is DCMP = 0x1.   
+
+  When the DECI2 Manager/dsnetm find an error in the processing of 
+  the DECI2 packets, they notify the application and the protocol 
+  diver of it via the DCMP message. 
+
+  In ordinary cases, the application and the protocol driver do not 
+  have to transmit the DCMP message.  The notification via the DCMP 
+  message is given even when higher level protocols are locked.  To 
+  avoid the infinite repetition in error reporting, however, errors 
+  concerning the DCMP message are not notified. 
+
+  The DCMP message is also used when status changes of each node are 
+  notified to the application and protocol driver besides the errors or 
+  a route is established between the dsnetm and the DECI2 Manager. 
+
+
+2.  Message Format
+===========================
+  The DCMP message has a format in which the DECI2 header, the DCMP 
+  header below and data are arranged in that order. The DCMP header has 
+  the following format. 
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            unused             |     Code      |     Type      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                            Figure 1  DCMP Header
+
+  There are following Message Types.
+
+  DCMP_TYPE_CONNECT   0
+  DCMP_TYPE_ECHO      1
+  DCMP_TYPE_STATUS    2
+  DCMP_TYPE_ERROR     3
+
+  The DCMP_TYPE_CONNECT is used when a route is established between 
+  the dsnetm and the DECI2 Manager.  The application and the protocol 
+  driver never transmit and receive this message. 
+
+  The DCMP_TYPE_ECHO is a message to test whether or not the route is 
+  maintained.  In ordinary cases, the application and the protocol 
+  driver do not have to transmit and receive this message. 
+
+  The DCMP_TYPE_STATUS is a message to be transmitted from the DECI2 
+  Manager/dsnetm to all the applications and the protocol drivers when 
+  a change in status is generated in a certain node. 
+
+  The DCMP_TYPE_ERROR is a message to be transmitted at the occurrence 
+  of an error from the DECI2 Manager/dsnetm to the application or 
+  the protocol driver which has generated the error. 
+
+
+3.  Message
+===============
+  The following are detailed descriptions of each Type of the DCMP 
+  messages. 
+
+
+3.1 DCMP_TYPE_CONNECT
+----------------------
+  Connect/disconnect message from the dsnetm to the DECI2 Manager
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            unused             |     Code      |     Type      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                               |    Result     |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +--                     EE Boot parameter                     --+
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +--                     IOP Boot parameter                    --+
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                     Figure 2  DCMP_TYPE_CONNECT Message
+
+  Code
+    DCMP_CODE_CONNECT        0	// connect request
+    DCMP_CODE_CONNECTR       1	// connect reply
+    DCMP_CODE_DISCONNECT     2	// disconnect request
+    DCMP_CODE_DISCONNECTR    3	// disconnect reply
+
+  Result
+    In reply messages, 0 is returned for success and the following 
+    values are returned for errors.
+
+    DCMP_ERR_INVALDEST       1	// destination invalid
+    DCMP_ERR_ALREADYCONN     2	// already connected
+    DCMP_ERR_NOTCONNECT      3	// not connected
+
+  EE Boot parameter
+  IOP Boot parameter
+    The first 2 words show the initialization parameter for the EE, 
+    and the latter 2 words show that for the IOP.  The specification has 
+    not yet been fixed, so the description is omitted. 
+
+  The DCMP_CODE_CONNECT and DCMP_CODE_DISCONNECT messages are messages 
+  requesting for connection and disconnection sent from the dsnetm to 
+  the DECI2 Manager.  The dsnetm transmits these messages on starting 
+  and resetting. 
+
+  The DECI2 Manager receives the DCMP_CODE_CONNECT message, and then 
+  returns the DCMP_CODE_CONNECTR message to the dsnetm.  As for 
+  the DCMP_CODE_DISCONNECT message, the DECI2 Manager works in the same 
+  manner.
+ 
+  The DECI2 Manager judges that the route with the dsnetm is kept 
+  connected until the DCMP_CODE_DISCONNECT message arrives. 
+
+
+3.2 DCMP_TYPE_ECHO
+-------------------
+  Message for route testing
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            unused             |     Code      |     Type      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |        Sequence Number        |           Identifier          |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                                          Data ...  |
+                                                         -+-+-+-+-+-+
+
+                     Figure 3  DCMP_TYPE_ECHO Message
+
+  Code
+    DCMP_CODE_ECHO           0	// echo
+    DCMP_CODE_ECHOR          1	// echo reply
+
+  Identifier
+  Sequence Number
+    This is data which helps confirm matching between the DCMP_CODE_ECHO 
+    message and the DCMP_CODE_ECHOR message. 
+
+  Data
+    This is optional data up to 32 bytes.
+
+  The DCMP_CODE_ECHO message is used to test whether a route is kept 
+  connected.  The DECI2 Manager receives this message, exchanges 
+  the source and the destination in the DECI2 header, changes the Code 
+  to the DCMP_CODE_ECHOR, and returns a reply. 
+
+
+3.3 DCMP_TYPE_STATUS
+---------------------
+  Message for status notification
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            unused             |     Code      |     Type      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                    |       Protocol/Node ID        |
+                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                     Figure 4  DCMP_TYPE_STATUS Message
+
+  Code
+    DCMP_CODE_CONNECTED      0	// !NOCONNECT
+    DCMP_CODE_PROTO          1	// !NOPROTO
+    DCMP_CODE_UNLOCKED       2	// !LOCKED
+    DCMP_CODE_SPACE          3	// !NOSPACE
+    DCMP_CODE_ROUTE          4	// !NOROUTE
+
+  Protocol/Node ID
+    The protocol number is specified for the DCMP_CODE_PROTO, and Node 
+    ID is specified for the DCMP_CODE_CONNECT and the DCMP_CODE_ROUTE.  
+    For other cases, 0 is specified. 
+
+  The messages of the DCMP_TYPE_STATUS type are used to notify each 
+  application and protocol driver of the DECI2 environment status.  
+  The application and protocol driver which have been stopped for 
+  an error can obtain the timing of retry according to this message. 
+
+  The DCMP_CODE_CONNECTED is a message to provide notification that 
+  a route has been established between the dsnetm and the DECI2 
+  Manager.  This message is transmitted directly from the dsnetm to 
+  all the applications and from the DECI2 Manager to all the protocol 
+  drivers.
+
+  The DCMP_CODE_PROTO is a message to be transmitted to other nodes when 
+  an application or a protocol driver is newly registered.  The DECI2 
+  Manager/dsnetm in the node, which has received this message, sends 
+  the message to an application or a protocol driver using the same 
+  protocol, if there is.
+
+  As a special condition, the DCMP_CODE_PROTO is not issued to 
+  the protocol drivers, which are surely registered on startup of 
+  the target implemented by SCE. 
+
+  The DCMP_CODE_UNLOCKED is a message to provide notification that 
+  the lock state has been released.  The DCMP_CODE_SPACE is a message 
+  to provide notification that the NOSPACE state of the DECI2 
+  Manager/dsnetm has been released.  They are broadcasted to 
+  the applications and the protocol drivers registered in the node in 
+  use and in other nodes respectively. 
+
+  The DCMP_CODE_ROUTE is a special message transmitted and received only 
+  between the dsnetm and the DECI2 Manager. This message is never 
+  transmitted to the application and the protocol driver. It is used 
+  when the dsnetm establishes a route. 
+
+
+3.4 DCMP_TYPE_ERROR
+--------------------
+  Message for error notification
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            unused             |     Code      |     Type      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                     Original DECI2 header                     |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +--                                                           --+
+    |                                                               |
+    +--              1st 16 bytes of Original Packet              --+
+    |                                                               |
+    +--                                                           --+
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                     Figure 5  DCMP_TYPE_ERROR Message
+
+  Code
+    DCMP_CODE_NOROUTE        0	// no route to node
+    DCMP_CODE_NOPROTO        1	// protocol unreachable
+    DCMP_CODE_LOCKED         2	// locked
+    DCMP_CODE_NOSPACE        3	// deci2 manager/dsnetm buffer full
+    DCMP_CODE_INVALHEAD      4	// invalid header
+    DCMP_CODE_NOCONNECT      5	// not connected
+
+  The messages of the DCMP_TYPE_ERROR type provide notification 
+  from the DECI2 Manager/dsnetm to an application or a protocol 
+  driver, which has issued a packet, that an error has occurred 
+  in the processing of the DECI2 packet.  In short, the value of 
+  the Source field of the packet, which has generated the error, 
+  enters in the Destination field of the DECI2 header.  
+  The notification to the protocol driver is given as a return 
+  value of a function in the case of an immediately recognizable 
+  error.  For other cases, however, the above message is used.  
+  All the errors are notified via this message between the dsnetm 
+  and the application. 
+
+  DECI2 Manager/dsnetm judges which application or protocol driver 
+  should be notified of the error from the Source field and Protocol 
+  field of the DECI2 header of the packet which has caused the error.  
+  
+  The DCMP_CODE_NOROUTE is a special message to be transmitted and 
+  received only between the dsnetm and the DECI2 Manager.  This 
+  message is never transmitted to the application and the protocol 
+  driver. 
+
+  The DCMP_CODE_NOPROTO is a message which provides notification that 
+  the protocol driver with the specified protocol number has not been 
+  registered in the node of the destination.  
+
+  DCMP_CODE_LOCKED is a message to provide notification that the node 
+  of the destination is being locked by an application or a protocol 
+  driver, which uses another protocol.
+
+  The DCMP_CODE_NOSPACE is a message to provide notification that 
+  the node of the destination and the node to perform relay could not 
+  secure the memory, which is necessary to transmit the DECI2 packet.
+
+  The DCMP_CODE_INVALHEAD is a message which provides notification that 
+  therre is an error in the DECI2 header information.  This message is 
+  transmitted only from the dsnetm to the application.  In other 
+  situations, this notification is not given because the destination 
+  cannot be specified due to unreliable header information. 
+
+  The DCMP_CODE_NOCONNECT is a message which provides notification that 
+  a route with the node of the destination has not been established. 
+

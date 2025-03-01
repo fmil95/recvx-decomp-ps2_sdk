@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm402</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm401.htm">[前]</A> <A HREF="arm403.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.2 <A NAME="anchor2964048"></A>分岐命令</H3>
+
+<BLOCKQUOTE>
+  <P>以下のコード・シーケンスは、ARMコードでの実行の流れを制御する方法をいくつか示しています。</P>
+</BLOCKQUOTE>
+
+<H4>4.2.1 <A NAME="anchor1857895"></A>プロシージャ呼び出しと復帰</H4>
+
+<BLOCKQUOTE>
+  <P>BL (分岐とリンク) 命令は、 BLの後の命令のアドレスをR14(リンク・レジスタ、またはLR)に保持し、次にターゲット・アドレスに分岐することによってプロシージャ呼び出しを行います。プロシージャからの復帰は、R14をPCに移動して行います。</PRE></P>
+  <BLOCKQUOTE>
+    <PRE>        ....
+        BL     function      ; call 'function'
+        ....                 ; procedure returns to here
+        ....
+function                     ; function body
+        ....
+        ....
+            MOV     PC, LR    ; Put R14 into PC to return</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>4.2.2 条件実行</H4>
+
+<BLOCKQUOTE>
+  <P>条件実行により、if-then-else文を前方分岐を必要としないシーケンスに分割できます。</P>
+  <PRE>/* C code for Euclid's Greatest Common Divisor (GCD)*/
+/* Returns the GCD of its two parameters */
+int gcd(int a, int b)
+{              while (a != b)
+                       if (a &gt; b )
+                                a = a - b ;
+               else
+                                b = b - a ;
+               return a ;
+}
+; ARM assembler code for Euclid's Greatest Common Divisor
+; On entry: R0 holds `a', R1 holds `b'
+; On exit : R0 hold GCD of A and B
+gcd             CMP     R0, R1        ; compare `a' and `b'
+                SUBGT   R0, R0, R1    ; if (a&gt;b) a=a-b (if a==b do nothing)
+                SUBLT   R1, R1, R0    ; if (b&gt;a) b=b-a (if a==b do nothing)
+                BNE     gcd           ; if (a!=b) then keep going
+                MOV     PC, LR        ; return to caller</PRE>
+</BLOCKQUOTE>
+
+<H4>4.2.3 <A NAME="anchor2991615"></A>条件比較命令</H4>
+
+<BLOCKQUOTE>
+  <P>比較命令を条件付きで実行して、より複雑な式を実現することができます。</P>
+  <PRE>if (a==0 || b==1)
+                c = d + e ;
+CMP             R0, #0        ; compare a with 0
+CMPNE           R1, #1        ; if a is not 0, compare b to 1
+ADDEQ           R2, R3, R4    ; if either was true c = d + e</PRE>
+</BLOCKQUOTE>
+
+<H4>4.2.4 <A NAME="anchor525333"></A>ループ変数</H4>
+
+<BLOCKQUOTE>
+  <P>減算命令を使用して、<A NAME="anchor1678242"></A>ループ・カウンタをデクリメントしたり、コンデイション・コードをセットしてゼロかテストすることができます。</P>
+  <BLOCKQUOTE>
+    <PRE><FONT COLOR="#ff0000">       </FONT>  MOV     R0, #loopcount    ; initialize the loop counter
+loop                               ; loop body
+        ....
+        SUBS     R0, R0, #1        ; subtract 1 from counter
+                                   ; and set condition codes
+        BNE     loop               ; if not zero, continue looping
+        ....</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>4.2.5 <A NAME="anchor2853777"></A>多岐分岐</H4>
+
+<BLOCKQUOTE>
+  <P>非常に単純な多岐分岐は1つの命令で実現できます。以下のコードは、実行の制御を任意の数のルーチンにディスパッチします。ただし、それぞれのケースの多岐分岐を処理するコードは同じサイズであり、かつそのサイズは2バイトの累乗でなければなりません。</P>
+  <PRE>; Multi-way branch
+; On entry: R0 holds the branch index
+        CMP   R0, #maxindex       ; checks the index is in range
+        ADDLO   PC, PC, R0, LSL #RoutineSizeLog2
+                                  ; scale index by the log of the size of
+                                  ; each handler, add to the PC, which points
+                                  ; 2 instructions beyond this one
+                                  ; (at Index0Handler), then jump there
+        B     IndexOutOfRange     ; jump to the error handler
+Index0Handler
+        ....
+        ....
+Index1Handle
+        ....
+        ....
+Index2Handler
+        ....</PRE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm401.htm">[前]</A> <A HREF="arm403.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

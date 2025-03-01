@@ -1,0 +1,112 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - hako -
+ *
+ *                         Version 0.1.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : work.dsm
+ *                     Description : main procedures
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *      0.1.0           Mar,26,1999     okadaa    1st version
+ */
+
+.include "vumacros.h"
+
+.global My_dma_start0
+.global My_dma_start
+.global My_param
+
+.DmaPackVif 1
+
+/* initialize values for VIF1 */
+My_dma_start0:
+DMAcnt *
+STCYCL 4, 4
+STMASK 0x00000000
+STMOD 0
+.EndDmaData
+
+/* VU1 MicroCode */
+DMAcnt *
+MPG 0, *
+.include "work.vsm"
+.EndMPG
+.EndDmaData
+
+DMAend
+VIFnop
+VIFnop
+
+My_dma_start:
+DMAcnt *
+/* Area for Local -> View Matrix */
+unpack 4, 4, V4_32, 0, *
+My_param:
+iwzyx 0x00000000, 0x00000000, 0x00000000, 0x3f800000
+iwzyx 0x00000000, 0x00000000, 0x3f800000, 0x00000000
+iwzyx 0x00000000, 0x3f800000, 0x00000000, 0x00000000
+iwzyx 0x3f800000, 0x44000000, 0x00000000, 0x00000000
+.EndUnpack
+/* View -> Screen Matrix */
+unpack 4, 4, V4_32, 26, *
+iwzyx 0x00000000, 0x00000000, 0x00000000, 0x44000000
+iwzyx 0x00000000, 0x00000000, 0x43800000, 0x00000000
+iwzyx 0x3f800000, 0x46746000, 0x45000000, 0x45000000
+iwzyx 0x00000000, 0x4e746119, 0x00000000, 0x00000000
+.EndUnpack
+/* Giftag for XGKICK */
+unpack 4, 4, V4_32, 40, *
+iwzyx 0x00000000, 0x00000041, 0x20064000, 0x00008010
+.EndUnpack
+/* Color data */
+unpack 4, 4, V4_32, 41, *
+iwzyx 0x00000000, 0x42800000, 0x437f0000, 0x437f0000
+iwzyx 0x00000000, 0x437f0000, 0x42800000, 0x437f0000
+iwzyx 0x00000000, 0x437f0000, 0x437f0000, 0x42800000
+iwzyx 0x00000000, 0x42800000, 0x42800000, 0x437f0000
+iwzyx 0x00000000, 0x42800000, 0x437f0000, 0x42800000
+iwzyx 0x00000000, 0x437f0000, 0x42800000, 0x42800000
+iwzyx 0x00000000, 0x437f0000, 0x437f0000, 0x437f0000
+iwzyx 0x00000000, 0x42800000, 0x42800000, 0x42800000
+iwzyx 0x00000000, 0x42800000, 0x437f0000, 0x437f0000
+iwzyx 0x00000000, 0x437f0000, 0x42800000, 0x437f0000
+iwzyx 0x00000000, 0x437f0000, 0x437f0000, 0x42800000
+iwzyx 0x00000000, 0x42800000, 0x42800000, 0x437f0000
+iwzyx 0x00000000, 0x42800000, 0x437f0000, 0x42800000
+iwzyx 0x00000000, 0x437f0000, 0x42800000, 0x42800000
+iwzyx 0x00000000, 0x437f0000, 0x437f0000, 0x437f0000
+iwzyx 0x00000000, 0x42800000, 0x42800000, 0x42800000
+.EndUnpack
+/* Vertex data */
+unpack 4, 4, V4_32, 57, *
+iwzyx 0x3f800000, 0xc2c80000, 0x42c80000, 0x42c80000
+iwzyx 0x3f800000, 0xc2c80000, 0x42c80000, 0xc2c80000
+iwzyx 0x3f800000, 0xc2c80000, 0xc2c80000, 0x42c80000
+iwzyx 0x3f800000, 0xc2c80000, 0xc2c80000, 0xc2c80000
+iwzyx 0x3f800000, 0x42c80000, 0xc2c80000, 0x42c80000
+iwzyx 0x3f800000, 0x42c80000, 0xc2c80000, 0xc2c80000
+iwzyx 0x3f800000, 0x42c80000, 0x42c80000, 0x42c80000
+iwzyx 0x3f800000, 0x42c80000, 0x42c80000, 0xc2c80000
+iwzyx 0x3f800000, 0xc2c80000, 0xc2c80000, 0x42c80000
+iwzyx 0x3f800000, 0x42c80000, 0xc2c80000, 0x42c80000
+iwzyx 0x3f800000, 0xc2c80000, 0x42c80000, 0x42c80000
+iwzyx 0x3f800000, 0x42c80000, 0x42c80000, 0x42c80000
+iwzyx 0x3f800000, 0xc2c80000, 0x42c80000, 0xc2c80000
+iwzyx 0x3f800000, 0x42c80000, 0x42c80000, 0xc2c80000
+iwzyx 0x3f800000, 0xc2c80000, 0xc2c80000, 0xc2c80000
+iwzyx 0x3f800000, 0x42c80000, 0xc2c80000, 0xc2c80000
+.EndUnpack
+MSCAL 0
+.EndDmaData
+
+DMAend

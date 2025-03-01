@@ -1,0 +1,177 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm321</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm320.htm">[前]</A> <A HREF="admo501.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H4>3.21 <A NAME="anchor1402894"></A>コプロセッサのロード/ストア・アドレッシング</H4>
+
+<BLOCKQUOTE>
+  <P>コプロセッサのロード/ストア命令のアドレス計算に使用するアドレッシング・モードが3つあります。</P>
+  <BLOCKQUOTE>
+    <P><B>1 <A HREF="admo501.htm">イミディエイト・オフセット</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>&lt;opcode&gt;{&lt;cond&gt;}{L}  p&lt;cp_num&gt;,CRd,[Rn,#+/-(&lt;8_bit_offset&gt;*4)]</PRE>
+    </BLOCKQUOTE>
+    <P><B>2 <A HREF="admo502.htm">イミディエイト・プレインデクス</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>&lt;opcode&gt;{&lt;cond&gt;}{L}  p&lt;cp_num&gt;,CRd,[Rn,#+/-(&lt;8_bit_offset&gt;*4)]!</PRE>
+    </BLOCKQUOTE>
+    <P><B>3 <A HREF="admo503.htm">イミディエイト・ポストインデクス</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>&lt;opcode&gt;{&lt;cond&gt;}{L}  p&lt;cp_num&gt;,CRd,[Rn],#+/-(&lt;8_bit_offset&gt;*4)
+  </PRE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1035043"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035045"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035047"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035049"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035051"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035053"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035055"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035057"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035059"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035061"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035063"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035065"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035067"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035069"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035071"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035073"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035075"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035077"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035079"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035081"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035083"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035085"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035087"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035089"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035091"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035093"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035095"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035097"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035099"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035101"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035103"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1035105"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035107"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035115"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035117"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035119"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035121"></A><BR>
+    P</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035123"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035125"></A><BR>
+    N</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035127"></A><BR>
+    W</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1035129"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035131"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035139"></A><BR>
+    CRd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1035147"></A><BR>
+    cp#</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="8">
+    <P><CENTER><A NAME="1035155"></A><BR>
+    8_bit_offset</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Pビット：</B>プレインデクス(P==1)またはポストインデクス(P==0)：</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="15%">
+      (P==1)</TD> 
+      <TD WIDTH="85%">
+      ベース・レジスタにオフセットを加算して、結果をアドレスとして使用することを示します。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="15%">
+      (P==0)</TD> 
+      <TD WIDTH="85%">
+      ベース・レジスタ値をアドレスに使用し、次にベース・レジスタにオフセットを加算して、ベース・レジスタに書き戻すことを示します。(W＝1となるため。下記参照。)</TD> 
+    </TR>
+  </TABLE></P>
+  <P><B>Uビット：</B>ベース・レジスタにオフセットを加算する（U==1）またはオフセットをベースから減算する(U==0)ことを示します。</P>
+  <P><B>Nビット：</B>コプロセッサ依存のビットです。推奨される用途は、転送される異なるサイズの値を区別することです。</P>
+  <P><B>Wビット：</B>計算されたアドレスがベース・レジスタに書き戻されることを示します。P=0の場合、W=1でなければなりません。そうでない場合、結果は予測できません。</P>
+  <P><B>Lビット：</B>ロード命令(L==1)とストア命令(L==0)を区別します。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm320.htm">[前]</A> <A HREF="admo501.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

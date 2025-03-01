@@ -1,0 +1,289 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm205</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm200.htm">[章目次]</A>
+<A HREF="arm204.htm">[前]</A> <A HREF="arm300.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>2.5 <A NAME="anchor3488990"></A>例外</H3>
+
+<BLOCKQUOTE>
+  <P>内部および外部ソースによって例外が発生すると、プロセッサがイベントを処理します。たとえば、外部で発生した<A NAME="anchor4029724"></A>割り込みや、未定義命令を実行しようとした場合などが考えられます。例外ルーチンが完了したときに、元のプログラムを再開できるよう、例外処理直前のプロセッサの状態を保存しておかなければなりません。同時に複数の例外が発生する場合もあります。</P>
+  <P>ARMは7種類の例外をサポートしており、各タイプごとに<A NAME="anchor1921864"></A>特権プロセッサ・モードがあります。表2-3「例外処理モード」に、例外の種類と、その例外を処理するのに使用するプロセッサ・モードを要約します。例外が発生すると、そのタイプに対応する固定メモリ・アドレスから例外処理が実行されます。これらの固定アドレスをハード・ベクタと呼びます。</P>
+  <P>アドレス0x14に予約されているエントリは、プロセッサが26ビット・アドレス空間に設定されている場合に使用するアドレス例外ベクタ用です。詳細については、第5章「26ビット・アーキテクチャ」を参照してください。<BR>
+  </P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" HEIGHT="213"
+  WIDTH="90%">
+    <TR>
+      <TD WIDTH="53%" HEIGHT="20">
+      <B>例外のタイプ</B></TD> 
+      <TD WIDTH="18%">
+      <B>モード</B></TD> 
+      <TD WIDTH="29%">
+      <B>ベクタ・アドレス</B></TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="20" WIDTH="53%">
+      リセット</TD> 
+      <TD WIDTH="18%">
+      SVC</TD> 
+      <TD WIDTH="29%">
+      0x00000000</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="20" WIDTH="53%">
+      未定義命令</TD> 
+      <TD WIDTH="18%">
+      UNDEF</TD> 
+      <TD WIDTH="29%">
+      0x00000004</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="20" WIDTH="53%">
+      ソフトウェア割り込み(SWI)</TD> 
+      <TD WIDTH="18%">
+      SVC</TD> 
+      <TD WIDTH="29%">
+      0x00000008</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="36" WIDTH="53%">
+      プリフェッチ・アボート（命令フェッチ・メモリ・アボート）</TD> 
+      <TD WIDTH="18%">
+      ABORT</TD> 
+      <TD WIDTH="29%">
+      0x0000000C</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="36" WIDTH="53%">
+      データアボート（データアクセス・メモリ・アボート</TD> 
+      <TD WIDTH="18%">
+      ABORT</TD> 
+      <TD WIDTH="29%">
+      0x000000010</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="20" WIDTH="53%">
+      IRQ（割り込み）</TD> 
+      <TD WIDTH="18%">
+      IRQ</TD> 
+      <TD WIDTH="29%">
+      0x00000018</TD> 
+    </TR>
+    <TR>
+      <TD HEIGHT="20" WIDTH="53%">
+      FIQ（高速割り込み）</TD> 
+      <TD WIDTH="18%">
+      FIQ</TD> 
+      <TD WIDTH="29%">
+      0x0000001C</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表2-3:例外処理モード</FONT></P>
+
+<BLOCKQUOTE>
+  <P>例外処理時には、バンクされたレジスタを使用して状態をセーブします。例外が発生すると、以下のようなアクションが実行されます。</P>
+  <PRE>R14_&lt;exception_mode&gt; = PC
+SPSR_&lt;exception_mode&gt; = CPSR
+CPSR[5:0] = Exception mode number
+CPSR[6] = if &lt;exception_mode&gt; == Reset or FIQ then = 1 else unchanged
+CPSR[7] = 1; Interrupt disabled
+PC = Exception vector address</PRE>
+  <P>例外処理からリターンするには、SPSRをCPSRに、R14をPCに移動します。このオペレーションは、次の2つの方法で自動的に行うことができます。</P>
+  <OL>
+    <LI>Sビットがセットされたデータ処理命令とPCをデスティネーションとして使用する。
+    <LI>Load Multiple and Restore PSR命令を使用する。
+  </OL>
+  <P>以下のセクションでは、例外のタイプごとに例外からリターンする推奨方法を説明します。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.1 <A NAME="anchor1907328"></A>リセット</H4>
+
+<BLOCKQUOTE>
+  <P>プロセッサのリセット入力がアサートされると、ARMはすぐに現在の命令の実行を停止します。リセットがデアサートされると、以下のアクションが実行されます。</P>
+  <PRE>R14_svc = UNPREDICTABLE value
+SPSR_svc = CPSR
+CPSR[5:0] = 0b010011 ; Supervisor mode
+CPSR[6] = 1 ; Fast Interrupts disabled
+CPSR[7] = 1 ; Interrupts disabled
+PC = 0x0</PRE>
+  <P>したがって、リセット後に、割り込みがディスエーブルされた状態で、ARMはスーパバイザ・モードでアドレス0x0から実行を開始します。リセットの影響の詳細については、7.6
+  メモリ管理ユニット(MMU)」を参照してください。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.2 <A NAME="anchor3559824"></A>未定義命令例外</H4>
+
+<BLOCKQUOTE>
+  <P>ARMがコプロセッサ命令を実行する場合、ARMは<A NAME="anchor3182753"></A>外部コプロセッサがその命令を実行できることを承認するのを待ちます。どのコプロセッサも応答しない場合は、未定義命令例外が発生します。未定義命令を実行しようとした場合にも、未定義命令例外が発生します（「3.14.5
+  未定義命令空間」を参照してください）。</P>
+  <P>未定義命令例外は、物理コプロセッサ（ハードウェア）を持たないシステムのコプロセッサの<A NAME="anchor3207081"></A>ソフトウェア・エミュレーションや、ソフトウェア・エミュレーションによる汎用命令セットの拡張に使用することができます。</P>
+  <P>未定義命令例外が発生すると、次のアクションが実行されます。</P>
+  <PRE>R14_und = address of undefined instruction + 4
+SPSR_und = CPSR
+CPSR[5:0] = 0b011011 ; Undefined mode
+CPSR[6] = unchanged ; Fast Interrupt status is unchanged
+CPSR[7] = 1 ; (Normal) Interrupts disabled
+PC = 0x4</PRE>
+  <P>未定義命令のエミュレーションからリターンするには、次の命令を使用します。</P>
+  <P>MOVS PC, R14</P>
+  <P>この命令は、PC（R14_undから）とCPSR（SPSR_undから）をリストアし、未定義命令の次の命令にリターンします。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.3 <A NAME="anchor3546487"></A>ソフトウェア割り込み例外</H4>
+
+<BLOCKQUOTE>
+  <P><A NAME="anchor101772"></A>ソフトウェア割り込み命令（SWI）は、スーパバイザ・モードに入り、特定のスーパバイザ（<A
+  NAME="anchor1841384"></A>オペレーティング・システム）機能を要求します。SWIを実行すると、以下のアクションが実行されます。</P>
+  <PRE>R14_svc = address of SWI instruction + 4
+SPSR_svc = CPSR
+CPSR[5:0] = 0b010011 ; Supervisor mode
+CPSR[6] = unchanged ; Fast Interrupt status is unchanged
+CPSR[7] = 1 ; (Normal) Interrupts disabled
+PC = 0x8</PRE>
+  <P>SWIオペレーションの実行からリターンするには、以下の命令を使用します。</P>
+  <PRE>MOVS PC, R14</PRE>
+  <P>これにより、PC（R14_svcから）とCPSR（SPSR_svcから）をリストアし、SWIの次の命令にリターンします。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.4 <A NAME="anchor3532481"></A>プリフェッチ・アボート（命令フェッチ・メモリ・アボート）</H4>
+
+<BLOCKQUOTE>
+  <P>メモリ・アボートはメモリ・システムによって通知されます。命令フェッチに応答してアボートをアクティブにすると、フェッチされた命令に無効のマークが付けられます。プロセッサが無効な命令を実行しようとすると、アボートが発生します。命令が実行されなかった場合（たとえば、パイプライン内での分岐の発生などにより）、プリフェッチ・アボートは発生しません。</P>
+  <P>アボートされた命令を実行しようとすると、以下のアクションが実行されます。</P>
+  <PRE>R14_abt = address of the aborted instruction + 4
+SPSR_abt = CPSR
+CPSR[5:0] = 0b010111; Abort mode
+CPSR[6] = unchanged ; Fast Interrupt status is unchanged
+CPSR[7] = 1 ; (Normal) Interrupts disabled
+PC = 0xc</PRE>
+  <P>アボートの理由を特定した後でリターンするには、以下の命令を使用します。</P>
+  <PRE>SUBS PC, R14, #4</PRE>
+  <P>これにより、PC（R14_abtから）とCPSR（SPSR_ abtから）がリストアされ、アボートされた命令にリターンします。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.5 <A NAME="anchor3253363"></A>データ・アボート（データ・アクセス・メモリ・アボート）</H4>
+
+<BLOCKQUOTE>
+  <P>メモリ・アボートはメモリ・システムによって通知されます。データ・アクセス（ロードまたはストア）に応答してアボートをアクティブにすると、そのデータに無効のマークが付けられます。データ・アボート例外は、それ以後の命令または例外がCPUの状態を変更する前に発生し、以下のアクションが実行されます。</P>
+  <PRE>R14_abt = address of the aborted instruction + 8
+SPSR_abt = CPSR
+CPSR[5:0] = 0b010111 ; Abort mode
+CPSR[6] = unchanged ; Fast Interrupt status is unchanged
+CPSR[7] = 1 ; (Normal) Interrupts disabled
+PC = 0x10</PRE>
+  <P>アボートの理由を特定した後でリターンするには、以下の命令を使用します。</P>
+  <PRE>SUBS PC, R14, #8</PRE>
+  <P>これにより、PC（R14_abtから）とCPSR（SPSR_ abtから）がリストアされ、アボートされた命令の再実行にリターンします。</P>
+  <P>アボートされた命令を再実行する必要がない場合、以下の命令を使用します。</P>
+  <PRE>SUBS PC, R14, #4</PRE>
+  <P>ライトバックを指定しデータ・アボートを生成するメモリ・アクセス命令（LDR、LDRH、LDRSH、LDRB、LDRSB、STR、STRH、STRB、LDM、STM、LDC、STC）で使用されるベース・レジスタ内に残った最終値は、インプリメンテーションで定義されます。</P>
+  <P>インプリメンテーションは、元の値または更新された値のいずれかをベース・レジスタに残すことができるが、すべてのメモリ・アクセス命令に対して同じ動作をインプリメントしなければなりません。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.6 <A NAME="anchor3523807"></A>IRQ（割り込み要求）例外</H4>
+
+<BLOCKQUOTE>
+  <P>IRQ（Interrupt ReQuest）例外は、プロセッサのIRQ入力をアサートすることにより外部で生成されます。IRQはFIQ（下記参照）より優先順位が低く、FIQシーケンスに入るとマスク・アウトされます。CPSRのIビットがセットされると（Iビットは特権モードでしか変更できないので注意してください）、割り込みはディスエーブルされます。Iフラグがクリアされると、ARMは命令境界でIRQをチェックします。</P>
+  <P>IRQが検出されると、以下のアクションが実行されます。</P>
+  <PRE>R14_irq = address of next instruction to be executed + 4
+SPSR_irq = CPSR
+CPSR[5:0] = 0b010010 ; Interrupt mode
+CPSR[6] = unchanged ; Fast Interrupt status is unchanged
+CPSR[7] = 1 ; (Normal) Interrupts disabled
+PC = 0x18</PRE>
+  <P>割り込み処理後にリターンするには、以下の命令を使用します。</P>
+  <PRE>SUBS PC, R14, #4</PRE>
+  <P>これにより、PC（R14_irqから）とCPSR（SPSR_irqから）をリストアし、割り込まれたコードの実行を再開します。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.7 <A NAME="anchor3515990"></A>FIQ（高速割込み要求）例外</H4>
+
+<BLOCKQUOTE>
+  <P>FIQ（Fast Interrupt reQuest）例外は、プロセッサのFIQ入力をアサートすることにより、外部で生成されます。FIQはデータ転送やチャネル処理をサポートするように設計されており、十分な専用レジスタを備えているため、このようなアプリケーションでレジスタをセーブする必要はありません（これによって、コンテクスト・スイッチングのオーバヘッドを最小限に抑えることができます）。</P>
+  <P>CPSRのFビットがセットされると（Fビットは特権モードでしか変更できないので注意してください）、割り込みは<A 
+  NAME="anchor4045447"></A>ディスエーブルされます。Fフラグがクリアされると、ARMは命令境界でFRQをチェックします。</P>
+  <P>FIQが検出されると、以下のアクションが実行されます。</P>
+  <PRE>R14_fiq = address of next instruction to be executed + 4
+SPSR_fiq = CPSR
+CPSR[5:0] = 0b010001 ; FIQ mode
+CPSR[6] = 1 　　 ; Fast Interrupt disabled
+CPSR[7] = 1 　　 ; Interrupts disabled
+PC = 0x1c</PRE>
+  <P>割り込み処理後にリターンするには、以下の命令を使用します。</P>
+  <P>SUBS PC, R14, #4</P>
+  <P>これにより、PC（R14_fiqから）とCPSR（SPSR_fiqから）をリストアし、割り込まれたコードの実行を再開します。</P>
+  <P>FIQベクタは、FIQ例外ハンドラ・ソフトウェアを直接アドレス0x1cに配置できるように、またベクタから分岐命令を要求しないように、意図的に最後のベクタとなっています。</P>
+</BLOCKQUOTE>
+
+<H4>2.5.8 <A NAME="anchor3536370"></A>例外の優先順位</H4>
+
+<BLOCKQUOTE>
+  <P>最も優先順位が高いのはリセット例外です。FIQはIRQよりも優先順位が高く、IRQはプリフェッチ・アボートより優先順位が高くなっています。</P>
+  <P>未定義命令とソフトウェア割り込みは、それぞれ現在の命令の特定の（オーバラップしない）デコーディングに対応しているので同時に発生することはできません。また、プリフェッチ・アボートは有効な命令がフェッチされなかったことを示すため、未定義命令とソフトウェア割り込みはプリフェッチ・アボートより優先順位が低くなければなりません。</P>
+  <P>データ・アボートの優先順位はFIQより高く、リセットより低くなっています。これによってFIQハンドラに入る前に、データ・アボート・ハンドラに入ることを保証しています（したがって、データ・アボートはFIQハンドラが完了する前に解決されます）。<BR>
+  </P>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD>
+      <B>例外</B></TD> 
+      <TD>
+      <B>優先順位</B></TD> 
+    </TR>
+    <TR>
+      <TD>
+      リセット</TD> 
+      <TD>
+      1（最高）</TD> 
+    </TR>
+    <TR>
+      <TD>
+      データ・アボート</TD> 
+      <TD>
+      2</TD> 
+    </TR>
+    <TR>
+      <TD>
+      FIQ</TD> 
+      <TD>
+      3</TD> 
+    </TR>
+    <TR>
+      <TD>
+      IRQ</TD> 
+      <TD>
+      4</TD> 
+    </TR>
+    <TR>
+      <TD>
+      プリフェッチ・アボート</TD> 
+      <TD>
+      5</TD> 
+    </TR>
+    <TR>
+      <TD>
+      未定義命令、SWI</TD> 
+      <TD>
+      6（最低）</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表2-4: 例外の優先順位</FONT></P>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm200.htm">[章目次]</A>
+<A HREF="arm204.htm">[前]</A> <A HREF="arm300.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

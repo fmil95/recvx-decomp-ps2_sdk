@@ -1,0 +1,1298 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> IPUライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>IPUライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuDmaEnv>sceIpuDmaEnv </A><BR>
+</TD><TD> </TD>
+<TD>IPU関連DMA停止時の状態</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuBCLR>sceIpuBCLR </A><BR>
+</TD><TD> </TD>
+<TD>BCLRコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuBDEC>sceIpuBDEC </A><BR>
+</TD><TD> </TD>
+<TD>BDECコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuCSC>sceIpuCSC </A><BR>
+</TD><TD> </TD>
+<TD>CSCコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuFDEC>sceIpuFDEC </A><BR>
+</TD><TD> </TD>
+<TD>FDECコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuGetFVdecResult>sceIpuGetFVdecResult </A><BR>
+</TD><TD> </TD>
+<TD>FDEC/VDECコマンドの実行結果取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuIDEC>sceIpuIDEC </A><BR>
+</TD><TD> </TD>
+<TD>IDECコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuInit>sceIpuInit </A><BR>
+</TD><TD> </TD>
+<TD>IPUおよびIPUライブラリの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuIsBusy>sceIpuIsBusy </A><BR>
+</TD><TD> </TD>
+<TD>IPUの状態検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuIsError>sceIpuIsError </A><BR>
+</TD><TD> </TD>
+<TD>IPUの状態検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuPACK>sceIpuPACK </A><BR>
+</TD><TD> </TD>
+<TD>PACKコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuReset>sceIpuReset </A><BR>
+</TD><TD> </TD>
+<TD>IPUのリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuRestartDMA>sceIpuRestartDMA </A><BR>
+</TD><TD> </TD>
+<TD>IPU関連DMAの再開</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuSETIQ>sceIpuSETIQ </A><BR>
+</TD><TD> </TD>
+<TD>SETIQコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuSETTH>sceIpuSETTH </A><BR>
+</TD><TD> </TD>
+<TD>SETTHコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuSETVQ>sceIpuSETVQ </A><BR>
+</TD><TD> </TD>
+<TD>SETVQコマンドの実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuStopDMA>sceIpuStopDMA </A><BR>
+</TD><TD> </TD>
+<TD>IPU関連DMAの停止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuSync>sceIpuSync </A><BR>
+</TD><TD> </TD>
+<TD>IPUの処理との同期</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIpuVDEC>sceIpuVDEC </A><BR>
+</TD><TD> </TD>
+<TD>VDECコマンドの実行</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceIpuDmaEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuDmaEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPU関連DMA停止時の状態
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+    u_int <I>d4madr</I>;
+    u_int <I>d4qwc</I>;
+    u_int <I>d3madr</I>;
+    u_int <I>d3qwc</I>;
+    u_int <I>ipubp</I>;
+    u_int <I>ipuctrl</I>;
+} <B>sceIpuDmaEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d4madr</I>		toIPUチャネルの転送アドレス（D4_MADRレジスタの値）
+<I>d4qwc</I>		toIPUチャネルの転送データサイズ（D4_QWCレジスタの値）
+<I>d3madr</I>		fromIPUチャネルの転送アドレス（D3_MADRレジスタの値）
+<I>d3qwc</I>		fromIPUチャネルの転送データサイズ（D3_QWCレジスタの値）
+<I>ipubp</I>		ビットストリーム位置（IPU_BPレジスタの値）
+<I>ipuctrl</I>		IPUのステータス（IPU_CTRLレジスタの値）
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceIpuStopDMA() を用いてIPU関連のDMA転送を停止する際に、DMAC およびIPU の状態を保存しておくための構造体です。 <BR>
+    sceIpuRestartDMA()を用いて復帰・再開することができます。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceIpuBCLR>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuBCLR
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        BCLRコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuBCLR</B>(
+	int <I>bp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>bp</I>	最初の 128 bit のうち復号を開始するビット位置
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    BCLR コマンドを実行して入力FIFOをクリアします。 <BR>
+    この関数を呼び出す前に、入力FIFOへのDMA(toIPU:ch-4)を停止しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuBDEC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuBDEC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        BDECコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuBDEC</B>(
+	int <I>mbi</I>,
+	int <I>dcr</I>,
+	int <I>dt</I>,
+	int <I>qsc</I>,
+	int <I>fb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mbi</I>	Macroblock Intra
+	    SCE_IPU_BDEC_NONINTRA(0) : 非イントラマクロブロック
+	    SCE_IPU_BDEC_INTRA(1)    : イントラマクロブロック
+<I>dcr</I>	DC Reset
+	    SCE_IPU_BDEC_NODCRESET(0): DC予測値をリセットしない
+	    SCE_IPU_BDEC_DCRESET(1)  : DC予測値をリセットする
+<I>dt</I>	DCT Type
+	    SCE_IPU_BDEC_FRAMEDCT(0) : frame DCT
+	    SCE_IPU_BDEC_FIELDDCT(1) : field DCT
+<I>qsc</I>	Quantiser Step Code
+<I>fb</I>	Forward Bit
+        
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    BDEC コマンドを実行してブロック復号を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuCSC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuCSC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CSCコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuCSC</B>(
+	int <I>ofm</I>,
+	int <I>dte</I>,
+	int <I>mbc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ofm</I> 	Output Format
+	    SCE_IPU_CSC_RGB32(0)    : RGB32
+	    SCE_IPU_CSC_RGB16(1)    : RGB16
+<I>dte	</I>Dither Enable
+	    SCE_IPU_CSC_NODITHER(0) : ディザなし
+	    SCE_IPU_CSC_DITHER(1)   : ディザあり
+	    (ofm = RGB16 のときのみ有効)
+<I>mbc</I>	Macroblock Count 変換するマクロブロック数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CSC コマンドを実行して色空間の変換を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuFDEC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuFDEC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        FDECコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuFDEC</B>(
+	int <I>fb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fb</I>	Forward Bit
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    FDEC コマンドを実行して固定長データを復号します。 <BR>
+    復号結果は sceIpuGetFVdecResult() で取得することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuGetFVdecResult>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuGetFVdecResult
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        FDEC/VDECコマンドの実行結果取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceIpuGetFVdecResult</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前の FDEC コマンドまたは VDEC コマンドで復号されたデータ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に実行された FDEC コマンドまたは VDEC コマンドの実行結果を読み出します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuIDEC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuIDEC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IDECコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuIDEC</B>(
+	int <I>ofm</I>, 
+	int <I>dte</I>,
+	int <I>sgn</I>,
+	int <I>dtd</I>,
+	int <I>qsc</I>,
+	int <I>fb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ofm</I>	Output Format
+	    SCE_IPU_IDEC_RGB32(0)      : RGB32
+	    SCE_IPU_IDEC_RGB16(1)      : RGB16
+<I>dte</I>	Dither Enable
+	    SCE_IPU_IDEC_NODITHER(0)   : ディザなし
+	    SCE_IPU_IDEC_DITHER(1)     : ディザあり
+	    (ofm = RGB16 のときのみ有効)
+<I>sgn</I>	Pseudo Sign Offset
+	    SCE_IPU_IDEC_NOOFFSET(0)   : offset なし
+	    SCE_IPU_IDEC_OFFSET(1)     : offset -128
+<I>dtd</I>	DT Decode
+	    SCE_IPU_IDEC_NODTDECODE(0) : Dct Type をデコードしない
+	    SCE_IPU_IDEC_DTDECODE(1)   : Dct Type をデコードする
+<I>qsc </I>	Quantizer Step Code
+<I>fb</I>	Forward Bit
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IDEC コマンドを実行してイントラ復号を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPUおよびIPUライブラリの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuInit</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPU をリセットし、IPU_in_FIFOをクリアします。 <BR>
+    IPU ライブラリを初期化します。  <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuIsBusy>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuIsBusy
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPUの状態検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceIpuIsBusy</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0 : 停止中 <BR>
+    その他 : 動作中 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPU が動作中かどうかを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuIsError>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuIsError
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPUの状態検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceIpuIsError</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0 : エラーなし <BR>
+    その他 : エラーあり <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPU の処理途中でエラーが発生したかどうかを返します。 <BR>
+    この値は IPU コマンドを実行するたびに自動的にクリアされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuPACK>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuPACK
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PACKコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuPACK</B>(
+	int <I>ofm</I>,
+	int <I>dte</I>,
+	int <I>mbc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ofm</I>	Output Format
+	    SCE_IPU_PACK_INDX4(0)    : INDX4
+	    SCE_IPU_PACK_RGB16(1)    : RGB16
+<I>dte</I> 	Dither Enable
+	    SCE_IPU_PACK_NODITHER(0) : ディザなし
+	    SCE_IPU_PACK_DITHER(1)   : ディザあり
+<I>mbc</I>	Macroblock Count 変換するマクロブロック数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PACK コマンドを実行してフォーマット変換を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPUのリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuReset</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPU をリセットします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuRestartDMA>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuRestartDMA
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPU関連DMAの再開
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuRestartDMA</B>(
+	sceIpuDmaEnv *<I>env</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>env</I>	DMA および IPU の状態を保存した構造体変数のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    保存された DMA および IPU の状態に従って、toIPU(ch-4) およびfromIPU(ch-3) の DMA を再開します。 <BR>
+        </BLOCKQUOTE>
+<BR>
+</blockquote>
+<A name=sceIpuSETIQ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuSETIQ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SETIQコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuSETIQ</B>(
+	int <I>iqm</I>,
+	int <I>fb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>iqm</I>	Intra IQ Matrix
+	    SCE_IPU_SETIQ_INTRA(0)    : イントラ量子化マトリクス
+	    SCE_IPU_SETIQ_NONINTRA(1) : 非イントラ量子化マトリクス
+<I>fb</I>	Forward Bit
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SETIQ コマンドを実行して IQ テーブルを設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuSETTH>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuSETTH
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SETTHコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuSETTH</B>(
+	int <I>th1</I>,
+	int <I>th0</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>th1</I>	半透明スレショルド
+<I>th0</I>	透明スレショルド
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SETTH コマンドを実行してスレショルド値を設定します。 <BR>
+    このスレショルド値は CSC コマンドで色変換を行う際に使用されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuSETVQ>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuSETVQ
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SETVQコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuSETVQ</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    SETVQ コマンドを実行して VQCLUT テーブルを設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuStopDMA>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuStopDMA
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPU関連DMAの停止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuStopDMA</B>(
+	sceIpuDmaEnv *<I>env</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>env</I>	内部状態を保存する構造体変数へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    toIPU(ch-4) および fromIPU(ch-3) の DMA を安全に停止し、これらの DMAの状態および IPU の内部状態を保存します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuSync>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuSync
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IPUの処理との同期
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceIpuSync</B>(
+	int <I>mode</I>,
+	unsigned short <I>timeout</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>
+    0: IPU が動作中である間ブロックします。
+    1: 即座に終了し、そのときのステータスを返します。
+       これは、sceIpuIsBusy() と同じ動作となります。
+<I>timeout</I>
+    mode = 0 のときのタイムアウト値を指定します。
+    指定する値の単位は Horizontal line カウントです。
+    timeout = 0: ライブラリでデフォルトのタイムアウト値を使用します。
+    timeout &gt; 0: 指定される値をタイムアウト値として使用します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    mode = 0 のとき <BR>
+        0 以上の値: 正常終了 <BR>
+        負の値:     異常終了(タイムアウト発生) <BR>
+<BR>
+    mode = 1 のとき <BR>
+        0: IPU が動作中でない <BR>
+        正の値: IPU が動作中 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPU が動作中かどうかを判断し、IPU の動作終了を待ちます。 <BR>
+    IPU が動作中かどうかを判断し、その状態を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIpuVDEC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIpuVDEC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VDECコマンドの実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceIpuVDEC</B>(
+	int <I>tbl</I>,
+	int <I>fb</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tbl</I>	VLC table
+	    SCE_IPU_VDEC_MBAI(0)      : Macroblock Address Increment
+	    SCE_IPU_VDEC_MBTYPE(1)    : Macroblock Type
+	    SCE_IPU_VDEC_MOTIONCODE(2): Motion Code
+	    SCE_IPU_VDEC_DMVECTOR(3)  : DMVector
+<I>fb</I>	Forward Bit
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VDEC コマンドを実行して、tbl で指定されたシンボルを復号します。 <BR>
+    復号結果は sceIpuGetVdecResult() で取得することができます。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

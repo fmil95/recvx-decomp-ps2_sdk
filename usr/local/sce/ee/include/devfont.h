@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -34,7 +34,7 @@ extern "C" {
 #endif
 
 // コンソールライブラリを初期化
-void sceDevConsInit(void);
+void sceDevConsInit();
 
 // コンソールをオープン。（１つしかない。サイズの最大は80 x 64キャラクタ）
 int sceDevConsOpen(u_int gs_x, u_int gs_y, u_int chr_w, u_int chr_h);

@@ -1,0 +1,80 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                   All Rights Reserved
+                                                             Aug. 2000
+======================================================================
+
+ee-gcc 関連ツールのメイクとインストール
+----------------------------------------------------------------------
+通常、以下の作業を行う必要はありません。OS のバージョンなどによって、
+sce/ee/gcc 以下のツール群が正常に動作しない場合のみ、以下の手順に従って
+行ってください。
+
+root 権限にて以下の作業を行います。
+
+1. ソースを展開します。
+
+	# cd /usr/local/sce/ee/gcc
+	# mv src/src.tar.gz .
+	# rmdir src
+	# tar zxvf src.tar.gz 
+
+	ここで指す src.tar.gz は最新パッケージに含まれているものです。
+
+2. パッチをあてます。
+
+	# cd /usr/local/sce/ee/gcc
+        # patch -p0 < sce-patch/patch
+
+
+3. メイクします。
+
+	# cd /usr/local/sce/ee/gcc
+	# mkdir build
+	# cd build
+	# ../config.sh
+	# make all
+	# make install
+	# cd gdb
+	# make install-gdbtk
+
+注意：
+コマンドのサーチパスにカレントディレクトリ '.' が含まれていると、メイク
+に失敗します。メイクを始める前に、環境変数 PATH に'.'が含まれていないこ
+とを確認してください。
+また、メイクするためには、ハードディスクに少なくとも約 400MB の空き容量
+が必要です。
+
+----------------------------------------------------------------------
+
+iop-gcc 関連ツールのメイクとインストール
+----------------------------------------------------------------------
+通常、以下の作業を行う必要はありません。OS のバージョンなどによって、
+sce/iop/gcc 以下のツール群が正常に動作しない場合のみ、以下の手順に従って
+行ってください。
+
+root 権限にて以下の作業を行います。
+
+1. ファイルを展開します。
+
+        # cd /usr/local/sce/iop/gcc/src
+        # tar xvf iop-gcc.src.tar
+
+        ここで指す iop-gcc.src.tar は 最新パッケージに
+        含まれているものです。
+
+2. メイクします。(シェルスクリプトを実行)
+
+        # sh make-iop-gcc.sh
+
+3. ファイル名変更と関係するファイルをコピーします。
+   (シェルスクリプトを実行)
+
+        # sh rename-iop-gcc.sh
+        # sh copy-tools.sh
+
+注意：
+コマンドのサーチパスにカレントディレクトリ '.' が含まれていると、メイク
+に失敗します。メイクを始める前に、環境変数 PATH に'.'が含まれていないこ
+とを確認してください。

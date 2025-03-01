@@ -1,17 +1,15 @@
 This is Info file ./gdb.info, produced by Makeinfo version 1.68 from
 the input file gdb.texinfo.
 
-INFO-DIR-SECTION Programming & development tools.
 START-INFO-DIR-ENTRY
 * Gdb: (gdb).                     The GNU debugger.
 END-INFO-DIR-ENTRY
-
    This file documents the GNU debugger GDB.
 
-   This is the Eighth Edition, March 2000, of `Debugging with GDB: the
-GNU Source-Level Debugger' for GDB Version 5.0-ee-001003-1.
+   This is the Seventh Edition, February 1999, of `Debugging with GDB:
+the GNU Source-Level Debugger' for GDB Version 4.17-ee-991111.
 
-   Copyright (C) 1988-2000 Free Software Foundation, Inc.
+   Copyright (C) 1988-1999 Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -27,1485 +25,706 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: gdb.info,  Node: Screen Size,  Next: Numbers,  Prev: History,  Up: Controlling GDB
+File: gdb.info,  Node: Commands For Killing,  Next: Numeric Arguments,  Prev: Commands For Text,  Up: Bindable Readline Commands
 
-Screen size
-===========
+Killing And Yanking
+-------------------
 
-   Certain commands to GDB may produce large amounts of information
-output to the screen.  To help you read all of it, GDB pauses and asks
-you for input at the end of each page of output.  Type <RET> when you
-want to continue the output, or `q' to discard the remaining output.
-Also, the screen width setting determines when to wrap lines of output.
-Depending on what is being printed, GDB tries to break the line at a
-readable place, rather than simply letting it overflow onto the
-following line.
+`kill-line (C-k)'
+     Kill the text from the current cursor position to the end of the
+     line.
 
-   Normally GDB knows the size of the screen from the terminal driver
-software.  For example, on Unix GDB uses the termcap data base together
-with the value of the `TERM' environment variable and the `stty rows'
-and `stty cols' settings.  If this is not correct, you can override it
-with the `set height' and `set width' commands:
+`backward-kill-line (C-x Rubout)'
+     Kill backward to the beginning of the line.
 
-`set height LPP'
-`show height'
-`set width CPL'
-`show width'
-     These `set' commands specify a screen height of LPP lines and a
-     screen width of CPL characters.  The associated `show' commands
-     display the current settings.
+`unix-line-discard (C-u)'
+     Kill backward from the cursor to the beginning of the current line.
+     The killed text is saved on the kill-ring.
 
-     If you specify a height of zero lines, GDB does not pause during
-     output no matter how long the output is.  This is useful if output
-     is to a file or to an editor buffer.
+`kill-whole-line ()'
+     Kill all characters on the current line, no matter where the
+     cursor is.  By default, this is unbound.
 
-     Likewise, you can specify `set width 0' to prevent GDB from
-     wrapping its output.
+`kill-word (M-d)'
+     Kill from the cursor to the end of the current word, or if between
+     words, to the end of the next word.  Word boundaries are the same
+     as `forward-word'.
 
-
-File: gdb.info,  Node: Numbers,  Next: Messages/Warnings,  Prev: Screen Size,  Up: Controlling GDB
+`backward-kill-word (M-DEL)'
+     Kill the word behind the cursor.  Word boundaries are the same as
+     `backward-word'.
 
-Numbers
-=======
+`unix-word-rubout (C-w)'
+     Kill the word behind the cursor, using white space as a word
+     boundary.  The killed text is saved on the kill-ring.
 
-   You can always enter numbers in octal, decimal, or hexadecimal in
-GDB by the usual conventions: octal numbers begin with `0', decimal
-numbers end with `.', and hexadecimal numbers begin with `0x'.  Numbers
-that begin with none of these are, by default, entered in base 10;
-likewise, the default display for numbers--when no particular format is
-specified--is base 10.  You can change the default base for both input
-and output with the `set radix' command.
+`delete-horizontal-space ()'
+     Delete all spaces and tabs around point.  By default, this is
+     unbound.
 
-`set input-radix BASE'
-     Set the default base for numeric input.  Supported choices for
-     BASE are decimal 8, 10, or 16.  BASE must itself be specified
-     either unambiguously or using the current default radix; for
-     example, any of
+`kill-region ()'
+     Kill the text between the point and the *mark* (saved cursor
+     position).  This text is referred to as the REGION.  By default,
+     this command is unbound.
 
-          set radix 012
-          set radix 10.
-          set radix 0xa
+`copy-region-as-kill ()'
+     Copy the text in the region to the kill buffer, so it can be yanked
+     right away.  By default, this command is unbound.
 
-     sets the base to decimal.  On the other hand, `set radix 10'
-     leaves the radix unchanged no matter what it was.
+`copy-backward-word ()'
+     Copy the word before point to the kill buffer.  The word
+     boundaries are the same as `backward-word'.  By default, this
+     command is unbound.
 
-`set output-radix BASE'
-     Set the default base for numeric display.  Supported choices for
-     BASE are decimal 8, 10, or 16.  BASE must itself be specified
-     either unambiguously or using the current default radix.
+`copy-forward-word ()'
+     Copy the word following point to the kill buffer.  The word
+     boundaries are the same as `forward-word'.  By default, this
+     command is unbound.
 
-`show input-radix'
-     Display the current default base for numeric input.
+`yank (C-y)'
+     Yank the top of the kill ring into the buffer at the current
+     cursor position.
 
-`show output-radix'
-     Display the current default base for numeric display.
+`yank-pop (M-y)'
+     Rotate the kill-ring, and yank the new top.  You can only do this
+     if the prior command is yank or yank-pop.
 
 
-File: gdb.info,  Node: Messages/Warnings,  Next: Debugging Output,  Prev: Numbers,  Up: Controlling GDB
+File: gdb.info,  Node: Numeric Arguments,  Next: Commands For Completion,  Prev: Commands For Killing,  Up: Bindable Readline Commands
 
-Optional warnings and messages
-==============================
+Specifying Numeric Arguments
+----------------------------
 
-   By default, GDB is silent about its inner workings.  If you are
-running on a slow machine, you may want to use the `set verbose'
-command.  This makes GDB tell you when it does a lengthy internal
-operation, so you will not think it has crashed.
+`digit-argument (M-0, M-1, ... M--)'
+     Add this digit to the argument already accumulating, or start a new
+     argument.  <M-> starts a negative argument.
 
-   Currently, the messages controlled by `set verbose' are those which
-announce that the symbol table for a source file is being read; see
-`symbol-file' in *Note Commands to specify files: Files.
-
-`set verbose on'
-     Enables GDB output of certain informational messages.
-
-`set verbose off'
-     Disables GDB output of certain informational messages.
-
-`show verbose'
-     Displays whether `set verbose' is on or off.
-
-   By default, if GDB encounters bugs in the symbol table of an object
-file, it is silent; but if you are debugging a compiler, you may find
-this information useful (*note Errors reading symbol files: Symbol
-Errors.).
-
-`set complaints LIMIT'
-     Permits GDB to output LIMIT complaints about each type of unusual
-     symbols before becoming silent about the problem.  Set LIMIT to
-     zero to suppress all complaints; set it to a large number to
-     prevent complaints from being suppressed.
-
-`show complaints'
-     Displays how many symbol complaints GDB is permitted to produce.
-
-   By default, GDB is cautious, and asks what sometimes seems to be a
-lot of stupid questions to confirm certain commands.  For example, if
-you try to run a program which is already running:
-
-     (gdb) run
-     The program being debugged has been started already.
-     Start it from the beginning? (y or n)
-
-   If you are willing to unflinchingly face the consequences of your own
-commands, you can disable this "feature":
-
-`set confirm off'
-     Disables confirmation requests.
-
-`set confirm on'
-     Enables confirmation requests (the default).
-
-`show confirm'
-     Displays state of confirmation requests.
+`universal-argument ()'
+     This is another way to specify an argument.  If this command is
+     followed by one or more digits, optionally with a leading minus
+     sign, those digits define the argument.  If the command is
+     followed by digits, executing `universal-argument' again ends the
+     numeric argument, but is otherwise ignored.  As a special case, if
+     this command is immediately followed by a character that is
+     neither a digit or minus sign, the argument count for the next
+     command is multiplied by four.  The argument count is initially
+     one, so executing this function the first time makes the argument
+     count four, a second time makes the argument count sixteen, and so
+     on.  By default, this is not bound to a key.
 
 
-File: gdb.info,  Node: Debugging Output,  Prev: Messages/Warnings,  Up: Controlling GDB
+File: gdb.info,  Node: Commands For Completion,  Next: Keyboard Macros,  Prev: Numeric Arguments,  Up: Bindable Readline Commands
 
-Optional messages about internal happenings
-===========================================
+Letting Readline Type For You
+-----------------------------
 
-`set debug arch'
-     Turns on or off display of gdbarch debugging info. The default is
-     off
+`complete (TAB)'
+     Attempt to do completion on the text before the cursor.  This is
+     application-specific.  Generally, if you are typing a filename
+     argument, you can do filename completion; if you are typing a
+     command, you can do command completion; if you are typing in a
+     symbol to GDB, you can do symbol name completion; if you are
+     typing in a variable to Bash, you can do variable name completion,
+     and so on.
 
-`show debug arch'
-     Displays the current state of displaying gdbarch debugging info.
+`possible-completions (M-?)'
+     List the possible completions of the text before the cursor.
 
-`set debug event'
-     Turns on or off display of GDB event debugging info. The default
-     is off.
+`insert-completions (M-*)'
+     Insert all completions of the text before point that would have
+     been generated by `possible-completions'.
 
-`show debug event'
-     Displays the current state of displaying GDB event debugging info.
-
-`set debug expression'
-     Turns on or off display of GDB expression debugging info. The
-     default is off.
-
-`show debug expression'
-     Displays the current state of displaying GDB expression debugging
-     info.
-
-`set debug overload'
-     Turns on or off display of GDB C++ overload debugging info. This
-     includes info such as ranking of functions, etc. The default is
-     off.
-
-`show debug overload'
-     Displays the current state of displaying GDB C++ overload
-     debugging info.
-
-`set debug remote'
-     Turns on or off display of reports on all packets sent back and
-     forth across the serial line to the remote machine.  The info is
-     printed on the GDB standard output stream. The default is off.
-
-`show debug remote'
-     Displays the state of display of remote packets.
-
-`set debug serial'
-     Turns on or off display of GDB serial debugging info. The default
-     is off.
-
-`show debug serial'
-     Displays the current state of displaying GDB serial debugging info.
-
-`set debug target'
-     Turns on or off display of GDB target debugging info. This info
-     includes what is going on at the target level of GDB, as it
-     happens. The default is off.
-
-`show debug target'
-     Displays the current state of displaying GDB target debugging info.
-
-`set debug varobj'
-     Turns on or off display of GDB variable object debugging info. The
-     default is off.
-
-`show debug varobj'
-     Displays the current state of displaying GDB variable object
-     debugging info.
+`menu-complete ()'
+     Similar to `complete', but replaces the word to be completed with
+     a single match from the list of possible completions.  Repeated
+     execution of `menu-complete' steps through the list of possible
+     completions, inserting each match in turn.  At the end of the list
+     of completions, the bell is rung and the original text is restored.
+     An argument of N moves N positions forward in the list of matches;
+     a negative argument may be used to move backward through the list.
+     This command is intended to be bound to `TAB', but is unbound by
+     default.
 
 
-File: gdb.info,  Node: Sequences,  Next: Emacs,  Prev: Controlling GDB,  Up: Top
+File: gdb.info,  Node: Keyboard Macros,  Next: Miscellaneous Commands,  Prev: Commands For Completion,  Up: Bindable Readline Commands
 
-Canned Sequences of Commands
-****************************
+Keyboard Macros
+---------------
 
-   Aside from breakpoint commands (*note Breakpoint command lists:
-Break Commands.), GDB provides two ways to store sequences of commands
-for execution as a unit: user-defined commands and command files.
+`start-kbd-macro (C-x ()'
+     Begin saving the characters typed into the current keyboard macro.
+
+`end-kbd-macro (C-x ))'
+     Stop saving the characters typed into the current keyboard macro
+     and save the definition.
+
+`call-last-kbd-macro (C-x e)'
+     Re-execute the last keyboard macro defined, by making the
+     characters in the macro appear as if typed at the keyboard.
+
+
+File: gdb.info,  Node: Miscellaneous Commands,  Prev: Keyboard Macros,  Up: Bindable Readline Commands
+
+Some Miscellaneous Commands
+---------------------------
+
+`re-read-init-file (C-x C-r)'
+     Read in the contents of the inputrc file, and incorporate any
+     bindings or variable assignments found there.
+
+`abort (C-g)'
+     Abort the current editing command and ring the terminal's bell
+     (subject to the setting of `bell-style').
+
+`do-uppercase-version (M-a, M-b, M-X, ...)'
+     If the metafied character X is lowercase, run the command that is
+     bound to the corresponding uppercase character.
+
+`prefix-meta (ESC)'
+     Make the next character typed be metafied.  This is for keyboards
+     without a meta key.  Typing `ESC f' is equivalent to typing `M-f'.
+
+`undo (C-_, C-x C-u)'
+     Incremental undo, separately remembered for each line.
+
+`revert-line (M-r)'
+     Undo all changes made to this line.  This is like executing the
+     `undo' command enough times to get back to the beginning.
+
+`tilde-expand (M-~)'
+     Perform tilde expansion on the current word.
+
+`set-mark (C-@)'
+     Set the mark to the current point.  If a numeric argument is
+     supplied, the mark is set to that position.
+
+`exchange-point-and-mark (C-x C-x)'
+     Swap the point with the mark.  The current cursor position is set
+     to the saved position, and the old cursor position is saved as the
+     mark.
+
+`character-search (C-])'
+     A character is read and point is moved to the next occurrence of
+     that character.  A negative count searches for previous
+     occurrences.
+
+`character-search-backward (M-C-])'
+     A character is read and point is moved to the previous occurrence
+     of that character.  A negative count searches for subsequent
+     occurrences.
+
+`insert-comment (M-#)'
+     The value of the `comment-begin' variable is inserted at the
+     beginning of the current line, and the line is accepted as if a
+     newline had been typed.
+
+`dump-functions ()'
+     Print all of the functions and their key bindings to the Readline
+     output stream.  If a numeric argument is supplied, the output is
+     formatted in such a way that it can be made part of an INPUTRC
+     file.  This command is unbound by default.
+
+`dump-variables ()'
+     Print all of the settable variables and their values to the
+     Readline output stream.  If a numeric argument is supplied, the
+     output is formatted in such a way that it can be made part of an
+     INPUTRC file.  This command is unbound by default.
+
+`dump-macros ()'
+     Print all of the Readline key sequences bound to macros and the
+     strings they ouput.  If a numeric argument is supplied, the output
+     is formatted in such a way that it can be made part of an INPUTRC
+     file.  This command is unbound by default.
+
+
+File: gdb.info,  Node: Readline vi Mode,  Prev: Bindable Readline Commands,  Up: Command Line Editing
+
+Readline vi Mode
+================
+
+   While the Readline library does not have a full set of `vi' editing
+functions, it does contain enough to allow simple editing of the line.
+The Readline `vi' mode behaves as specified in the POSIX 1003.2
+standard.
+
+   In order to switch interactively between `emacs' and `vi' editing
+modes, use the command M-C-j (toggle-editing-mode).  The Readline
+default is `emacs' mode.
+
+   When you enter a line in `vi' mode, you are already placed in
+`insertion' mode, as if you had typed an `i'.  Pressing <ESC> switches
+you into `command' mode, where you can edit the text of the line with
+the standard `vi' movement keys, move to previous history lines with
+`k' and subsequent lines with `j', and so forth.
+
+
+File: gdb.info,  Node: Using History Interactively,  Next: Installing GDB,  Prev: Command Line Editing,  Up: Top
+
+Using History Interactively
+***************************
+
+   This chapter describes how to use the GNU History Library
+interactively, from a user's standpoint.
 
 * Menu:
 
-* Define::                      User-defined commands
-* Hooks::                       User-defined command hooks
-* Command Files::               Command files
-* Output::                      Commands for controlled output
+* History Interaction::		What it feels like using History as a user.
 
 
-File: gdb.info,  Node: Define,  Next: Hooks,  Up: Sequences
+File: gdb.info,  Node: History Interaction,  Up: Using History Interactively
 
-User-defined commands
-=====================
+History Interaction
+===================
 
-   A "user-defined command" is a sequence of GDB commands to which you
-assign a new name as a command.  This is done with the `define'
-command.  User commands may accept up to 10 arguments separated by
-whitespace.  Arguments are accessed within the user command via
-$ARG0...$ARG9.  A trivial example:
+   The History library provides a history expansion feature similar to
+the history expansion in `csh'.  The following text describes the
+syntax you use to manipulate history information.
 
-     define adder
-       print $arg0 + $arg1 + $arg2
+   History expansion takes two parts.  In the first part, determine
+which line from the previous history will be used for substitution.
+This line is called the "event".  In the second part, select portions
+of that line for inclusion into the current line.  These portions are
+called "words".  GDB breaks the line into words in the same way that
+the Bash shell does, so that several English (or Unix) words surrounded
+by quotes are considered one word.
 
-To execute the command use:
+* Menu:
 
-     adder 1 2 3
-
-This defines the command `adder', which prints the sum of its three
-arguments.  Note the arguments are text substitutions, so they may
-reference variables, use complex expressions, or even perform inferior
-functions calls.
-
-`define COMMANDNAME'
-     Define a command named COMMANDNAME.  If there is already a command
-     by that name, you are asked to confirm that you want to redefine
-     it.
-
-     The definition of the command is made up of other GDB command
-     lines, which are given following the `define' command.  The end of
-     these commands is marked by a line containing `end'.
-
-`if'
-     Takes a single argument, which is an expression to evaluate.  It
-     is followed by a series of commands that are executed only if the
-     expression is true (nonzero).  There can then optionally be a line
-     `else', followed by a series of commands that are only executed if
-     the expression was false.  The end of the list is marked by a line
-     containing `end'.
-
-`while'
-     The syntax is similar to `if': the command takes a single argument,
-     which is an expression to evaluate, and must be followed by the
-     commands to execute, one per line, terminated by an `end'.  The
-     commands are executed repeatedly as long as the expression
-     evaluates to true.
-
-`document COMMANDNAME'
-     Document the user-defined command COMMANDNAME, so that it can be
-     accessed by `help'.  The command COMMANDNAME must already be
-     defined.  This command reads lines of documentation just as
-     `define' reads the lines of the command definition, ending with
-     `end'.  After the `document' command is finished, `help' on command
-     COMMANDNAME displays the documentation you have written.
-
-     You may use the `document' command again to change the
-     documentation of a command.  Redefining the command with `define'
-     does not change the documentation.
-
-`help user-defined'
-     List all user-defined commands, with the first line of the
-     documentation (if any) for each.
-
-`show user'
-`show user COMMANDNAME'
-     Display the GDB commands used to define COMMANDNAME (but not its
-     documentation).  If no COMMANDNAME is given, display the
-     definitions for all user-defined commands.
-
-   When user-defined commands are executed, the commands of the
-definition are not printed.  An error in any command stops execution of
-the user-defined command.
-
-   If used interactively, commands that would ask for confirmation
-proceed without asking when used inside a user-defined command.  Many
-GDB commands that normally print messages to say what they are doing
-omit the messages when used in a user-defined command.
+* Event Designators::	How to specify which history line to use.
+* Word Designators::	Specifying which words are of interest.
+* Modifiers::		Modifying the results of susbstitution.
 
 
-File: gdb.info,  Node: Hooks,  Next: Command Files,  Prev: Define,  Up: Sequences
+File: gdb.info,  Node: Event Designators,  Next: Word Designators,  Up: History Interaction
 
-User-defined command hooks
-==========================
+Event Designators
+-----------------
 
-   You may define *hooks*, which are a special kind of user-defined
-command.  Whenever you run the command `foo', if the user-defined
-command `hook-foo' exists, it is executed (with no arguments) before
-that command.
+   An "event designator" is a reference to a command line entry in the
+history list.
 
-   In addition, a pseudo-command, `stop' exists.  Defining
-(`hook-stop') makes the associated commands execute every time
-execution stops in your program: before breakpoint commands are run,
-displays are printed, or the stack frame is printed.
+`!'
+     Start a history subsititution, except when followed by a space,
+     tab, or the end of the line... <=> or <(>.
 
-   For example, to ignore `SIGALRM' signals while single-stepping, but
-treat them normally during normal execution, you could define:
+`!!'
+     Refer to the previous command.  This is a synonym for `!-1'.
 
-     define hook-stop
-     handle SIGALRM nopass
-     end
-     
-     define hook-run
-     handle SIGALRM pass
-     end
-     
-     define hook-continue
-     handle SIGLARM pass
-     end
+`!n'
+     Refer to command line N.
 
-   You can define a hook for any single-word command in GDB, but not
-for command aliases; you should define a hook for the basic command
-name, e.g.  `backtrace' rather than `bt'.  If an error occurs during
-the execution of your hook, execution of GDB commands stops and GDB
-issues a prompt (before the command that you actually typed had a
-chance to run).
+`!-n'
+     Refer to the command line N lines back.
 
-   If you try to define a hook which does not match any known command,
-you get a warning from the `define' command.
+`!string'
+     Refer to the most recent command starting with STRING.
+
+`!?string'[`?']
+     Refer to the most recent command containing STRING.
 
 
-File: gdb.info,  Node: Command Files,  Next: Output,  Prev: Hooks,  Up: Sequences
+File: gdb.info,  Node: Word Designators,  Next: Modifiers,  Prev: Event Designators,  Up: History Interaction
 
-Command files
-=============
+Word Designators
+----------------
 
-   A command file for GDB is a file of lines that are GDB commands.
-Comments (lines starting with `#') may also be included.  An empty line
-in a command file does nothing; it does not mean to repeat the last
-command, as it would from the terminal.
+   A <:> separates the event designator from the "word designator".  It
+can be omitted if the word designator begins with a <^>, <$>, <*> or
+<%>.  Words are numbered from the beginning of the line, with the first
+word being denoted by a 0 (zero).
 
-   When you start GDB, it automatically executes commands from its
-"init files".  These are files named `.gdbinit' on Unix and `gdb.ini'
-on DOS/Windows.  During startup, GDB does the following:
+`0 (zero)'
+     The zero'th word.  For many applications, this is the command word.
 
-  1. Reads the init file (if any) in your home directory(1).
+`n'
+     The N'th word.
 
-  2. Processes command line options and operands.
+`^'
+     The first argument.  that is, word 1.
 
-  3. Reads the init file (if any) in the current working directory.
+`$'
+     The last argument.
 
-  4. Reads command files specified by the `-x' option.
+`%'
+     The word matched by the most recent `?string?' search.
 
-   The init file in your home directory can set options (such as `set
-complaints') that affect subsequent processing of command line options
-and operands.  Init files are not executed if you use the `-nx' option
-(*note Choosing modes: Mode Options.).
+`x-y'
+     A range of words; `-Y' Abbreviates `0-Y'.
 
-   On some configurations of GDB, the init file is known by a different
-name (these are typically environments where a specialized form of GDB
-may need to coexist with other forms, hence a different name for the
-specialized version's init file).  These are the environments with
-special init file names:
+`*'
+     All of the words, excepting the zero'th.  This is a synonym for
+     `1-$'.  It is not an error to use <*> if there is just one word in
+     the event.  The empty string is returned in that case.
 
-   * VxWorks (Wind River Systems real-time OS): `.vxgdbinit'
+
+File: gdb.info,  Node: Modifiers,  Prev: Word Designators,  Up: History Interaction
 
-   * OS68K (Enea Data Systems real-time OS): `.os68gdbinit'
+Modifiers
+---------
 
-   * ES-1800 (Ericsson Telecom AB M68000 emulator): `.esgdbinit'
+   After the optional word designator, you can add a sequence of one or
+more of the following "modifiers", each preceded by a <:>.
 
-   You can also request the execution of a command file with the
-`source' command:
+`#'
+     The entire command line typed so far.  This means the current
+     command, not the previous command.
 
-`source FILENAME'
-     Execute the command file FILENAME.
+`h'
+     Remove a trailing pathname component, leaving only the head.
 
-   The lines in a command file are executed sequentially.  They are not
-printed as they are executed.  An error in any command terminates
-execution of the command file.
+`r'
+     Remove a trailing suffix of the form `.'SUFFIX, leaving the
+     basename.
 
-   Commands that would ask for confirmation if used interactively
-proceed without asking when used in a command file.  Many GDB commands
-that normally print messages to say what they are doing omit the
-messages when called from command files.
+`e'
+     Remove all but the suffix.
+
+`t'
+     Remove all leading  pathname  components, leaving the tail.
+
+`p'
+     Print the new command but do not execute it.
+
+
+File: gdb.info,  Node: Formatting Documentation,  Next: Command Line Editing,  Prev: GDB Bugs,  Up: Top
+
+Formatting Documentation
+************************
+
+   The GDB 4 release includes an already-formatted reference card, ready
+for printing with PostScript or Ghostscript, in the `gdb' subdirectory
+of the main source directory(1).  If you can use PostScript or
+Ghostscript with your printer, you can print the reference card
+immediately with `refcard.ps'.
+
+   The release also includes the source for the reference card.  You
+can format it, using TeX, by typing:
+
+     make refcard.dvi
+
+   The GDB reference card is designed to print in "landscape" mode on
+US "letter" size paper; that is, on a sheet 11 inches wide by 8.5 inches
+high.  You will need to specify this form of printing as an option to
+your DVI output program.
+
+   All the documentation for GDB comes as part of the machine-readable
+distribution.  The documentation is written in Texinfo format, which is
+a documentation system that uses a single source file to produce both
+on-line information and a printed manual.  You can use one of the Info
+formatting commands to create the on-line version of the documentation
+and TeX (or `texi2roff') to typeset the printed version.
+
+   GDB includes an already formatted copy of the on-line Info version
+of this manual in the `gdb' subdirectory.  The main Info file is
+`gdb-4.17-ee-991111/gdb/gdb.info', and it refers to subordinate files
+matching `gdb.info*' in the same directory.  If necessary, you can
+print out these files, or read them with any editor; but they are
+easier to read using the `info' subsystem in GNU Emacs or the
+standalone `info' program, available as part of the GNU Texinfo
+distribution.
+
+   If you want to format these Info files yourself, you need one of the
+Info formatting programs, such as `texinfo-format-buffer' or `makeinfo'.
+
+   If you have `makeinfo' installed, and are in the top level GDB
+source directory (`gdb-4.17-ee-991111', in the case of version
+4.17-ee-991111), you can make the Info file by typing:
+
+     cd gdb
+     make gdb.info
+
+   If you want to typeset and print copies of this manual, you need TeX,
+a program to print its DVI output files, and `texinfo.tex', the Texinfo
+definitions file.
+
+   TeX is a typesetting program; it does not print files directly, but
+produces output files called DVI files.  To print a typeset document,
+you need a program to print DVI files.  If your system has TeX
+installed, chances are it has such a program.  The precise command to
+use depends on your system; `lpr -d' is common; another (for PostScript
+devices) is `dvips'.  The DVI print command may require a file name
+without any extension or a `.dvi' extension.
+
+   TeX also requires a macro definitions file called `texinfo.tex'.
+This file tells TeX how to typeset a document written in Texinfo
+format.  On its own, TeX cannot either read or typeset a Texinfo file.
+`texinfo.tex' is distributed with GDB and is located in the
+`gdb-VERSION-NUMBER/texinfo' directory.
+
+   If you have TeX and a DVI printer program installed, you can typeset
+and print this manual.  First switch to the the `gdb' subdirectory of
+the main source directory (for example, to `gdb-4.17-ee-991111/gdb')
+and type:
+
+     make gdb.dvi
+
+   Then give `gdb.dvi' to your DVI printing program.
 
    ---------- Footnotes ----------
 
-   (1) On DOS/Windows systems, the home directory is the one pointed to
-by the `HOME' environment variable.
+   (1) In `gdb-4.17-ee-991111/gdb/refcard.ps' of the version
+4.17-ee-991111 release.
 
 
-File: gdb.info,  Node: Output,  Prev: Command Files,  Up: Sequences
+File: gdb.info,  Node: Installing GDB,  Next: Index,  Prev: Using History Interactively,  Up: Top
 
-Commands for controlled output
-==============================
+Installing GDB
+**************
 
-   During the execution of a command file or a user-defined command,
-normal GDB output is suppressed; the only output that appears is what is
-explicitly printed by the commands in the definition.  This section
-describes three commands useful for generating exactly the output you
-want.
+   GDB comes with a `configure' script that automates the process of
+preparing GDB for installation; you can then use `make' to build the
+`gdb' program.
 
-`echo TEXT'
-     Print TEXT.  Nonprinting characters can be included in TEXT using
-     C escape sequences, such as `\n' to print a newline.  *No newline
-     is printed unless you specify one.* In addition to the standard C
-     escape sequences, a backslash followed by a space stands for a
-     space.  This is useful for displaying a string with spaces at the
-     beginning or the end, since leading and trailing spaces are
-     otherwise trimmed from all arguments.  To print ` and foo = ', use
-     the command `echo \ and foo = \ '.
+   The GDB distribution includes all the source code you need for GDB
+in a single directory, whose name is usually composed by appending the
+version number to `gdb'.
 
-     A backslash at the end of TEXT can be used, as in C, to continue
-     the command onto subsequent lines.  For example,
+   For example, the GDB version 4.17-ee-991111 distribution is in the
+`gdb-4.17-ee-991111' directory.  That directory contains:
 
-          echo This is some text\n\
-          which is continued\n\
-          onto several lines.\n
+`gdb-4.17-ee-991111/configure (and supporting files)'
+     script for configuring GDB and all its supporting libraries
 
-     produces the same output as
+`gdb-4.17-ee-991111/gdb'
+     the source specific to GDB itself
 
-          echo This is some text\n
-          echo which is continued\n
-          echo onto several lines.\n
+`gdb-4.17-ee-991111/bfd'
+     source for the Binary File Descriptor library
 
-`output EXPRESSION'
-     Print the value of EXPRESSION and nothing but that value: no
-     newlines, no `$NN = '.  The value is not entered in the value
-     history either.  *Note Expressions: Expressions, for more
-     information on expressions.
+`gdb-4.17-ee-991111/include'
+     GNU include files
 
-`output/FMT EXPRESSION'
-     Print the value of EXPRESSION in format FMT.  You can use the same
-     formats as for `print'.  *Note Output formats: Output Formats, for
-     more information.
+`gdb-4.17-ee-991111/libiberty'
+     source for the `-liberty' free software library
 
-`printf STRING, EXPRESSIONS...'
-     Print the values of the EXPRESSIONS under the control of STRING.
-     The EXPRESSIONS are separated by commas and may be either numbers
-     or pointers.  Their values are printed as specified by STRING,
-     exactly as if your program were to execute the C subroutine
+`gdb-4.17-ee-991111/opcodes'
+     source for the library of opcode tables and disassemblers
 
-          printf (STRING, EXPRESSIONS...);
+`gdb-4.17-ee-991111/readline'
+     source for the GNU command-line interface
 
-     For example, you can print two values in hex like this:
+`gdb-4.17-ee-991111/glob'
+     source for the GNU filename pattern-matching subroutine
 
-          printf "foo, bar-foo = 0x%x, 0x%x\n", foo, bar-foo
+`gdb-4.17-ee-991111/mmalloc'
+     source for the GNU memory-mapped malloc package
 
-     The only backslash-escape sequences that you can use in the format
-     string are the simple ones that consist of backslash followed by a
-     letter.
+   The simplest way to configure and build GDB is to run `configure'
+from the `gdb-VERSION-NUMBER' source directory, which in this example
+is the `gdb-4.17-ee-991111' directory.
 
-
-File: gdb.info,  Node: Emacs,  Next: Annotations,  Prev: Sequences,  Up: Top
+   First switch to the `gdb-VERSION-NUMBER' source directory if you are
+not already in it; then run `configure'.  Pass the identifier for the
+platform on which GDB will run as an argument.
 
-Using GDB under GNU Emacs
-*************************
+   For example:
 
-   A special interface allows you to use GNU Emacs to view (and edit)
-the source files for the program you are debugging with GDB.
+     cd gdb-4.17-ee-991111
+     ./configure HOST
+     make
 
-   To use this interface, use the command `M-x gdb' in Emacs.  Give the
-executable file you want to debug as an argument.  This command starts
-GDB as a subprocess of Emacs, with input and output through a newly
-created Emacs buffer.
+where HOST is an identifier such as `sun4' or `decstation', that
+identifies the platform where GDB will run.  (You can often leave off
+HOST; `configure' tries to guess the correct value by examining your
+system.)
 
-   Using GDB under Emacs is just like using GDB normally except for two
-things:
+   Running `configure HOST' and then running `make' builds the `bfd',
+`readline', `mmalloc', and `libiberty' libraries, then `gdb' itself.
+The configured source files, and the binaries, are left in the
+corresponding source directories.
 
-   * All "terminal" input and output goes through the Emacs buffer.
+   `configure' is a Bourne-shell (`/bin/sh') script; if your system
+does not recognize this automatically when you run a different shell,
+you may need to run `sh' on it explicitly:
 
-   This applies both to GDB commands and their output, and to the input
-and output done by the program you are debugging.
+     sh configure HOST
 
-   This is useful because it means that you can copy the text of
-previous commands and input them again; you can even use parts of the
-output in this way.
+   If you run `configure' from a directory that contains source
+directories for multiple libraries or programs, such as the
+`gdb-4.17-ee-991111' source directory for version 4.17-ee-991111,
+`configure' creates configuration files for every directory level
+underneath (unless you tell it not to, with the `--norecursion' option).
 
-   All the facilities of Emacs' Shell mode are available for interacting
-with your program.  In particular, you can send signals the usual
-way--for example, `C-c C-c' for an interrupt, `C-c C-z' for a stop.
+   You can run the `configure' script from any of the subordinate
+directories in the GDB distribution if you only want to configure that
+subdirectory, but be sure to specify a path to it.
 
-   * GDB displays source code through Emacs.
+   For example, with version 4.17-ee-991111, type the following to
+configure only the `bfd' subdirectory:
 
-   Each time GDB displays a stack frame, Emacs automatically finds the
-source file for that frame and puts an arrow (`=>') at the left margin
-of the current line.  Emacs uses a separate buffer for source display,
-and splits the screen to show both your GDB session and the source.
+     cd gdb-4.17-ee-991111/bfd
+     ../configure HOST
 
-   Explicit GDB `list' or search commands still produce output as
-usual, but you probably have no reason to use them from Emacs.
-
-     *Warning:* If the directory where your program resides is not your
-     current directory, it can be easy to confuse Emacs about the
-     location of the source files, in which case the auxiliary display
-     buffer does not appear to show your source.  GDB can find programs
-     by searching your environment's `PATH' variable, so the GDB input
-     and output session proceeds normally; but Emacs does not get
-     enough information back from GDB to locate the source files in
-     this situation.  To avoid this problem, either start GDB mode from
-     the directory where your program resides, or specify an absolute
-     file name when prompted for the `M-x gdb' argument.
-
-     A similar confusion can result if you use the GDB `file' command to
-     switch to debugging a program in some other location, from an
-     existing GDB buffer in Emacs.
-
-   By default, `M-x gdb' calls the program called `gdb'.  If you need
-to call GDB by a different name (for example, if you keep several
-configurations around, with different names) you can set the Emacs
-variable `gdb-command-name'; for example,
-
-     (setq gdb-command-name "mygdb")
-
-(preceded by `M-:' or `ESC :', or typed in the `*scratch*' buffer, or
-in your `.emacs' file) makes Emacs call the program named "`mygdb'"
-instead.
-
-   In the GDB I/O buffer, you can use these special Emacs commands in
-addition to the standard Shell mode commands:
-
-`C-h m'
-     Describe the features of Emacs' GDB Mode.
-
-`M-s'
-     Execute to another source line, like the GDB `step' command; also
-     update the display window to show the current file and location.
-
-`M-n'
-     Execute to next source line in this function, skipping all function
-     calls, like the GDB `next' command.  Then update the display window
-     to show the current file and location.
-
-`M-i'
-     Execute one instruction, like the GDB `stepi' command; update
-     display window accordingly.
-
-`M-x gdb-nexti'
-     Execute to next instruction, using the GDB `nexti' command; update
-     display window accordingly.
-
-`C-c C-f'
-     Execute until exit from the selected stack frame, like the GDB
-     `finish' command.
-
-`M-c'
-     Continue execution of your program, like the GDB `continue'
-     command.
-
-     *Warning:* In Emacs v19, this command is `C-c C-p'.
-
-`M-u'
-     Go up the number of frames indicated by the numeric argument
-     (*note Numeric Arguments: (Emacs)Arguments.), like the GDB `up'
-     command.
-
-     *Warning:* In Emacs v19, this command is `C-c C-u'.
-
-`M-d'
-     Go down the number of frames indicated by the numeric argument,
-     like the GDB `down' command.
-
-     *Warning:* In Emacs v19, this command is `C-c C-d'.
-
-`C-x &'
-     Read the number where the cursor is positioned, and insert it at
-     the end of the GDB I/O buffer.  For example, if you wish to
-     disassemble code around an address that was displayed earlier,
-     type `disassemble'; then move the cursor to the address display,
-     and pick up the argument for `disassemble' by typing `C-x &'.
-
-     You can customize this further by defining elements of the list
-     `gdb-print-command'; once it is defined, you can format or
-     otherwise process numbers picked up by `C-x &' before they are
-     inserted.  A numeric argument to `C-x &' indicates that you wish
-     special formatting, and also acts as an index to pick an element
-     of the list.  If the list element is a string, the number to be
-     inserted is formatted using the Emacs function `format'; otherwise
-     the number is passed as an argument to the corresponding list
-     element.
-
-   In any source file, the Emacs command `C-x SPC' (`gdb-break') tells
-GDB to set a breakpoint on the source line point is on.
-
-   If you accidentally delete the source-display buffer, an easy way to
-get it back is to type the command `f' in the GDB buffer, to request a
-frame display; when you run under Emacs, this recreates the source
-buffer if necessary to show you the context of the current frame.
-
-   The source files displayed in Emacs are in ordinary Emacs buffers
-which are visiting the source files in the usual way.  You can edit the
-files with these buffers if you wish; but keep in mind that GDB
-communicates with Emacs in terms of line numbers.  If you add or delete
-lines from the text, the line numbers that GDB knows cease to
-correspond properly with the code.
-
-
-File: gdb.info,  Node: Annotations,  Next: GDB/MI,  Prev: Emacs,  Up: Top
-
-GDB Annotations
-***************
-
-   This chapter describes annotations in GDB.  Annotations are designed
-to interface GDB to graphical user interfaces or other similar programs
-which want to interact with GDB at a relatively high level.
+   You can install `gdb' anywhere; it has no hardwired paths.  However,
+you should make sure that the shell on your path (named by the `SHELL'
+environment variable) is publicly readable.  Remember that GDB uses the
+shell to start your program--some systems refuse to let GDB debug child
+processes whose programs are not readable.
 
 * Menu:
 
-* Annotations Overview::  What annotations are; the general syntax.
-* Server Prefix::       Issuing a command without affecting user state.
-* Value Annotations::   Values are marked as such.
-* Frame Annotations::   Stack frames are annotated.
-* Displays::            GDB can be told to display something periodically.
-* Prompting::           Annotations marking GDB's need for input.
-* Errors::              Annotations for error messages.
-* Breakpoint Info::     Information on breakpoints.
-* Invalidation::        Some annotations describe things now invalid.
-* Annotations for Running::
-                        Whether the program is running, how it stopped, etc.
-* Source Annotations::  Annotations describing source code.
-* TODO::                Annotations which might be added in the future.
+* Separate Objdir::             Compiling GDB in another directory
+* Config Names::                Specifying names for hosts and targets
+* Configure Options::           Summary of options for configure
 
 
-File: gdb.info,  Node: Annotations Overview,  Next: Server Prefix,  Up: Annotations
+File: gdb.info,  Node: Separate Objdir,  Next: Config Names,  Prev: Installing GDB,  Up: Installing GDB
 
-What is an Annotation?
-======================
+Compiling GDB in another directory
+==================================
 
-   To produce annotations, start GDB with the `--annotate=2' option.
+   If you want to run GDB versions for several host or target machines,
+you need a different `gdb' compiled for each combination of host and
+target.  `configure' is designed to make this easy by allowing you to
+generate each configuration in a separate subdirectory, rather than in
+the source directory.  If your `make' program handles the `VPATH'
+feature (GNU `make' does), running `make' in each of these directories
+builds the `gdb' program specified there.
 
-   Annotations start with a newline character, two `control-z'
-characters, and the name of the annotation.  If there is no additional
-information associated with this annotation, the name of the annotation
-is followed immediately by a newline.  If there is additional
-information, the name of the annotation is followed by a space, the
-additional information, and a newline.  The additional information
-cannot contain newline characters.
+   To build `gdb' in a separate directory, run `configure' with the
+`--srcdir' option to specify where to find the source.  (You also need
+to specify a path to find `configure' itself from your working
+directory.  If the path to `configure' would be the same as the
+argument to `--srcdir', you can leave out the `--srcdir' option; it is
+assumed.)
 
-   Any output not beginning with a newline and two `control-z'
-characters denotes literal output from GDB.  Currently there is no need
-for GDB to output a newline followed by two `control-z' characters, but
-if there was such a need, the annotations could be extended with an
-`escape' annotation which means those three characters as output.
+   For example, with version 4.17-ee-991111, you can build GDB in a
+separate directory for a Sun 4 like this:
 
-   A simple example of starting up GDB with annotations is:
+     cd gdb-4.17-ee-991111
+     mkdir ../gdb-sun4
+     cd ../gdb-sun4
+     ../gdb-4.17-ee-991111/configure sun4
+     make
 
-     $ gdb --annotate=2
-     GNU GDB 5.0
-     Copyright 2000 Free Software Foundation, Inc.
-     GDB is free software, covered by the GNU General Public License,
-     and you are welcome to change it and/or distribute copies of it
-     under certain conditions.
-     Type "show copying" to see the conditions.
-     There is absolutely no warranty for GDB.  Type "show warranty"
-     for details.
-     This GDB was configured as "sparc-sun-sunos4.1.3"
-     
-     ^Z^Zpre-prompt
-     (gdb)
-     ^Z^Zprompt
-     quit
-     
-     ^Z^Zpost-prompt
-     $
+   When `configure' builds a configuration using a remote source
+directory, it creates a tree for the binaries with the same structure
+(and using the same names) as the tree under the source directory.  In
+the example, you'd find the Sun 4 library `libiberty.a' in the
+directory `gdb-sun4/libiberty', and GDB itself in `gdb-sun4/gdb'.
 
-   Here `quit' is input to GDB; the rest is output from GDB.  The three
-lines beginning `^Z^Z' (where `^Z' denotes a `control-z' character) are
-annotations; the rest is output from GDB.
+   One popular reason to build several GDB configurations in separate
+directories is to configure GDB for cross-compiling (where GDB runs on
+one machine--the "host"--while debugging programs that run on another
+machine--the "target").  You specify a cross-debugging target by giving
+the `--target=TARGET' option to `configure'.
 
-
-File: gdb.info,  Node: Server Prefix,  Next: Value Annotations,  Prev: Annotations Overview,  Up: Annotations
+   When you run `make' to build a program or library, you must run it
+in a configured directory--whatever directory you were in when you
+called `configure' (or one of its subdirectories).
 
-The Server Prefix
-=================
+   The `Makefile' that `configure' generates in each source directory
+also runs recursively.  If you type `make' in a source directory such
+as `gdb-4.17-ee-991111' (or in a separate configured directory
+configured with `--srcdir=DIRNAME/gdb-4.17-ee-991111'), you will build
+all the required libraries, and then build GDB.
 
-   To issue a command to GDB without affecting certain aspects of the
-state which is seen by users, prefix it with `server '.  This means
-that this command will not affect the command history, nor will it
-affect GDB's notion of which command to repeat if <RET> is pressed on a
-line by itself.
-
-   The server prefix does not affect the recording of values into the
-value history; to print a value without recording it into the value
-history, use the `output' command instead of the `print' command.
+   When you have multiple hosts or targets configured in separate
+directories, you can run `make' on them in parallel (for example, if
+they are NFS-mounted on each of the hosts); they will not interfere
+with each other.
 
 
-File: gdb.info,  Node: Value Annotations,  Next: Frame Annotations,  Prev: Server Prefix,  Up: Annotations
+File: gdb.info,  Node: Config Names,  Next: Configure Options,  Prev: Separate Objdir,  Up: Installing GDB
 
-Values
-======
+Specifying names for hosts and targets
+======================================
 
-   When a value is printed in various contexts, GDB uses annotations to
-delimit the value from the surrounding text.
+   The specifications used for hosts and targets in the `configure'
+script are based on a three-part naming scheme, but some short
+predefined aliases are also supported.  The full naming scheme encodes
+three pieces of information in the following pattern:
 
-   If a value is printed using `print' and added to the value history,
-the annotation looks like
+     ARCHITECTURE-VENDOR-OS
 
-     ^Z^Zvalue-history-begin HISTORY-NUMBER VALUE-FLAGS
-     HISTORY-STRING
-     ^Z^Zvalue-history-value
-     THE-VALUE
-     ^Z^Zvalue-history-end
+   For example, you can use the alias `sun4' as a HOST argument, or as
+the value for TARGET in a `--target=TARGET' option.  The equivalent
+full name is `sparc-sun-sunos4'.
 
-   where HISTORY-NUMBER is the number it is getting in the value
-history, HISTORY-STRING is a string, such as `$5 = ', which introduces
-the value to the user, THE-VALUE is the output corresponding to the
-value itself, and VALUE-FLAGS is `*' for a value which can be
-dereferenced and `-' for a value which cannot.
+   The `configure' script accompanying GDB does not provide any query
+facility to list all supported host and target names or aliases.
+`configure' calls the Bourne shell script `config.sub' to map
+abbreviations to full names; you can read the script, if you wish, or
+you can use it to test your guesses on abbreviations--for example:
 
-   If the value is not added to the value history (it is an invalid
-float or it is printed with the `output' command), the annotation is
-similar:
+     % sh config.sub i386-linux
+     i386-pc-linux-gnu
+     % sh config.sub alpha-linux
+     alpha-unknown-linux-gnu
+     % sh config.sub hp9k700
+     hppa1.1-hp-hpux
+     % sh config.sub sun4
+     sparc-sun-sunos4.1.1
+     % sh config.sub sun3
+     m68k-sun-sunos4.1.1
+     % sh config.sub i986v
+     Invalid configuration `i986v': machine `i986v' not recognized
 
-     ^Z^Zvalue-begin VALUE-FLAGS
-     THE-VALUE
-     ^Z^Zvalue-end
-
-   When GDB prints an argument to a function (for example, in the output
-from the `backtrace' command), it annotates it as follows:
-
-     ^Z^Zarg-begin
-     ARGUMENT-NAME
-     ^Z^Zarg-name-end
-     SEPARATOR-STRING
-     ^Z^Zarg-value VALUE-FLAGS
-     THE-VALUE
-     ^Z^Zarg-end
-
-   where ARGUMENT-NAME is the name of the argument, SEPARATOR-STRING is
-text which separates the name from the value for the user's benefit
-(such as `='), and VALUE-FLAGS and THE-VALUE have the same meanings as
-in a `value-history-begin' annotation.
-
-   When printing a structure, GDB annotates it as follows:
-
-     ^Z^Zfield-begin VALUE-FLAGS
-     FIELD-NAME
-     ^Z^Zfield-name-end
-     SEPARATOR-STRING
-     ^Z^Zfield-value
-     THE-VALUE
-     ^Z^Zfield-end
-
-   where FIELD-NAME is the name of the field, SEPARATOR-STRING is text
-which separates the name from the value for the user's benefit (such as
-`='), and VALUE-FLAGS and THE-VALUE have the same meanings as in a
-`value-history-begin' annotation.
-
-   When printing an array, GDB annotates it as follows:
-
-     ^Z^Zarray-section-begin ARRAY-INDEX VALUE-FLAGS
-
-   where ARRAY-INDEX is the index of the first element being annotated
-and VALUE-FLAGS has the same meaning as in a `value-history-begin'
-annotation.  This is followed by any number of elements, where is
-element can be either a single element:
-
-     `,' WHITESPACE         ; omitted for the first element
-     THE-VALUE
-     ^Z^Zelt
-
-   or a repeated element
-
-     `,' WHITESPACE         ; omitted for the first element
-     THE-VALUE
-     ^Z^Zelt-rep NUMBER-OF-REPITITIONS
-     REPETITION-STRING
-     ^Z^Zelt-rep-end
-
-   In both cases, THE-VALUE is the output for the value of the element
-and WHITESPACE can contain spaces, tabs, and newlines.  In the repeated
-case, NUMBER-OF-REPITITONS is the number of consecutive array elements
-which contain that value, and REPETITION-STRING is a string which is
-designed to convey to the user that repitition is being depicted.
-
-   Once all the array elements have been output, the array annotation is
-ended with
-
-     ^Z^Zarray-section-end
+`config.sub' is also distributed in the GDB source directory
+(`gdb-4.17-ee-991111', for version 4.17-ee-991111).
 
 
-File: gdb.info,  Node: Frame Annotations,  Next: Displays,  Prev: Value Annotations,  Up: Annotations
+File: gdb.info,  Node: Configure Options,  Prev: Config Names,  Up: Installing GDB
 
-Frames
-======
-
-   Whenever GDB prints a frame, it annotates it.  For example, this
-applies to frames printed when GDB stops, output from commands such as
-`backtrace' or `up', etc.
-
-   The frame annotation begins with
-
-     ^Z^Zframe-begin LEVEL ADDRESS
-     LEVEL-STRING
-
-   where LEVEL is the number of the frame (0 is the innermost frame,
-and other frames have positive numbers), ADDRESS is the address of the
-code executing in that frame, and LEVEL-STRING is a string designed to
-convey the level to the user.  ADDRESS is in the form `0x' followed by
-one or more lowercase hex digits (note that this does not depend on the
-language).  The frame ends with
-
-     ^Z^Zframe-end
-
-   Between these annotations is the main body of the frame, which can
-consist of
-
-   *      ^Z^Zfunction-call
-          FUNCTION-CALL-STRING
-
-     where FUNCTION-CALL-STRING is text designed to convey to the user
-     that this frame is associated with a function call made by GDB to a
-     function in the program being debugged.
-
-   *      ^Z^Zsignal-handler-caller
-          SIGNAL-HANDLER-CALLER-STRING
-
-     where SIGNAL-HANDLER-CALLER-STRING is text designed to convey to
-     the user that this frame is associated with whatever mechanism is
-     used by this operating system to call a signal handler (it is the
-     frame which calls the signal handler, not the frame for the signal
-     handler itself).
-
-   * A normal frame.
-
-     This can optionally (depending on whether this is thought of as
-     interesting information for the user to see) begin with
-
-          ^Z^Zframe-address
-          ADDRESS
-          ^Z^Zframe-address-end
-          SEPARATOR-STRING
-
-     where ADDRESS is the address executing in the frame (the same
-     address as in the `frame-begin' annotation, but printed in a form
-     which is intended for user consumption--in particular, the syntax
-     varies depending on the language), and SEPARATOR-STRING is a string
-     intended to separate this address from what follows for the user's
-     benefit.
-
-     Then comes
-
-          ^Z^Zframe-function-name
-          FUNCTION-NAME
-          ^Z^Zframe-args
-          ARGUMENTS
-
-     where FUNCTION-NAME is the name of the function executing in the
-     frame, or `??' if not known, and ARGUMENTS are the arguments to
-     the frame, with parentheses around them (each argument is annotated
-     individually as well, *note Value Annotations::.).
-
-     If source information is available, a reference to it is then
-     printed:
-
-          ^Z^Zframe-source-begin
-          SOURCE-INTRO-STRING
-          ^Z^Zframe-source-file
-          FILENAME
-          ^Z^Zframe-source-file-end
-          :
-          ^Z^Zframe-source-line
-          LINE-NUMBER
-          ^Z^Zframe-source-end
-
-     where SOURCE-INTRO-STRING separates for the user's benefit the
-     reference from the text which precedes it, FILENAME is the name of
-     the source file, and LINE-NUMBER is the line number within that
-     file (the first line is line 1).
-
-     If GDB prints some information about where the frame is from (which
-     library, which load segment, etc.; currently only done on the
-     RS/6000), it is annotated with
-
-          ^Z^Zframe-where
-          INFORMATION
-
-     Then, if source is to actually be displayed for this frame (for
-     example, this is not true for output from the `backtrace'
-     command), then a `source' annotation (*note Source Annotations::.)
-     is displayed.  Unlike most annotations, this is output instead of
-     the normal text which would be output, not in addition.
-
-
-File: gdb.info,  Node: Displays,  Next: Prompting,  Prev: Frame Annotations,  Up: Annotations
-
-Displays
-========
-
-   When GDB is told to display something using the `display' command,
-the results of the display are annotated:
-
-     ^Z^Zdisplay-begin
-     NUMBER
-     ^Z^Zdisplay-number-end
-     NUMBER-SEPARATOR
-     ^Z^Zdisplay-format
-     FORMAT
-     ^Z^Zdisplay-expression
-     EXPRESSION
-     ^Z^Zdisplay-expression-end
-     EXPRESSION-SEPARATOR
-     ^Z^Zdisplay-value
-     VALUE
-     ^Z^Zdisplay-end
-
-   where NUMBER is the number of the display, NUMBER-SEPARATOR is
-intended to separate the number from what follows for the user, FORMAT
-includes information such as the size, format, or other information
-about how the value is being displayed, EXPRESSION is the expression
-being displayed, EXPRESSION-SEPARATOR is intended to separate the
-expression from the text that follows for the user, and VALUE is the
-actual value being displayed.
-
-
-File: gdb.info,  Node: Prompting,  Next: Errors,  Prev: Displays,  Up: Annotations
-
-Annotation for GDB Input
-========================
-
-   When GDB prompts for input, it annotates this fact so it is possible
-to know when to send output, when the output from a given command is
-over, etc.
-
-   Different kinds of input each have a different "input type".  Each
-input type has three annotations: a `pre-' annotation, which denotes
-the beginning of any prompt which is being output, a plain annotation,
-which denotes the end of the prompt, and then a `post-' annotation
-which denotes the end of any echo which may (or may not) be associated
-with the input.  For example, the `prompt' input type features the
-following annotations:
-
-     ^Z^Zpre-prompt
-     ^Z^Zprompt
-     ^Z^Zpost-prompt
-
-   The input types are
-
-`prompt'
-     When GDB is prompting for a command (the main GDB prompt).
-
-`commands'
-     When GDB prompts for a set of commands, like in the `commands'
-     command.  The annotations are repeated for each command which is
-     input.
-
-`overload-choice'
-     When GDB wants the user to select between various overloaded
-     functions.
-
-`query'
-     When GDB wants the user to confirm a potentially dangerous
-     operation.
-
-`prompt-for-continue'
-     When GDB is asking the user to press return to continue.  Note:
-     Don't expect this to work well; instead use `set height 0' to
-     disable prompting.  This is because the counting of lines is buggy
-     in the presence of annotations.
-
-
-File: gdb.info,  Node: Errors,  Next: Breakpoint Info,  Prev: Prompting,  Up: Annotations
-
-Errors
-======
-
-     ^Z^Zquit
-
-   This annotation occurs right before GDB responds to an interrupt.
-
-     ^Z^Zerror
-
-   This annotation occurs right before GDB responds to an error.
-
-   Quit and error annotations indicate that any annotations which GDB
-was in the middle of may end abruptly.  For example, if a
-`value-history-begin' annotation is followed by a `error', one cannot
-expect to receive the matching `value-history-end'.  One cannot expect
-not to receive it either, however; an error annotation does not
-necessarily mean that GDB is immediately returning all the way to the
-top level.
-
-   A quit or error annotation may be preceded by
-
-     ^Z^Zerror-begin
-
-   Any output between that and the quit or error annotation is the error
-message.
-
-   Warning messages are not yet annotated.
-
-
-File: gdb.info,  Node: Breakpoint Info,  Next: Invalidation,  Prev: Errors,  Up: Annotations
-
-Information on Breakpoints
-==========================
-
-   The output from the `info breakpoints' command is annotated as
-follows:
-
-     ^Z^Zbreakpoints-headers
-     HEADER-ENTRY
-     ^Z^Zbreakpoints-table
-
-   where HEADER-ENTRY has the same syntax as an entry (see below) but
-instead of containing data, it contains strings which are intended to
-convey the meaning of each field to the user.  This is followed by any
-number of entries.  If a field does not apply for this entry, it is
-omitted.  Fields may contain trailing whitespace.  Each entry consists
-of:
-
-     ^Z^Zrecord
-     ^Z^Zfield 0
-     NUMBER
-     ^Z^Zfield 1
-     TYPE
-     ^Z^Zfield 2
-     DISPOSITION
-     ^Z^Zfield 3
-     ENABLE
-     ^Z^Zfield 4
-     ADDRESS
-     ^Z^Zfield 5
-     WHAT
-     ^Z^Zfield 6
-     FRAME
-     ^Z^Zfield 7
-     CONDITION
-     ^Z^Zfield 8
-     IGNORE-COUNT
-     ^Z^Zfield 9
-     COMMANDS
-
-   Note that ADDRESS is intended for user consumption--the syntax
-varies depending on the language.
-
-   The output ends with
-
-     ^Z^Zbreakpoints-table-end
-
-
-File: gdb.info,  Node: Invalidation,  Next: Annotations for Running,  Prev: Breakpoint Info,  Up: Annotations
-
-Invalidation Notices
-====================
-
-   The following annotations say that certain pieces of state may have
-changed.
-
-`^Z^Zframes-invalid'
-     The frames (for example, output from the `backtrace' command) may
-     have changed.
-
-`^Z^Zbreakpoints-invalid'
-     The breakpoints may have changed.  For example, the user just
-     added or deleted a breakpoint.
-
-
-File: gdb.info,  Node: Annotations for Running,  Next: Source Annotations,  Prev: Invalidation,  Up: Annotations
-
-Running the Program
+`configure' options
 ===================
 
-   When the program starts executing due to a GDB command such as
-`step' or `continue',
-
-     ^Z^Zstarting
-
-   is output.  When the program stops,
-
-     ^Z^Zstopped
-
-   is output.  Before the `stopped' annotation, a variety of
-annotations describe how the program stopped.
-
-`^Z^Zexited EXIT-STATUS'
-     The program exited, and EXIT-STATUS is the exit status (zero for
-     successful exit, otherwise nonzero).
-
-`^Z^Zsignalled'
-     The program exited with a signal.  After the `^Z^Zsignalled', the
-     annotation continues:
-
-          INTRO-TEXT
-          ^Z^Zsignal-name
-          NAME
-          ^Z^Zsignal-name-end
-          MIDDLE-TEXT
-          ^Z^Zsignal-string
-          STRING
-          ^Z^Zsignal-string-end
-          END-TEXT
-
-     where NAME is the name of the signal, such as `SIGILL' or
-     `SIGSEGV', and STRING is the explanation of the signal, such as
-     `Illegal Instruction' or `Segmentation fault'.  INTRO-TEXT,
-     MIDDLE-TEXT, and END-TEXT are for the user's benefit and have no
-     particular format.
-
-`^Z^Zsignal'
-     The syntax of this annotation is just like `signalled', but GDB is
-     just saying that the program received the signal, not that it was
-     terminated with it.
-
-`^Z^Zbreakpoint NUMBER'
-     The program hit breakpoint number NUMBER.
-
-`^Z^Zwatchpoint NUMBER'
-     The program hit watchpoint number NUMBER.
-
-
-File: gdb.info,  Node: Source Annotations,  Next: TODO,  Prev: Annotations for Running,  Up: Annotations
-
-Displaying Source
-=================
-
-   The following annotation is used instead of displaying source code:
-
-     ^Z^Zsource FILENAME:LINE:CHARACTER:MIDDLE:ADDR
-
-   where FILENAME is an absolute file name indicating which source
-file, LINE is the line number within that file (where 1 is the first
-line in the file), CHARACTER is the character position within the file
-(where 0 is the first character in the file) (for most debug formats
-this will necessarily point to the beginning of a line), MIDDLE is
-`middle' if ADDR is in the middle of the line, or `beg' if ADDR is at
-the beginning of the line, and ADDR is the address in the target
-program associated with the source which is being displayed.  ADDR is
-in the form `0x' followed by one or more lowercase hex digits (note
-that this does not depend on the language).
-
-
-File: gdb.info,  Node: TODO,  Prev: Source Annotations,  Up: Annotations
-
-Annotations We Might Want in the Future
-=======================================
-
-    - target-invalid
-      the target might have changed (registers, heap contents, or
-      execution status).  For performance, we might eventually want
-      to hit `registers-invalid' and `all-registers-invalid' with
-      greater precision
-
-    - systematic annotation for set/show parameters (including
-      invalidation notices).
-
-    - similarly, `info' returns a list of candidates for invalidation
-      notices.
-
-
-File: gdb.info,  Node: GDB/MI,  Next: GDB Bugs,  Prev: Annotations,  Up: Top
-
-The GDB/MI Interface
-********************
-
-Function and Purpose
-====================
-
-   GDB/MI is a line based machine oriented text interface to GDB.  It is
-specifically intended to support the development of systems which use
-the debugger as just one small component of a larger system.
-
-   This chapter is a specification of the GDB/MI interface.  It is
-written in the form of a reference manual.
-
-   Note that GDB/MI is still under construction, so some of the
-features described below are incomplete and subject to change.
-
-Notation and Terminology
-========================
-
-   This chapter uses the following notation:
-
-   * `|' separates two alternatives.
-
-   * `[ SOMETHING ]' indicates that SOMETHING is optional: it may or
-     may not be given.
-
-   * `( GROUP )*' means that GROUP inside the parentheses may repeat
-     zero or more times.
-
-   * `( GROUP )+' means that GROUP inside the parentheses may repeat
-     one or more times.
-
-   * `"STRING"' means a literal STRING.
-
-Acknowledgments
-===============
-
-   In alphabetic order: Andrew Cagney, Fernando Nasser, Stan Shebs and
-Elena Zannoni.
-
-* Menu:
-
-* GDB/MI Command Syntax::
-* GDB/MI Compatibility with CLI::
-* GDB/MI Output Records::
-* GDB/MI Command Description Format::
-* GDB/MI Breakpoint Table Commands::
-* GDB/MI Data Manipulation::
-* GDB/MI Program Control::
-* GDB/MI Miscellaneous Commands::
-* GDB/MI Stack Manipulation::
-* GDB/MI Symbol Query::
-* GDB/MI Target Manipulation::
-* GDB/MI Thread Commands::
-* GDB/MI Tracepoint Commands::
-* GDB/MI Variable Objects::
-* GDB/MI Draft Changes to Output Syntax::
-
-
-File: gdb.info,  Node: GDB/MI Command Syntax,  Next: GDB/MI Compatibility with CLI,  Up: GDB/MI
-
-GDB/MI Command Syntax
-=====================
-
-* Menu:
-
-* GDB/MI Input Syntax::
-* GDB/MI Output Syntax::
-* GDB/MI Simple Examples::
-
-
-File: gdb.info,  Node: GDB/MI Input Syntax,  Next: GDB/MI Output Syntax,  Up: GDB/MI Command Syntax
-
-GDB/MI Input Syntax
--------------------
-
-`COMMAND ==>'
-     `CLI-COMMAND | MI-COMMAND'
-
-`CLI-COMMAND ==>'
-     `[ TOKEN ] CLI-COMMAND NL', where CLI-COMMAND is any existing GDB
-     CLI command.
-
-`MI-COMMAND ==>'
-     `[ TOKEN ] "-" OPERATION ( " " OPTION )* `[' " --" `]' ( " "
-     PARAMETER )* NL'
-
-`TOKEN ==>'
-     "any sequence of digits"
-
-`OPTION ==>'
-     `"-" PARAMETER [ " " PARAMETER ]'
-
-`PARAMETER ==>'
-     `NON-BLANK-SEQUENCE | C-STRING'
-
-`OPERATION ==>'
-     *any of the operations described in this chapter*
-
-`NON-BLANK-SEQUENCE ==>'
-     *anything, provided it doesn't contain special characters such as
-     "-", NL, """ and of course " "*
-
-`C-STRING ==>'
-     `""" SEVEN-BIT-ISO-C-STRING-CONTENT """'
-
-`NL ==>'
-     `CR | CR-LF'
-
-Notes:
-
-   * The CLI commands are still handled by the MI interpreter; their
-     output is described below.
-
-   * The `TOKEN', when present, is passed back when the command
-     finishes.
-
-   * Some MI commands accept optional arguments as part of the parameter
-     list.  Each option is identified by a leading `-' (dash) and may be
-     followed by an optional argument parameter.  Options occur first
-     in the parameter list and can be delimited from normal parameters
-     using `--' (this is useful when some parameters begin with a dash).
-
-   Pragmatics:
-
-   * We want easy access to the existing CLI syntax (for debugging).
-
-   * We want it to be easy to spot a MI operation.
-
-
-File: gdb.info,  Node: GDB/MI Output Syntax,  Next: GDB/MI Simple Examples,  Prev: GDB/MI Input Syntax,  Up: GDB/MI Command Syntax
-
-GDB/MI Output Syntax
---------------------
-
-   The output from GDB/MI consists of zero or more out-of-band records
-followed, optionally, by a single result record.  This result record is
-for the most recent command.  The sequence of output records is
-terminated by `(gdb)'.
-
-   If an input command was prefixed with a `TOKEN' then the
-corresponding output for that command will also be prefixed by that same
-TOKEN.
-
-`OUTPUT ==>'
-     `( OUT-OF-BAND-RECORD )* [ RESULT-RECORD ] "(gdb)" NL'
-
-`RESULT-RECORD ==>'
-     ` [ TOKEN ] "^" RESULT-CLASS ( "," RESULT )* NL'
-
-`OUT-OF-BAND-RECORD ==>'
-     `ASYNC-RECORD | STREAM-RECORD'
-
-`ASYNC-RECORD ==>'
-     `EXEC-ASYNC-OUTPUT | STATUS-ASYNC-OUTPUT | NOTIFY-ASYNC-OUTPUT'
-
-`EXEC-ASYNC-OUTPUT ==>'
-     `[ TOKEN ] "*" ASYNC-OUTPUT'
-
-`STATUS-ASYNC-OUTPUT ==>'
-     `[ TOKEN ] "+" ASYNC-OUTPUT'
-
-`NOTIFY-ASYNC-OUTPUT ==>'
-     `[ TOKEN ] "=" ASYNC-OUTPUT'
-
-`ASYNC-OUTPUT ==>'
-     `ASYNC-CLASS ( "," RESULT )* NL'
-
-`RESULT-CLASS ==>'
-     `"done" | "running" | "connected" | "error" | "exit"'
-
-`ASYNC-CLASS ==>'
-     `"stopped" | OTHERS' (where OTHERS will be added depending on the
-     needs--this is still in development).
-
-`RESULT ==>'
-     `[ STRING "=" ] VALUE'
-
-`VALUE ==>'
-     `CONST | "{" RESULT ( "," RESULT )* "}"'
-
-`CONST ==>'
-     `C-STRING'
-
-`STREAM-RECORD ==>'
-     `CONSOLE-STREAM-OUTPUT | TARGET-STREAM-OUTPUT | LOG-STREAM-OUTPUT'
-
-`CONSOLE-STREAM-OUTPUT ==>'
-     `"~" C-STRING'
-
-`TARGET-STREAM-OUTPUT ==>'
-     `"@" C-STRING'
-
-`LOG-STREAM-OUTPUT ==>'
-     `"&" C-STRING'
-
-`NL ==>'
-     `CR | CR-LF'
-
-`TOKEN ==>'
-     *any sequence of digits*.
-
-In addition, the following are still being developed:
-
-`QUERY'
-     This action is currently undefined.
-
-Notes:
-
-   * All output sequences end in a single line containing a period.
-
-   * The `TOKEN' is from the corresponding request.  If an execution
-     command is interrupted by the `-exec-interrupt' command, the TOKEN
-     associated with the `*stopped' message is the one of the original
-     execution command, not the one of the interrupt command.
-
-   * STATUS-ASYNC-OUTPUT contains on-going status information about the
-     progress of a slow operation.  It can be discarded.  All status
-     output is prefixed by `+'.
-
-   * EXEC-ASYNC-OUTPUT contains asynchronous state change on the target
-     (stopped, started, disappeared).  All async output is prefixed by
-     `*'.
-
-   * NOTIFY-ASYNC-OUTPUT contains supplementary information that the
-     client should handle (e.g., a new breakpoint information).  All
-     notify output is prefixed by `='.
-
-   * CONSOLE-STREAM-OUTPUT is output that should be displayed as is in
-     the console.  It is the textual response to a CLI command.  All
-     the console output is prefixed by `~'.
-
-   * TARGET-STREAM-OUTPUT is the output produced by the target program.
-     All the target output is prefixed by `@'.
-
-   * LOG-STREAM-OUTPUT is output text coming from GDB's internals, for
-     instance messages that should be displayed as part of an error
-     log.  All the log output is prefixed by `&'.
-
-   *Note GDB/MI Stream Records: GDB/MI Stream Records, for more details
-about the various output records.
-
-   *Note GDB/MI Draft Changes to Output Syntax: GDB/MI Draft Changes to
-Output Syntax, for proposed revisions to the current output syntax.
-
-
-File: gdb.info,  Node: GDB/MI Simple Examples,  Prev: GDB/MI Output Syntax,  Up: GDB/MI Command Syntax
-
-Simple Examples of GDB/MI Interaction
--------------------------------------
-
-   This subsection presents several simple examples of interaction using
-the GDB/MI interface.  In these examples, `->' means that the following
-line is passed to GDB/MI as input, while `<-' means the output received
-from GDB/MI.
-
-Target Stop
-...........
-
-   Here's an example of stopping the inferior process:
-
-     -> -stop
-     <- (gdb)
-
-and later:
-
-     <- *stop,reason="stop",address="0x123",source="a.c:123"
-     <- (gdb)
-
-Simple CLI Command
-..................
-
-   Here's an example of a simple CLI command being passed through
-GDB/MI and on to the CLI.
-
-     -> print 1+2
-     <- ~3\n
-     <- (gdb)
-
-Command With Side Effects
-.........................
-
-     -> -symbol-file xyz.exe
-     <- *breakpoint,nr="3",address="0x123",source="a.c:123"
-     <- (gdb)
-
-A Bad Command
-.............
-
-   Here's what happens if you pass a non-existent command:
-
-     -> -rubbish
-     <- error,"Rubbish not found"
-     <- (gdb)
-
-
-File: gdb.info,  Node: GDB/MI Compatibility with CLI,  Next: GDB/MI Output Records,  Prev: GDB/MI Command Syntax,  Up: GDB/MI
-
-GDB/MI Compatibility with CLI
-=============================
-
-   To help users familiar with GDB's existing CLI interface, GDB/MI
-accepts existing CLI commands.  As specified by the syntax, such
-commands can be directly entered into the GDB/MI interface and GDB will
-respond.
-
-   This mechanism is provided as an aid to developers of GDB/MI clients
-and not as a reliable interface into the CLI.  Since the command is
-being interpreteted in an environment that assumes GDB/MI behaviour,
-the exact output of such commands is likely to end up being an
-un-supported hybrid of GDB/MI and CLI output.
-
-
-File: gdb.info,  Node: GDB/MI Output Records,  Next: GDB/MI Command Description Format,  Prev: GDB/MI Compatibility with CLI,  Up: GDB/MI
-
-GDB/MI Output Records
-=====================
-
-* Menu:
-
-* GDB/MI Result Records::
-* GDB/MI Stream Records::
-* GDB/MI Out-of-band Records::
+   Here is a summary of the `configure' options and arguments that are
+most often useful for building GDB.  `configure' also has several other
+options not listed here.  *note (configure.info)What Configure Does::,
+for a full explanation of `configure'.
+
+     configure [--help]
+               [--prefix=DIR]
+               [--exec-prefix=DIR]
+               [--srcdir=DIRNAME]
+               [--norecursion] [--rm]
+               [--target=TARGET]
+               HOST
+
+You may introduce options with a single `-' rather than `--' if you
+prefer; but you may abbreviate option names if you use `--'.
+
+`--help'
+     Display a quick summary of how to invoke `configure'.
+
+`--prefix=DIR'
+     Configure the source to install programs and files under directory
+     `DIR'.
+
+`--exec-prefix=DIR'
+     Configure the source to install programs under directory `DIR'.
+
+`--srcdir=DIRNAME'
+     *Warning: using this option requires GNU `make', or another `make'
+     that implements the `VPATH' feature.*
+     Use this option to make configurations in directories separate
+     from the GDB source directories.  Among other things, you can use
+     this to build (or maintain) several configurations simultaneously,
+     in separate directories.  `configure' writes configuration
+     specific files in the current directory, but arranges for them to
+     use the source in the directory DIRNAME.  `configure' creates
+     directories under the working directory in parallel to the source
+     directories below DIRNAME.
+
+`--norecursion'
+     Configure only the directory level where `configure' is executed;
+     do not propagate configuration to subdirectories.
+
+`--target=TARGET'
+     Configure GDB for cross-debugging programs running on the specified
+     TARGET.  Without this option, GDB is configured to debug programs
+     that run on the same machine (HOST) as GDB itself.
+
+     There is no convenient way to generate a list of all available
+     targets.
+
+`HOST ...'
+     Configure GDB to run on the specified HOST.
+
+     There is no convenient way to generate a list of all available
+     hosts.
+
+   There are many other options available as well, but they are
+generally needed for special purposes only.
 

@@ -1,0 +1,85 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+VU0行列演算ライブラリ
+======================
+
+
+ 1 ライブラリ概要
+------------------
+
+    libvu0は、VU0マクロ命令を用いてベクトル演算・マトリックス演算を行うラ
+    イブラリです。
+    floatの4次元ベクトルを扱う関数として、加減算、スカラー乗除算、正規化、
+    内挿、外積、内積、また複写や固定小数4次元ベクトルとの相互変換などが用
+    意されています。また、floatの４×４行列を扱う関数として、積、ベクトル
+    積、転置行列、逆行列、平行移動、回転などの一般的な行列演算に加えて、
+    クリッピング、透視変換、また、ワールドビュー行列／ノーマルライト行列
+    ／ライトカラー行列／スクリーンビュー行列／ドロップシャドウ行列を得る
+    など、3Dグラフィクス処理に特有の処理が用意されています。
+    このほか、VU0 / VIF0を初期化する関数があります。
+
+  1.1 引数のハンドリング
+
+    libvu0の各関数は、引数の個数や型はそれぞれ処理内容に応じて異なります
+    が、関数の型はvoidで演算結果は第１引数（ベクトルまたはマトリックス）
+    に返すように、一部の例外を除いてほぼ統一されています。
+    VU0は基本的に128bit（float×4）を単位として演算を行いますので、各関数
+    の引数も基本的に128bit単位となっています。引数のベクトルやマトリック
+    スは128bitアライメントに合せた状態にして呼び出す必要があります。
+
+  1.2 各関数が使用するレジスタ
+
+    libvu0（Release 1.2以降）の各関数がVU0のVFレジスタのうちどれを使用す
+    るか、以下にまとめて示します。次の表で○印のレジスタは、該当する関数
+    を呼び出すことによって内容が破壊されますので、必要ならば呼び出しプロ
+    グラム側で退避してください。－印のレジスタは使用されないので、退避の
+    必要はありません。
+    
+    +-----------------+----+----+----+----+----+----+----+----+----+
+    |関数              VF04 VF05 VF06 VF07 VF08 VF09 VF10 VF11 VF12|
+    +                 +    +    +    +    +    +    +    +    +    +
+    |AddVector         ○   ○   ○   －   －   －   －   －   －  |
+    |SubVector         ○   ○   ○   －   －   －   －   －   －  |
+    |MulVector         ○   ○   ○   －   －   －   －   －   －  |
+    |ScaleVector       ○   ○   ○   －   －   －   －   －   －  |
+    |ScaleVectorXYZ    ○   ○   －   －   －   －   －   －   －  |
+    |DivVector         ○   ○   －   －   －   －   －   －   －  |
+    |DivVectorXYZ      ○   ○   －   －   －   －   －   －   －  |
+    |Normalize         ○   ○   ○   －   －   －   －   －   －  |
+    |InterVector       ○   ○   ○   ○   ○   ○   －   －   －  |
+    |InterVectorXYZ    ○   ○   ○   ○   ○   ○   －   －   －  |
+    |OuterProduct      ○   ○   ○   －   －   －   －   －   －  |
+    |InnerProduct      ○   ○   －   －   －   －   －   －   －  |
+    |CopyVector        －   －   －   －   －   －   －   －   －  |
+    |CopyVectorXYZ     －   －   －   －   －   －   －   －   －  |
+    |ClampVector       ○   ○   ○   －   －   －   －   －   －  |
+    |FTOI4Vector       ○   ○   －   －   －   －   －   －   －  |
+    |FTOI0Vector       ○   ○   －   －   －   －   －   －   －  |
+    |ITOF4Vector       ○   ○   －   －   －   －   －   －   －  |
+    |ITOF0Vector       ○   ○   －   －   －   －   －   －   －  |
+    |ApplyMatrix       ○   ○   ○   ○   ○   ○   －   －   －  |
+    |MulMatrix         ○   ○   ○   ○   ○   ○   －   －   －  |
+    |TransposeMatrix   －   －   －   －   －   －   －   －   －  |
+    |InversMatrix      ○   ○   ○   ○   ○   ○   －   －   －  |
+    |TransMatrix       ○   ○   －   －   －   －   －   －   －  |
+    |CopyMatrix        －   －   －   －   －   －   －   －   －  |
+    |UnitMatrix        ○   ○   ○   ○   －   －   －   －   －  |
+    |RotMatrixZ        ○   ○   ○   ○   ○   ○   －   －   －  |
+    |RotMatrixY        ○   ○   ○   ○   ○   ○   －   －   －  |
+    |RotMatrixX        ○   ○   ○   ○   ○   ○   －   －   －  |
+    |RotMatrix         ○   ○   ○   ○   ○   ○   －   －   －  |
+    |RotTransPers      ○   ○   ○   ○   ○   ○   ○   －   －  |
+    |RotTransPersN     ○   ○   ○   ○   ○   ○   ○   －   －  |
+    |CameraMatrix      ○   ○   ○   ○   ○   ○   －   －   －  |
+    |NormalLightMatrix ○   ○   ○   －   －   －   －   －   －  |
+    |LightColorMatrix  －   －   －   －   －   －   －   －   －  |
+    |ViewScreenMatrix  ○   ○   ○   ○   ○   ○   －   －   －  |
+    |DropShadowMatrix  ○   ○   ○   ○   ○   ○   －   －   －  |
+    |ClipScreen        ○   ○   ○   ○   －   －   －   －   －  |
+    |ClipScreen3       ○   ○   ○   ○   ○   ○   －   －   －  |
+    |ClipAll           ○   ○   ○   ○   ○   ○   ○   ○   ○  |
+    +-----------------+----+----+----+----+----+----+----+----+----+
+    ※関数名の先頭に付く「sceVu0」は省略してあります。

@@ -1,15 +1,15 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                  I/O Processor sample program
  *                          Version 0.11
  *                           Shift-JIS
  *
- *      Copyright (C) 2001 Sony Computer Entertainment Inc.
+ *      Copyright (C) 2000 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  *
- *                      ezadpcm.irx - command.c
+ *                      ezadpcm.irx - func.c
  *                           API functions
  *
  *	Version		Date		Design	Log
@@ -17,7 +17,6 @@
  *	0.10		Feb. 3, 2000	kaol		
  *	0.11		Feb.27, 2000	kaol	entire waveform data is
  *                                               read at once.
- *	0.12		Feb.15, 2001	kaol		
  */
 
 #include <kernel.h>
@@ -63,8 +62,8 @@ volatile int gAdpcmStop = 0;	     // ストリーム停止要求があると 1
 volatile int gAdpcmStatus = EzADPCM_STATUS_IDLE;
 
 int _AdpcmPlay (int status);
-static int _AdpcmDmaInt (int, void*);
-static int _AdpcmSpu2Int (int, void *);
+static int _AdpcmDmaInt (void* common);
+static SD_IRQ_CBProc _AdpcmSpu2Int (void);
 
 // 定常転送中の状態遷移
 #define _DO_TRANS_L 0
@@ -90,11 +89,11 @@ AdpcmSdInit (int no_ch, int status)
 {
     sceSdInit (0);
 
-    //    Disk media: CD
+    //    Disk media: DVD
     // Output format: PCM
     //    Copy guard: normal (one generation recordable / default)
-    sceSdSetCoreAttr (SD_C_SPDIF_MODE, (SD_SPDIF_MEDIA_CD |
-					SD_SPDIF_OUT_PCM  |
+    sceSdSetCoreAttr (SD_C_SPDIF_MODE, (SD_SPDIF_MEDIA_DVD |
+					SD_SPDIF_OUT_PCM   |
 					SD_SPDIF_COPY_NORMAL));
     return;
 }
@@ -103,8 +102,6 @@ AdpcmSdInit (int no_ch, int status)
 int
 AdpcmInit (int allocsize)
 {
-    int oldstat;
-
     if (gSem == 0){		// セマフォ作成
 	struct SemaParam sem;
 	sem.initCount = 0;
@@ -125,17 +122,13 @@ AdpcmInit (int allocsize)
 	StartThread (gThid, (u_long) NULL);
     }
 
-    // 割り込みハンドラ
-    sceSdSetTransIntrHandler (0, (sceSdTransIntrHandler) _AdpcmDmaInt,
-			      (void *) &gSem); // 転送終了割り込み
-    sceSdSetSpu2IntrHandler ((sceSdSpu2IntrHandler) _AdpcmSpu2Int,
-			     (void *) &gSem); // SPU 割り込み
+    // 割り込みコールバック関数
+    sceSdSetTransCallback (0, _AdpcmDmaInt); // 転送終了割り込み
+    sceSdSetIRQCallback (_AdpcmSpu2Int); // SPU 割り込み
 
     // 波形データ用バッファ確保
-    CpuSuspendIntr (&oldstat);
     gBufSpu [_L] = (int) AllocSysMemory (0, allocsize, NULL);
     gBufSpu [_R] = (int) AllocSysMemory (0, allocsize, NULL);
-    CpuResumeIntr (oldstat);
     PRINTF ((" alloc memory 0x%08x - 0x%08x (%x)\n",
 	     gBufSpu [_L], gBufSpu [_L] + allocsize, allocsize));
     PRINTF ((" alloc memory 0x%08x - 0x%08x (%x)\n",
@@ -147,13 +140,9 @@ AdpcmInit (int allocsize)
 void
 AdpcmQuit (void)
 {
-    int oldstat;
-
     // 各資源の解放
-    CpuSuspendIntr (&oldstat);
     FreeSysMemory ((void*)gBufSpu [_L]);
     FreeSysMemory ((void*)gBufSpu [_R]);
-    CpuResumeIntr (oldstat);
     DeleteThread (gThid);
     gThid = 0;
 #if 0
@@ -315,36 +304,53 @@ AdpcmGetStatus (void)
 #define _ADPCM_MARK_END   0x01
 
 #define _AdpcmSetMarkSTART(a,s) { \
-  *((unsigned char *)((a)+1)) =       (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
-  *((unsigned char *)((a)+0x10+1))   = _ADPCM_MARK_LOOP; \
-  *((unsigned char *)((a)+(s)-0x0f)) = _ADPCM_MARK_LOOP; \
-  FlushDcache (); }
+  *((unsigned char *)((a)+1)) = \
+	(_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
+  *((unsigned char *)((a)+0x10+1)) = \
+	_ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+	_ADPCM_MARK_LOOP; \
+	FlushDcache (); }
 #define _AdpcmSetMarkEND(a,s) { \
-  *((unsigned char *)((a)+1))        =  _ADPCM_MARK_LOOP; \
-  *((unsigned char *)((a)+0x10+1))   =  _ADPCM_MARK_LOOP; \
-  *((unsigned char *)((a)+(s)-0x0f)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); \
-  FlushDcache (); }
+  *((unsigned char *)((a)+1)) = \
+	 _ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+0x10+1)) = \
+	_ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+	(_ADPCM_MARK_LOOP | _ADPCM_MARK_END); \
+	FlushDcache (); }
+
+// ボリューム処理を行わない場合、最終ブロックに施す
+#define _AdpcmSetMarkFINAL(a,s) { \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+	(_ADPCM_MARK_LOOP | _ADPCM_MARK_START | _ADPCM_MARK_END); \
+	FlushDcache (); }
 
 #define _AdpcmSetMarkSTARTpre(a,s) { \
-  *((unsigned char *)((a)+1))      = (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
-  *((unsigned char *)((a)+0x10+1)) =  _ADPCM_MARK_LOOP; }
+  *((unsigned char *)((a)+1)) = \
+	(_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
+  *((unsigned char *)((a)+0x10+1)) = \
+	_ADPCM_MARK_LOOP; \
+	FlushDcache (); }
 #define _AdpcmSetMarkENDpre(a,s) { \
-  *((unsigned char *)((a)+(s)-0x0f)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); }
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+	(_ADPCM_MARK_LOOP | _ADPCM_MARK_END); \
+	FlushDcache (); }
 
 /* internal */
 static int
-_AdpcmDmaInt (int ch, void *common)	// DMA Interrupt
+_AdpcmDmaInt (void* common)	// DMA Interrupt
 {
-    iSignalSema (* (int *) common);
+    iSignalSema (gSem);
     return 1;  // 割り込みを再度許可
 }
 
 /* internal */
-static int
-_AdpcmSpu2Int (int core, void *common)		// SPU2 Interrupt
+static SD_IRQ_CBProc
+_AdpcmSpu2Int (void)		// SPU2 Interrupt
 {
-    iSignalSema (* (int *) common);
-    return 1;	// 割り込みを再度許可
+    iSignalSema (gSem);
+    return (SD_IRQ_CBProc) 1;	// 割り込みを再度許可
 }
 
 /* internal */
@@ -389,11 +395,10 @@ _AdpcmPlay (int status)
 	    gWave [_L].rest -= _BUF_SIZE;
 	    _AdpcmSetMarkSTARTpre (gBufSpu [_L], _BUF_SIZE);
 	    _AdpcmSetMarkENDpre   (gBufSpu [_L], _BUF_SIZE);
-	    FlushDcache ();
 	    gAdpcmStatus = EzADPCM_STATUS_PRELOADING;
 	    sceSdVoiceTrans (0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
 			     (unsigned char *) gBufSpu [_L],
-			     gWave [_L].sb,
+			     (unsigned char *) gWave [_L].sb,
 			     _BUF_SIZE);
 	    break;
 	case EzADPCM_STATUS_PRELOADING:
@@ -402,11 +407,10 @@ _AdpcmPlay (int status)
 	    gWave [_R].rest -= _BUF_SIZE;
 	    _AdpcmSetMarkSTARTpre (gBufSpu [_R], _BUF_SIZE);
 	    _AdpcmSetMarkENDpre   (gBufSpu [_R], _BUF_SIZE);
-	    FlushDcache ();
 	    gAdpcmStatus = EzADPCM_STATUS_PRELOADED;
 	    sceSdVoiceTrans (0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
 			     (unsigned char *) gBufSpu [_R],
-			     gWave [_R].sb,
+			     (unsigned char *) gWave [_R].sb,
 			     _BUF_SIZE);
 	    break;
 	case EzADPCM_STATUS_PRELOADED:
@@ -438,7 +442,7 @@ _AdpcmPlay (int status)
 		gWave [_L].rest -= _BUF_HALF;
 		sceSdVoiceTrans (0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
 				 (unsigned char *) gCurAddr [_L],
-				 (gWave [_L].sb + _BUF_HALF * buf_side),
+				 (unsigned char *) (gWave [_L].sb + _BUF_HALF * buf_side),
 				 _BUF_HALF);
 		break;
 	    case _DO_TRANS_R:
@@ -453,7 +457,7 @@ _AdpcmPlay (int status)
 		gWave [_R].rest -= _BUF_SIZE;
 		sceSdVoiceTrans (0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
 				 (unsigned char *) gCurAddr [_R],
-				 (gWave [_R].sb + _BUF_HALF * buf_side),
+				 (unsigned char *) (gWave [_R].sb + _BUF_HALF * buf_side),
 				 _BUF_HALF);
 		break;
 	    case _DO_WAIT_IRQ:
@@ -579,11 +583,17 @@ sce_adpcm_loop (void)
     sceSifQueueData qd;
     sceSifServeData sd;
 
+    // 割り込み環境の初期化
+    CpuEnableIntr ();
+    EnableIntr (INUM_DMA_4);
+    EnableIntr (INUM_DMA_7);
+    EnableIntr (INUM_SPU);
+    
     // リクエストによってコールされる関数を登録
     sceSifInitRpc (0);
     sceSifSetRpcQueue (&qd, GetThreadId ());
     sceSifRegisterRpc (&sd, EzADPCM_DEV, dispatch, (void*)rpc_arg, NULL, NULL, &qd);
-    PRINTF (("goto adpcm cmd loop\n"));
+    PRINTF(("goto adpcm cmd loop\n"));
     
     // コマンド待ちループ
     sceSifRpcLoop (&qd);

@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
@@ -35,8 +35,7 @@ extern "C" {
 //
 // Definitions for MPEG decoder
 //
-//#define SCE_MPEG_BUFFER_SIZE(w, h)  ((w)*(h)*9/2 + 512 + 24*64)
-#define SCE_MPEG_BUFFER_SIZE(w, h)  ((w)*(h)*9/2 + 512 + 24*64 + 4224 - 280)
+#define SCE_MPEG_BUFFER_SIZE(w, h)  ((w)*(h)*9/2 + 512 + 24*64)
 #define SCE_MPEG_DECODE_ALL	    (-1)
 
 // /////////////////////////////////////////////////////////////////////

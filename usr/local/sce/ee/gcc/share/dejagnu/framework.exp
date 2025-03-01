@@ -582,9 +582,11 @@ proc record_test { type message args } {
     # the output of the test can't be considered correct.
     if { $warning_threshold > 0 && $warncnt >= $warning_threshold
 	 || $perror_threshold > 0 && $errcnt >= $perror_threshold } {
-        verbose "Error/Warning threshold exceeded: \
-                 $errcnt $warncnt (max. $perror_threshold $warning_threshold)"
-        set type UNRESOLVED
+	# Reset these first to prevent infinite recursion.
+	set warncnt 0
+	set errcnt  0
+	unresolved $message
+	return
     }
 
     incr_count $type;
@@ -693,14 +695,14 @@ proc pass { message } {
 # Record that a test has failed
 #
 proc fail { message } {
-    global xfail_flag compiler_conditional_xfail_data
+    global xfail_flag
 
     # if we have a conditional xfail setup, then see if our compiler flags match
-    if [ info exists compiler_conditional_xfail_data ] {
-	if [check_conditional_xfail $compiler_conditional_xfail_data] {
+    if [uplevel {info exists compiler_conditional_xfail_data}] {
+	if [uplevel {check_conditional_xfail $compiler_conditional_xfail_data}] {
 	    set xfail_flag 1
 	}
-	unset compiler_conditional_xfail_data
+	uplevel {unset compiler_conditional_xfail_data}
     }
 
     if $xfail_flag {

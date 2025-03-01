@@ -124,7 +124,7 @@ proc telnet_open { hostname args } {
 		exp_send "n\n";
 		exp_continue;
 	    }
-	    -re {([Aa]dvanced|[Ss]imple) or ([Ss]imple|[Aa]dvanced)} {
+	    -re "(advanced|simple) or (simple|advanced)" {
 		exp_send "simple\n";
 		exp_continue;
 	    }

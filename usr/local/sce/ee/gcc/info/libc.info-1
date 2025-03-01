@@ -143,7 +143,7 @@ exception handler).
 *Portability*
 ANSI C requires `abort'.
 
-   Supporting OS subroutines required: `_exit' and optionally, `write'.
+   Supporting OS subroutines required: `getpid', `kill'.
 
 
 File: libc.info,  Node: abs,  Next: assert,  Prev: abort,  Up: Stdlib
@@ -214,7 +214,7 @@ File: libc.info,  Node: atexit,  Next: atof,  Prev: assert,  Up: Stdlib
 
 *Synopsis*
      #include <stdlib.h>
-     int atexit (void (*FUNCTION)(void));
+     int atexit(void (*FUNCTION)(void);
    *Description*
 You can use `atexit' to enroll functions in a list of functions that
 will be called when your program terminates normally.  The argument is
@@ -552,10 +552,10 @@ File: libc.info,  Node: __env_lock,  Next: gvcvt,  Prev: ecvt,  Up: Stdlib
 
 *Synopsis*
      #include "envlock.h"
-     void __env_lock (struct _reent *REENT);
-     void __env_unlock (struct _reent *REENT);
+     void __env_lock (void *REENT);
+     void __env_unlock (void *REENT);
    *Description*
-The `setenv' family of routines call these functions when they need to
+The `stenv' family of routines call these functions when they need to
 modify the environ variable.  The version of these routines supplied in
 the library does not do anything.  If multiple threads of execution can
 call `setenv', or if `setenv' can be called reentrantly, then you need
@@ -610,7 +610,7 @@ File: libc.info,  Node: getenv,  Next: labs,  Prev: exit,  Up: Stdlib
      char *getenv(const char *NAME);
    *Description*
 `getenv' searches the list of environment variable names and values
-(using the global pointer "`char **environ'") for a variable whose name
+(using the global pointer ``char **environ'') for a variable whose name
 matches the string at NAME.  If a variable name matches, `getenv'
 returns a pointer to the associated value.
 
@@ -843,8 +843,8 @@ File: libc.info,  Node: __malloc_lock,  Next: mbstowcs,  Prev: mallinfo,  Up: St
 
 *Synopsis*
      #include <malloc.h>
-     void __malloc_lock (struct _reent *REENT);
-     void __malloc_unlock (struct _reent *REENT);
+     void __malloc_lock (void *REENT);
+     void __malloc_unlock (void *REENT);
    *Description*
 The `malloc' family of routines call these functions when they need to
 lock the memory pool.  The version of these routines supplied in the
@@ -1234,7 +1234,7 @@ File: libc.info,  Node: system,  Next: wcstombs,  Prev: strtoul,  Up: Stdlib
 Use `system' to pass a command string `*S' to `/bin/sh' on your system,
 and wait for it to finish executing.
 
-   Use "`system(NULL)'" to test whether your system has `/bin/sh'
+   Use ``system(NULL)'' to test whether your system has `/bin/sh'
 available.
 
    The alternate function `_system_r' is a reentrant version.  The

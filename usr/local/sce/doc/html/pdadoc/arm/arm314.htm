@@ -1,0 +1,1312 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm314</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm313.htm">[前]</A> <A HREF="arm315.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.14 <A NAME="anchor2721534"></A>命令セットの拡張</H3>
+
+<BLOCKQUOTE>
+  <P>ARM命令セットは次の4つの領域で拡張できます。</P>
+  <UL>
+    <LI><A NAME="anchor2330318"></A>算術命令の拡張スペース
+    <LI>制御命令の拡張スペース
+    <LI>ロード/ストア命令の拡張スペース
+    <LI>コプロセッサ命令の拡張スペース
+  </UL>
+  <P>現在、これらの命令は未定義です（これらは未定義の命令例外を発生します）。これらアドレス空間は、今後新しい命令の追加に使用されます。</P>
+</BLOCKQUOTE>
+
+<H4>3.14.1 算術命令の拡張スペース</H4>
+
+<BLOCKQUOTE>
+  <P>次のオペコードでの命令は算術命令の拡張スペースです。</P>
+  <BLOCKQUOTE>
+    <PRE>opcode[27:24]	=	0000
+opcode[7:4]	=	0b1001</PRE>
+  </BLOCKQUOTE>
+  <P>指定されたフィールド名はガイドラインにすぎません。これは実装を容易にすると思われます。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024119"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024121"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024123"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024125"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024127"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024129"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024131"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024133"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024135"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024137"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024139"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024141"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024143"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024145"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024147"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024149"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024151"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024153"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024155"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024157"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024159"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024161"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024163"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024165"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024167"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024169"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024171"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024173"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024175"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024177"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024179"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024181"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024183"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024191"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024193"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024195"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024197"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024199"></A><BR>
+    op1</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024207"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024215"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024223"></A><BR>
+    Rs</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024231"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024233"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024235"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1024237"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1024239"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H5>MULとMLA</H5>
+
+<BLOCKQUOTE>
+  <P>乗算と積和演算（MULとMLA）命令はop1値0～3を使用します。<TABLE WIDTH="450" BORDER="1"
+  CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="20%">
+      <B>Rn</B></TD>
+      <TD WIDTH="80%">
+      デスティネーション・レジスタを指定します。</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="20%">
+      <B>RmとRs</B></TD>
+      <TD WIDTH="80%">
+       ソース・レジスタを指定します。</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="20%">
+      <B>Rd</B></TD>
+      <TD WIDTH="80%">
+       累積値を指定します。</TD>
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<H5>UMULL、UMLAL、SMULL、SMLAL</H5>
+
+<BLOCKQUOTE>
+  <P>符号付き/符号なし複数ロングと乗算累積ロング（UMULL、UMLAL、SMULL、SMLSL）命令はop1値8～15を使用します。<TABLE
+  WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="21%">
+      <B>RnとRd</B></TD>
+      <TD WIDTH="79%">
+       デスティネーション・レジスタを指定します。</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="21%">
+      <B>RmとRs</B></TD>
+      <TD WIDTH="79%">
+       ソース・レジスタを指定します。</TD>
+    </TR>
+  </TABLE><BR>
+  </P>
+</BLOCKQUOTE>
+
+<H5>その他のオペコード</H5>
+
+<BLOCKQUOTE>
+  <P>算術命令の拡張スペースにおけるその他全オペコードの意味は次のとおりです。</P>
+  <UL>
+    <LI>ARMアーキテクチャ4では未定義
+    <LI>アーキテクチャ初期バージョンでは予測不可能
+  </UL>
+</BLOCKQUOTE>
+
+<H4>3.14.2 <A NAME="anchor3164100"></A>制御命令の拡張スペース</H4>
+
+<BLOCKQUOTE>
+  <PRE>opcode[27:26]	=	0b00
+opcode[24:23]	=	0b10
+opcode[20]  	=	0</PRE>
+  <P>この条件を満たし、かつ、</P>
+  <PRE>opcode[25]	=	0
+opcode[7]	=	1
+opcode[4]	=	1</PRE>
+  <P>でない命令は、制御命令の拡張スペースです。指定されたフィールド名は、実装を容易にすると思われるガイドラインにすぎません。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999943"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999945"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999947"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999949"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999951"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999953"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999955"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999957"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999959"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999961"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999963"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999965"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999967"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999969"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999971"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999973"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999975"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999977"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999979"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999981"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999983"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999985"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999987"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999989"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999991"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999993"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999995"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999997"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="999999"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000001"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000003"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000005"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000007"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000015"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000017"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000019"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000021"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000023"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="1000025"></A><BR>
+    op1</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000029"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000031"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000039"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000047"></A><BR>
+    Rs</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="1000055"></A><BR>
+    op2</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000061"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000063"></A><BR>
+    Rm</TD>
+     
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000071"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000079"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000081"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000083"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000085"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000087"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="1000089"></A><BR>
+    op1</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000093"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000095"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000103"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000111"></A><BR>
+    Rs</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000119"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="1000121"></A><BR>
+    op2</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000125"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000127"></A><BR>
+    Rm</TD>
+     
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000135"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000143"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000145"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000147"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000149"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000151"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="1000153"></A><BR>
+    op1</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000157"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000159"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000167"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000175"></A><BR>
+    rotate_imm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="1000183"></A><BR>
+    8_bit_immediate</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H5>MRS</H5>
+
+<BLOCKQUOTE>
+  <P>汎用レジスタ（MRS）へのムーブ・ステータス・レジスタ命令は、以下の通りです。</P>
+  <PRE>opcode	 [25]	=	0
+opcode	[19:16]	=	0b1111
+opcode[11:0]	     =	0</PRE>
+  <P>op1=0b00とop1=0b10の両方を使用します。<BR>
+  Rdはデスティネーション・レジスタを指定します。</P>
+</BLOCKQUOTE>
+
+<H5>MSR</H5>
+
+<BLOCKQUOTE>
+  <P>汎用レジスタをステータス・レジスタへ移動する命令（MSR）は、以下の通りです。</P>
+  <PRE>opcode[25] 	=	0
+opcode[15:12]	=	0b1111
+opcode[11:4]	=	0</PRE>
+  <P>op1=0b01とop1=0b11の両方を使用します。<BR>
+  Rm ソース・レジスタを指定します。<BR>
+  opcode[19:16] ライト・マスクを保持します。</P>
+  <P>イミディエイト値をステータス・レジスタ（MSR）にムーブする命令は、以下の通りです。</P>
+  <PRE>opcode[25] 	=	1
+opcode[15:12]	=	0b1111</PRE>
+  <P>また、op1 = 0b01とop1 ＝ 0b11の両方を使用します。<BR>
+  Rm ソース・レジスタを指定します。<BR>
+  opcode[11:0] イミディエイト・オペランドを指定します。<BR>
+  opcode[19:16] ライト・マスクを保持します。</P>
+</BLOCKQUOTE>
+
+<H5>BX</H5>
+
+<BLOCKQUOTE>
+  <P>分岐と交換命令セット（BX）命令は、次をセットは以下の通りです。</P>
+  <PRE>opcode[25]	     =	0
+opcode[19:8]	=	0b111111111111
+opcode[7:4]	=	0b0001</PRE>
+  <P>また、 op1 = 0b01を使用します。<BR>
+  Rmを使用してソース・レジスタを指定します。</P>
+</BLOCKQUOTE>
+
+<H5>その他のオペコード</H5>
+
+<BLOCKQUOTE>
+  <P>制御命令の拡張スペースにおけるその他全オペコードの意味は、次のとおりです。<BR>
+  ARMアーキテクチャ4では未定義<BR>
+  アーキテクチャの初期バージョンでは予測不可能</P>
+</BLOCKQUOTE>
+
+<H4>3.14.3 <A NAME="anchor1480603"></A>ロード/ストア命令の拡張スペース</H4>
+
+<BLOCKQUOTE>
+  <PRE>opcode[27:25]  =	0b000
+opcode[7]      =	1
+opcode[4]      =	1</PRE>
+  <P>この条件を満たし、</P>
+  <PRE>opcode[24] 	=	0
+opcode[6:5]	=	0</PRE>
+  <P>でないものは、ロード/ストア命令の拡張スペースです。指定されたフィールド名は、実装を容易にすると思われるガイドラインにすぎません。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015684"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015686"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015688"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015690"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015692"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015694"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015696"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015698"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015700"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015702"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015704"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015706"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015708"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015710"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015712"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015714"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015716"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015718"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015720"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015722"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015724"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015726"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015728"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015730"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015732"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015734"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015736"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015738"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015740"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015742"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015744"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015746"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015748"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015756"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015758"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015760"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015762"></A><BR>
+    P</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015764"></A><BR>
+    U</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015766"></A><BR>
+    B</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015768"></A><BR>
+    W</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015770"></A><BR>
+    L</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015772"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015780"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015788"></A><BR>
+    Rs</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015796"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="1015798"></A><BR>
+    op1</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1015802"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1015804"></A><BR>
+    Rm</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H5>SWPとSWPB</H5>
+
+<P>スワップとスワップ・バイト（SWPとSWPB）命令セットは以下の通りです。</P>
+
+<BLOCKQUOTE>
+  <PRE>opcode[24:23]	=	0b10
+opcode[21:20]	=	0b00
+opcode[11:4]	=	0b00001001</PRE>
+  <P><B>構文説明：</B></P>
+  <BLOCKQUOTE>
+    <P><B></B><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="24%">
+        <B>Rn</B></TD>
+        <TD WIDTH="76%">
+         ベース・アドレスを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="24%">
+        <B>Rd</B></TD>
+        <TD WIDTH="76%">
+         デスティネーション・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="24%">
+        <B>Rm</B></TD>
+        <TD WIDTH="76%">
+         ソース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="24%">
+        <B>Rd</B></TD>
+        <TD WIDTH="76%">
+         デスティネーションを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="24%">
+        <B>Opcode[22]</B></TD>
+        <TD WIDTH="76%">
+         バイト転送を示します。</TD>
+      </TR>
+    </TABLE><BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H5>LDRH</H5>
+
+<BLOCKQUOTE>
+  <P>ハーフワードのロード（LDRH）命令は以下の通りです。</P>
+  <PRE>opcode[20]	=	1
+op1	     =	0b01</PRE>
+  <P><B>構文説明</B>：</P>
+  <BLOCKQUOTE>
+    <P><B></B><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="29%">
+        <B>Bビット</B></TD>
+        <TD WIDTH="71%">
+        レジスタとイミディエイト・オフセットを区別します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="29%">
+        <B>P、U、Wビット</B></TD>
+        <TD WIDTH="71%">
+         アドレッシング・モードを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="29%">
+        <B>Rn</B></TD>
+        <TD WIDTH="71%">
+         ベース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="29%">
+        <B>Rm</B></TD>
+        <TD WIDTH="71%">
+         レジスタ・オフセットを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="29%">
+        <B>RsとRm</B></TD>
+        <TD WIDTH="71%">
+        イミディエイト・オフセットを指定します。</TD>
+      </TR>
+    </TABLE><BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H5>LDRSH</H5>
+
+<BLOCKQUOTE>
+  <P>符号付きハーフワードのロード（LDRSH）命令は以下の通りです。</P>
+  <PRE>opcode[20]	=	1
+op1		=	0b11</PRE>
+  <P><B>構文説明：</B></P>
+  <BLOCKQUOTE>
+    <P><B></B><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="27%">
+        <B>Bビット</B></TD>
+        <TD WIDTH="73%">
+         レジスタとイミディエイト・オフセットを区別します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>P、U、Wビット</B></TD>
+        <TD WIDTH="73%">
+         アドレッシング・モードを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rn</B></TD>
+        <TD WIDTH="73%">
+         ベース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rd</B></TD>
+        <TD WIDTH="73%">
+         デスティネーション・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rm</B></TD>
+        <TD WIDTH="73%">
+         レジスタ・オフセットを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>RsとRm</B></TD>
+        <TD WIDTH="73%">
+         イミディエイト・オフセットを指定します。</TD>
+      </TR>
+    </TABLE><BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H5>LDRSB</H5>
+
+<BLOCKQUOTE>
+  <P>符号付きハーフワードのロード（LDRSB）命令は以下の通りです。</P>
+  <PRE>opcode[20]	=	1
+op1		=	0b10</PRE>
+  <P><B>構文説明：</B></P>
+  <BLOCKQUOTE>
+    <P><B></B><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="26%">
+        <B>Bビット</B></TD>
+        <TD WIDTH="74%">
+         レジスタとイミディエイト・オフセットを区別します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="26%">
+        <B>P、U、Wビット</B></TD>
+        <TD WIDTH="74%">
+         アドレッシング・モードを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="26%">
+        <B>Rn</B></TD>
+        <TD WIDTH="74%">
+         ベース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="26%">
+        <B>Rd</B> </TD>
+        <TD WIDTH="74%">
+        デスティネーション・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="26%">
+        <B>Rm</B></TD>
+        <TD WIDTH="74%">
+         レジスタ・オフセットを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="26%">
+        <B>RsとRm</B></TD>
+        <TD WIDTH="74%">
+         イミディエイト・オフセットを指定します。</TD>
+      </TR>
+    </TABLE><BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H5>STRH</H5>
+
+<BLOCKQUOTE>
+  <P>ハーフワードのストア（STRH）命令は以下の通りです。</P>
+  <P>opcode[20] = 0<BR>
+  op1 = 0b01</P>
+  <P><B>構文説明：</B></P>
+  <BLOCKQUOTE>
+    <P><B></B><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="27%">
+        <B>Bビット</B></TD>
+        <TD WIDTH="73%">
+         レジスタとイミディエイト・オフセットを区別します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>P、U、Wビット</B></TD>
+        <TD WIDTH="73%">
+         アドレッシング・モードを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rn</B></TD>
+        <TD WIDTH="73%">
+         ベース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rd</B></TD>
+        <TD WIDTH="73%">
+         ソース・レジスタを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>Rm</B></TD>
+        <TD WIDTH="73%">
+         レジスタ・オフセットを指定します。</TD>
+      </TR>
+      <TR>
+        <TD WIDTH="27%">
+        <B>RsとRm</B></TD>
+        <TD WIDTH="73%">
+         イミディエイト・オフセットを指定します。</TD>
+      </TR>
+    </TABLE><BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H5>その他のオペコード</H5>
+
+<BLOCKQUOTE>
+  <P>ロード/ストア命令の拡張スペースにおけるその他全オペコードの意味は次のとおりです。</P>
+  <UL>
+    <LI>ARMアーキテクチャ4では未定義
+    <LI>アーキテクチャの初期バージョンでは予測不可能
+  </UL>
+</BLOCKQUOTE>
+
+<H4>3.14.4 <A NAME="anchor3198354"></A>コプロセッサ命令の拡張スペース</H4>
+
+<BLOCKQUOTE>
+  <P>次のオペコードのある命令はコプロセッサ命令の拡張スペースです。</P>
+  <PRE>opcode[27:23]	=	0b11000
+opcode[21]	     =	0</PRE>
+  <P>指定されたフィールド名はガイドラインにすぎません。これは実装を容易にすると思われます。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000399"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000401"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000403"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000405"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000407"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000409"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000411"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000413"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000415"></A><B>23</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000417"></A><B>22</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000419"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000421"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000423"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000425"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000427"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000429"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000431"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000433"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000435"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000437"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000439"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000441"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000443"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000445"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000447"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000449"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000451"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000453"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000455"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000457"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000459"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000461"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000463"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000471"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000473"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000475"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000477"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000479"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000481"></A><BR>
+    X</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000483"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1000485"></A><BR>
+    X</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000487"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000495"></A><BR>
+    CRd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1000503"></A><BR>
+    cp_num</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="1000511"></A><BR>
+    offset</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P>コプロセッサ命令の拡張スペースでの命令の意味は次のとおりです。</P>
+  <UL>
+    <LI>ARMアーキテクチャ4では未定義
+    <LI>アーキテクチャの初期バージョンでは予測不可能
+  </UL>
+</BLOCKQUOTE>
+
+<H4>3.14.5 <A NAME="anchor507185"></A>未定義の命令スペース</H4>
+
+<BLOCKQUOTE>
+  <P>次のオペコードのある命令は未定義命令スペースです。</P>
+  <PRE>opcode[27:25]	=	0b011
+opcode[4]	     =	1
+
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0"><TR><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025494"></A><B>31</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025496"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD 
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025498"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025500"></A><B>28</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025502"></A><B>27</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025504"></A><B>26</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025506"></A><B>25</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025508"></A><B>24</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025510"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025512"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025514"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025516"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025518"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025520"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025522"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025524"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025526"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025528"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025530"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025532"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025534"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025536"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025538"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025540"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025542"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025544"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025546"></A><B>5</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025548"></A><B>4</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025550"></A><B>3</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025552"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025554"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025556"></A><B>0</B></TD> </TR>
+<TR><TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+      <A NAME="1025558"></A><BR>
+      cond</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025566"></A><BR>
+      0</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025568"></A><BR>
+      1</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025570"></A><BR>
+      1</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025572"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025574"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025576"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025578"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025580"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025582"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025584"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025586"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025588"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025590"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025592"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025594"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025596"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025598"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025600"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025602"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025604"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025606"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025608"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025610"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025612"></A><BR>
+      1</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025614"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025616"></A><BR>
+      x</TD><TD ALIGN="CENTER"
+VALIGN="TOP">
+      <A NAME="1025618"></A><BR>
+      x</TD><TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1025620"></A><BR>
+      x</TD></TR></TABLE></PRE>
+  <P>未定義命令スペースでの命令の意味は、ARMアーキテクチャの全バージョンにおいて未定義です。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033113"></A><B>31</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033115"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033117"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033119"></A><B>28</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033121"></A><B>27</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033123"></A><B>26</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033125"></A><B>25</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033127"></A><B>24</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033129"></A><B>23</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033131"></A><B>22</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033133"></A><B>21</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033135"></A><B>20</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033137"></A><B>19</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033139"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033141"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033143"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033145"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033147"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033149"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033151"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033153"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033155"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033157"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033159"></A><B>8</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033161"></A><B>7</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033163"></A><B>6</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033165"></A><B>5</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033167"></A><B>4</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033169"></A><B>3</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033171"></A><B>2</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033173"></A><B>1</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033175"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+      <A NAME="1033177"></A><BR>
+      cond</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033185"></A><BR>
+      0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033187"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033189"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033191"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033193"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033195"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033197"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033199"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033201"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033203"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033205"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033207"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033209"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033211"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033213"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033215"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033217"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033219"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033221"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033223"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033225"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033227"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033229"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033231"></A><BR>
+      1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033233"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033235"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033237"></A><BR>
+      x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="1033239"></A><BR>
+      x</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm313.htm">[前]</A> <A HREF="arm315.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

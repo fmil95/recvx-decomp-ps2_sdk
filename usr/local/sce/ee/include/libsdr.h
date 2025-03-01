@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5.3
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -14,8 +14,7 @@
 #ifndef _LIBSDR_H_
 #define _LIBSDR_H_
 
-#include <sdmacro.h>	/* common/include */
-#include <sdrcmd.h>	/* common/include */
+#include <sdmacro.h>  // iop/include
 #include <sifrpc.h>
 
 #ifdef __cplusplus

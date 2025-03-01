@@ -1,0 +1,552 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                           CSL MIDI stream生成
+                          ====================
+
+    
+
+ 1 構造体
+==========
+
+=========================================================================
+sceMSInHsMsg                                                     [構造体]
+=========================================================================
+                                                       拡張MIDIメッセージ
+[構造]
+        typedef struct {
+        	unsigned char	d[7];
+        } sceMSInHsMsg;
+        
+[解説]
+        拡張MIDIメッセージ用構造体。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceMSIn_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceMSIn_Init(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        module context の正当性の検査のみを行なう。
+        
+
+=========================================================================
+sceMSIn_MakeHsExpression                                           [関数]
+=========================================================================
+                                               拡張 Expression作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsExpression(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id,
+        	unsigned char expression
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        expression	Expression Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張 Voice Control Message の Expression Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsMsg1                                                 [関数]
+=========================================================================
+                                 拡張Pre Voice Control Message作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsMsg1(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char op_code,
+        	unsigned char ch,
+        	unsigned char 1st_data,
+        	unsigned char 2nd_data
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        op_code		命令コード
+        ch		チャンネル
+        1st_data		命令依存データ
+        2nd_data	命令依存データ
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張Pre Voice Control Message 作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsMsg2                                                 [関数]
+=========================================================================
+                                     拡張Voice Control Message作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsMsg2(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char op_code,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id,
+        	unsigned char 1st_data,
+        	unsigned char 2nd_data
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        op_code		命令コード
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        1st_data		命令依存データ
+        2nd_data	命令依存データ
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張Voice Control Message 作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsNoteOff                                              [関数]
+=========================================================================
+                                                 拡張 Note Off作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsNoteOff(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張 Voice Control Message の Note Off Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsNoteOn                                               [関数]
+=========================================================================
+                                                  拡張 Note On作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsNoteOn(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id,
+        	unsigned char velocity
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        velocity		velocity Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張 Voice Control Message の Note On Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsPanpot                                               [関数]
+=========================================================================
+                                                   拡張 Panpot作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsPanpot(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id,
+        	unsigned char panpot
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        panpot		Panpot Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張 Voice Control Message の Panpot Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsPitchBend                                            [関数]
+=========================================================================
+                                               拡張 Pitch Bend作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsPitchBend(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char key,
+        	unsigned char id,
+        	unsigned char lsb_data,
+        	unsigned char msb_data
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        key		キー番号
+        id		ＩＤ番号
+        lsb_data		Pitch Bend LSB Data
+        msb_data	Pitch Bend MSB Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張 Voice Control Message の PitchBend Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsPreExpression                                        [関数]
+=========================================================================
+                                            拡張Pre Expression作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsPreExpression(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char expression
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        expression	Expression Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張Pre Voice Control Message の Expression Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsPrePanpot                                            [関数]
+=========================================================================
+                                                拡張Pre Panpot作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsPrePanpot(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char panpot
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        panpot		Panpot Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張Pre Voice Control Message の Panpot Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeHsPrePitchBend                                         [関数]
+=========================================================================
+                                             拡張Pre PitchBend作成(MACRO)
+[形式]
+        void sceMSIn_MakeHsPrePitchBend(
+        	sceMSInHsMsg *hs_message,
+        	unsigned char ch,
+        	unsigned char lsb_data,
+        	unsigned char msb_data
+        )
+        
+[引数]
+        hs_message	拡張MIDIメッセージのアドレス
+        ch		チャンネル
+        lsb_data		Pitch Bend LSB Data
+        msb_data	Pitch Bend MSB Data
+        
+[返り値]
+        なし
+        
+[解説]
+        拡張Pre Voice Control Message の Pitch Bend Message作成用マクロ。
+        
+
+=========================================================================
+sceMSIn_MakeMsg / 3                                                [関数]
+=========================================================================
+                           MIDI メッセージを unsigned int にパック(MACRO)
+[形式]
+        unsigned int sceMSIn_MakeMsg(
+        	unsigned int status,
+        	unsigned int 1st_data_byte,
+        	unsigned int 2nd_data_byte
+        );
+        
+        unsigned int sceMSIn_MakeMsg3(
+        	unsigned int status,
+        	unsigned int 1st_data_byte,
+        	unsigned int 2nd_data_byte
+        );
+        
+[引数]
+        status		MIDI ステータス
+        1st_data_byte	MIDI 1st data byte
+        2nd_data_byte	MIDI 2nd data byte
+        
+[返り値]
+        パックされた MIDI メッセージ
+        
+[解説]
+        MIDI メッセージを unsigned int にパックする。
+        返り値を sceMSIn_MakeMsg の引数として使用する。
+        
+
+=========================================================================
+sceMSIn_MakeMsg2                                                   [関数]
+=========================================================================
+                           MIDI メッセージを unsigned int にパック(MACRO)
+[形式]
+        unsigned int sceMSIn_MakeMsg2(
+        	unsigned int status,
+        	unsigned int 1st_data_byte
+        )
+        
+[引数]
+        status		MIDI ステータス
+        1st_data_byte	MIDI 1st data byte
+        
+[返り値]
+        パックされた MIDI メッセージ
+        
+[解説]
+        MIDI メッセージを unsigned int にパックする。
+        返り値を sceMSIn_MakeMsg の引数として使用する。
+        2nd data byte を持たない MIDI メッセージ用でsceMSIn_MakeMsg また
+        は
+        sceMSIn_MakeMsg3 の2nd_data_byte == 0 の場合と結果は同じ。
+        
+
+=========================================================================
+sceMSIn_NoteOff                                                    [関数]
+=========================================================================
+                    出力ストリームにノートオフメッセージを書き込む(MACRO)
+[形式]
+        int sceMSIn_NoteOff(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_ch,
+        	unsigned int key_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        midi_ch		MIDI チャンネル
+        key_number	ノート番号
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにノートオフメッセージを書き込む。
+        
+
+=========================================================================
+sceMSIn_NoteOn                                                     [関数]
+=========================================================================
+                    出力ストリームにノートオンメッセージを書き込む(MACRO)
+[形式]
+        int sceMSIn_NoteOn(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_ch,
+        	unsigned int key_number,
+        	unsigned int velocity
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        midi_ch		MIDI チャンネル
+        key_number	ノート番号
+        velocity		ベロシティ（打鍵強度）
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにノートオンメッセージを書き込む。
+        
+
+=========================================================================
+sceMSIn_NoteOnEx                                                   [関数]
+=========================================================================
+                    出力ストリームにノートオンメッセージを書き込む(MACRO)
+[形式]
+        int sceMSIn_NoteOnEx(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_ch,
+        	unsigned int key_number,
+        	unsigned int velocity,
+        	unsigned int prg_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        midi_ch		MIDI チャンネル
+        key_number	ノート番号
+        velocity		ベロシティ（打鍵強度）
+        prg_number	プログラム番号
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにプログラムチェンジメッセージとノー
+        トオンメッセージを書
+        き込む。
+        
+
+=========================================================================
+sceMSIn_ProgramChange                                              [関数]
+=========================================================================
+            出力ストリームにプログラムチェンジメッセージを書き込む(MACRO)
+[形式]
+        int sceMSIn_ProgramChange(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_ch,
+        	unsigned int prg_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        midi_ch		MIDI チャンネル
+        prg_number	プログラム番号
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにプログラムチェンジメッセージを書き
+        込む。
+        
+
+=========================================================================
+sceMSIn_PutExcMsg                                                  [関数]
+=========================================================================
+                     出力ストリームにエクスクルーシブメッセージを書き込む
+[形式]
+        int sceMSIn_PutExcMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char *exc_data_addr,
+        	unsigned int exc_data_length
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        exc_data_addr	エクスクルーシブデータのアドレス
+        exc_data_length	エクスクルーシブデータのサイズ
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにエクスクルーシブメッセージを書き込
+        む。
+        エクスクルーシブデータは 0xF0 から始まり 0xF7 で終わらなければな
+        らない。
+        
+
+=========================================================================
+sceMSIn_PutHsMsg                                                   [関数]
+=========================================================================
+                             出力ストリームに拡張MIDIメッセージを書き込む
+[形式]
+        int sceMSIn_PutHsMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	sceMSInHsMsg *hs_message
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        hs_message	拡張MIDIメッセージのアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファに拡張MIDIメッセージを書き込む。
+        
+
+=========================================================================
+sceMSIn_PutMsg                                                     [関数]
+=========================================================================
+                                 出力ストリームにMIDIメッセージを書き込む
+[形式]
+        int sceMSIn_PutMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_message
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	出力ポート番号
+        midi_message:	MIDI メッセージ
+        			bit 0-7: status
+        			bit 8-15: 1st data byte
+        			bit 16-23: 2nd data byte
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された出力ポートバッファにMIDIメッセージを書き込む。

@@ -72,7 +72,7 @@ builtin types do not specify everything that a debugger would need to
 know about the type--in some cases they merely specify enough
 information to distinguish the type from other types.
 
-   The traditional way to define builtin types is convoluted, so new
+   The traditional way to define builtin types is convolunted, so new
 ways have been invented to describe them.  Sun's `acc' uses special
 builtin type descriptors (`b' and `R'), and IBM uses negative type
 numbers.  GDB accepts all three ways, as of version 4.8; dbx just
@@ -81,7 +81,7 @@ formats.  The following sections describe each of these formats.
 
 * Menu:
 
-* Traditional Builtin Types::	Put on your seat belts and prepare for kludgery
+* Traditional Builtin Types::	Put on your seatbelts and prepare for kludgery
 * Builtin Type Descriptors::	Builtin types with special type descriptors
 * Negative Type Numbers::	Builtin types using negative type numbers
 
@@ -229,7 +229,7 @@ These are the type descriptors to define builtin types:
           These are for complex numbers.  A comment in the GDB source
           describes them as Fortran `complex', `double complex', and
           `complex*16', respectively, but what does that mean?  (i.e.,
-          Single precision?  Double precision?).
+          Single precision?  Double precison?).
 
     `6 (NF_LDOUBLE)'
           Long double.  This should probably only be used for Sun format
@@ -564,8 +564,7 @@ included a trailing semicolon (*note Arrays::.).
      the argument list.
 
 `a REGISTER-NUMBER'
-     The bound is passed by reference in register number
-     REGISTER-NUMBER.
+     The bound is pased by reference in register number REGISTER-NUMBER.
 
 `t REGISTER-NUMBER'
      The bound is passed by value in register number REGISTER-NUMBER.
@@ -744,9 +743,9 @@ Structures
 
    The following source code declares a structure tag and defines an
 instance of the structure in global scope. Then a `typedef' equates the
-structure tag with a new type.  Separate stabs are generated for the
+structure tag with a new type.  Seperate stabs are generated for the
 structure tag, the structure `typedef', and the structure instance.  The
-stabs for the tag and the `typedef' are emitted when the definitions are
+stabs for the tag and the `typedef' are emited when the definitions are
 encountered.  Since the structure elements are not initialized, the
 stab and code for the structure variable itself is located at the end
 of the program in the bss section.
@@ -780,10 +779,10 @@ defined types.  For these, the type following the `NAME:' part of the
 element description is a simple type reference.  The other two structure
 elements are new types.  In this case there is a type definition
 embedded after the `NAME:'.  The type definition for the array element
-looks just like a type definition for a stand-alone array.  The
-`s_next' field is a pointer to the same kind of structure that the
-field is an element of.  So the definition of structure type 16
-contains a type definition for an element which is a pointer to type 16.
+looks just like a type definition for a standalone array.  The `s_next'
+field is a pointer to the same kind of structure that the field is an
+element of.  So the definition of structure type 16 contains a type
+definition for an element which is a pointer to type 16.
 
    If a field is a static member (this is a C++ feature in which a
 single variable appears to be a field of every structure of a given
@@ -847,7 +846,7 @@ start.
 for the procedure in which it is defined.  The stab type is `N_LSYM'.
 This would seem to imply that the union type is file scope, like the
 struct type `s_tag'.  This is not true.  The contents and position of
-the stab for `u_type' do not convey any information about its procedure
+the stab for `u_type' do not convey any infomation about its procedure
 local scope.
 
      # 128 is N_LSYM
@@ -1105,7 +1104,7 @@ GNU C++ Stabs
 * Protections::
 * Method Modifiers::
 * Virtual Methods::
-* Inheritance::
+* Inheritence::
 * Virtual Base Classes::
 * Static Members::
 
@@ -1225,7 +1224,7 @@ then the `N_LSYM' would signify a local variable.
    A stab describing a C++ class type is similar in format to a stab
 describing a C struct, with each class member shown as a field in the
 structure.  The part of the struct format describing fields is expanded
-to include extra information relevant to C++ class members.  In
+to include extra information relevent to C++ class members.  In
 addition, if the class has multiple base classes or virtual functions
 the struct format outside of the field parts is also augmented.
 
@@ -1257,7 +1256,7 @@ operator name such as `+' or `+='.  The name ends with a period, and
 any characters except the period can occur in the OPERATOR-NAME string.
 
    The next part of the method description represents the arguments to
-the method, preceded by a colon and ending with a semi-colon.  The
+the method, preceeded by a colon and ending with a semi-colon.  The
 types of the arguments are expressed in the same way argument types are
 expressed in C++ name mangling.  In this example an `int' and a `char'
 map to `ic'.

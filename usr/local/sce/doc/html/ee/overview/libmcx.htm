@@ -1,0 +1,780 @@
+<HTML>
+<HEAD>
+<TITLE> PDAライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libmcx.htm" SELECTED> PDAライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+PDAライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリの概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> サンプルプログラム<BR></A><BR>
+    <A HREF="#Heading4_1_4"> 関連ドキュメント<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 "PlayStation"におけるPDAライブラリとの違い<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> PDAアプリケーションフラグ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 PDA<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ハードウェア<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 ファイルの作成規定<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> ファイル名<BR></A><BR>
+    <A HREF="#Heading4_4_2"> ファイルヘッダ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_5">  5 アイコン<BR></A>
+    <UL>
+    <A HREF="#Heading4_5_1"> アイコンの種類<BR></A><BR>
+    <A HREF="#Heading4_5_2"> ファイル一覧機能<BR></A><BR>
+    <A HREF="#Heading4_5_3"> ゲーム選択機能<BR></A><BR>
+    <A HREF="#Heading4_5_4"> アイコン用エントリテーブル、アイコンイメージ配置上の注意<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_6">  6 PDA使用手順の概略<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> PDAの抜き差し確認<BR></A><BR>
+    <A HREF="#Heading4_6_2"> 初期化（マルチタップを使わない場合）<BR></A><BR>
+    <A HREF="#Heading4_6_3"> 初期化（マルチタップを使う場合）<BR></A><BR>
+    <A HREF="#Heading4_6_4"> 処理登録と完了待ち<BR></A><BR>
+    <A HREF="#Heading4_6_5"> PDAのフォーマット<BR></A><BR>
+    <A HREF="#Heading4_6_6"> PDAアプリケーションの保存<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリの概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    EE上でPDA（ポケットステーション）を制御するためのライブラリとして、libmcxが提供されています。libmcxはPDA情報の取得・更新、ユーザインターフェイス情報の取得・更新、メモリアクセスなどを支援します。<BR>
+    アプリケーションの起動・終了PDAへのアクセスはシリアル通信によって行われ、処理内容にもよりますが数フレーム～数十フレームの時間を要します。このため、libmcxのほとんどの関数は非同期処理を行います。関数が呼び出されたときには処理の登録のみを行って直ちにリターンし、処理の終了確認・ステータスの取得は別途sceMcxSync()を呼び出して行う仕組みになっています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libmcxに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libmcx.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libmcx.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">モジュールファイル</TD>
+<TD valign="TOP">sio2man.irx<BR>mtapman.irx（マルチタップ使用時のみ）<BR>mcxserv.irx<BR>mcxman.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libmcxを使用するサンプルプログラムとして、次のものがあります。<BR>
+    ee/sample/mcx/basic<BR>
+    ポケットステーションの基本動作を確認できるサンプルプログラム<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>関連ドキュメント</B>
+</A>
+</H3>
+<blockquote>
+    PDA関連のドキュメントとして以下のファイルがあります。こちらも合わせて参照してください。<BR>
+    「PDA仕様書」<BR>
+    「PDAカーネル仕様書」<BR>
+    「ARM Architecture Reference Manual」<BR>
+    「ファイルシステム(FAT)」<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>"PlayStation"におけるPDAライブラリとの違い</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>PDAアプリケーションフラグ</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation"のPDAライブラリにあるMcxExecFlag()で扱っていた「PDAアプリケーションフラグ」は、"PlayStation 2"ではlibmcのファイル属性として扱われています。<BR>
+    すなわち、"PlayStation"のPDAライブラリのMcxExecFlag()の機能は、"PlayStation 2"のメモリーカードライブラリでsceMcGetDir()を呼んでメンバAttrFileのsceMcFileAttrPDAExecビットを参照・更新することと同じです。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>PDA</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    PDAは、メモリーカードとしての機能と、保存されたファイルをARM7プログラムとして実行する機能、LCD、LEDランプ、スピーカー、赤外線通信をコントロールすることが出来るデバイスです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ハードウェア</B>
+</A>
+</H3>
+<blockquote>
+    PDAのハードウェア諸元を示します。<BR>
+<DIV align=center>
+        <H4><B>表 1 PDAのメモリーカードとしての仕様</B></H4>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">容量</TD>
+<TD valign="TOP">フォーマット時120Kバイト<BR>（128バイトのセクタ単位でアクセス）</TD>
+</TR>
+<TR>
+<TD valign="TOP">通信形態</TD>
+<TD valign="TOP">コントローラポートを兼用した同期型シリアル通信</TD>
+</TR>
+<TR>
+<TD valign="TOP">アクセス速度</TD>
+<TD valign="TOP">(1)１セクタ書き込み後、20m秒間アクセス不可<BR>(2)最大連続読みとり速度は約10Kバイト／秒</TD>
+</TR>
+<TR>
+<TD valign="TOP">その他</TD>
+<TD valign="TOP">PlayStationの電源を落さずに抜き差し可能<BR>10万回書き込み保障</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>ファイルの作成規定</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ポケットステーションにファイルを作成する場合については、以下のファイル作成規定に従ってください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>ファイル名</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカードのファイル名としてSLPS-xxxxx となっているところのハイフンを大文字のPに変えSLPSPxxxxxのようにしなければなりません。これがないとPDAアプリケーションとして起動アプリケーションから起動できなくなります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_2">
+<A HREF="#Heading3_4"> 4. </A>2 <B>ファイルヘッダ</B>
+</A>
+</H3>
+<blockquote>
+    PDAアプリケーションを作成する際にはメモリーカード拡張ファイルヘッダを利用します。各ファイルの先頭には以下のヘッダを配置してください。<BR>
+<DIV align=center>
+        <H4><B>表 2 メモリーカード拡張ファイルヘッダ</B></H4>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>サイズ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>備考</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Magic</TD>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">常に'SC'</TD>
+</TR>
+<TR>
+<TD valign="TOP">Type</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">0x11/0x12/0x13  *1</TD>
+</TR>
+<TR>
+<TD valign="TOP">ブロック数</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">ファイルが占有するブロック数</TD>
+</TR>
+<TR>
+<TD valign="TOP">文書名</TD>
+<TD valign="TOP">64</TD>
+<TD valign="TOP">シフトJISコード  *2</TD>
+</TR>
+<TR>
+<TD valign="TOP">Pad</TD>
+<TD valign="TOP">12</TD>
+<TD valign="TOP">全て0x00</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル一覧用アイコン<BR>アニメーション枚数</TD>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">ファイル一覧時に現れる<BR>アニメーションのための<BR>アイコン枚数(＝n1)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル種別</TD>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">"MCX0","CRD0"</TD>
+</TR>
+<TR>
+<TD valign="TOP">ゲーム選択用アイコン<BR>ページ数</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">ゲーム選択画面で切替えられ<BR>るアニメーションのページ<BR>枚数(＝n2)</TD>
+</TR>
+<TR>
+<TD valign="TOP">ユーザー定義デバイスドライバ<BR>エントリ数</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">ユーザー定義デバイスドラ<BR>イバの総数(＝n3)</TD>
+</TR>
+<TR>
+<TD valign="TOP">リザーブ</TD>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">全て0x00</TD>
+</TR>
+<TR>
+<TD valign="TOP">プログラム開始アドレス</TD>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">unsigned long (ARM7)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CLUT</TD>
+<TD valign="TOP">32</TD>
+<TD valign="TOP">CLUTエントリ×16  *3</TD>
+</TR>
+<TR>
+<TD valign="TOP">PlayStationメモリーカード<BR>管理画面用アイコンイメージ1</TD>
+<TD valign="TOP">128</TD>
+<TD valign="TOP">必須(16×16bit×4plane)</TD>
+</TR>
+<TR>
+<TD valign="TOP">PlayStationメモリーカード<BR>管理画面用アイコンイメージ2</TD>
+<TD valign="TOP">128</TD>
+<TD valign="TOP">Type=12,13の場合のみ</TD>
+</TR>
+<TR>
+<TD valign="TOP">PlayStationメモリーカード<BR>管理画面用アイコンイメージ3</TD>
+<TD valign="TOP">128</TD>
+<TD valign="TOP">Type=13の場合のみ</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイスドライバ用<BR>エントリテーブル</TD>
+<TD valign="TOP">128×n4</TD>
+<TD valign="TOP">1デバイスドライバあたり<BR>4byte×2<BR>(n4＝切り上げ(n3/16))</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル一覧アイコン用イメージ</TD>
+<TD valign="TOP">128×n1</TD>
+<TD valign="TOP">32×32bit×n1枚</TD>
+</TR>
+<TR>
+<TD valign="TOP">ゲーム選択アイコン用<BR>エントリテーブル</TD>
+<TD valign="TOP">128×n5</TD>
+<TD valign="TOP">アニメーション1ページ<BR>あたり4byte×2<BR>(n5＝切り上げ(n2/16))</TD>
+</TR>
+<TR>
+<TD valign="TOP">ゲーム選択アイコン用イメージ</TD>
+<TD valign="TOP">128×n6</TD>
+<TD valign="TOP">32×32bit×n6枚<BR>(n6はゲーム選択アイコン用<BR>エントリテーブルすべてに<BR>出てくるアニメーション枚数<BR>の総和)。アイコンイメージの<BR>先頭アドレスは128バイトバ<BR>ウンダリにのせてください。</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</DIV>
+    <BR>
+    *1：Type:アイコンイメージ数を表す。準備されているアイコンイメージを差し替えてアニメーションを行う。<BR>
+    *2：非漢字および第一水準漢字のみ、全角32文字。ただし、0x84bf から 0x889e は使用できない。文字列が32文字に満たない場合には、文字列の最後は 0x00 でターミネートする。<BR>
+    *3：CLUT:色番号に対する実際の表示色割り当て<BR>
+    CLUT= (B[4:0] &lt;&lt; 10) | (G[4:0] &lt;&lt; 5) | R[4:0]<BR>
+    <BR>
+
+     <H4><B>ファイル一覧用アイコンアニメーション枚数<BR>ファイル一覧用アイコンイメージ</B></H4>
+
+      <BLOCKQUOTE>
+      PDA内に保存されているファイル一覧を見るときに表示するアイコンアニメーション用のデータ。32×32ドット白黒2値のアイコンイメージをアニメーション枚数分 順に切り替えてアニメーションします。<BR>
+      <BR>
+      通常（ファイル一覧用アイコンアニメーション枚数が1以上の場合）、一覧用として用意されているアイコンイメージを用いてアニメーションを行います。ファイル種別が "CRD0"のファイルはPDAアプリケーションではありませんが、PDAファイル一覧アニメーションのための専用アイコンを持つファイルですので同様にファイル一覧用アイコンイメージを用いてアニメーションが行われます。ただし、"PlayStation 2"のタイトルから"CRD0"のデータを作成することは禁止しています。<BR>
+      <BR>
+      ファイル種別が"MCX0"（すなわちPDAアプリケーションの場合）で、ファイル一覧用のアイコンがない場合(アイコンアニメーション枚数が0のとき)は、ゲーム選択用アイコンの1ページ目のアイコンを代用してアニメーションを行います。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ファイル種別</B></H4>
+
+      <BLOCKQUOTE>
+      "MCX0"をセットしてください。これはARMプログラムとして実行できることを示します。それ以外の場合は、PDAアプリケーションではないとみなされ、PDAの起動アプリケーションからは実行することができません。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ゲーム選択用アイコンページ数<BR>ゲーム選択アイコン用エントリテーブル<BR>ゲーム選択用アイコンイメージ</B></H4>
+
+      <BLOCKQUOTE>
+      PDAのゲーム選択機能(｢アイコン｣の章参照)で表示されるアイコンアニメーションのデータです。アイコンページ数には、例えば「ゲームタイトル」のアニメーションを行うページ、「ゲーム概要」のアニメーションを行うページ、｢作者名一覧｣のアニメーションを行うページ、といったように、そのアプリケーションが持っているアニメーションのページ数が入ります。実際のアイコンイメージは「ゲーム選択用アイコンイメージ」の先頭から順に詰めて、全枚数のゲーム選択用アイコンが格納されます。<BR>
+      <BR>
+      アイコン用エントリテーブルにはアニメーションページごとにアニメーションのためのアイコン枚数と、アニメーションアイコンの切り替え速度、アイコンイメージが格納されている先頭アドレスが入ります。実際に画面上でアニメーションが切り替えられる頻度は1秒間に (30÷「ページnのアニメーション速度」)枚です。<BR>
+      <BR>
+      アイコンイメージの格納アドレスは、ヘッダの先頭を0x2000000とする絶対アドレスで指定しなければなりません。また、アイコンイメージが格納される先頭アドレスは128バイトバウンダリにのせてください(LSDは0x00または0x80)。<BR>
+      <BR>
+      「表1メモリーカード拡張ファイルヘッダ」の最後にあるn6とはゲーム選択機能のために用意するアイコンの総枚数のことで「ページ１のアニメーションアイコン枚数」＋「ページ２のアニメーションアイコン枚数」＋...＋「ページn2のアニメーションアイコン枚数」になります。<BR>
+      <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mcxf1.gif">
+<P>
+      <B>図 1 ゲーム選択アイコン用エントリテーブル</B>
+</DIV>
+      <BR>
+<DIV align=center>
+      注：各アイコン格納アドレスは128バイトバウンダリにのせてください。<BR>
+</DIV>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ユーザー定義デバイスドライバエントリ数</B></H4>
+
+      <BLOCKQUOTE>
+      "PlayStation 2"からPDA上の特殊な機能を呼び出すために用意された、ユーザー定義のデバイスドライバの総数です。最小値は0で、その場合はデバイスエントリテーブルはありません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>デバイスエントリテーブル</B></H4>
+
+      <BLOCKQUOTE>
+      テーブルの初めの方から順にデバイス番号128,129,130,...と認識されます。デバイスの数が16を超える場合は追加用のテーブルとして128バイトを続けて確保し、そこへ136,137,...のエントリーテーブルを格納します。<BR>
+      </BLOCKQUOTE>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><DIV align=center>ワード(32bit)</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイス1の固定部データ長</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイス1のデータ受け渡しルーチン</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイス2の固定部データ長</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイス2のデータ受け渡しルーチン</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>…………..</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイスn3の固定部データ長</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバイスn3のデータ受け渡しルーチン</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<DIV align=center>
+        <H4><B>図 2 デバイスエントリテーブル</B></H4>
+
+</DIV>
+
+     <H4><B>プログラム開始アドレス</B></H4>
+
+      <BLOCKQUOTE>
+      ここに指定されたアドレスを、絶対アドレスとみなしてプログラムが実行されます。存在しないアドレスが指定されていてもエラー処理は行われません。ファイルヘッダの先頭を0x2000000とする絶対アドレスが入ります。アプリケーションが切り替わるとき、アプリケーションは常にこのアドレスから実行開始されます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>アイコン</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_1">
+<A HREF="#Heading3_5"> 5. </A>1 <B>アイコンの種類</B>
+</A>
+</H3>
+<blockquote>
+    PDAで扱うアイコンには3種類あります。"PlayStation"メモリーカード画面用アイコン、(PDA)ファイル一覧用アイコン、ゲーム選択用アイコンという名称で呼ばれています。それぞれの特徴は次の表のようになっています。<BR>
+<DIV align=center>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc"><DIV align=center><B>アイコン種類<BR></B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>"PlayStation"<BR>メモリーカード<BR>管理画面用<BR>アイコン</B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>PDAファイル<BR>一覧用アイコン</B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>ゲーム選択用<BR>アイコン</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>アイコンサイズ</DIV></TD>
+<TD valign="top"><DIV align=center>16×16</DIV></TD>
+<TD valign="top"><DIV align=center>32×32</DIV></TD>
+<TD valign="top"><DIV align=center>32×32</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>カラー</DIV></TD>
+<TD valign="top"><DIV align=center>32.768色から<BR>16色選択</DIV></TD>
+<TD valign="top"><DIV align=center>白黒</DIV></TD>
+<TD valign="top"><DIV align=center>白黒</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>ページ数</DIV></TD>
+<TD valign="top"><DIV align=center>1</DIV></TD>
+<TD valign="top"><DIV align=center>1</DIV></TD>
+<TD valign="top"><DIV align=center>n2<BR>(ゲーム選択用<BR>アイコンページ数)</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>アイコン枚数</DIV></TD>
+<TD valign="top"><DIV align=center>1～3枚 <BR>(ファイルヘッダ<BR>のTypeで指定)</DIV></TD>
+<TD valign="top"><DIV align=center>n1 <BR>(ファイル一覧用<BR>アイコンアニメ<BR>ーション枚数)</DIV></TD>
+<TD valign="top"><DIV align=center>n6 <BR>(ゲーム選択<BR>アイコン用<BR>エントリテーブル<BR>すべてに出てくる<BR>アニメーション<BR>枚数の総和)</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>アイコン<BR>最小必要枚数</DIV></TD>
+<TD valign="top"><DIV align=center>1<BR>(すべてのファイ<BR>ルに必要)</DIV></TD>
+<TD><DIV align=center>0<BR>(ない場合は他の<BR>アイコンを代用)</DIV></TD>
+<TD><DIV align=center>1<BR><BR></DIV></TD>
+</TR></TABLE>
+</DIV><BR>
+</DIV>
+    <BR>
+    PDAファイル一覧用アイコンがないときには、ゲーム選択用アイコンの1ページ目のアイコンを代用します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_2">
+<A HREF="#Heading3_5"> 5. </A>2 <B>ファイル一覧機能</B>
+</A>
+</H3>
+<blockquote>
+    PDAの中に保存されているファイルをアイコンアニメーションで確認することが出来る機能です。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mcxf3.gif">
+<P>
+        <H4><B>図 3 ファイル一覧機能</B></H4>
+
+</DIV>
+    <BR>
+<DIV align=center>
+        <H4><B>表 3 ファイル一覧に用いられるアイコン</B></H4>
+
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>ファイル<BR>種別</B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>ファイル一覧用<BR>アイコン<BR>アニメーション枚数</B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>ゲーム選択用<BR>アイコンページ数</B></DIV></TD>
+<TD bgcolor="#cccccc" valign="top"><DIV align=center><B>ファイル一覧に<BR>用いられるアイコン</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>MCX0</DIV></TD>
+<TD valign="top"><DIV align=center>1以上</DIV></TD>
+<TD valign="top"><DIV align=center>＊1</DIV></TD>
+<TD valign="top"><DIV align=center>ファイル一覧用アイコン</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>MCX0</DIV></TD>
+<TD valign="top"><DIV align=center>0</DIV></TD>
+<TD valign="top"><DIV align=center>1以上</DIV></TD>
+<TD valign="top"><DIV align=center>ゲーム選択用アイコンの<BR>ページ1</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>MCX0</DIV></TD>
+<TD valign="top"><DIV align=center>0</DIV></TD>
+<TD valign="top"><DIV align=center>0</DIV></TD>
+<TD valign="top"><DIV align=center>(左の設定は禁止)</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>CRD0</DIV></TD>
+<TD valign="top"><DIV align=center>1以上</DIV></TD>
+<TD valign="top"><DIV align=center>＊2</DIV></TD>
+<TD valign="top"><DIV align=center>ファイル一覧用アイコン</DIV></TD>
+</TR>
+<TR>
+<TD valign="top"><DIV align=center>CRD0</DIV></TD>
+<TD valign="top"><DIV align=center>0</DIV></TD>
+<TD valign="top"><DIV align=center>＊2</DIV></TD>
+<TD valign="top"><DIV align=center>(左の設定は禁止)</DIV></TD>
+</TR>
+<TR>
+<TD><DIV align=center>PDA非対応</DIV></TD>
+<TD><DIV align=center>＊2</DIV></TD>
+<TD><DIV align=center>＊2</DIV></TD>
+<TD valign="top"><DIV align=center>PlayStation<BR>メモリーカード<BR>管理画面用アイコン</DIV></TD>
+</TR></TABLE>
+</DIV><BR>
+</DIV>
+    ＊1：アイコンページ数に相当する値が入ります。<BR>
+    2：ファイルヘッダの定義により常に00が入ります。<BR>
+    注意： "PlayStation 2"タイトルからの"CRD0"及びPDA非対応データの作成は、運用上の規定として禁止されています。また使用するアイコンの種類によりアニメーションのアイコン切り替え頻度が異なりますので、ご注意ください。<BR>
+    <BR>
+<DIV align=center>
+        <H4><B>表 4 アニメーションのアイコン切り替え頻度</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc" valign="top"><B>アニメーションに使用するアイコン</B></TD>
+<TD bgcolor="#cccccc" valign="top"><B>アイコン切り替え頻度 (fps)</B></TD>
+</TR>
+<TR>
+<TD valign="top">PlayStationメモリーカード<BR>管理画面用アイコン(2枚)</TD>
+<TD valign="top">2</TD>
+</TR>
+<TR>
+<TD valign="top">PlayStationメモリーカード<BR>管理画面用アイコン(3枚)</TD>
+<TD valign="top">3</TD>
+</TR>
+<TR>
+<TD valign="top">PDAファイル一覧用アイコン</TD>
+<TD valign="top">6</TD>
+</TR>
+<TR>
+<TD>ゲーム選択用アイコン</TD>
+<TD valign="top">ゲーム選択アイコン用エントリ<BR>テーブルに記した頻度。30/f (fps)</TD>
+</TR></TABLE>
+<BR>
+</DIV>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_3">
+<A HREF="#Heading3_5"> 5. </A>3 <B>ゲーム選択機能</B>
+</A>
+</H3>
+<blockquote>
+    ゲーム選択機能は、起動したいPDAアプリケーションを選択するためのもので、PDAアプリケーションファイルのみ表示されます(ファイル種別"MCX0"のみ)。表示されるアイコンはゲーム選択用アイコンで、1つのPDAファイルにつき複数のページを持つことができ、それぞれのページごとに複数枚のアイコンによるアニメーションを行うことが出来ます。<BR>
+    <BR>
+    アニメーションが複数ページ持てますので、1ページ目はゲームタイトルのアニメーション、2ページ目はゲーム概要のアニメーション、3ページ目は制作者名のアニメーション、といった使い分けも可能です。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mcxf4.gif">
+<P>
+      <BLOCKQUOTE>
+      <B>図 4 ゲーム選択機能</B>
+</DIV>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_4">
+<A HREF="#Heading3_5"> 5. </A>4 <B>アイコン用エントリテーブル、アイコンイメージ配置上の注意</B>
+</A>
+</H3>
+<blockquote>
+    アイコンイメージの先頭アドレスは必ず128バイトバウンダリに乗るように配置してください（LSDは0x00または0x80）。またアイコン用エントリテーブルに格納するアドレスもアイコンイメージの先頭アドレスを使ってください。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>PDA使用手順の概略</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下、プログラム上でPDAを扱うときの処理手順を説明します。マルチタップに対応するかどうかによって初期化の処理が異なります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>PDAの抜き差し確認</B>
+</A>
+</H3>
+<blockquote>
+    PDAが抜き差しされたことを確認する機能はlibmcxにはありません。libmcのsceMcGetInfo()をお使いください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_2">
+<A HREF="#Heading3_6"> 6. </A>2 <B>初期化（マルチタップを使わない場合）</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> PDAドライバ（IOPモジュール）のロード<BR>sceSifLoadModule()を用いて、sio2man.irx, mcxman.irx ,mcxserv.irxをこの順番でロードします。padman.irx, mcman.irx, mcserv.irxはsio2man.irxより後であれば、mcxserv.irx, mcxman.irxより先にロードしても後にロードしてもかまいません。<BR>
+         <LI VALUE= 2> メモリーカード・ドライバの初期化<BR>sceMcxInit()を呼び出します。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_3">
+<A HREF="#Heading3_6"> 6. </A>3 <B>初期化（マルチタップを使う場合）</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> PDAドライバ（IOPモジュール）のロード<BR>sceSifLoadModule()を用いて、sio2man.irx, mtapman.irx, mcxman.irx ,mcxserv.irxをこの順番でロードします。padman.irx, mcman.irx, mcserv.irxはmtapman.irxの後であれば、mcxserv.irx, mcxman.irxより先にロードしても後にロードしてもかまいません。<BR>
+         <LI VALUE= 2> マルチタップ・ドライバの初期化<BR>sceMtapInit()を呼び出します。<BR>
+         <LI VALUE= 3> マルチタップスロット使用開始宣言<BR>sceMtapPortOpen(2または3) を呼び出して、それぞれ"PlayStation 2"本体のメモリーカード差込口1，2に対してマルチタップ経由でアクセスできるように宣言します。<BR>
+         <LI VALUE= 4> メモリーカード・ドライバの初期化<BR>sceMcxInit()を呼び出します。<BR>
+         <LI VALUE= 5> マルチタップの接続確認<BR>sceMtapGetConnection(2 または 3) を呼び出して、マルチタップが接続されていることを確認します（初期化時だけでなく、随時確認することができます）。<BR>
+         <LI VALUE= 6> 使用可能スロット数の確認<BR>マルチタップが接続されていることがわかれば、sceMcGetSlotMax(0または1) を呼び出してマルチタップが装備している最大スロット数を調べます。libmcxの各関数で受け付けられるスロット番号は0～(最大数－1) となります。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_4">
+<A HREF="#Heading3_6"> 6. </A>4 <B>処理登録と完了待ち</B>
+</A>
+</H3>
+<blockquote>
+    PDAライブラリの関数はほとんどのメモリーカード操作関数と同じく、関数呼び出しによって処理の登録のみ行い、sceMcxSync()でポーリングして処理終了を待つしくみになっています。終了待ちの間、他のPDA操作処理を登録することはできません。プログラムとしては以下のいずれかの形になります。<BR>
+
+     <H4><B>[同期待ち]</B></H4>
+
+    sceMcxGetInfo など(  ,  ,  );<BR>
+    sceMcxSync(0,  ,  );<BR>
+
+     <H4><B>[非同期待ち]</B></H4>
+
+    sceMcxGetInfo など(  ,  ,  );<BR>
+    while(!sceMcxSync(1,  ,  )) {<BR>
+    	/* 他の処理 */<BR>
+    }<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_5">
+<A HREF="#Heading3_6"> 6. </A>5 <B>PDAのフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    PDAに対してsceMcFormat()を実行しフォーマットする際、代替セクタの初期化を行おうとしますが、sceMcxShowTrans()～sceMcxHideTrans()の間は代替セクタのアクセスが禁止され失敗してしまいますので、フォーマット時はsceMcxShowTrans()を呼ばないでください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_6">
+<A HREF="#Heading3_6"> 6. </A>6 <B>PDAアプリケーションの保存</B>
+</A>
+</H3>
+<blockquote>
+    PDAアプリケーションをPDAに保存する場合は、"PlayStation 2"専用メモリーカード(8MB)にファイルを保存する場合とほぼ同じ手順を実行しますが、ファイル保存の最後に(ファイルを作成した後ならいつでもよい) libmcの関数sceMcSetFileInfo() を使って｢PDAアプリケーションフラグ｣の情報をFATに埋め込む点と、代替セクタ処理回避のため(PDAアプリケーションプログラムを代替セクタに書き込まないようにするため)ファイル保存の前後をsceMcxShowTrans() と sceMcxHideTrans() ではさむ点が異なります。(ファイル読み込み時のsceMcxShowTrans()とsceMcxHideTrans()呼び出しは必須ではありません。)<BR>
+    <BR>
+    PDAアプリケーション保存の例<BR>
+    <OL>
+         <LI VALUE= 1> sceMcxShowTrans(port, slot, 1, TimeOut);<BR>
+         <LI VALUE= 2> ファイルオープン("filename");<BR>
+         <LI VALUE= 3> ファイル書き込み<BR>
+         <LI VALUE= 4> ファイルクローズ<BR>
+         <LI VALUE= 5> sceMcxHideTrans(port, slot);<BR>
+         <LI VALUE= 6> sceMcSetFileInfo(port, slot, "filename", info, sceMcFileInfoAttr);<BR>
+    </OL>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

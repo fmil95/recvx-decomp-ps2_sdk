@@ -1,0 +1,213 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+CSLソフトウェア・シンセサイザ
+==============================
+
+
+ 1 ライブラリ概要
+------------------
+
+    libssynは、CSL（Component Sound Library）に準拠して実装されているソフ
+    トウェア音源ライブラリです。IOPのMIDI Stream dataをmodssyn（software 
+    synthesizer comunication module）経由で受け取り、EEメモリ上の音素デー
+    タを用いてPCM Stream dataを出力します。また、IOPからのMIDI Stream 
+    dataによらず、EEアプリケーションからAPI呼び出しで与えられるMIDIメッセ
+    ージ（EE MIDI stream）によって発音することもできます。
+    
+    
+    入力は最大8ポート、出力は最大8ポートまで、入力ポート毎に独立した一個
+    の音源として使用することができます（最大発音数は、各入力ポートに対し
+    て設定した上限発音数の合計です）。各入力ポートに対してそれぞれ16チャ
+    ンネルのパートを持ちます。各パートはそれぞれ個別に4個の出力ポートを持
+    ち、パートの出力ポートは、実際の出力ポートに自由にアサインが可能です。
+    libssynはIOP側モジュール（modssyn.irx）と対になって動作しますので、
+    modssynのドキュメントも参照してください。
+
+ 2 利用方法
+------------
+
+
+  2.1 バッファ構造
+
+
+    Buffer Group 0：入力ポートグループ
+
+    +------------+---------------------------+----------+
+    |BufCtx Index 内容                        データ構造|
+    +            +                           +          +
+    |1～N         入力ポートN番の入力バッファ sceSSynEnv|
+    +------------+---------------------------+----------+
+
+    Buffer Group 1：出力ポートグループ
+
+    +------------+---------------------------+---------------+
+    |BufCtx Index 内容                        バッファ内容   |
+    +            +                           +               +
+    |1～N         出力ポートN番の出力バッファ sceCslPcmStream|
+    +------------+---------------------------+---------------+
+    ※ sceCslPcmStream自身とpcmbufで指されるバッファ領域は非キャッシュア
+    クセスが行われるため、アライメント等に注意が必要です。
+
+    Buffer Group 2：EE MIDI Stream入力ポートグループ
+
+    +------------+---------------------------+-------------------------+
+    |BufCtx Index 内容                        データ構造               |
+    +            +                           +                         +
+    |１           API呼び出しによって生成され sceCslMidiStream         |
+    |             たシーケンスデータ          void[ buffsize - sizeof  |
+    |                                             (sceCslMidiStream) ] |
+    +------------+---------------------------+-------------------------+
+    ※ sceCslMidiStreamのvalidsizeメンバが、バッファ中の有効データ数を表
+    します。
+    
+    EE MIDI Streamを使用する場合はバッファグループ２を使用します。EE MIDI
+     Streamを使用しない場合は、buffGrpNum = 2としてください。
+    なお、入力ポートのsceCslBuffCtx.buffをNULLに設定すると、ATick処理でそ
+    のポートはスキップされることになります。特定のポートを一時的に発音さ
+    せない場合などに利用できます。
+
+  2.2 プログラム手順
+
+    libssynを使用する際には、IOPとの通信を行なうため、以下の順序で初期化
+    を行う必要があります。
+         (1) sceSSyn_Init()を呼び出して音源ルーチンを初期化します。
+         (2) sceSSyn_RegisterRpc()を呼び出してSIF RPCサーバを登録します。
+         (3) sceSifLoadModule()を呼び出してIOP側モジュール（moddssyn.irx）
+             を読み込みます。
+         (4) 音素データをEEメモリに読み込み、sceSSyn_PrepareParameter()を
+             呼び出してアドレス解決し、sceSSyn_Load()を呼び出して登録しま
+             す。
+    IOP MIDI Streamを使用せず、EE MIDI Streamだけによって演奏する場合は、
+    (2)(3)を行う必要はありません。
+
+  2.3 MIDIメッセージフィルタコールバック
+
+    libssynが出力するMIDIメッセージを随時変更できるように、以下のコールバ
+    ックが用意されています。
+    
+    +--------------------------+----------------+--------------------+
+    |トリガ                     コールバック関数 フィルタ機能        |
+    +                          +                +                    +
+    |チャンネルメッセージ       msg_callback     メッセージの出力抑止|
+    |エクスクルーシブメッセージ exc_callback     メッセージの出力抑止|
+    +--------------------------+----------------+--------------------+
+    
+    コールバック関数はsceSSynEnvに登録しておきます。シーケンスデータ中に
+    トリガとなるメッセージ等が現れると、それぞれ対応するコールバック関数
+    が呼び出されます。コールバック関数はパラメータとして渡されたメッセー
+    ジ等を調べ、場合によってそのメッセージの出力を抑止することができます。
+    
+
+ 3 機能概要
+------------
+
+    libssynで実装されているソフトウェア音源の外部仕様を以下に示します。
+
+    Tone Generator（Wave Table読み出し部）：TG
+
+         ・Wave Dataは8/16bit, サンプリングレート22.05K / 44.1K / 48Kの
+           PCM wave dataで、読み出し開始位置、loop start / endをアドレス
+           情報として持つ。
+           ループは１個で、forward loopのみ指定可。forward loop以外を使用
+           する場合、1 shotは無音のループを作成してforward loopとし、その
+           他はforward loopに展開する。
+           再生上限周波数は、ループサイズに依存する。
+         ・読み出し開始位置はvelocity等でmodifyできる。
+         ・鍵域 / velocityによって読み出す波形を切り替えることができる。同
+           時に2 waveまで読み出し可能。
+         ・専用ENVを持ち、pitchをmodifyできる。
+         ・LFOによりpitchをmodifyできる。
+         ・MIDI pitch bend messageにより、pitchをmodifyできる。
+         ・pitchに対して、key#によるkeyfollowを設定できる。
+         ・ポルタメントが使用できる。
+
+    Time Valiant Filter：TVF
+
+         ・12db/oct.のLPF / BPF / HPFのうちひとつを選択して使用する。
+         ・cutoff Freq.とresonanse(1/Q)によって制御する。
+         ・専用ENVを持ち、cuttoffをmodifyできる。
+         ・LFOによりcuttoffをmodifyできる。
+         ・cutoff Freq.に対して、key#によるkeyfollowを設定できる。
+
+    Time Valiant Amplifier：TVA
+
+         ・アッテネータとして動作。
+         ・専用ENVを持ち、levelをmodifyできる。
+         ・LFOによりlevelをmodifyできる。
+         ・levelに対して、key#によるkeyfollowを設定できる。
+
+    Output Mixer：MIX
+
+         ・最大8chの出力。16パート×4チャンネルの出力を、8chの出力ポートに
+           アサインする。
+         ・ヴォイス毎にパンポットを設定できる。
+
+    Envelope Generator：ENV
+
+         ・ADSRのlevel 4点、time 3点によるエンベロープ制御。
+         ・timeは、時間（ミリ秒）で指定する。
+         ・levelの範囲は、TGおよびTVFは－1.0～1.0、TVAは0.0～1.0。TVAの
+           Releaseの終点レベルは0固定。
+         ・levelおよびtimeは、それぞれvelocity,key#でmodifyできる。
+         ・動作カーブは、
+           TG:	読み出し周波数をセントでmodifyできる
+           TVF:	cutoff Freq.をセントでmodifyできる
+           TVA:	直線
+
+    Lo Frequency Oscillator：LFO
+
+         ・１ヴォイスについて２個のLFOを持つ。
+         ・サポート波形は、サイン／矩形波／三角波／鋸波／ノイズ。
+         ・発信開始までのディレイを設定できる。
+
+  3.1 受信MIDIメッセージ
+
+    libssynで実装されているソフトウェア音源が受信できるMIDIメッセージを次
+    に示します。
+    
+    8n kk   		note off(velocity 無視)
+    9n kk vv		note on(velocity = 0: off)
+    Bn
+      0x00,0x20  Bank Change
+      0x01       Moduration
+      0x05       Portament time
+      0x06,0x26  Data Entry
+      0x07       Volume
+      0x0a       Panpot
+      0x0b       Expression
+      0x40       hold1
+      0x41       portament
+      0x54       portament control
+      0x63,0x62  NRPN
+        0x01,0x08 ビブラート レイト
+        0x01,0x09 ビブラート デプス
+        0x01,0x0a ビブラート ディレイ
+        0x01,0x20 TVF カットオフ
+        (0x01,0x21 TVF レゾナンス)
+        0x01,0x63 TVF,TVA アタック タイム
+        0x01,0x64 TVF,TVA ディケイ タイム
+        0x01,0x65 TVF,TVA リリース タイム
+        0x18,rr   ドラム ピッチコース
+        0x1a,rr   ドラム TVA レベル
+        0x1c,rr   ドラム パンポット
+      0x65,0x64  RPN
+        0x00,0x00 ピッチ ベンド センシティビティー
+        0x00,0x01 マスターファインチューニング
+        0x00,0x02 マスターコースチューニング
+        0x7f,0x7f NULL
+        0x78,0x00 all sound off
+        0x79,0x00 reset all controler
+        その他の Mode message は、all note off として認識
+    Cn pp           Program Change
+    Dn pp           Channel Pressure
+    En vv vv        Pitch Bend Change
+    
+
+  3.2 拡張MIDIメッセージ
+
+    libssynで実装されているソフトウェア音源は、CSLで定めている拡張MIDIメ
+    ッセージを受信することができます。拡張MIDIメッセージについては「CSL概
+    要」ドキュメントを参照してください。

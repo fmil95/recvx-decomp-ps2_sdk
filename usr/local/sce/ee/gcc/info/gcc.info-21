@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1219 +36,853 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Output Template,  Next: Output Statement,  Prev: RTL Template,  Up: Machine Desc
+File: gcc.info,  Node: Insn Lengths,  Next: Constant Attributes,  Prev: Attr Example,  Up: Insn Attributes
 
-Output Templates and Operand Substitution
-=========================================
+Computing the Length of an Insn
+-------------------------------
 
-   The "output template" is a string which specifies how to output the
-assembler code for an instruction pattern.  Most of the template is a
-fixed string which is output literally.  The character `%' is used to
-specify where to substitute an operand; it can also be used to identify
-places where different variants of the assembler require different
-syntax.
+   For many machines, multiple types of branch instructions are
+provided, each for different length branch displacements.  In most
+cases, the assembler will choose the correct instruction to use.
+However, when the assembler cannot do so, GCC can when a special
+attribute, the `length' attribute, is defined.  This attribute must be
+defined to have numeric values by specifying a null string in its
+`define_attr'.
 
-   In the simplest case, a `%' followed by a digit N says to output
-operand N at that point in the string.
+   In the case of the `length' attribute, two additional forms of
+arithmetic terms are allowed in test expressions:
 
-   `%' followed by a letter and a digit says to output an operand in an
-alternate fashion.  Four letters have standard, built-in meanings
-described below.  The machine description macro `PRINT_OPERAND' can
-define additional letters with nonstandard meanings.
+`(match_dup N)'
+     This refers to the address of operand N of the current insn, which
+     must be a `label_ref'.
 
-   `%cDIGIT' can be used to substitute an operand that is a constant
-value without the syntax that normally indicates an immediate operand.
+`(pc)'
+     This refers to the address of the *current* insn.  It might have
+     been more consistent with other usage to make this the address of
+     the *next* insn but this would be confusing because the length of
+     the current insn is to be computed.
 
-   `%nDIGIT' is like `%cDIGIT' except that the value of the constant is
-negated before printing.
+   For normal insns, the length will be determined by value of the
+`length' attribute.  In the case of `addr_vec' and `addr_diff_vec' insn
+patterns, the length is computed as the number of vectors multiplied by
+the size of each vector.
 
-   `%aDIGIT' can be used to substitute an operand as if it were a
-memory reference, with the actual operand treated as the address.  This
-may be useful when outputting a "load address" instruction, because
-often the assembler syntax for such an instruction requires you to
-write the operand as if it were a memory reference.
+   Lengths are measured in addressable storage units (bytes).
 
-   `%lDIGIT' is used to substitute a `label_ref' into a jump
-instruction.
+   The following macros can be used to refine the length computation:
 
-   `%=' outputs a number which is unique to each instruction in the
-entire compilation.  This is useful for making local labels to be
-referred to more than once in a single template that generates multiple
-assembler instructions.
+`FIRST_INSN_ADDRESS'
+     When the `length' insn attribute is used, this macro specifies the
+     value to be assigned to the address of the first insn in a
+     function.  If not specified, 0 is used.
 
-   `%' followed by a punctuation character specifies a substitution that
-does not use an operand.  Only one case is standard: `%%' outputs a `%'
-into the assembler code.  Other nonstandard cases can be defined in the
-`PRINT_OPERAND' macro.  You must also define which punctuation
-characters are valid with the `PRINT_OPERAND_PUNCT_VALID_P' macro.
+`ADJUST_INSN_LENGTH (INSN, LENGTH)'
+     If defined, modifies the length assigned to instruction INSN as a
+     function of the context in which it is used.  LENGTH is an lvalue
+     that contains the initially computed length of the insn and should
+     be updated with the correct length of the insn.
 
-   The template may generate multiple assembler instructions.  Write
-the text for the instructions, with `\;' between them.
+     This macro will normally not be required.  A case in which it is
+     required is the ROMP.  On this machine, the size of an `addr_vec'
+     insn must be increased by two to compensate for the fact that
+     alignment may be required.
 
-   When the RTL contains two operands which are required by constraint
-to match each other, the output template must refer only to the
-lower-numbered operand.  Matching operands are not always identical,
-and the rest of the compiler arranges to put the proper RTL expression
-for printing into the lower-numbered operand.
+   The routine that returns `get_attr_length' (the value of the
+`length' attribute) can be used by the output routine to determine the
+form of the branch instruction to be written, as the example below
+illustrates.
 
-   One use of nonstandard letters or punctuation following `%' is to
-distinguish between different assembler languages for the same machine;
-for example, Motorola syntax versus MIT syntax for the 68000.  Motorola
-syntax requires periods in most opcode names, while MIT syntax does
-not.  For example, the opcode `movel' in MIT syntax is `move.l' in
-Motorola syntax.  The same file of patterns is used for both kinds of
-output syntax, but the character sequence `%.' is used in each place
-where Motorola syntax wants a period.  The `PRINT_OPERAND' macro for
-Motorola syntax defines the sequence to output a period; the macro for
-MIT syntax defines it to do nothing.
+   As an example of the specification of variable-length branches,
+consider the IBM 360.  If we adopt the convention that a register will
+be set to the starting address of a function, we can jump to labels
+within 4k of the start using a four-byte instruction.  Otherwise, we
+need a six-byte sequence to load the address from memory and then
+branch to it.
 
-   As a special case, a template consisting of the single character `#'
-instructs the compiler to first split the insn, and then output the
-resulting instructions separately.  This helps eliminate redundancy in
-the output templates.   If you have a `define_insn' that needs to emit
-multiple assembler instructions, and there is an matching `define_split'
-already defined, then you can simply use `#' as the output template
-instead of writing an output template that emits the multiple assembler
-instructions.
+   On such a machine, a pattern for a branch instruction might be
+specified as follows:
 
-   If the macro `ASSEMBLER_DIALECT' is defined, you can use construct
-of the form `{option0|option1|option2}' in the templates.  These
-describe multiple variants of assembler language syntax.  *Note
-Instruction Output::.
-
-
-File: gcc.info,  Node: Output Statement,  Next: Constraints,  Prev: Output Template,  Up: Machine Desc
-
-C Statements for Assembler Output
-=================================
-
-   Often a single fixed template string cannot produce correct and
-efficient assembler code for all the cases that are recognized by a
-single instruction pattern.  For example, the opcodes may depend on the
-kinds of operands; or some unfortunate combinations of operands may
-require extra machine instructions.
-
-   If the output control string starts with a `@', then it is actually
-a series of templates, each on a separate line.  (Blank lines and
-leading spaces and tabs are ignored.)  The templates correspond to the
-pattern's constraint alternatives (*note Multi-Alternative::.).  For
-example, if a target machine has a two-address add instruction `addr'
-to add into a register and another `addm' to add a register to memory,
-you might write this pattern:
-
-     (define_insn "addsi3"
-       [(set (match_operand:SI 0 "general_operand" "=r,m")
-             (plus:SI (match_operand:SI 1 "general_operand" "0,0")
-                      (match_operand:SI 2 "general_operand" "g,r")))]
-       ""
-       "@
-        addr %2,%0
-        addm %2,%0")
-
-   If the output control string starts with a `*', then it is not an
-output template but rather a piece of C program that should compute a
-template.  It should execute a `return' statement to return the
-template-string you want.  Most such templates use C string literals,
-which require doublequote characters to delimit them.  To include these
-doublequote characters in the string, prefix each one with `\'.
-
-   The operands may be found in the array `operands', whose C data type
-is `rtx []'.
-
-   It is very common to select different ways of generating assembler
-code based on whether an immediate operand is within a certain range.
-Be careful when doing this, because the result of `INTVAL' is an
-integer on the host machine.  If the host machine has more bits in an
-`int' than the target machine has in the mode in which the constant
-will be used, then some of the bits you get from `INTVAL' will be
-superfluous.  For proper results, you must carefully disregard the
-values of those bits.
-
-   It is possible to output an assembler instruction and then go on to
-output or compute more of them, using the subroutine `output_asm_insn'.
-This receives two arguments: a template-string and a vector of
-operands.  The vector may be `operands', or it may be another array of
-`rtx' that you declare locally and initialize yourself.
-
-   When an insn pattern has multiple alternatives in its constraints,
-often the appearance of the assembler code is determined mostly by
-which alternative was matched.  When this is so, the C code can test
-the variable `which_alternative', which is the ordinal number of the
-alternative that was actually satisfied (0 for the first, 1 for the
-second alternative, etc.).
-
-   For example, suppose there are two opcodes for storing zero, `clrreg'
-for registers and `clrmem' for memory locations.  Here is how a pattern
-could use `which_alternative' to choose between them:
-
-     (define_insn ""
-       [(set (match_operand:SI 0 "general_operand" "=r,m")
-             (const_int 0))]
+     (define_insn "jump"
+       [(set (pc)
+             (label_ref (match_operand 0 "" "")))]
        ""
        "*
-       return (which_alternative == 0
-               ? \"clrreg %0\" : \"clrmem %0\");
-       ")
-
-   The example above, where the assembler code to generate was *solely*
-determined by the alternative, could also have been specified as
-follows, having the output control string start with a `@':
-
-     (define_insn ""
-       [(set (match_operand:SI 0 "general_operand" "=r,m")
-             (const_int 0))]
-       ""
-       "@
-        clrreg %0
-        clrmem %0")
+     {
+        return (get_attr_length (insn) == 4
+                ? \"b %l0\" : \"l r15,=a(%l0); br r15\");
+     }"
+       [(set (attr "length") (if_then_else (lt (match_dup 0) (const_int 4096))
+                                           (const_int 4)
+                                           (const_int 6)))])
 
 
-File: gcc.info,  Node: Constraints,  Next: Standard Names,  Prev: Output Statement,  Up: Machine Desc
+File: gcc.info,  Node: Constant Attributes,  Next: Delay Slots,  Prev: Insn Lengths,  Up: Insn Attributes
 
-Operand Constraints
-===================
+Constant Attributes
+-------------------
 
-   Each `match_operand' in an instruction pattern can specify a
-constraint for the type of operands allowed.  Constraints can say
-whether an operand may be in a register, and which kinds of register;
-whether the operand can be a memory reference, and which kinds of
-address; whether the operand may be an immediate constant, and which
-possible values it may have.  Constraints can also require two operands
-to match.
+   A special form of `define_attr', where the expression for the
+default value is a `const' expression, indicates an attribute that is
+constant for a given run of the compiler.  Constant attributes may be
+used to specify which variety of processor is used.  For example,
+
+     (define_attr "cpu" "m88100,m88110,m88000"
+      (const
+       (cond [(symbol_ref "TARGET_88100") (const_string "m88100")
+              (symbol_ref "TARGET_88110") (const_string "m88110")]
+             (const_string "m88000"))))
+     
+     (define_attr "memory" "fast,slow"
+      (const
+       (if_then_else (symbol_ref "TARGET_FAST_MEM")
+                     (const_string "fast")
+                     (const_string "slow"))))
+
+   The routine generated for constant attributes has no parameters as it
+does not depend on any particular insn.  RTL expressions used to define
+the value of a constant attribute may use the `symbol_ref' form, but
+may not use either the `match_operand' form or `eq_attr' forms
+involving insn attributes.
+
+
+File: gcc.info,  Node: Delay Slots,  Next: Function Units,  Prev: Constant Attributes,  Up: Insn Attributes
+
+Delay Slot Scheduling
+---------------------
+
+   The insn attribute mechanism can be used to specify the requirements
+for delay slots, if any, on a target machine.  An instruction is said to
+require a "delay slot" if some instructions that are physically after
+the instruction are executed as if they were located before it.
+Classic examples are branch and call instructions, which often execute
+the following instruction before the branch or call is performed.
+
+   On some machines, conditional branch instructions can optionally
+"annul" instructions in the delay slot.  This means that the
+instruction will not be executed for certain branch outcomes.  Both
+instructions that annul if the branch is true and instructions that
+annul if the branch is false are supported.
+
+   Delay slot scheduling differs from instruction scheduling in that
+determining whether an instruction needs a delay slot is dependent only
+on the type of instruction being generated, not on data flow between the
+instructions.  See the next section for a discussion of data-dependent
+instruction scheduling.
+
+   The requirement of an insn needing one or more delay slots is
+indicated via the `define_delay' expression.  It has the following form:
+
+     (define_delay TEST
+                   [DELAY-1 ANNUL-TRUE-1 ANNUL-FALSE-1
+                    DELAY-2 ANNUL-TRUE-2 ANNUL-FALSE-2
+                    ...])
+
+   TEST is an attribute test that indicates whether this `define_delay'
+applies to a particular insn.  If so, the number of required delay
+slots is determined by the length of the vector specified as the second
+argument.  An insn placed in delay slot N must satisfy attribute test
+DELAY-N.  ANNUL-TRUE-N is an attribute test that specifies which insns
+may be annulled if the branch is true.  Similarly, ANNUL-FALSE-N
+specifies which insns in the delay slot may be annulled if the branch
+is false.  If annulling is not supported for that delay slot, `(nil)'
+should be coded.
+
+   For example, in the common case where branch and call insns require
+a single delay slot, which may contain any insn other than a branch or
+call, the following would be placed in the `md' file:
+
+     (define_delay (eq_attr "type" "branch,call")
+                   [(eq_attr "type" "!branch,call") (nil) (nil)])
+
+   Multiple `define_delay' expressions may be specified.  In this case,
+each such expression specifies different delay slot requirements and
+there must be no insn for which tests in two `define_delay' expressions
+are both true.
+
+   For example, if we have a machine that requires one delay slot for
+branches but two for calls,  no delay slot can contain a branch or call
+insn, and any valid insn in the delay slot for the branch can be
+annulled if the branch is true, we might represent this as follows:
+
+     (define_delay (eq_attr "type" "branch")
+        [(eq_attr "type" "!branch,call")
+         (eq_attr "type" "!branch,call")
+         (nil)])
+     
+     (define_delay (eq_attr "type" "call")
+                   [(eq_attr "type" "!branch,call") (nil) (nil)
+                    (eq_attr "type" "!branch,call") (nil) (nil)])
+
+
+File: gcc.info,  Node: Function Units,  Prev: Delay Slots,  Up: Insn Attributes
+
+Specifying Function Units
+-------------------------
+
+   On most RISC machines, there are instructions whose results are not
+available for a specific number of cycles.  Common cases are
+instructions that load data from memory.  On many machines, a pipeline
+stall will result if the data is referenced too soon after the load
+instruction.
+
+   In addition, many newer microprocessors have multiple function
+units, usually one for integer and one for floating point, and often
+will incur pipeline stalls when a result that is needed is not yet
+ready.
+
+   The descriptions in this section allow the specification of how much
+time must elapse between the execution of an instruction and the time
+when its result is used.  It also allows specification of when the
+execution of an instruction will delay execution of similar instructions
+due to function unit conflicts.
+
+   For the purposes of the specifications in this section, a machine is
+divided into "function units", each of which execute a specific class
+of instructions in first-in-first-out order.  Function units that
+accept one instruction each cycle and allow a result to be used in the
+succeeding instruction (usually via forwarding) need not be specified.
+Classic RISC microprocessors will normally have a single function unit,
+which we can call `memory'.  The newer "superscalar" processors will
+often have function units for floating point operations, usually at
+least a floating point adder and multiplier.
+
+   Each usage of a function units by a class of insns is specified with
+a `define_function_unit' expression, which looks like this:
+
+     (define_function_unit NAME MULTIPLICITY SIMULTANEITY
+                           TEST READY-DELAY ISSUE-DELAY
+                          [CONFLICT-LIST])
+
+   NAME is a string giving the name of the function unit.
+
+   MULTIPLICITY is an integer specifying the number of identical units
+in the processor.  If more than one unit is specified, they will be
+scheduled independently.  Only truly independent units should be
+counted; a pipelined unit should be specified as a single unit.  (The
+only common example of a machine that has multiple function units for a
+single instruction class that are truly independent and not pipelined
+are the two multiply and two increment units of the CDC 6600.)
+
+   SIMULTANEITY specifies the maximum number of insns that can be
+executing in each instance of the function unit simultaneously or zero
+if the unit is pipelined and has no limit.
+
+   All `define_function_unit' definitions referring to function unit
+NAME must have the same name and values for MULTIPLICITY and
+SIMULTANEITY.
+
+   TEST is an attribute test that selects the insns we are describing
+in this definition.  Note that an insn may use more than one function
+unit and a function unit may be specified in more than one
+`define_function_unit'.
+
+   READY-DELAY is an integer that specifies the number of cycles after
+which the result of the instruction can be used without introducing any
+stalls.
+
+   ISSUE-DELAY is an integer that specifies the number of cycles after
+the instruction matching the TEST expression begins using this unit
+until a subsequent instruction can begin.  A cost of N indicates an N-1
+cycle delay.  A subsequent instruction may also be delayed if an
+earlier instruction has a longer READY-DELAY value.  This blocking
+effect is computed using the SIMULTANEITY, READY-DELAY, ISSUE-DELAY,
+and CONFLICT-LIST terms.  For a normal non-pipelined function unit,
+SIMULTANEITY is one, the unit is taken to block for the READY-DELAY
+cycles of the executing insn, and smaller values of ISSUE-DELAY are
+ignored.
+
+   CONFLICT-LIST is an optional list giving detailed conflict costs for
+this unit.  If specified, it is a list of condition test expressions to
+be applied to insns chosen to execute in NAME following the particular
+insn matching TEST that is already executing in NAME.  For each insn in
+the list, ISSUE-DELAY specifies the conflict cost; for insns not in the
+list, the cost is zero.  If not specified, CONFLICT-LIST defaults to
+all instructions that use the function unit.
+
+   Typical uses of this vector are where a floating point function unit
+can pipeline either single- or double-precision operations, but not
+both, or where a memory unit can pipeline loads, but not stores, etc.
+
+   As an example, consider a classic RISC machine where the result of a
+load instruction is not available for two cycles (a single "delay"
+instruction is required) and where only one load instruction can be
+executed simultaneously.  This would be specified as:
+
+     (define_function_unit "memory" 1 1 (eq_attr "type" "load") 2 0)
+
+   For the case of a floating point function unit that can pipeline
+either single or double precision, but not both, the following could be
+specified:
+
+     (define_function_unit
+        "fp" 1 0 (eq_attr "type" "sp_fp") 4 4 [(eq_attr "type" "dp_fp")])
+     (define_function_unit
+        "fp" 1 0 (eq_attr "type" "dp_fp") 4 4 [(eq_attr "type" "sp_fp")])
+
+   *Note:* The scheduler attempts to avoid function unit conflicts and
+uses all the specifications in the `define_function_unit' expression.
+It has recently come to our attention that these specifications may not
+allow modeling of some of the newer "superscalar" processors that have
+insns using multiple pipelined units.  These insns will cause a
+potential conflict for the second unit used during their execution and
+there is no way of representing that conflict.  We welcome any examples
+of how function unit conflicts work in such processors and suggestions
+for their representation.
+
+
+File: gcc.info,  Node: Target Macros,  Next: Config,  Prev: Machine Desc,  Up: Top
+
+Target Description Macros
+*************************
+
+   In addition to the file `MACHINE.md', a machine description includes
+a C header file conventionally given the name `MACHINE.h'.  This header
+file defines numerous macros that convey the information about the
+target machine that does not fit into the scheme of the `.md' file.
+The file `tm.h' should be a link to `MACHINE.h'.  The header file
+`config.h' includes `tm.h' and most compiler source files include
+`config.h'.
 
 * Menu:
 
-* Simple Constraints::  Basic use of constraints.
-* Multi-Alternative::   When an insn has two alternative constraint-patterns.
-* Class Preferences::   Constraints guide which hard register to put things in.
-* Modifiers::           More precise control over effects of constraints.
-* Machine Constraints:: Existing constraints for some particular machines.
+* Driver::              Controlling how the driver runs the compilation passes.
+* Run-time Target::     Defining `-m' options like `-m68000' and `-m68020'.
+* Storage Layout::      Defining sizes and alignments of data.
+* Type Layout::         Defining sizes and properties of basic user data types.
+* Registers::           Naming and describing the hardware registers.
+* Register Classes::    Defining the classes of hardware registers.
+* Stack and Calling::   Defining which way the stack grows and by how much.
+* Varargs::		Defining the varargs macros.
+* Trampolines::         Code set up at run time to enter a nested function.
+* Library Calls::       Controlling how library routines are implicitly called.
+* Addressing Modes::    Defining addressing modes valid for memory operands.
+* Condition Code::      Defining how insns update the condition code.
+* Costs::               Defining relative costs of different operations.
+* Sections::            Dividing storage into text, data, and other sections.
+* PIC::			Macros for position independent code.
+* Assembler Format::    Defining how to write insns and pseudo-ops to output.
+* Debugging Info::      Defining the format of debugging output.
+* Cross-compilation::   Handling floating point for cross-compilers.
+* Misc::                Everything else.
 
 
-File: gcc.info,  Node: Simple Constraints,  Next: Multi-Alternative,  Up: Constraints
+File: gcc.info,  Node: Driver,  Next: Run-time Target,  Up: Target Macros
 
-Simple Constraints
-------------------
+Controlling the Compilation Driver, `gcc'
+=========================================
 
-   The simplest kind of constraint is a string full of letters, each of
-which describes one kind of operand that is permitted.  Here are the
-letters that are allowed:
+   You can control the compilation driver.
 
-whitespace
-     Whitespace characters are ignored and can be inserted at any
-     position except the first.  This enables each alternative for
-     different operands to be visually aligned in the machine
-     description even if they have different number of constraints and
-     modifiers.
+`SWITCH_TAKES_ARG (CHAR)'
+     A C expression which determines whether the option `-CHAR' takes
+     arguments.  The value should be the number of arguments that
+     option takes-zero, for many options.
 
-`m'
-     A memory operand is allowed, with any kind of address that the
-     machine supports in general.
+     By default, this macro is defined as `DEFAULT_SWITCH_TAKES_ARG',
+     which handles the standard options properly.  You need not define
+     `SWITCH_TAKES_ARG' unless you wish to add additional options which
+     take arguments.  Any redefinition should call
+     `DEFAULT_SWITCH_TAKES_ARG' and then check for additional options.
 
-`o'
-     A memory operand is allowed, but only if the address is
-     "offsettable".  This means that adding a small integer (actually,
-     the width in bytes of the operand, as determined by its machine
-     mode) may be added to the address and the result is also a valid
-     memory address.
+`WORD_SWITCH_TAKES_ARG (NAME)'
+     A C expression which determines whether the option `-NAME' takes
+     arguments.  The value should be the number of arguments that
+     option takes-zero, for many options.  This macro rather than
+     `SWITCH_TAKES_ARG' is used for multi-character option names.
 
-     For example, an address which is constant is offsettable; so is an
-     address that is the sum of a register and a constant (as long as a
-     slightly larger constant is also within the range of
-     address-offsets supported by the machine); but an autoincrement or
-     autodecrement address is not offsettable.  More complicated
-     indirect/indexed addresses may or may not be offsettable depending
-     on the other addressing modes that the machine supports.
+     By default, this macro is defined as
+     `DEFAULT_WORD_SWITCH_TAKES_ARG', which handles the standard options
+     properly.  You need not define `WORD_SWITCH_TAKES_ARG' unless you
+     wish to add additional options which take arguments.  Any
+     redefinition should call `DEFAULT_WORD_SWITCH_TAKES_ARG' and then
+     check for additional options.
 
-     Note that in an output operand which can be matched by another
-     operand, the constraint letter `o' is valid only when accompanied
-     by both `<' (if the target machine has predecrement addressing)
-     and `>' (if the target machine has preincrement addressing).
+`SWITCH_CURTAILS_COMPILATION (CHAR)'
+     A C expression which determines whether the option `-CHAR' stops
+     compilation before the generation of an executable.  The value is
+     boolean, non-zero if the option does stop an executable from being
+     generated, zero otherwise.
 
-`V'
-     A memory operand that is not offsettable.  In other words,
-     anything that would fit the `m' constraint but not the `o'
-     constraint.
+     By default, this macro is defined as
+     `DEFAULT_SWITCH_CURTAILS_COMPILATION', which handles the standard
+     options properly.  You need not define
+     `SWITCH_CURTAILS_COMPILATION' unless you wish to add additional
+     options which affect the generation of an executable.  Any
+     redefinition should call `DEFAULT_SWITCH_CURTAILS_COMPILATION' and
+     then check for additional options.
 
-`<'
-     A memory operand with autodecrement addressing (either
-     predecrement or postdecrement) is allowed.
+`SWITCHES_NEED_SPACES'
+     A string-valued C expression which enumerates the options for which
+     the linker needs a space between the option and its argument.
 
-`>'
-     A memory operand with autoincrement addressing (either
-     preincrement or postincrement) is allowed.
+     If this macro is not defined, the default value is `""'.
 
-`r'
-     A register operand is allowed provided that it is in a general
-     register.
+`CPP_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to CPP.  It can also specify how to translate options you
+     give to GNU CC into options for GNU CC to pass to the CPP.
 
-`d', `a', `f', ...
-     Other letters can be defined in machine-dependent fashion to stand
-     for particular classes of registers.  `d', `a' and `f' are defined
-     on the 68000/68020 to stand for data, address and floating point
-     registers.
+     Do not define this macro if it does not need to do anything.
 
-`i'
-     An immediate integer operand (one with constant value) is allowed.
-     This includes symbolic constants whose values will be known only at
-     assembly time.
+`NO_BUILTIN_SIZE_TYPE'
+     If this macro is defined, the preprocessor will not define the
+     builtin macro `__SIZE_TYPE__'.  The macro `__SIZE_TYPE__' must
+     then be defined by `CPP_SPEC' instead.
 
-`n'
-     An immediate integer operand with a known numeric value is allowed.
-     Many systems cannot support assembly-time constants for operands
-     less than a word wide.  Constraints for these operands should use
-     `n' rather than `i'.
+     This should be defined if `SIZE_TYPE' depends on target dependent
+     flags which are not accessible to the preprocessor.  Otherwise, it
+     should not be defined.
 
-`I', `J', `K', ... `P'
-     Other letters in the range `I' through `P' may be defined in a
-     machine-dependent fashion to permit immediate integer operands with
-     explicit integer values in specified ranges.  For example, on the
-     68000, `I' is defined to stand for the range of values 1 to 8.
-     This is the range permitted as a shift count in the shift
-     instructions.
+`NO_BUILTIN_PTRDIFF_TYPE'
+     If this macro is defined, the preprocessor will not define the
+     builtin macro `__PTRDIFF_TYPE__'.  The macro `__PTRDIFF_TYPE__'
+     must then be defined by `CPP_SPEC' instead.
 
-`E'
-     An immediate floating operand (expression code `const_double') is
-     allowed, but only if the target floating point format is the same
-     as that of the host machine (on which the compiler is running).
+     This should be defined if `PTRDIFF_TYPE' depends on target
+     dependent flags which are not accessible to the preprocessor.
+     Otherwise, it should not be defined.
 
-`F'
-     An immediate floating operand (expression code `const_double') is
-     allowed.
+`SIGNED_CHAR_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to CPP.  By default, this macro is defined to pass the option
+     `-D__CHAR_UNSIGNED__' to CPP if `char' will be treated as
+     `unsigned char' by `cc1'.
 
-`G', `H'
-     `G' and `H' may be defined in a machine-dependent fashion to
-     permit immediate floating operands in particular ranges of values.
+     Do not define this macro unless you need to override the default
+     definition.
 
-`s'
-     An immediate integer operand whose value is not an explicit
-     integer is allowed.
+`CC1_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to `cc1'.  It can also specify how to translate options you
+     give to GNU CC into options for GNU CC to pass to the `cc1'.
 
-     This might appear strange; if an insn allows a constant operand
-     with a value not known at compile time, it certainly must allow
-     any known value.  So why use `s' instead of `i'?  Sometimes it
-     allows better code to be generated.
+     Do not define this macro if it does not need to do anything.
 
-     For example, on the 68000 in a fullword instruction it is possible
-     to use an immediate operand; but if the immediate value is between
-     -128 and 127, better code results from loading the value into a
-     register and using the register.  This is because the load into
-     the register can be done with a `moveq' instruction.  We arrange
-     for this to happen by defining the letter `K' to mean "any integer
-     outside the range -128 to 127", and then specifying `Ks' in the
-     operand constraints.
+`CC1PLUS_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to `cc1plus'.  It can also specify how to translate options
+     you give to GNU CC into options for GNU CC to pass to the
+     `cc1plus'.
 
-`g'
-     Any register, memory or immediate integer operand is allowed,
-     except for registers that are not general registers.
+     Do not define this macro if it does not need to do anything.
 
-`X'
-     Any operand whatsoever is allowed, even if it does not satisfy
-     `general_operand'.  This is normally used in the constraint of a
-     `match_scratch' when certain alternatives will not actually
-     require a scratch register.
+`ASM_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to the assembler.  It can also specify how to translate
+     options you give to GNU CC into options for GNU CC to pass to the
+     assembler.  See the file `sun3.h' for an example of this.
 
-`0', `1', `2', ... `9'
-     An operand that matches the specified operand number is allowed.
-     If a digit is used together with letters within the same
-     alternative, the digit should come last.
+     Do not define this macro if it does not need to do anything.
 
-     This is called a "matching constraint" and what it really means is
-     that the assembler has only a single operand that fills two roles
-     considered separate in the RTL insn.  For example, an add insn has
-     two input operands and one output operand in the RTL, but on most
-     CISC machines an add instruction really has only two operands, one
-     of them an input-output operand:
+`ASM_FINAL_SPEC'
+     A C string constant that tells the GNU CC driver program how to
+     run any programs which cleanup after the normal assembler.
+     Normally, this is not needed.  See the file `mips.h' for an
+     example of this.
 
-          addl #35,r12
+     Do not define this macro if it does not need to do anything.
 
-     Matching constraints are used in these circumstances.  More
-     precisely, the two operands that match must include one input-only
-     operand and one output-only operand.  Moreover, the digit must be a
-     smaller number than the number of the operand that uses it in the
-     constraint.
+`LINK_SPEC'
+     A C string constant that tells the GNU CC driver program options to
+     pass to the linker.  It can also specify how to translate options
+     you give to GNU CC into options for GNU CC to pass to the linker.
 
-     For operands to match in a particular case usually means that they
-     are identical-looking RTL expressions.  But in a few special cases
-     specific kinds of dissimilarity are allowed.  For example, `*x' as
-     an input operand will match `*x++' as an output operand.  For
-     proper results in such cases, the output template should always
-     use the output-operand's number when printing the operand.
+     Do not define this macro if it does not need to do anything.
 
-`p'
-     An operand that is a valid memory address is allowed.  This is for
-     "load address" and "push address" instructions.
+`LIB_SPEC'
+     Another C string constant used much like `LINK_SPEC'.  The
+     difference between the two is that `LIB_SPEC' is used at the end
+     of the command given to the linker.
 
-     `p' in the constraint must be accompanied by `address_operand' as
-     the predicate in the `match_operand'.  This predicate interprets
-     the mode specified in the `match_operand' as the mode of the memory
-     reference for which the address would be valid.
+     If this macro is not defined, a default is provided that loads the
+     standard C library from the usual place.  See `gcc.c'.
 
-`Q', `R', `S', ... `U'
-     Letters in the range `Q' through `U' may be defined in a
-     machine-dependent fashion to stand for arbitrary operand types.
-     The machine description macro `EXTRA_CONSTRAINT' is passed the
-     operand as its first argument and the constraint letter as its
-     second operand.
+`LIBGCC_SPEC'
+     Another C string constant that tells the GNU CC driver program how
+     and when to place a reference to `libgcc.a' into the linker
+     command line.  This constant is placed both before and after the
+     value of `LIB_SPEC'.
 
-     A typical use for this would be to distinguish certain types of
-     memory references that affect other insn operands.
+     If this macro is not defined, the GNU CC driver provides a default
+     that passes the string `-lgcc' to the linker unless the `-shared'
+     option is specified.
 
-     Do not define these constraint letters to accept register
-     references (`reg'); the reload pass does not expect this and would
-     not handle it properly.
+`STARTFILE_SPEC'
+     Another C string constant used much like `LINK_SPEC'.  The
+     difference between the two is that `STARTFILE_SPEC' is used at the
+     very beginning of the command given to the linker.
 
-   In order to have valid assembler code, each operand must satisfy its
-constraint.  But a failure to do so does not prevent the pattern from
-applying to an insn.  Instead, it directs the compiler to modify the
-code so that the constraint will be satisfied.  Usually this is done by
-copying an operand into a register.
+     If this macro is not defined, a default is provided that loads the
+     standard C startup file from the usual place.  See `gcc.c'.
 
-   Contrast, therefore, the two instruction patterns that follow:
+`ENDFILE_SPEC'
+     Another C string constant used much like `LINK_SPEC'.  The
+     difference between the two is that `ENDFILE_SPEC' is used at the
+     very end of the command given to the linker.
 
-     (define_insn ""
-       [(set (match_operand:SI 0 "general_operand" "=r")
-             (plus:SI (match_dup 0)
-                      (match_operand:SI 1 "general_operand" "r")))]
-       ""
-       "...")
+     Do not define this macro if it does not need to do anything.
 
-which has two operands, one of which must appear in two places, and
+`EXTRA_SPECS'
+     Define this macro to provide additional specifications to put in
+     the `specs' file that can be used in various specifications like
+     `CC1_SPEC'.
 
-     (define_insn ""
-       [(set (match_operand:SI 0 "general_operand" "=r")
-             (plus:SI (match_operand:SI 1 "general_operand" "0")
-                      (match_operand:SI 2 "general_operand" "r")))]
-       ""
-       "...")
+     The definition should be an initializer for an array of structures,
+     containing a string constant, that defines the specification name,
+     and a string constant that provides the specification.
 
-which has three operands, two of which are required by a constraint to
-be identical.  If we are considering an insn of the form
+     Do not define this macro if it does not need to do anything.
 
-     (insn N PREV NEXT
-       (set (reg:SI 3)
-            (plus:SI (reg:SI 6) (reg:SI 109)))
-       ...)
+     `EXTRA_SPECS' is useful when an architecture contains several
+     related targets, which have various `..._SPECS' which are similar
+     to each other, and the maintainer would like one central place to
+     keep these definitions.
 
-the first pattern would not apply at all, because this insn does not
-contain two identical subexpressions in the right place.  The pattern
-would say, "That does not look like an add instruction; try other
-patterns."  The second pattern would say, "Yes, that's an add
-instruction, but there is something wrong with it."  It would direct
-the reload pass of the compiler to generate additional insns to make
-the constraint true.  The results might look like this:
+     For example, the PowerPC System V.4 targets use `EXTRA_SPECS' to
+     define either `_CALL_SYSV' when the System V calling sequence is
+     used or `_CALL_AIX' when the older AIX-based calling sequence is
+     used.
 
-     (insn N2 PREV N
-       (set (reg:SI 3) (reg:SI 6))
-       ...)
-     
-     (insn N N2 NEXT
-       (set (reg:SI 3)
-            (plus:SI (reg:SI 3) (reg:SI 109)))
-       ...)
+     The `config/rs6000/rs6000.h' target file defines:
 
-   It is up to you to make sure that each operand, in each pattern, has
-constraints that can handle any RTL expression that could be present for
-that operand.  (When multiple alternatives are in use, each pattern
-must, for each possible combination of operand expressions, have at
-least one alternative which can handle that combination of operands.)
-The constraints don't need to *allow* any possible operand--when this is
-the case, they do not constrain--but they must at least point the way to
-reloading any possible operand so that it will fit.
+          #define EXTRA_SPECS \
+            { "cpp_sysv_default", CPP_SYSV_DEFAULT },
+          
+          #define CPP_SYS_DEFAULT ""
 
-   * If the constraint accepts whatever operands the predicate permits,
-     there is no problem: reloading is never necessary for this operand.
+     The `config/rs6000/sysv.h' target file defines:
+          #undef CPP_SPEC
+          #define CPP_SPEC \
+          "%{posix: -D_POSIX_SOURCE } \
+          %{mcall-sysv: -D_CALL_SYSV } %{mcall-aix: -D_CALL_AIX } \
+          %{!mcall-sysv: %{!mcall-aix: %(cpp_sysv_default) }} \
+          %{msoft-float: -D_SOFT_FLOAT} %{mcpu=403: -D_SOFT_FLOAT}"
+          
+          #undef CPP_SYSV_DEFAULT
+          #define CPP_SYSV_DEFAULT "-D_CALL_SYSV"
 
-     For example, an operand whose constraints permit everything except
-     registers is safe provided its predicate rejects registers.
+     while the `config/rs6000/eabiaix.h' target file defines
+     `CPP_SYSV_DEFAULT' as:
 
-     An operand whose predicate accepts only constant values is safe
-     provided its constraints include the letter `i'.  If any possible
-     constant value is accepted, then nothing less than `i' will do; if
-     the predicate is more selective, then the constraints may also be
-     more selective.
+          #undef CPP_SYSV_DEFAULT
+          #define CPP_SYSV_DEFAULT "-D_CALL_AIX"
 
-   * Any operand expression can be reloaded by copying it into a
-     register.  So if an operand's constraints allow some kind of
-     register, it is certain to be safe.  It need not permit all
-     classes of registers; the compiler knows how to copy a register
-     into another register of the proper class in order to make an
-     instruction valid.
+`LINK_LIBGCC_SPECIAL'
+     Define this macro if the driver program should find the library
+     `libgcc.a' itself and should not pass `-L' options to the linker.
+     If you do not define this macro, the driver program will pass the
+     argument `-lgcc' to tell the linker to do the search and will pass
+     `-L' options to it.
 
-   * A nonoffsettable memory reference can be reloaded by copying the
-     address into a register.  So if the constraint uses the letter
-     `o', all memory references are taken care of.
+`LINK_LIBGCC_SPECIAL_1'
+     Define this macro if the driver program should find the library
+     `libgcc.a'.  If you do not define this macro, the driver program
+     will pass the argument `-lgcc' to tell the linker to do the search.
+     This macro is similar to `LINK_LIBGCC_SPECIAL', except that it does
+     not affect `-L' options.
 
-   * A constant operand can be reloaded by allocating space in memory to
-     hold it as preinitialized data.  Then the memory reference can be
-     used in place of the constant.  So if the constraint uses the
-     letters `o' or `m', constant operands are not a problem.
+`LINK_COMMAND_SPEC'
+     A C string constant giving the complete command line need to
+     execute the linker.  When you do this, you will need to update
+     your port each time a change is made to the link command line
+     within `gcc.c'.  Therefore, define this macro only if you need to
+     completely redefine the command line for invoking the linker and
+     there is no other way to accomplish the effect you need.
 
-   * If the constraint permits a constant and a pseudo register used in
-     an insn was not allocated to a hard register and is equivalent to
-     a constant, the register will be replaced with the constant.  If
-     the predicate does not permit a constant and the insn is
-     re-recognized for some reason, the compiler will crash.  Thus the
-     predicate must always recognize any objects allowed by the
-     constraint.
+`MULTILIB_DEFAULTS'
+     Define this macro as a C expression for the initializer of an
+     array of string to tell the driver program which options are
+     defaults for this target and thus do not need to be handled
+     specially when using `MULTILIB_OPTIONS'.
 
-   If the operand's predicate can recognize registers, but the
-constraint does not permit them, it can make the compiler crash.  When
-this operand happens to be a register, the reload pass will be stymied,
-because it does not know how to copy a register temporarily into memory.
+     Do not define this macro if `MULTILIB_OPTIONS' is not defined in
+     the target makefile fragment or if none of the options listed in
+     `MULTILIB_OPTIONS' are set by default.  *Note Target Fragment::.
 
-   If the predicate accepts a unary operator, the constraint applies to
-the operand.  For example, the MIPS processor at ISA level 3 supports an
-instruction which adds two registers in `SImode' to produce a `DImode'
-result, but only if the registers are correctly sign extended.  This
-predicate for the input operands accepts a `sign_extend' of an `SImode'
-register.  Write the constraint to indicate the type of register that
-is required for the operand of the `sign_extend'.
+`RELATIVE_PREFIX_NOT_LINKDIR'
+     Define this macro to tell `gcc' that it should only translate a
+     `-B' prefix into a `-L' linker option if the prefix indicates an
+     absolute file name.
+
+`STANDARD_EXEC_PREFIX'
+     Define this macro as a C string constant if you wish to override
+     the standard choice of `/usr/local/lib/gcc-lib/' as the default
+     prefix to try when searching for the executable files of the
+     compiler.
+
+`MD_EXEC_PREFIX'
+     If defined, this macro is an additional prefix to try after
+     `STANDARD_EXEC_PREFIX'.  `MD_EXEC_PREFIX' is not searched when the
+     `-b' option is used, or the compiler is built as a cross compiler.
+
+`STANDARD_STARTFILE_PREFIX'
+     Define this macro as a C string constant if you wish to override
+     the standard choice of `/usr/local/lib/' as the default prefix to
+     try when searching for startup files such as `crt0.o'.
+
+`MD_STARTFILE_PREFIX'
+     If defined, this macro supplies an additional prefix to try after
+     the standard prefixes.  `MD_EXEC_PREFIX' is not searched when the
+     `-b' option is used, or when the compiler is built as a cross
+     compiler.
+
+`MD_STARTFILE_PREFIX_1'
+     If defined, this macro supplies yet another prefix to try after the
+     standard prefixes.  It is not searched when the `-b' option is
+     used, or when the compiler is built as a cross compiler.
+
+`INIT_ENVIRONMENT'
+     Define this macro as a C string constant if you wish to set
+     environment variables for programs called by the driver, such as
+     the assembler and loader.  The driver passes the value of this
+     macro to `putenv' to initialize the necessary environment
+     variables.
+
+`LOCAL_INCLUDE_DIR'
+     Define this macro as a C string constant if you wish to override
+     the standard choice of `/usr/local/include' as the default prefix
+     to try when searching for local header files.  `LOCAL_INCLUDE_DIR'
+     comes before `SYSTEM_INCLUDE_DIR' in the search order.
+
+     Cross compilers do not use this macro and do not search either
+     `/usr/local/include' or its replacement.
+
+`SYSTEM_INCLUDE_DIR'
+     Define this macro as a C string constant if you wish to specify a
+     system-specific directory to search for header files before the
+     standard directory.  `SYSTEM_INCLUDE_DIR' comes before
+     `STANDARD_INCLUDE_DIR' in the search order.
+
+     Cross compilers do not use this macro and do not search the
+     directory specified.
+
+`STANDARD_INCLUDE_DIR'
+     Define this macro as a C string constant if you wish to override
+     the standard choice of `/usr/include' as the default prefix to try
+     when searching for header files.
+
+     Cross compilers do not use this macro and do not search either
+     `/usr/include' or its replacement.
+
+`STANDARD_INCLUDE_COMPONENT'
+     The "component" corresponding to `STANDARD_INCLUDE_DIR'.  See
+     `INCLUDE_DEFAULTS', below, for the description of components.  If
+     you do not define this macro, no component is used.
+
+`INCLUDE_DEFAULTS'
+     Define this macro if you wish to override the entire default
+     search path for include files.  For a native compiler, the default
+     search path usually consists of `GCC_INCLUDE_DIR',
+     `LOCAL_INCLUDE_DIR', `SYSTEM_INCLUDE_DIR',
+     `GPLUSPLUS_INCLUDE_DIR', and `STANDARD_INCLUDE_DIR'.  In addition,
+     `GPLUSPLUS_INCLUDE_DIR' and `GCC_INCLUDE_DIR' are defined
+     automatically by `Makefile', and specify private search areas for
+     GCC.  The directory `GPLUSPLUS_INCLUDE_DIR' is used only for C++
+     programs.
+
+     The definition should be an initializer for an array of structures.
+     Each array element should have four elements: the directory name (a
+     string constant), the component name, and flag for C++-only
+     directories, and a flag showing that the includes in the directory
+     don't need to be wrapped in `extern `C'' when compiling C++.  Mark
+     the end of the array with a null element.
+
+     The component name denotes what GNU package the include file is
+     part of, if any, in all upper-case letters.  For example, it might
+     be `GCC' or `BINUTILS'.  If the package is part of the a
+     vendor-supplied operating system, code the component name as `0'.
+
+     For example, here is the definition used for VAX/VMS:
+
+          #define INCLUDE_DEFAULTS \
+          {                                       \
+            { "GNU_GXX_INCLUDE:", "G++", 1, 1},   \
+            { "GNU_CC_INCLUDE:", "GCC", 0, 0},    \
+            { "SYS$SYSROOT:[SYSLIB.]", 0, 0, 0},  \
+            { ".", 0, 0, 0},                      \
+            { 0, 0, 0, 0}                         \
+          }
+
+   Here is the order of prefixes tried for exec files:
+
+  1. Any prefixes specified by the user with `-B'.
+
+  2. The environment variable `GCC_EXEC_PREFIX', if any.
+
+  3. The directories specified by the environment variable
+     `COMPILER_PATH'.
+
+  4. The macro `STANDARD_EXEC_PREFIX'.
+
+  5. `/usr/lib/gcc/'.
+
+  6. The macro `MD_EXEC_PREFIX', if any.
+
+   Here is the order of prefixes tried for startfiles:
+
+  1. Any prefixes specified by the user with `-B'.
+
+  2. The environment variable `GCC_EXEC_PREFIX', if any.
+
+  3. The directories specified by the environment variable
+     `LIBRARY_PATH' (native only, cross compilers do not use this).
+
+  4. The macro `STANDARD_EXEC_PREFIX'.
+
+  5. `/usr/lib/gcc/'.
+
+  6. The macro `MD_EXEC_PREFIX', if any.
+
+  7. The macro `MD_STARTFILE_PREFIX', if any.
+
+  8. The macro `STANDARD_STARTFILE_PREFIX'.
+
+  9. `/lib/'.
+
+ 10. `/usr/lib/'.
 
 
-File: gcc.info,  Node: Multi-Alternative,  Next: Class Preferences,  Prev: Simple Constraints,  Up: Constraints
-
-Multiple Alternative Constraints
---------------------------------
-
-   Sometimes a single instruction has multiple alternative sets of
-possible operands.  For example, on the 68000, a logical-or instruction
-can combine register or an immediate value into memory, or it can
-combine any kind of operand into a register; but it cannot combine one
-memory location into another.
-
-   These constraints are represented as multiple alternatives.  An
-alternative can be described by a series of letters for each operand.
-The overall constraint for an operand is made from the letters for this
-operand from the first alternative, a comma, the letters for this
-operand from the second alternative, a comma, and so on until the last
-alternative.  Here is how it is done for fullword logical-or on the
-68000:
-
-     (define_insn "iorsi3"
-       [(set (match_operand:SI 0 "general_operand" "=m,d")
-             (ior:SI (match_operand:SI 1 "general_operand" "%0,0")
-                     (match_operand:SI 2 "general_operand" "dKs,dmKs")))]
-       ...)
-
-   The first alternative has `m' (memory) for operand 0, `0' for
-operand 1 (meaning it must match operand 0), and `dKs' for operand 2.
-The second alternative has `d' (data register) for operand 0, `0' for
-operand 1, and `dmKs' for operand 2.  The `=' and `%' in the
-constraints apply to all the alternatives; their meaning is explained
-in the next section (*note Class Preferences::.).
-
-   If all the operands fit any one alternative, the instruction is
-valid.  Otherwise, for each alternative, the compiler counts how many
-instructions must be added to copy the operands so that that
-alternative applies.  The alternative requiring the least copying is
-chosen.  If two alternatives need the same amount of copying, the one
-that comes first is chosen.  These choices can be altered with the `?'
-and `!' characters:
-
-`?'
-     Disparage slightly the alternative that the `?' appears in, as a
-     choice when no alternative applies exactly.  The compiler regards
-     this alternative as one unit more costly for each `?' that appears
-     in it.
-
-`!'
-     Disparage severely the alternative that the `!' appears in.  This
-     alternative can still be used if it fits without reloading, but if
-     reloading is needed, some other alternative will be used.
-
-   When an insn pattern has multiple alternatives in its constraints,
-often the appearance of the assembler code is determined mostly by which
-alternative was matched.  When this is so, the C code for writing the
-assembler code can use the variable `which_alternative', which is the
-ordinal number of the alternative that was actually satisfied (0 for
-the first, 1 for the second alternative, etc.).  *Note Output
-Statement::.
-
-
-File: gcc.info,  Node: Class Preferences,  Next: Modifiers,  Prev: Multi-Alternative,  Up: Constraints
-
-Register Class Preferences
---------------------------
-
-   The operand constraints have another function: they enable the
-compiler to decide which kind of hardware register a pseudo register is
-best allocated to.  The compiler examines the constraints that apply to
-the insns that use the pseudo register, looking for the
-machine-dependent letters such as `d' and `a' that specify classes of
-registers.  The pseudo register is put in whichever class gets the most
-"votes".  The constraint letters `g' and `r' also vote: they vote in
-favor of a general register.  The machine description says which
-registers are considered general.
-
-   Of course, on some machines all registers are equivalent, and no
-register classes are defined.  Then none of this complexity is relevant.
-
-
-File: gcc.info,  Node: Modifiers,  Next: Machine Constraints,  Prev: Class Preferences,  Up: Constraints
-
-Constraint Modifier Characters
-------------------------------
-
-   Here are constraint modifier characters.
-
-`='
-     Means that this operand is write-only for this instruction: the
-     previous value is discarded and replaced by output data.
-
-`+'
-     Means that this operand is both read and written by the
-     instruction.
-
-     When the compiler fixes up the operands to satisfy the constraints,
-     it needs to know which operands are inputs to the instruction and
-     which are outputs from it.  `=' identifies an output; `+'
-     identifies an operand that is both input and output; all other
-     operands are assumed to be input only.
-
-     If you specify `=' or `+' in a constraint, you put it in the first
-     character of the constraint string.
-
-`&'
-     Means (in a particular alternative) that this operand is an
-     "earlyclobber" operand, which is modified before the instruction is
-     finished using the input operands.  Therefore, this operand may
-     not lie in a register that is used as an input operand or as part
-     of any memory address.
-
-     `&' applies only to the alternative in which it is written.  In
-     constraints with multiple alternatives, sometimes one alternative
-     requires `&' while others do not.  See, for example, the `movdf'
-     insn of the 68000.
-
-     An input operand can be tied to an earlyclobber operand if its only
-     use as an input occurs before the early result is written.  Adding
-     alternatives of this form often allows GCC to produce better code
-     when only some of the inputs can be affected by the earlyclobber.
-     See, for example, the `mulsi3' insn of the ARM.
-
-     `&' does not obviate the need to write `='.
-
-`%'
-     Declares the instruction to be commutative for this operand and the
-     following operand.  This means that the compiler may interchange
-     the two operands if that is the cheapest way to make all operands
-     fit the constraints.  This is often used in patterns for addition
-     instructions that really have only two operands: the result must
-     go in one of the arguments.  Here for example, is how the 68000
-     halfword-add instruction is defined:
-
-          (define_insn "addhi3"
-            [(set (match_operand:HI 0 "general_operand" "=m,r")
-               (plus:HI (match_operand:HI 1 "general_operand" "%0,0")
-                        (match_operand:HI 2 "general_operand" "di,g")))]
-            ...)
-
-`#'
-     Says that all following characters, up to the next comma, are to be
-     ignored as a constraint.  They are significant only for choosing
-     register preferences.
-
-`*'
-     Says that the following character should be ignored when choosing
-     register preferences.  `*' has no effect on the meaning of the
-     constraint as a constraint, and no effect on reloading.
-
-     Here is an example: the 68000 has an instruction to sign-extend a
-     halfword in a data register, and can also sign-extend a value by
-     copying it into an address register.  While either kind of
-     register is acceptable, the constraints on an address-register
-     destination are less strict, so it is best if register allocation
-     makes an address register its goal.  Therefore, `*' is used so
-     that the `d' constraint letter (for data register) is ignored when
-     computing register preferences.
-
-          (define_insn "extendhisi2"
-            [(set (match_operand:SI 0 "general_operand" "=*d,a")
-                  (sign_extend:SI
-                   (match_operand:HI 1 "general_operand" "0,g")))]
-            ...)
-
-
-File: gcc.info,  Node: Machine Constraints,  Prev: Modifiers,  Up: Constraints
-
-Constraints for Particular Machines
------------------------------------
-
-   Whenever possible, you should use the general-purpose constraint
-letters in `asm' arguments, since they will convey meaning more readily
-to people reading your code.  Failing that, use the constraint letters
-that usually have very similar meanings across architectures.  The most
-commonly used constraints are `m' and `r' (for memory and
-general-purpose registers respectively; *note Simple Constraints::.),
-and `I', usually the letter indicating the most common
-immediate-constant format.
-
-   For each machine architecture, the `config/MACHINE.h' file defines
-additional constraints.  These constraints are used by the compiler
-itself for instruction generation, as well as for `asm' statements;
-therefore, some of the constraints are not particularly interesting for
-`asm'.  The constraints are defined through these macros:
-
-`REG_CLASS_FROM_LETTER'
-     Register class constraints (usually lower case).
-
-`CONST_OK_FOR_LETTER_P'
-     Immediate constant constraints, for non-floating point constants of
-     word size or smaller precision (usually upper case).
-
-`CONST_DOUBLE_OK_FOR_LETTER_P'
-     Immediate constant constraints, for all floating point constants
-     and for constants of greater than word size precision (usually
-     upper case).
-
-`EXTRA_CONSTRAINT'
-     Special cases of registers or memory.  This macro is not required,
-     and is only defined for some machines.
-
-   Inspecting these macro definitions in the compiler source for your
-machine is the best way to be certain you have the right constraints.
-However, here is a summary of the machine-dependent constraints
-available on some particular machines.
-
-*ARM family--`arm.h'*
-
-    `f'
-          Floating-point register
-
-    `F'
-          One of the floating-point constants 0.0, 0.5, 1.0, 2.0, 3.0,
-          4.0, 5.0 or 10.0
-
-    `G'
-          Floating-point constant that would satisfy the constraint `F'
-          if it were negated
-
-    `I'
-          Integer that is valid as an immediate operand in a data
-          processing instruction.  That is, an integer in the range 0
-          to 255 rotated by a multiple of 2
-
-    `J'
-          Integer in the range -4095 to 4095
-
-    `K'
-          Integer that satisfies constraint `I' when inverted (ones
-          complement)
-
-    `L'
-          Integer that satisfies constraint `I' when negated (twos
-          complement)
-
-    `M'
-          Integer in the range 0 to 32
-
-    `Q'
-          A memory reference where the exact address is in a single
-          register (``m'' is preferable for `asm' statements)
-
-    `R'
-          An item in the constant pool
-
-    `S'
-          A symbol in the text segment of the current file
-
-*AMD 29000 family--`a29k.h'*
-
-    `l'
-          Local register 0
-
-    `b'
-          Byte Pointer (`BP') register
-
-    `q'
-          `Q' register
-
-    `h'
-          Special purpose register
-
-    `A'
-          First accumulator register
-
-    `a'
-          Other accumulator register
-
-    `f'
-          Floating point register
-
-    `I'
-          Constant greater than 0, less than 0x100
-
-    `J'
-          Constant greater than 0, less than 0x10000
-
-    `K'
-          Constant whose high 24 bits are on (1)
-
-    `L'
-          16 bit constant whose high 8 bits are on (1)
-
-    `M'
-          32 bit constant whose high 16 bits are on (1)
-
-    `N'
-          32 bit negative constant that fits in 8 bits
-
-    `O'
-          The constant 0x80000000 or, on the 29050, any 32 bit constant
-          whose low 16 bits are 0.
-
-    `P'
-          16 bit negative constant that fits in 8 bits
-
-    `G'
-    `H'
-          A floating point constant (in `asm' statements, use the
-          machine independent `E' or `F' instead)
-
-*AVR family--`avr.h'*
-
-    `l'
-          Registers from r0 to r15
-
-    `a'
-          Registers from r16 to r23
-
-    `d'
-          Registers from r16 to r31
-
-    `w'
-          Register from r24 to r31. This registers can be used in
-          `addw' command
-
-    `e'
-          Pointer register (r26 - r31)
-
-    `b'
-          Base pointer register (r28 - r31)
-
-    `t'
-          Temporary register r0
-
-    `x'
-          Register pair X (r27:r26)
-
-    `y'
-          Register pair Y (r29:r28)
-
-    `z'
-          Register pair Z (r31:r30)
-
-    `I'
-          Constant greater than -1, less than 64
-
-    `J'
-          Constant greater than -64, less than 1
-
-    `K'
-          Constant integer 2
-
-    `L'
-          Constant integer 0
-
-    `M'
-          Constant that fits in 8 bits
-
-    `N'
-          Constant integer -1
-
-    `O'
-          Constant integer 8
-
-    `P'
-          Constant integer 1
-
-    `G'
-          A floating point constant 0.0
-
-*IBM RS6000--`rs6000.h'*
-
-    `b'
-          Address base register
-
-    `f'
-          Floating point register
-
-    `h'
-          `MQ', `CTR', or `LINK' register
-
-    `q'
-          `MQ' register
-
-    `c'
-          `CTR' register
-
-    `l'
-          `LINK' register
-
-    `x'
-          `CR' register (condition register) number 0
-
-    `y'
-          `CR' register (condition register)
-
-    `z'
-          `FPMEM' stack memory for FPR-GPR transfers
-
-    `I'
-          Signed 16 bit constant
-
-    `J'
-          Unsigned 16 bit constant shifted left 16 bits (use `L'
-          instead for `SImode' constants)
-
-    `K'
-          Unsigned 16 bit constant
-
-    `L'
-          Signed 16 bit constant shifted left 16 bits
-
-    `M'
-          Constant larger than 31
-
-    `N'
-          Exact power of 2
-
-    `O'
-          Zero
-
-    `P'
-          Constant whose negation is a signed 16 bit constant
-
-    `G'
-          Floating point constant that can be loaded into a register
-          with one instruction per word
-
-    `Q'
-          Memory operand that is an offset from a register (`m' is
-          preferable for `asm' statements)
-
-    `R'
-          AIX TOC entry
-
-    `S'
-          Constant suitable as a 64-bit mask operand
-
-    `T'
-          Constant suitable as a 32-bit mask operand
-
-    `U'
-          System V Release 4 small data area reference
-
-*Intel 386--`i386.h'*
-
-    `q'
-          `a', `b', `c', or `d' register
-
-    `A'
-          `a', or `d' register (for 64-bit ints)
-
-    `f'
-          Floating point register
-
-    `t'
-          First (top of stack) floating point register
-
-    `u'
-          Second floating point register
-
-    `a'
-          `a' register
-
-    `b'
-          `b' register
-
-    `c'
-          `c' register
-
-    `d'
-          `d' register
-
-    `D'
-          `di' register
-
-    `S'
-          `si' register
-
-    `I'
-          Constant in range 0 to 31 (for 32 bit shifts)
-
-    `J'
-          Constant in range 0 to 63 (for 64 bit shifts)
-
-    `K'
-          `0xff'
-
-    `L'
-          `0xffff'
-
-    `M'
-          0, 1, 2, or 3 (shifts for `lea' instruction)
-
-    `N'
-          Constant in range 0 to 255 (for `out' instruction)
-
-    `G'
-          Standard 80387 floating point constant
-
-*Intel 960--`i960.h'*
-
-    `f'
-          Floating point register (`fp0' to `fp3')
-
-    `l'
-          Local register (`r0' to `r15')
-
-    `b'
-          Global register (`g0' to `g15')
-
-    `d'
-          Any local or global register
-
-    `I'
-          Integers from 0 to 31
-
-    `J'
-          0
-
-    `K'
-          Integers from -31 to 0
-
-    `G'
-          Floating point 0
-
-    `H'
-          Floating point 1
-
-*MIPS--`mips.h'*
-
-    `d'
-          General-purpose integer register
-
-    `f'
-          Floating-point register (if available)
-
-    `h'
-          `Hi' register
-
-    `l'
-          `Lo' register
-
-    `x'
-          `Hi' or `Lo' register
-
-    `y'
-          General-purpose integer register
-
-    `z'
-          Floating-point status register
-
-    `I'
-          Signed 16 bit constant (for arithmetic instructions)
-
-    `J'
-          Zero
-
-    `K'
-          Zero-extended 16-bit constant (for logic instructions)
-
-    `L'
-          Constant with low 16 bits zero (can be loaded with `lui')
-
-    `M'
-          32 bit constant which requires two instructions to load (a
-          constant which is not `I', `K', or `L')
-
-    `N'
-          Negative 16 bit constant
-
-    `O'
-          Exact power of two
-
-    `P'
-          Positive 16 bit constant
-
-    `G'
-          Floating point zero
-
-    `Q'
-          Memory reference that can be loaded with more than one
-          instruction (`m' is preferable for `asm' statements)
-
-    `R'
-          Memory reference that can be loaded with one instruction (`m'
-          is preferable for `asm' statements)
-
-    `S'
-          Memory reference in external OSF/rose PIC format (`m' is
-          preferable for `asm' statements)
-
-*Motorola 680x0--`m68k.h'*
-
-    `a'
-          Address register
-
-    `d'
-          Data register
-
-    `f'
-          68881 floating-point register, if available
-
-    `x'
-          Sun FPA (floating-point) register, if available
-
-    `y'
-          First 16 Sun FPA registers, if available
-
-    `I'
-          Integer in the range 1 to 8
-
-    `J'
-          16 bit signed number
-
-    `K'
-          Signed number whose magnitude is greater than 0x80
-
-    `L'
-          Integer in the range -8 to -1
-
-    `M'
-          Signed number whose magnitude is greater than 0x100
-
-    `G'
-          Floating point constant that is not a 68881 constant
-
-    `H'
-          Floating point constant that can be used by Sun FPA
-
-*SPARC--`sparc.h'*
-
-    `f'
-          Floating-point register that can hold 32 or 64 bit values.
-
-    `e'
-          Floating-point register that can hold 64 or 128 bit values.
-
-    `I'
-          Signed 13 bit constant
-
-    `J'
-          Zero
-
-    `K'
-          32 bit constant with the low 12 bits clear (a constant that
-          can be loaded with the `sethi' instruction)
-
-    `G'
-          Floating-point zero
-
-    `H'
-          Signed 13 bit constant, sign-extended to 32 or 64 bits
-
-    `Q'
-          Floating-point constant whose integral representation can be
-          moved into an integer register using a single sethi
-          instruction
-
-    `R'
-          Floating-point constant whose integral representation can be
-          moved into an integer register using a single mov instruction
-
-    `S'
-          Floating-point constant whose integral representation can be
-          moved into an integer register using a high/lo_sum
-          instruction sequence
-
-    `T'
-          Memory address aligned to an 8-byte boundary
-
-    `U'
-          Even register
-
-*TMS320C3x/C4x--`c4x.h'*
-
-    `a'
-          Auxiliary (address) register (ar0-ar7)
-
-    `b'
-          Stack pointer register (sp)
-
-    `c'
-          Standard (32 bit) precision integer register
-
-    `f'
-          Extended (40 bit) precision register (r0-r11)
-
-    `k'
-          Block count register (bk)
-
-    `q'
-          Extended (40 bit) precision low register (r0-r7)
-
-    `t'
-          Extended (40 bit) precision register (r0-r1)
-
-    `u'
-          Extended (40 bit) precision register (r2-r3)
-
-    `v'
-          Repeat count register (rc)
-
-    `x'
-          Index register (ir0-ir1)
-
-    `y'
-          Status (condition code) register (st)
-
-    `z'
-          Data page register (dp)
-
-    `G'
-          Floating-point zero
-
-    `H'
-          Immediate 16 bit floating-point constant
-
-    `I'
-          Signed 16 bit constant
-
-    `J'
-          Signed 8 bit constant
-
-    `K'
-          Signed 5 bit constant
-
-    `L'
-          Unsigned 16 bit constant
-
-    `M'
-          Unsigned 8 bit constant
-
-    `N'
-          Ones complement of unsigned 16 bit constant
-
-    `O'
-          High 16 bit constant (32 bit constant with 16 LSBs zero)
-
-    `Q'
-          Indirect memory reference with signed 8 bit or index register
-          displacement
-
-    `R'
-          Indirect memory reference with unsigned 5 bit displacement
-
-    `S'
-          Indirect memory reference with 1 bit or index register
-          displacement
-
-    `T'
-          Direct memory reference
-
-    `U'
-          Symbolic address
+File: gcc.info,  Node: Run-time Target,  Next: Storage Layout,  Prev: Driver,  Up: Target Macros
+
+Run-time Target Specification
+=============================
+
+   Here are run-time target specifications.
+
+`CPP_PREDEFINES'
+     Define this to be a string constant containing `-D' options to
+     define the predefined macros that identify this machine and system.
+     These macros will be predefined unless the `-ansi' option is
+     specified.
+
+     In addition, a parallel set of macros are predefined, whose names
+     are made by appending `__' at the beginning and at the end.  These
+     `__' macros are permitted by the ANSI standard, so they are
+     predefined regardless of whether `-ansi' is specified.
+
+     For example, on the Sun, one can use the following value:
+
+          "-Dmc68000 -Dsun -Dunix"
+
+     The result is to define the macros `__mc68000__', `__sun__' and
+     `__unix__' unconditionally, and the macros `mc68000', `sun' and
+     `unix' provided `-ansi' is not specified.
+
+`extern int target_flags;'
+     This declaration should be present.
+
+`TARGET_...'
+     This series of macros is to allow compiler command arguments to
+     enable or disable the use of optional features of the target
+     machine.  For example, one machine description serves both the
+     68000 and the 68020; a command argument tells the compiler whether
+     it should use 68020-only instructions or not.  This command
+     argument works by means of a macro `TARGET_68020' that tests a bit
+     in `target_flags'.
+
+     Define a macro `TARGET_FEATURENAME' for each such option.  Its
+     definition should test a bit in `target_flags'; for example:
+
+          #define TARGET_68020 (target_flags & 1)
+
+     One place where these macros are used is in the
+     condition-expressions of instruction patterns.  Note how
+     `TARGET_68020' appears frequently in the 68000 machine description
+     file, `m68k.md'.  Another place they are used is in the
+     definitions of the other macros in the `MACHINE.h' file.
+
+`TARGET_SWITCHES'
+     This macro defines names of command options to set and clear bits
+     in `target_flags'.  Its definition is an initializer with a
+     subgrouping for each command option.
+
+     Each subgrouping contains a string constant, that defines the
+     option name, a number, which contains the bits to set in
+     `target_flags', and a second string which is the description
+     displayed by -help.  If the number is negative then the bits
+     specified by the number are cleared instead of being set.  If the
+     description string is present but empty, then no help information
+     will be displayed for that option, but it will not count as an
+     undocumented option.  The actual option name is made by appending
+     `-m' to the specified name.
+
+     One of the subgroupings should have a null string.  The number in
+     this grouping is the default value for `target_flags'.  Any target
+     options act starting with that value.
+
+     Here is an example which defines `-m68000' and `-m68020' with
+     opposite meanings, and picks the latter as the default:
+
+          #define TARGET_SWITCHES \
+            { { "68020", 1, "" },      \
+              { "68000", -1, "Compile for the 68000" }, \
+              { "", 1, "" }}
+
+`TARGET_OPTIONS'
+     This macro is similar to `TARGET_SWITCHES' but defines names of
+     command options that have values.  Its definition is an
+     initializer with a subgrouping for each command option.
+
+     Each subgrouping contains a string constant, that defines the
+     fixed part of the option name, the address of a variable, and a
+     description string.  The variable, type `char *', is set to the
+     variable part of the given option if the fixed part matches.  The
+     actual option name is made by appending `-m' to the specified name.
+
+     Here is an example which defines `-mshort-data-NUMBER'.  If the
+     given option is `-mshort-data-512', the variable `m88k_short_data'
+     will be set to the string `"512"'.
+
+          extern char *m88k_short_data;
+          #define TARGET_OPTIONS \
+           { { "short-data-", &m88k_short_data, "Specify the size of the short data section" } }
+
+`TARGET_VERSION'
+     This macro is a C statement to print on `stderr' a string
+     describing the particular machine description choice.  Every
+     machine description should define `TARGET_VERSION'.  For example:
+
+          #ifdef MOTOROLA
+          #define TARGET_VERSION \
+            fprintf (stderr, " (68k, Motorola syntax)");
+          #else
+          #define TARGET_VERSION \
+            fprintf (stderr, " (68k, MIT syntax)");
+          #endif
+
+`OVERRIDE_OPTIONS'
+     Sometimes certain combinations of command options do not make
+     sense on a particular target machine.  You can define a macro
+     `OVERRIDE_OPTIONS' to take account of this.  This macro, if
+     defined, is executed once just after all the command options have
+     been parsed.
+
+     Don't use this macro to turn on various extra optimizations for
+     `-O'.  That is what `OPTIMIZATION_OPTIONS' is for.
+
+`OPTIMIZATION_OPTIONS (LEVEL, SIZE)'
+     Some machines may desire to change what optimizations are
+     performed for various optimization levels.   This macro, if
+     defined, is executed once just after the optimization level is
+     determined and before the remainder of the command options have
+     been parsed.  Values set in this macro are used as the default
+     values for the other command line options.
+
+     LEVEL is the optimization level specified; 2 if `-O2' is
+     specified, 1 if `-O' is specified, and 0 if neither is specified.
+
+     SIZE is non-zero if `-Os' is specified and zero otherwise.
+
+     You should not use this macro to change options that are not
+     machine-specific.  These should uniformly selected by the same
+     optimization level on all supported machines.  Use this macro to
+     enable machine-specific optimizations.
+
+     *Do not examine `write_symbols' in this macro!* The debugging
+     options are not supposed to alter the generated code.
+
+`CAN_DEBUG_WITHOUT_FP'
+     Define this macro if debugging can be performed even without a
+     frame pointer.  If this macro is defined, GNU CC will turn on the
+     `-fomit-frame-pointer' option whenever `-O' is specified.
 

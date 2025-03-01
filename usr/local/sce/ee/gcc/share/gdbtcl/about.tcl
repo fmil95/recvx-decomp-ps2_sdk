@@ -1,20 +1,11 @@
-# About window for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# About
 # ----------------------------------------------------------------------
 # Implements About window
 # ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt	hunt@cygnus.com     
+#            Copyright (C) 1997, 1998 Cygnus Solutions   
+#
 
 class About {
   inherit ManagedWin ModalDialog
@@ -28,15 +19,7 @@ class About {
     pack  $itk_interior
     bind $f.image1 <1> [code $this unpost]
     bind $f.m <1> [code $this unpost]
-    window_name "About Cygnus Insight"
+    eval itk_initialize $args
   }
-
-  # Don't quit if this is the last window.  The only way that this can
-  # happen is if we are the splash screen. 
-
-  method quit_if_last {} { 
-    return 0
-  }
-
 }
 

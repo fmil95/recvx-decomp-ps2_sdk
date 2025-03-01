@@ -1,0 +1,145 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm319</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo307.htm">[前]</A> <A HREF="admo401.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.19 <A NAME="anchor1495855"></A>ロードおよびストア・マルチプル・アドレッシング・モード</H3>
+
+<BLOCKQUOTE>
+  <P>ロード・マルチプル命令は、メモリから汎用レジスタのサブセット（または全セット）をロードします。ストア・マルチプル命令は、汎用レジスタのサブセット（または全セット）をメモリにストアします。これらの命令の命令形式は1つです。</P>
+  <P>ロードおよびストア・マルチプル・アドレッシング・モードは、連続した範囲のアドレスを生成します。最小番号のレジスタは最下位メモリ・アドレスに、また最大番号のレジスタは、最上位メモリ・アドレスにそれぞれストアされます。</P>
+  <P>以下の4つのロードおよびストア・マルチプル・アドレッシング・モードがあります：</P>
+  <BLOCKQUOTE>
+    <P><B>1. <A HREF="admo401.htm">インクリメント・アフタ</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>LDM|STM{&lt;cond&gt;}IA   Rn{!}, &lt;registers&gt;{^}</PRE>
+    </BLOCKQUOTE>
+    <P><B>2. <A HREF="admo402.htm">インクリメント・ビフォ</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>LDM|STM{&lt;cond&gt;}IＢ   Rn{!}, &lt;registers&gt;{^}</PRE>
+    </BLOCKQUOTE>
+    <P><B>3. <A HREF="admo403.htm">デクリメント・アフタ</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>LDM|STM{&lt;cond&gt;}DA   Rn{!}, &lt;registers&gt;{^}</PRE>
+    </BLOCKQUOTE>
+    <P><B>4. <A HREF="admo404.htm">デクリメント・ビフォ</A></B></P>
+    <BLOCKQUOTE>
+      <PRE>LDM|STM{&lt;cond&gt;}DB   Rn{!}, &lt;registers&gt;{^}</PRE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<PRE><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0"><TR><TD
+VALIGN="TOP">
+    <A NAME="1032794"></A><B>31</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032796"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032798"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032800"></A><B>28</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032802"></A><B>27</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032804"></A><B>26</B></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032806"></A><B>25</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032808"></A><B>24</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032810"></A><B>23</B></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032812"></A><B>22</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032814"></A><B>21</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032816"></A><B>20</B></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032818"></A><B>19</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032820"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032822"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032824"></A><B>16</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032826"></A><B>15</B></TD> <TD VALIGN="TOP">
+    <A NAME="1032828"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032830"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032832"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032834"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032836"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032838"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032840"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032842"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032844"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032846"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032848"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032850"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032852"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+VALIGN="TOP">
+    <A NAME="1032854"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD VALIGN="TOP">
+    <A NAME="1032856"></A><B>0</B></TD> </TR><TR><TD VALIGN="TOP"
+COLSPAN="4">
+    <P><CENTER><A NAME="1032858"></A><BR>
+    cond</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032866"></A><BR>
+    1</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032868"></A><BR>
+    0</CENTER></TD><TD
+VALIGN="TOP">
+    <P><CENTER><A NAME="1032870"></A><BR>
+    0</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032872"></A><BR>
+    P</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032874"></A><BR>
+    U</CENTER></TD><TD
+VALIGN="TOP">
+    <P><CENTER><A NAME="1032876"></A><BR>
+    S</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032878"></A><BR>
+    W</CENTER></TD><TD VALIGN="TOP">
+    <P><CENTER><A NAME="1032880"></A><BR>
+    L</CENTER></TD><TD
+VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1032882"></A><BR>
+    Rn</CENTER></TD><TD VALIGN="TOP" COLSPAN="16">
+    <P><CENTER><A NAME="1032890"></A><BR>
+    register list</CENTER></TD></TR></TABLE></PRE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P>レジスタ・リスト：&lt;register_list&gt;には、各汎用レジスタに対して1ビットがあり、ビット0はレジスタ0、ビット15はレジスタ15（PC）に対応しています。<BR>
+  &lt;register_list&gt;は、レジスタをコンマで区切り括弧でくくったレジスタ・リストを使用して、命令ニーモニックに指定されています。どのビットもセットされていない場合、結果は予期できません。</P>
+  <P><B>Uビット：</B>ベース・レジスタから上方（U==1）または下方（U==0）に転送が行われることを示します。</P>
+  <P><B>Pビット：</B>プレインデックスまたはポストインデックス操作：</P>
+  <P><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="17%">
+      P== 1</TD> 
+      <TD WIDTH="83%">
+      メモリ・アクセスに使用する前に、範囲内の各アドレスがインクリメント(U==1)またはデクリメント(U==0)されることを示します。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="17%">
+      P== 0</TD> 
+      <TD WIDTH="83%">
+      メモリ・アクセスに使用した後に、範囲内の各アドレスがインクリメント(U==1)またはデクリメント(U==0)されることを示します。</TD> 
+    </TR>
+  </TABLE></P>
+  <P><B>Wビット：</B>転送後にベース・レジスタが更新されることを示します。ベース・レジスタは、レジスタ・リストのレジスタ数×4だけインクリメント（U==1）またはデクリメント（U==0）されます。</P>
+  <P><B>Sビット：</B>PCをロードするLDMの場合、SビットはCPSRがSPSRからロードされることを示します。PCをロードしないLDM、および、すべてのSTMの場合は、Sビットはプロセッサが特権モードにあり、現在のモードのレジスタではなく、ユーザ・モードでバンクされたレジスタが転送されることを示します。</P>
+  <P><B>Lビット：</B>ロード(L==1)命令とストア(L==0)命令を区別します。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo307.htm">[前]</A> <A HREF="admo401.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

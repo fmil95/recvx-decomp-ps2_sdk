@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm313</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm312.htm">[前]</A> <A HREF="arm314.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.13 <A NAME="anchor2538315"></A>コプロセッサ命令</H3>
+
+<BLOCKQUOTE>
+  <P><B>注意</B><BR>
+  コプロセッサ命令はアーキテクチャ･バージョン1では実装されていません。</P>
+  <P>ARM命令セットは、コプロセッサとの通信に3種類の方法を提供します。命令セットは各コプロセッサ命令の4ビット・フィールドで最大16のコプロセッサを区別します。そのため、各コプロセッサには個別の番号が割り当てられます（大きなコプロセッサ命令では、1つのコプロセッサは16個の番号のうち2つ以上を使用することができます。）</P>
+  <P>コプロセッサ命令では以下のことが可能です。</P>
+  <UL>
+    <LI>ARMがコプロセッサのデータ処理オペレーションを始める。
+    <LI>ARMレジスタをコプロセッサ・レジスタへ、そしてコプロセッサ・レジスタから転送する。
+    <LI>ARMがコプロセッサのロード／ストア命令のアドレスを生成する。
+  </UL>
+  <P>コプロセッサはARMと同じ命令ストリームを実行し、他のコプロセッサについてのARM命令とコプロセッサ命令は無視します。未定義命令のトラップによってコプロセッサ・ハードウェアがコプロセッサ命令を実行できない場合は、コプロセッサ・ハードウェアのソフトウェア・エミュレーションを可能にします。</P>
+  <P>コプロセッサは命令を部分的に実行し、例外を発生することができます。これはランタイム生成例外（ゼロ除算やオーバフローのような）の処理に便利です。</P>
+  <P>コプロセッサの全フィールドがARMで使用されるわけではありません。コプロセッサ・レジスタの指定子とオペコードは個々のコプロセッサで定義されます。そのため、汎用命令ニーモニックのみがコプロセッサ命令に提供されます。アセンブラ・マクロを使ってカスタム・コプロセッサ・ニーモニックをこれらの汎用ニーモニックに変換する（またはオペコードを手動で再生する）ことができます。</P>
+  <P><B>例</B></P>
+  <PRE>CDP  p5, 2, c12, c10, c3, 4  ; Coprocessor 5 data operation
+                             ; opcode 1 = 2, opcode 2 = 4
+                             ; destination register is 12
+                             ; source registers are 10 and 3
+MRC  p15, 5, R4, c0, c2, 3   ; Coprocessor 15 transfer to ARM register
+                             ; opcode 1 = 5, opcode 2 = 3
+                             ; ARM destination register = R4
+                             ; coproc source registers are 0 and 2
+MCR  p14, 1, R7, c7, c12, 6  ; ARM register transfer to Coprocessor 14
+                             ; opcode 1 = 1, opcode 2 = 6
+                             ; ARM source register = R7
+                             ; coproc dest registers are 7 and 12
+LDC  p6, CR1, [R4]           ; Load from memory to coprocessor 6
+                             ; ARM register 4 contains the address
+                             ; Load to CP reg 1
+LDC  p6, CR4, [R2, #4]       ; Load from memory to coprocessor 6
+                             ; ARM register R2 + 4 is the address
+                             ; Load to CP reg 4
+STC  p8, CR8, [R2, #4]!      ; Store from coprocessor 8 to memory
+                             ; ARM register R2 + 4 is the address
+                             ; after the transfer R2 = R2 + 4
+                             ; Store from CP reg 8STC  p8, 
+CR9, [R2], #-16              ; Store from coprocessor 8 to memory
+                             ; ARM register R2 holds the address
+                             ; after the transfer R2 = R2 - 16
+                             ; Store from CP reg 9</PRE>
+</BLOCKQUOTE>
+
+<H4>3.13.1 <A NAME="anchor3191377"></A>コプロセッサ命令の一覧</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_cdp.htm"><B>CDP</B></A> コプロセッサ・データ・オペレーション<BR>
+  <B><A HREF="a_ldc.htm">LDC</A></B> コプロセッサ・レジスタのロード<BR>
+  <B><A HREF="a_mcr.htm">MCR</A></B> ARMレジスタからコプロセッサへムーブ<BR>
+  <B><A HREF="a_mrc.htm">MRC</A></B> コプロセッサからARMレジスタへムーブ<BR>
+  <B><A HREF="a_stc.htm">STC</A></B> コプロセッサ・レジスタのストア<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm312.htm">[前]</A> <A HREF="arm314.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

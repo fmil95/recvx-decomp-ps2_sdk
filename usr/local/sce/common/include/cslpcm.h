@@ -1,21 +1,27 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
- * Emotion Engine / I/O Processor Common Header
+ *                     I/O Processor Library
+ *                          Version 0.60
+ *                           Shift-JIS
  *
- * Copyright (C) 1998-1999, 2001 Sony Computer Entertainment Inc.
- * All Rights Reserved.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                       All Rights Reserved.
  *
- * cslpcm.h
- *	Component Sound Library PCM Stream
+ *                            cslpcm.h
+ *                Component Sound Library PCM Stream
+ *
+ *     Version   Date          Design     Log
+ *  --------------------------------------------------------------------
+ *     0.60      Oct.12.1999   katayama   first checked in.
  */
 #ifndef _cslpcm_h_
 #define _cslpcm_h_
 typedef struct {
-	unsigned int	pcmbuf_size;	/* real pcm buffer size, NOT include header size */
-	unsigned int	validsize;
-	void		*pcmbuf;
-	unsigned int	pad;
+	u_int	pcmbuf_size;		// real pcm buffer size, NOT include header size
+	u_int	validsize;
+	void	*pcmbuf;
+	u_int	pad;
 } sceCslPcmStream;
-#endif /* !_cslpcm_h_ */
+#endif //!_cslpcm_h_

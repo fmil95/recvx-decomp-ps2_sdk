@@ -1,0 +1,259 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                   All Rights Reserved
+                                                             Aug. 2000
+
+					Changes and Known Bugs in ee-gcc
+========================================================================
+
+Known Bugs since the Tool Chain EE 2.9-ee-991111-01 Release
+------------------------------------------------------------------------
+The following malfunctions in GNU tools have been found in this release.
+
+- If the header file, bitset, is included in the C++ program,
+  an error occurs. 
+
+  Workaround:  Do not use bitset.  If necessary, make a temporary 
+	       change to /usr/local/sce/ee/gcc/include/g++-2/bitset
+	       as follows.
+
+*** bitset.orig Mon Jul 31 18:47:53 2000
+--- bitset      Mon Jul 31 18:46:43 2000
+*************** public:
+*** 626,632 ****
+    template<class _CharT, class _Traits, class _Alloc>
+    explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
+                    size_t __pos = 0,
+!                   size_t __n = basic_string<_CharT,_Traits,_Alloc>::npos)
+      : _Base()
+    {
+      if (__pos > __s.size())
+--- 626,632 ----
+    template<class _CharT, class _Traits, class _Alloc>
+    explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
+                    size_t __pos = 0,
+!                 size_t __n = -1)
+      : _Base()
+    {
+      if (__pos > __s.size())
+
+
+- When the attribute "packed" is specified to the structure, the initial
+  value is not set correctly.  
+
+  Workaround:  The initial setting of the packed structure should be
+  made by assignment instead of the initially set values.  Otherwise, 
+  the initial setting of the C source file can be made by a declaration 
+  of the packed structure only.  The entity definition can be made with 
+  the assembly source file.  In the latter case, a psuedo instruction
+  '.align 0' is required to disable the automatic alignment of the data
+  definition instruction such as .word or .half.
+
+- The dependency output option such as -MM cannot be performed properly
+  in case where all the below conditions are satisfied:
+      * Immediately preceding line of the #include preprocess command
+        is a C++ comment.
+      * The second byte of the immediately preceding character of the
+	comment is '\'.
+      * Immediately preceding character of the above '\' is also full width.
+
+  Workaround:  Insert a blank space at the end of the comment.
+
+- Although the constant expression of the #if preprocess command is 
+  not correct, or even no constant expression exists, an error is
+  not returned.
+
+  Workaround:  This problem will be avoided if the correct constant
+	       expression is specified.
+ 
+- If the operand constraint character '+' is used in the asm statement,
+  an error occurs.
+  
+  Workaroud:  Use another descriptions for the I/O operand.
+	      For details, see the info file of GCC.
+
+------------------------------------------------------------------------
+Known Bugs in the Tool Chain EE 2.9-ee-991111-01 Release
+------------------------------------------------------------------------
+- If there is a mismatch between the expression and restriction of
+  operands in the asm statement, the internal error occurs.
+  
+  Workaround: Rewrite the applicable asm statement correctly.
+
+- When an option -fshort-double is specified, the double type argument
+  is not passed correctly to the function of a variable argument.
+  
+  Workaroud: In the case of a double type, rewrite the function by 
+	     setting an address instead of a value.
+
+- An incorrect object code may be generated due to a loop optimization
+  failure.  
+
+  Workaround: This problem can be avoided by specifying an option
+	      -fno-strength-reduce.  Otherwise, one of the reason of
+	      this malfunction is because the loop conditional expression
+	      is  E1 || E2 || ... || En (E1 .. En refers to an expression),
+	      therefore, the error can be avoided by rewriting the
+	      expression.  It has been reported that this problem is
+	      possible to occur with gcc not only for EE.  In view of a 
+	      track record of general use of gcc , the error frequency
+	      is not likely very high.
+
+- When the condition of #if or #ifdef is true, even though the applicable
+  #endif does not exist, an error is not detected.
+
+  Workaround: There is no solution.
+
+- If 'typedef int new_int __attribute__ ((algined(16)))' is specified,
+  the specified attriubte effects int not only new_int.
+
+  Note: This problem was reported to have fixed in the Tool Chain
+	Release 1.6, however, it has been proved that some problems 
+	remain unsolved (such as deleting essential codes), therefore,
+	the function has been replaced with the previous one.
+
+------------------------------------------------------------------------
+Major Changes from the Previous Versions of ee-gcc (version 2.9-ee-991111)
+------------------------------------------------------------------------
+
+- Even though an option -Wall was specified, if an optimization option
+  was compiled with -01 or greater, no warnings were given although
+  the function not void did not return any values. 
+  This problem has been fixed.
+
+- A -no-dma-vif option in the ee-dvp-as command has become available.
+
+- In the case where comments in C++ or the last two characters of literal
+  are two bytes, if the second value equals to '\', it was incorrectly
+  determined to be line continued.  This problem has been fixed.
+
+- With C++ programs, if the volatile asm statement is in a template, 
+  an error occurred when incorporating the template.  
+  This problem has been fixed.
+
+- Following the error displaying a message "Could not find a spill register",
+  an internal error as follows occurred.  This problem has been fixed.
+
+  ../../src/gcc/toplev.c:1516: Internal compiler error in function fatal_insn
+
+- Due to an optimization error, the necessary codes were incorrectly deleted. 
+  (can be avoided by specifying -fno-edge-lcm).  This problem has been fixed. 
+
+- Other than the above case, essential codes were sometimes deleted.
+  This problem has been fixed.
+
+- With C++ programs, an implicit call of explicit constructor was not
+  detected to be an error.  This problem has been fixed.
+
+- The following internal error sometimes occurred.
+  This problem has been fixed.
+
+  ../../src/gcc/haifa-sched.c:6824: Internal compiler error in function
+  schedule_block
+  Please submit a Problem Report to Cygnus Solutions with send-pr.
+
+- With ee-gdb, when an attempt to display the data exceeding 1024 bytes was
+  made, there was an error.  This problem has been fixed.
+
+- When ee-gdb was activated with a -w option, the target could not be selected
+  in the dialog box.  This problem has been fixed.
+
+
+Other Notes
+------------------------------------------------------------------------
+1. Error on Linking
+------------------------------------------------------------------------
+
+    relocation truncated to fit: R_MIPS_GPREL16 _impure_ptr
+
+This error might occur on linking if a value except 0 is set to the 
+option -G (8 is its default) when compiling a program meeting the 
+following conditions.
+
+	A program which uses stdin, stdout, or stderr directly
+	A program which uses a macro such as putchar where stdin, stdout,
+	or stderr appear in the source as a result of macro expansion
+
+If this error is found, please follow any of measures described below.
+
+- Compiling all the source files with the -G0 option.
+  If there is no global variables with external access in a source file 
+  where stdin, stdout, or stderr is directly described, specify the -G0
+  option only when compiling such a file.     
+
+- Re-generating the standard library without 
+  /usr/local/sce/ee/gcc/sce-patch/patch.
+
+- Using stdin, stdout, or stderr indirectly via files such as my-stdio.h 
+  and my-stdio.c shown below.
+
+  e.g.
+
+        #include "my-stdio.h"
+        #include <stdio.h>
+
+        int main()
+        {
+            fprintf(MY_STDOUT, "Hello\n");
+            /* Using MY_STDOUT not stdout */
+            return 0;
+        }
+
+
+  my-stdio.h:
+       /* Including this prior to stdio.h */
+        #define MY_STDIN my_stdin()
+        #define MY_STDOUT my_stdout()
+        #define MY_STDERR my_stderr()
+
+        FILE *my_stdin();
+        FILE *my_stdout();
+        FILE *my_stderr();
+
+  my-stdio.c:
+         /* Compiling with the option -G0 */
+        #include <stdio.h>
+
+        FILE *my_stdin()
+        {
+            return stdin;
+        }
+
+        FILE *my_stdout()
+        {
+            return stdout;
+        }
+
+        FILE *my_stderr()
+        {
+            return stdout;
+        }
+
+
+------------------------------------------------------------------------
+2. Expression Exceeding Accuracy of Float Type
+------------------------------------------------------------------------
+The compiler detects an expression that can calculate a value when 
+compiling, and replaces the value of such an expression with 
+a constant.  To what extent computable expressions are detected depends 
+on the level of optimization.  Therefore, it is possible that an
+expression to be calculated during compilation when the program was
+optimized might be calculated not during compilation but during execution. 
+There is a difference in the degree of conformity with IEEE 754 between
+the fpu specification of the Emotion Engine and that for the calculation
+of compiler when compiling.  So, these values are different under special
+conditions; an excess of a float-type expression value over float-type
+computing precision and division by 0, for example.  In general, when to
+calculate is not a problem.  However, take care when handling these 
+special conditions.  Refer also to "4.8. IEEE 754 Compatibility" in the
+EE Core User's Manual. 
+
+========================================================================
+
+Restrictions on iop-gcc 
+------------------------------------------------------------------------
+- The current iop compiler is provided without consideration of floating 
+  point operation support, and a library for operating the floating point 
+  is not provided. Thus, the floating point on iop programming can not be
+  used. 

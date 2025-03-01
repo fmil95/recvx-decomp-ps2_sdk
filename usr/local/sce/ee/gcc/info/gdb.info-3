@@ -1,17 +1,15 @@
 This is Info file ./gdb.info, produced by Makeinfo version 1.68 from
 the input file gdb.texinfo.
 
-INFO-DIR-SECTION Programming & development tools.
 START-INFO-DIR-ENTRY
 * Gdb: (gdb).                     The GNU debugger.
 END-INFO-DIR-ENTRY
-
    This file documents the GNU debugger GDB.
 
-   This is the Eighth Edition, March 2000, of `Debugging with GDB: the
-GNU Source-Level Debugger' for GDB Version 5.0-ee-001003-1.
+   This is the Seventh Edition, February 1999, of `Debugging with GDB:
+the GNU Source-Level Debugger' for GDB Version 4.17-ee-991111.
 
-   Copyright (C) 1988-2000 Free Software Foundation, Inc.
+   Copyright (C) 1988-1999 Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -25,108 +23,6 @@ of a permission notice identical to this one.
    Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for modified
 versions.
-
-
-File: gdb.info,  Node: Conditions,  Next: Break Commands,  Prev: Disabling,  Up: Breakpoints
-
-Break conditions
-----------------
-
-   The simplest sort of breakpoint breaks every time your program
-reaches a specified place.  You can also specify a "condition" for a
-breakpoint.  A condition is just a Boolean expression in your
-programming language (*note Expressions: Expressions.).  A breakpoint
-with a condition evaluates the expression each time your program
-reaches it, and your program stops only if the condition is *true*.
-
-   This is the converse of using assertions for program validation; in
-that situation, you want to stop when the assertion is violated--that
-is, when the condition is false.  In C, if you want to test an
-assertion expressed by the condition ASSERT, you should set the
-condition `! ASSERT' on the appropriate breakpoint.
-
-   Conditions are also accepted for watchpoints; you may not need them,
-since a watchpoint is inspecting the value of an expression anyhow--but
-it might be simpler, say, to just set a watchpoint on a variable name,
-and specify a condition that tests whether the new value is an
-interesting one.
-
-   Break conditions can have side effects, and may even call functions
-in your program.  This can be useful, for example, to activate functions
-that log program progress, or to use your own print functions to format
-special data structures. The effects are completely predictable unless
-there is another enabled breakpoint at the same address.  (In that
-case, GDB might see the other breakpoint first and stop your program
-without checking the condition of this one.)  Note that breakpoint
-commands are usually more convenient and flexible than break conditions
-for the purpose of performing side effects when a breakpoint is reached
-(*note Breakpoint command lists: Break Commands.).
-
-   Break conditions can be specified when a breakpoint is set, by using
-`if' in the arguments to the `break' command.  *Note Setting
-breakpoints: Set Breaks.  They can also be changed at any time with the
-`condition' command.
-
-   You can also use the `if' keyword with the `watch' command.  The
-`catch' command does not recognize the `if' keyword; `condition' is the
-only way to impose a further condition on a catchpoint.
-
-`condition BNUM EXPRESSION'
-     Specify EXPRESSION as the break condition for breakpoint,
-     watchpoint, or catchpoint number BNUM.  After you set a condition,
-     breakpoint BNUM stops your program only if the value of EXPRESSION
-     is true (nonzero, in C).  When you use `condition', GDB checks
-     EXPRESSION immediately for syntactic correctness, and to determine
-     whether symbols in it have referents in the context of your
-     breakpoint.  If EXPRESSION uses symbols not referenced in the
-     context of the breakpoint, GDB prints an error message:
-
-          No symbol "foo" in current context.
-
-     GDB does not actually evaluate EXPRESSION at the time the
-     `condition' command (or a command that sets a breakpoint with a
-     condition, like `break if ...') is given, however.  *Note
-     Expressions: Expressions.
-
-`condition BNUM'
-     Remove the condition from breakpoint number BNUM.  It becomes an
-     ordinary unconditional breakpoint.
-
-   A special case of a breakpoint condition is to stop only when the
-breakpoint has been reached a certain number of times.  This is so
-useful that there is a special way to do it, using the "ignore count"
-of the breakpoint.  Every breakpoint has an ignore count, which is an
-integer.  Most of the time, the ignore count is zero, and therefore has
-no effect.  But if your program reaches a breakpoint whose ignore count
-is positive, then instead of stopping, it just decrements the ignore
-count by one and continues.  As a result, if the ignore count value is
-N, the breakpoint does not stop the next N times your program reaches
-it.
-
-`ignore BNUM COUNT'
-     Set the ignore count of breakpoint number BNUM to COUNT.  The next
-     COUNT times the breakpoint is reached, your program's execution
-     does not stop; other than to decrement the ignore count, GDB takes
-     no action.
-
-     To make the breakpoint stop the next time it is reached, specify a
-     count of zero.
-
-     When you use `continue' to resume execution of your program from a
-     breakpoint, you can specify an ignore count directly as an
-     argument to `continue', rather than using `ignore'.  *Note
-     Continuing and stepping: Continuing and Stepping.
-
-     If a breakpoint has a positive ignore count and a condition, the
-     condition is not checked.  Once the ignore count reaches zero, GDB
-     resumes checking the condition.
-
-     You could achieve the effect of the ignore count with a condition
-     such as `$foo-- <= 0' using a debugger convenience variable that
-     is decremented each time.  *Note Convenience variables:
-     Convenience Vars.
-
-   Ignore counts apply to breakpoints, watchpoints, and catchpoints.
 
 
 File: gdb.info,  Node: Break Commands,  Next: Breakpoint Menus,  Prev: Conditions,  Up: Breakpoints
@@ -203,7 +99,7 @@ that no output is produced.  Here is an example:
      end
 
 
-File: gdb.info,  Node: Breakpoint Menus,  Next: Error in Breakpoints,  Prev: Break Commands,  Up: Breakpoints
+File: gdb.info,  Node: Breakpoint Menus,  Prev: Break Commands,  Up: Breakpoints
 
 Breakpoint menus
 ----------------
@@ -244,46 +140,6 @@ particular definitions of that function name:
      (gdb)
 
 
-File: gdb.info,  Node: Error in Breakpoints,  Prev: Breakpoint Menus,  Up: Breakpoints
-
-"Cannot insert breakpoints"
----------------------------
-
-   Under some operating systems, breakpoints cannot be used in a
-program if any other process is running that program.  In this
-situation, attempting to run or continue a program with a breakpoint
-causes GDB to print an error message:
-
-     Cannot insert breakpoints.
-     The same program may be running in another process.
-
-   When this happens, you have three ways to proceed:
-
-  1. Remove or disable the breakpoints, then continue.
-
-  2. Suspend GDB, and copy the file containing your program to a new
-     name.  Resume GDB and use the `exec-file' command to specify that
-     GDB should run your program under that name.  Then start your
-     program again.
-
-  3. Relink your program so that the text segment is nonsharable, using
-     the linker option `-N'.  The operating system limitation may not
-     apply to nonsharable executables.
-
-   A similar message can be printed if you request too many active
-hardware-assisted breakpoints and watchpoints:
-
-     Stopped; cannot insert breakpoints.
-     You may have requested too many hardware breakpoints and watchpoints.
-
-This message is printed when you attempt to resume the program, since
-only then GDB knows exactly how many hardware breakpoints and
-watchpoints it needs to insert.
-
-   When this message is printed, you need to disable or remove some of
-the hardware-assisted breakpoints and watchpoints, and then continue.
-
-
 File: gdb.info,  Node: Continuing and Stepping,  Next: Signals,  Prev: Breakpoints,  Up: Stopping
 
 Continuing and stepping
@@ -294,9 +150,9 @@ completes normally.  In contrast, "stepping" means executing just one
 more "step" of your program, where "step" may mean either one line of
 source code, or one machine instruction (depending on what particular
 command you use).  Either when continuing or when stepping, your
-program may stop even sooner, due to a breakpoint or a signal.  (If it
-stops due to a signal, you may want to use `handle', or use `signal 0'
-to resume execution.  *Note Signals: Signals.)
+program may stop even sooner, due to a breakpoint or a signal.  (If due
+to a signal, you may want to use `handle', or use `signal 0' to resume
+execution.  *Note Signals: Signals.)
 
 `continue [IGNORE-COUNT]'
 `c [IGNORE-COUNT]'
@@ -312,10 +168,8 @@ to resume execution.  *Note Signals: Signals.)
      stopped due to a breakpoint.  At other times, the argument to
      `continue' is ignored.
 
-     The synonyms `c' and `fg' (for "foreground", as the debugged
-     program is deemed to be the foreground program) are provided
-     purely for convenience, and have exactly the same behavior as
-     `continue'.
+     The synonyms `c' and `fg' are provided purely for convenience, and
+     have exactly the same behavior as `continue'.
 
    To resume execution at a different place, you can use `return'
 (*note Returning from a function: Returning.) to go back to the calling
@@ -343,18 +197,17 @@ interesting, until you see the problem happen.
           debugging information, use the `stepi' command, described
           below.
 
-     The `step' command only stops at the first instruction of a source
-     line.  This prevents the multiple stops that could otherwise occur
+     The `step' command now only stops at the first instruction of a
+     source line.  This prevents the multiple stops that used to occur
      in switch statements, for loops, etc.  `step' continues to stop if
      a function that has debugging information is called within the
-     line.  In other words, `step' *steps inside* any functions called
-     within the line.
+     line.
 
-     Also, the `step' command only enters a function if there is line
-     number information for the function.  Otherwise it acts like the
-     `next' command.  This avoids problems when using `cc -gl' on MIPS
-     machines.  Previously, `step' entered subroutines if there was any
-     debugging information about the routine.
+     Also, the `step' command now only enters a subroutine if there is
+     line number information for the subroutine.  Otherwise it acts
+     like the `next' command.  This avoids problems when using `cc -gl'
+     on MIPS machines.  Previously, `step' entered subroutines if there
+     was any debugging information about the routine.
 
 `step COUNT'
      Continue running as in `step', but do so COUNT times.  If a
@@ -371,9 +224,9 @@ interesting, until you see the problem happen.
 
      An argument COUNT is a repeat count, as for `step'.
 
-     The `next' command only stops at the first instruction of a source
-     line.  This prevents multiple stops that could otherwise occur in
-     switch statements, for loops, etc.
+     The `next' command now only stops at the first instruction of a
+     source line.  This prevents the multiple stops that used to occur
+     in switch statements, for loops, etc.
 
 `finish'
      Continue running until just after function in the selected stack
@@ -432,7 +285,6 @@ interesting, until you see the problem happen.
      breakpoints, and hence is quicker than `until' without an argument.
 
 `stepi'
-`stepi ARG'
 `si'
      Execute one machine instruction, then stop and return to the
      debugger.
@@ -445,7 +297,6 @@ interesting, until you see the problem happen.
      An argument is a repeat count, as in `step'.
 
 `nexti'
-`nexti ARG'
 `ni'
      Execute one machine instruction, but if it is a function call,
      proceed until the function returns.
@@ -461,19 +312,18 @@ Signals
    A signal is an asynchronous event that can happen in a program.  The
 operating system defines the possible kinds of signals, and gives each
 kind a name and a number.  For example, in Unix `SIGINT' is the signal
-a program gets when you type an interrupt character (often `C-c');
-`SIGSEGV' is the signal a program gets from referencing a place in
-memory far away from all the areas in use; `SIGALRM' occurs when the
-alarm clock timer goes off (which happens only if your program has
-requested an alarm).
+a program gets when you type an interrupt (often `C-c'); `SIGSEGV' is
+the signal a program gets from referencing a place in memory far away
+from all the areas in use; `SIGALRM' occurs when the alarm clock timer
+goes off (which happens only if your program has requested an alarm).
 
    Some signals, including `SIGALRM', are a normal part of the
 functioning of your program.  Others, such as `SIGSEGV', indicate
-errors; these signals are "fatal" (they kill your program immediately)
-if the program has not specified in advance some other way to handle
-the signal.  `SIGINT' does not indicate an error in your program, but
-it is normally fatal so it can carry out the purpose of the interrupt:
-to kill the program.
+errors; these signals are "fatal" (kill your program immediately) if the
+program has not specified in advance some other way to handle the
+signal.  `SIGINT' does not indicate an error in your program, but it is
+normally fatal so it can carry out the purpose of the interrupt: to
+kill the program.
 
    GDB has the ability to detect any occurrence of a signal in your
 program.  You can tell GDB in advance what to do for each kind of
@@ -486,12 +336,11 @@ signal happens.  You can change these settings with the `handle'
 command.
 
 `info signals'
-`info handle'
      Print a table of all the kinds of signals and how GDB has been
      told to handle each one.  You can use this to see the signal
      numbers of all the defined types of signals.
 
-     `info handle' is an alias for `info signals'.
+     `info handle' is the new alias for `info signals'.
 
 `handle SIGNAL KEYWORDS...'
      Change the way GDB handles signal SIGNAL.  SIGNAL can be the
@@ -524,12 +373,12 @@ Their full names are:
 `nopass'
      GDB should not allow your program to see this signal.
 
-   When a signal stops your program, the signal is not visible to the
-program until you continue.  Your program sees the signal then, if
-`pass' is in effect for the signal in question *at that time*.  In
-other words, after GDB reports a signal, you can use the `handle'
-command with `pass' or `nopass' to control whether your program sees
-that signal when you continue.
+   When a signal stops your program, the signal is not visible until you
+continue.  Your program sees the signal then, if `pass' is in effect
+for the signal in question *at that time*.  In other words, after GDB
+reports a signal, you can use the `handle' command with `pass' or
+`nopass' to control whether your program sees that signal when you
+continue.
 
    You can also use the `signal' command to prevent your program from
 seeing a signal, or cause it to see a signal it normally would not see,
@@ -602,9 +451,9 @@ single thread to run.
      mode optimizes for single-stepping.  It stops other threads from
      "seizing the prompt" by preempting the current thread while you are
      stepping.  Other threads will only rarely (or never) get a chance
-     to run when you step.  They are more likely to run when you `next'
+     to run when you step.  They are more likely to run when you "next"
      over a function call, and they are completely free to run when you
-     use commands like `continue', `until', or `finish'.  However,
+     use commands like "continue", "until", or "finish".  However,
      unless another thread hits a breakpoint during its timeslice, they
      will never steal the GDB prompt away from the thread that you are
      debugging.
@@ -648,9 +497,10 @@ command (*note Information about a frame: Frame Info.).
 * Backtrace::                   Backtraces
 * Selection::                   Selecting a frame
 * Frame Info::                  Information on a frame
+* Alpha/MIPS Stack::            Alpha and MIPS machines and the function stack
 
 
-File: gdb.info,  Node: Frames,  Next: Backtrace,  Up: Stack
+File: gdb.info,  Node: Frames,  Next: Backtrace,  Prev: Stack,  Up: Stack
 
 Stack frames
 ============
@@ -684,15 +534,15 @@ assigned by GDB to give you a way of designating stack frames in GDB
 commands.
 
    Some compilers provide a way to compile functions so that they
-operate without stack frames.  (For example, the gcc option
-     `-fomit-frame-pointer'
-   generates functions without a frame.)  This is occasionally done
-with heavily used library functions to save the frame setup time.  GDB
-has limited facilities for dealing with these function invocations.  If
-the innermost function invocation has no stack frame, GDB nevertheless
-regards it as though it had a separate frame, which is numbered zero as
-usual, allowing correct tracing of the function call chain.  However,
-GDB has no provision for frameless functions elsewhere in the stack.
+operate without stack frames.  (For example, the `gcc' option
+`-fomit-frame-pointer' generates functions without a frame.)  This is
+occasionally done with heavily used library functions to save the frame
+setup time.  GDB has limited facilities for dealing with these function
+invocations.  If the innermost function invocation has no stack frame,
+GDB nevertheless regards it as though it had a separate frame, which is
+numbered zero as usual, allowing correct tracing of the function call
+chain.  However, GDB has no provision for frameless functions elsewhere
+in the stack.
 
 `frame ARGS'
      The `frame' command allows you to move from one stack frame to
@@ -827,7 +677,7 @@ Printing source lines: List.
      distracting.
 
 
-File: gdb.info,  Node: Frame Info,  Prev: Selection,  Up: Stack
+File: gdb.info,  Node: Frame Info,  Next: Alpha/MIPS Stack,  Prev: Selection,  Up: Stack
 
 Information about a frame
 =========================
@@ -858,8 +708,6 @@ selected stack frame.
           frame is written
 
         * the address of the frame's arguments
-
-        * the address of the frame's local variables
 
         * the program counter saved in it (the address of execution in
           the caller frame)
@@ -894,6 +742,33 @@ selected stack frame.
      Setting catchpoints: Set Catchpoints.
 
 
+File: gdb.info,  Node: Alpha/MIPS Stack,  Prev: Frame Info,  Up: Stack
+
+MIPS/Alpha machines and the function stack
+==========================================
+
+   Alpha- and MIPS-based computers use an unusual stack frame, which
+sometimes requires GDB to search backward in the object code to find
+the beginning of a function.
+
+   To improve response time (especially for embedded applications, where
+GDB may be restricted to a slow serial line for this search) you may
+want to limit the size of this search, using one of these commands:
+
+`set heuristic-fence-post LIMIT'
+     Restrict GDB to examining at most LIMIT bytes in its search for
+     the beginning of a function.  A value of 0 (the default) means
+     there is no limit.  However, except for 0, the larger the limit
+     the more bytes `heuristic-fence-post' must search and therefore
+     the longer it takes to run.
+
+`show heuristic-fence-post'
+     Display the current limit.
+
+These commands are available *only* when GDB is configured for
+debugging programs on Alpha or MIPS processors.
+
+
 File: gdb.info,  Node: Source,  Next: Data,  Prev: Stack,  Up: Top
 
 Examining Source Files
@@ -908,8 +783,8 @@ execution in that frame has stopped.  You can print other portions of
 source files by explicit command.
 
    If you use GDB through its GNU Emacs interface, you may prefer to
-use Emacs facilities to view source; see *Note Using GDB under GNU
-Emacs: Emacs.
+use Emacs facilities to view source; *note Using GDB under GNU Emacs:
+Emacs..
 
 * Menu:
 
@@ -919,7 +794,7 @@ Emacs: Emacs.
 * Machine Code::                Source and machine code
 
 
-File: gdb.info,  Node: List,  Next: Search,  Up: Source
+File: gdb.info,  Node: List,  Next: Search,  Prev: Source,  Up: Source
 
 Printing source lines
 =====================
@@ -965,7 +840,7 @@ up in the source file.
 
    In general, the `list' command expects you to supply zero, one or two
 "linespecs".  Linespecs specify source lines; there are several ways of
-writing them, but the effect is always to specify some source line.
+writing them but the effect is always to specify some source line.
 Here is a complete description of the possible arguments for `list':
 
 `list LINESPEC'
@@ -1070,18 +945,16 @@ directory, GDB looks in the current directory as a last resort.
 information it has cached about where source files are found and where
 each line is in the file.
 
-   When you start GDB, its source path includes only `cdir' and `cwd',
-in that order.  To add other directories, use the `directory' command.
+   When you start GDB, its source path is empty.  To add other
+directories, use the `directory' command.
 
 `directory DIRNAME ...'
 
 `dir DIRNAME ...'
      Add directory DIRNAME to the front of the source path.  Several
-     directory names may be given to this command, separated by `:'
-     (`;' on MS-DOS and MS-Windows, where `:' usually appears as part
-     of absolute file names) or whitespace.  You may specify a
-     directory that is already in the source path; this moves it
-     forward, so GDB searches it sooner.
+     directory names may be given to this command, separated by `:' or
+     whitespace.  You may specify a directory that is already in the
+     source path; this moves it forward, so GDB searches it sooner.
 
      You can use the string `$cdir' to refer to the compilation
      directory (if one is recorded), and `$cwd' to refer to the current
@@ -1115,7 +988,7 @@ Source and machine code
    You can use the command `info line' to map source lines to program
 addresses (and vice versa), and the command `disassemble' to display a
 range of addresses as machine instructions.  When run under GNU Emacs
-mode, the `info line' command causes the arrow to point to the line
+mode, the `info line' command now causes the arrow to point to the line
 specified.  Also, `info line' prints addresses in symbolic form as well
 as hex.
 
@@ -1128,7 +1001,7 @@ as hex.
    For example, we can use `info line' to discover the location of the
 object code for the first line of function `m4_changequote':
 
-     (gdb) info line m4_changequote
+     (gdb) info line m4_changecom
      Line 895 of "builtin.c" starts at pc 0x634c and ends at 0x6350.
 
 We can also inquire (using `*ADDR' as the form for LINESPEC) what
@@ -1168,14 +1041,13 @@ of HP PA-RISC 2.0 code:
    Some architectures have more than one commonly-used set of
 instruction mnemonics or other syntax.
 
-`set disassembly-flavor INSTRUCTION-SET'
+`set assembly-language INSTRUCTION-SET'
      Select the instruction set to use when disassembling the program
      via the `disassemble' or `x/i' commands.
 
      Currently this command is only defined for the Intel x86 family.
-     You can set INSTRUCTION-SET to either `intel' or `att'.  The
-     default is `att', the AT&T flavor used by default by Unix
-     assemblers for x86-based targets.
+     You can set INSTRUCTION-SET to either `i386' or `i8086'.  The
+     default is `i386'.
 
 
 File: gdb.info,  Node: Data,  Next: Languages,  Prev: Source,  Up: Top
@@ -1188,17 +1060,17 @@ command (abbreviated `p'), or its synonym `inspect'.  It evaluates and
 prints the value of an expression of the language your program is
 written in (*note Using GDB with Different Languages: Languages.).
 
-`print EXPR'
-`print /F EXPR'
-     EXPR is an expression (in the source language).  By default the
-     value of EXPR is printed in a format appropriate to its data type;
+`print EXP'
+`print /F EXP'
+     EXP is an expression (in the source language).  By default the
+     value of EXP is printed in a format appropriate to its data type;
      you can choose a different format by specifying `/F', where F is a
-     letter specifying the format; see *Note Output formats: Output
-     Formats.
+     letter specifying the format; *note Output formats: Output
+     Formats..
 
 `print'
 `print /F'
-     If you omit EXPR, GDB displays the last value again (from the
+     If you omit EXP, GDB displays the last value again (from the
      "value history"; *note Value history: Value History.).  This
      allows you to conveniently inspect the same value in an
      alternative format.
@@ -1208,8 +1080,8 @@ examines data in memory at a specified address and prints it in a
 specified format.  *Note Examining memory: Memory.
 
    If you are interested in information about types, or about how the
-fields of a struct or a class are declared, use the `ptype EXP' command
-rather than `print'.  *Note Examining the Symbol Table: Symbols.
+fields of a struct or class are declared, use the `ptype EXP' command
+rather than `print'. *Note Examining the Symbol Table: Symbols.
 
 * Menu:
 
@@ -1224,4 +1096,126 @@ rather than `print'.  *Note Examining the Symbol Table: Symbols.
 * Convenience Vars::            Convenience variables
 * Registers::                   Registers
 * Floating Point Hardware::     Floating point hardware
+
+
+File: gdb.info,  Node: Expressions,  Next: Variables,  Prev: Data,  Up: Data
+
+Expressions
+===========
+
+   `print' and many other GDB commands accept an expression and compute
+its value.  Any kind of constant, variable or operator defined by the
+programming language you are using is valid in an expression in GDB.
+This includes conditional expressions, function calls, casts and string
+constants.  It unfortunately does not include symbols defined by
+preprocessor `#define' commands.
+
+   GDB now supports array constants in expressions input by the user.
+The syntax is {ELEMENT, ELEMENT...}.  For example, you can now use the
+command `print {1, 2, 3}' to build up an array in memory that is
+malloc'd in the target program.
+
+   Because C is so widespread, most of the expressions shown in
+examples in this manual are in C.  *Note Using GDB with Different
+Languages: Languages, for information on how to use expressions in other
+languages.
+
+   In this section, we discuss operators that you can use in GDB
+expressions regardless of your programming language.
+
+   Casts are supported in all languages, not just in C, because it is so
+useful to cast a number into a pointer in order to examine a structure
+at that address in memory.
+
+   GDB supports these operators, in addition to those common to
+programming languages:
+
+`@'
+     `@' is a binary operator for treating parts of memory as arrays.
+     *Note Artificial arrays: Arrays, for more information.
+
+`::'
+     `::' allows you to specify a variable in terms of the file or
+     function where it is defined.  *Note Program variables: Variables.
+
+`{TYPE} ADDR'
+     Refers to an object of type TYPE stored at address ADDR in memory.
+     ADDR may be any expression whose value is an integer or pointer
+     (but parentheses are required around binary operators, just as in
+     a cast).  This construct is allowed regardless of what kind of
+     data is normally supposed to reside at ADDR.
+
+
+File: gdb.info,  Node: Variables,  Next: Arrays,  Prev: Expressions,  Up: Data
+
+Program variables
+=================
+
+   The most common kind of expression to use is the name of a variable
+in your program.
+
+   Variables in expressions are understood in the selected stack frame
+(*note Selecting a frame: Selection.); they must be either:
+
+   * global (or file-static)
+
+or
+
+   * visible according to the scope rules of the programming language
+     from the point of execution in that frame
+
+This means that in the function
+
+     foo (a)
+          int a;
+     {
+       bar (a);
+       {
+         int b = test ();
+         bar (b);
+       }
+     }
+
+you can examine and use the variable `a' whenever your program is
+executing within the function `foo', but you can only use or examine
+the variable `b' while your program is executing inside the block where
+`b' is declared.
+
+   There is an exception: you can refer to a variable or function whose
+scope is a single source file even if the current execution point is not
+in this file.  But it is possible to have more than one such variable or
+function with the same name (in different source files).  If that
+happens, referring to that name has unpredictable effects.  If you wish,
+you can specify a static variable in a particular function or file,
+using the colon-colon notation:
+
+     FILE::VARIABLE
+     FUNCTION::VARIABLE
+
+Here FILE or FUNCTION is the name of the context for the static
+VARIABLE.  In the case of file names, you can use quotes to make sure
+GDB parses the file name as a single word--for example, to print a
+global value of `x' defined in `f2.c':
+
+     (gdb) p 'f2.c'::x
+
+   This use of `::' is very rarely in conflict with the very similar
+use of the same notation in C++.  GDB also supports use of the C++
+scope resolution operator in GDB expressions.
+
+     *Warning:* Occasionally, a local variable may appear to have the
+     wrong value at certain points in a function--just after entry to a
+     new scope, and just before exit.
+   You may see this problem when you are stepping by machine
+instructions.  This is because, on most machines, it takes more than
+one instruction to set up a stack frame (including local variable
+definitions); if you are stepping by machine instructions, variables
+may appear to have the wrong values until the stack frame is completely
+built.  On exit, it usually also takes more than one machine
+instruction to destroy a stack frame; after you begin stepping through
+that group of instructions, local variable definitions may be gone.
+
+   This may also happen when the compiler does significant
+optimizations.  To be sure of always seeing accurate values, turn off
+all optimization when compiling.
 

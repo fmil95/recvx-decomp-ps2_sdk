@@ -1,0 +1,369 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> SIF DMA</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>SIF DMA</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifDmaData>sceSifDmaData </A><BR>
+</TD><TD> </TD>
+<TD>DMA データ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifDmaStat / isceSifDmaStat>sceSifDmaStat / isceSifDmaStat </A><BR>
+</TD><TD> </TD>
+<TD>キューイングの状態</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSetDChain / isceSifSetDChain>sceSifSetDChain / isceSifSetDChain </A><BR>
+</TD><TD> </TD>
+<TD>DMAチャンネルの再設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSetDma / isceSifSetDma>sceSifSetDma / isceSifSetDma </A><BR>
+</TD><TD> </TD>
+<TD>相手メモリへの DMA 転送</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceSifDmaData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifDmaData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_int	<I>data</I>;
+	u_int	<I>addr</I>;
+	u_int	<I>size</I>;
+	u_int	<I>mode</I>;
+}<B> sceSifDmaData</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>data</I>    送出するデータのアドレス(EE 16byte/IOP 4byte アライン)
+<I>addr</I>    送るべき相手のアドレス(EE 16byte/IOP 4byte アライン)
+<I>size</I>     データのサイズ byte指定(EE 16byte/IOP 4byte 単位となる)
+<I>mode</I>    注意：現在0(割り込みを起こさないモード)のみを設定してください。
+         SIF DMA関連の割り込みは、現在SIF CMDで独占しているので
+         使用しないでください。
+        SIF_DMA_INT_I	転送終了後割り込み(送り手)
+        SIF_DMA_INT_O	転送終了後割り込み(受け手)
+        SIF_DMA_TAG	data の先頭の1qwordをTAGとして使用してもよい
+        (EEでのみ指定)
+        SIF_DMA_ERT	転送後 IOP の DMA を止める(EEでのみ指定)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMA 転送すべきデータのアドレス、送り先アドレス、サイズ、モードを指定する構造体。 <BR>
+    アドレスは、EE の場合は16バイト、IOP の場合は4バイトにアラインされます。 <BR>
+    サイズは、EE の場合は16バイト、IOP の場合は4バイト単位となります <BR>
+    1回(ひとつのsceSifDmaDataで)の最大転送単位は、(1M - 16)バイトです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./sdma_rf.htm#sceSifSetDma">sceSifSetDma</a>()
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceSifDmaStat / isceSifDmaStat>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifDmaStat / isceSifDmaStat
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        キューイングの状態
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int  <B>sceSifDmaStat</B>(unsigned int <I>id</I>)
+int  <B>isceSifDmaStat</B>(unsigned int <I>id</I>)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>	sceSifSetDma()が返したキューイング識別子
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正(&gt;0)		キューイングされて待機中 <BR>
+    0		DMA 実行中 <BR>
+    負(&lt;0)		DMA 終了済 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定 id のDMAの状態を調べます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE の場合は、割り込み関数内では isceSifDmaStat() を使用してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSetDChain / isceSifSetDChain>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSetDChain / isceSifSetDChain
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMAチャンネルの再設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void  <B>sceSifSetDChain</B>(void)
+void  <B>isceSifSetDChain</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みその他の原因で、DMA が受けられない状態の時には、受け手側でこの関数を実行して、DMA チャネルの再設定を行います。 <BR>
+    EE の場合、IOP から SIF DMA 割り込みが起ると、DMA の受け口が塞がりますので、この関数を使用して再設定しなければなりません。 <BR>
+    IOP の場合、SIF_DMA_ERT が指定されたデータの転送後、同様に受け口が塞がりますので、この関数を使用して再設定しなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE の場合、割り込み関数内では isceSifSetDChain() を使用してください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSetDma / isceSifSetDma>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSetDma / isceSifSetDma
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        相手メモリへの DMA 転送
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceSifSetDma</B>(
+	sceSifDmaData *<I>sdd</I>,
+	int <I>len</I>
+)
+unsigned int <B>isceSifSetDma</B>(
+	sceSifDmaData *<I>sdd</I>,
+	int <I>len</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sdd</I>	DMA の内容
+<I>len</I>	sdd データの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0以外	キューイング識別子を返す <BR>
+    0	キューイングに失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相手のアドレスに対して DMA でデータを送ります。 <BR>
+    データはsceSifDmaData構造体で、一度に複数を指定できます。 <BR>
+    既にDMA中であれば、DMA終了後に発動されるようにキューイングされます。 <BR>
+    キューイング識別子は、時間がたてば同じ値が返ることもあります。 <BR>
+    キューの数は、現在の実装では、EE側 は32本のリングバッファ、 <BR>
+    IOP側は片方32本のダブルバッファです。そのため、IOP では、DMA 終了割り込み関数を占有しています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE の場合は、割り込み関数内では isceSifSetDma() を使用してください。 <BR>
+    IOP の場合は、必ずこの関数は割り込み禁止領域で呼んでください。 <BR>
+    現在の実装では SPR を扱うことはできません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

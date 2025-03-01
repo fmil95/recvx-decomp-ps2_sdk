@@ -1,0 +1,368 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=x-sjis">
+<title>micro code</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 3.0">
+<meta name="Microsoft Theme" content="none, default">
+<meta name="Microsoft Border" content="none, default">
+</head>
+
+<body bgcolor="#000000" text="#FFFFFF">
+
+<p><font face="Arial" size="5"><strong>MICRO CODE</strong></font></p>
+
+<p>B-Spline描画用VU1マイクロコードについて説明する。</p>
+
+<p><font face="FixedSys" size="3"><font color="#FFFF00">; 
+-------------------------------------------------------------------<br>
+;<br>
+;<br>
+; VF01 - VF16 : Control points<br>
+; VF17 - VF19 : Blending Coeff.<br>
+; VF20 - VF27 : tmp<br>
+; VF28 - VF31 : perspective matrix<br>
+;<br>
+; VI01, VI02 : counter for U, V<br>
+; VI03 : div U, V (same number)<br>
+; VI04 : RGBAQ store pointer<br>
+; VI09 : ST store pointer<br>
+; VI05 : XYZF store pointer<br>
+; VI06 : source color pointer<br>
+; VI10 : load pointer for control points set<br>
+; VI11 : counter (number of 4x4 control points sets)<br>
+;<br>
+; vumem mapping<br>
+; 0 : giftag<br>
+; 1 - 16 : control point<br>
+; 17 - 20 : blending coeff(0.0, 0.333, 0.666, 1.00).<br>
+; 21 - 24 : perspective matrix<br>
+; 25 : source color<br>
+; 100 : XGKICK area<br>
+;<br>
+;<br>
+;<br>
+; -------------------------------------------------------------------</font><br>
+<br>
+.vu<br>
+</font><font face="FixedSys" size="3" color="#FFFF00">;--- 
+透視変換マトリクスをロードする ---</font><br>
+<font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; NOP IADDIU VI02, VI00, 0<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF28, (VI02++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF29, (VI02++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF30, (VI02++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF31, (VI02++)<br>
+&nbsp;&nbsp;&nbsp; NOP[E] NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+START0:<br>
+<font color="#FFFF00">&nbsp;&nbsp;&nbsp; </font></font><font face="FixedSys" size="3"
+color="#FFFF00">;--- コントロールポイントをロードする ---</font><font
+face="FixedSys" size="3"><br>
+&nbsp;&nbsp;&nbsp; NOP XTOP VI07<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI06, VI07, 0<br>
+&nbsp;&nbsp;&nbsp; NOP LQ VF17, 0(VI06) </font><font face="FixedSys" size="3"
+color="#FFFF00">; gif tag をロードする。</font><font face="FixedSys" size="3"><br>
+<br>
+&nbsp;&nbsp;&nbsp; NOP ILWR.x VI11, (VI06)x <br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI10, VI00, 0x7fff<br>
+&nbsp;&nbsp;&nbsp; NOP IAND VI10, VI10, VI11 </font><font face="FixedSys" size="3"
+color="#FFFF00">; nloopの数を取り出す。</font><font face="FixedSys" size="3"><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI11, VI00, 0 <br>
+<br>
+NLOOP:<br>
+&nbsp;&nbsp;&nbsp; NOP ISUBIU VI10, VI10, 24 <font color="#FFFF00">; NLOOP / 24の値を求め、VI10へ。</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI11, VI11, 1<br>
+&nbsp;&nbsp;&nbsp; NOP IBNE VI10, VI00, NLOOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; </font><font face="FixedSys" size="3" color="#FFFF00">; --- 
+一番目のパッチを描画するためのコントロールポイントの組(4x4)をロードする 
+---</font><br>
+<font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; NOP IADDIU VI10, VI07, 1 <font
+color="#FFFF00">; (0,0) における ST 
+とコントロールポイントへのポインタ</font><br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF27, (VI10++) <font color="#FFFF00">; (0,0)におけるST</font><br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF05, (VI10++) <font color="#FFFF00">; 
+コントロールポイントのロード</font><br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF06, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF07, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF08, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF09, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF10, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF11, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF12, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF13, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF14, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF15, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF16, (VI10++)<br>
+<font color="#FFFF00"><br>
+</font>&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; --- gif tag のストア ---</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI06, VI07, 35<br>
+&nbsp;&nbsp;&nbsp; NOP SQ VF17, 0(VI06)<br>
+<font color="#FFFF00"><br>
+</font>&nbsp;&nbsp;&nbsp; </font><font face="FixedSys" size="3" color="#FFFF00">;--- 
+RGBAQ/ST/XYZFのストアポインタの設定 ---</font><font face="FixedSys" size="3"><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI04, VI07, 36 <font color="#FFFF00">; ST</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI09, VI07, 37 <font color="#FFFF00">; RGBAQ</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI05, VI07, 38 <font color="#FFFF00">; XYZF</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI02, VI11, 0<br>
+<br>
+LOOP02:<br>
+<font color="#FFFF00">&nbsp;&nbsp;&nbsp; ; VF05-VF16のコントロールポイントをVF01-VF12にコピーし、<br>
+&nbsp;&nbsp;&nbsp; ; VF13-VF16に次の４点をロードする。<br>
+&nbsp;&nbsp;&nbsp; ; またカウンタをリセットする。</font><br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF01, VF05, VF00x&nbsp;&nbsp;&nbsp; IADDIU VI01, VI00, 0<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF02, VF06, VF00x&nbsp;&nbsp;&nbsp; IADDIU VI03, VI00, 24<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF03, VF07, VF00x&nbsp;&nbsp;&nbsp; IADDIU VI08, VI00, 10<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF04, VF08, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF05, VF09, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF06, VF10, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF07, VF11, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF08, VF12, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF09, VF13, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF10, VF14, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF11, VF15, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF12, VF16, VF00x&nbsp;&nbsp;&nbsp; NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF13, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF14, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF15, (VI10++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF16, (VI10++)<br>
+<br>
+<br>
+</font><font face="FixedSys" size="3" color="#FFFF00">&nbsp;&nbsp;&nbsp; 
+;----------------------------------------------</font><br>
+<font face="FixedSys" size="3">LOOP01:<br>
+&nbsp;&nbsp;&nbsp; </font><font face="FixedSys" size="3" color="#FFFF00">; --- 
+ブレンディング係数のロードU, V' ---</font><font face="FixedSys" size="3"><br>
+&nbsp;&nbsp;&nbsp; NOP LQ VF17, 0(VI08)<br>
+&nbsp;&nbsp;&nbsp; NOP LQ VF18, 3(VI08)<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; --- 接線ベクトル１を求める ---</font><br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF01, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF02, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF03, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF21, VF04, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF05, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF06, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF07, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF22, VF08, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF09, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF10, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF11, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF23, VF12, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF13, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF14, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF15, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF24, VF16, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF21, VF18x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF22, VF18y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF23, VF18z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF25, VF24, VF18w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; ADDx.xyzw VF19, VF17, VF00x NOP <font color="#FFFF00">; VF17(Uのブレンディング係数）をVF19にコピー。後で使う。</font><br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP</font><br>
+<font face="FixedSys" size="3" color="#FFFF00"><br>
+</font><font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; </font><font face="FixedSys"
+size="3" color="#FFFF00">; --- ブレンディング係数のロード U', V ---</font><br>
+<font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; NOP LQ VF18, 2(VI08)<br>
+&nbsp;&nbsp;&nbsp; NOP LQ VF17, 1(VI08)<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI08, VI08, 4<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; </font><font face="FixedSys" size="3" color="#FFFF00">; --- 
+接線ベクトル２を求める ---</font><br>
+<font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF01, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF02, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF03, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF21, VF04, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF05, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF06, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF07, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF22, VF08, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF09, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF10, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF11, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF23, VF12, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF13, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF14, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF15, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF24, VF16, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF21, VF18x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF22, VF18y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF23, VF18z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF26, VF24, VF18w NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+</font><font face="FixedSys" size="3" color="#FFFF00">&nbsp;&nbsp;&nbsp; ; 
+接線ベクトル１・２の外積を求め、法線ベクトルを計算する</font><br>
+<font face="FixedSys" size="3">&nbsp;&nbsp;&nbsp; OPMULA.xyz ACCxyz, VF25xyz, VF26xyz 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IADDIU VI06, VI00, 4<br>
+&nbsp;&nbsp;&nbsp; OPMSUB.xyz VF20xyz, VF26xyz, VF25xyz&nbsp;&nbsp;&nbsp;&nbsp; LQI VF21, 
+(VI06++) <font color="#FFFF00">; 曲面の色のロード</font><br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF22, (VI06++) <font color="#FFFF00">; 
+平行光源ベクトルのロード<br>
+</font>&nbsp;&nbsp;&nbsp; NOP LQI VF23, (VI06++)<br>
+&nbsp;&nbsp;&nbsp; NOP LQI VF24, (VI06++)<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; 法線ベクトルをノーマライズ</font><br>
+&nbsp;&nbsp;&nbsp; NOP ERSADD P, VF20<br>
+&nbsp;&nbsp;&nbsp; NOP WAITP<br>
+&nbsp;&nbsp;&nbsp; NOP MFP.x VF25x, P<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP ESQRT P, VF25x<br>
+&nbsp;&nbsp;&nbsp; NOP WAITP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP MFP.x VF25x, P<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; MULx.xyz VF26xyz, VF20xyz, VF25x NOP<br>
+<br>
+&nbsp;&nbsp;<font color="#FFFF00">&nbsp; ; 
+法線ベクトルと平行光源との内積を求め、照度計算を行う。</font><br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyz ACC, VF22, VF26x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyz ACC, VF23, VF26y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDz.xyz VF25, VF24, VF26z NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+LQI VF23, (VI06++) <font color="#FFFF00">; 色の最小値をロード</font><br>
+&nbsp;&nbsp;&nbsp; MULAx.xyz ACC, VF21xyz, VF25x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LQI VF24, 
+(VI06++) <font color="#FFFF00">; 色の最大値をロード</font><br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyz ACC, VF21xyz, VF25y&nbsp;&nbsp; MOVE VF17, VF19 <br>
+&nbsp;&nbsp;&nbsp; MADDz.xyz VF22xyz, VF21xyz, VF25z LQI VF26, (VI08++)<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF01, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF02, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF03, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MAX.xyzw VF22, VF22, VF23 NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF21, VF04, VF17w NOP<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF13, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF14, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MINI.xyzw VF22, VF22, VF24 NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF15, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF24, VF16, VF17w NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; FTOI0 VF23, VF22 NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; ----------- 位置をを計算する ---------</font><br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF05, VF17x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF06, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF07, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF22, VF08, VF17w SQ VF23, 0(VI04)<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF09, VF17x IADDIU VI04, VI04, 3<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF10, VF17y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF11, VF17z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF23, VF12, VF17w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF21, VF18x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF22, VF18y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF23, VF18z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF25, VF24, VF18w NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; --- ST を求める ---</font><br>
+&nbsp;&nbsp;&nbsp; MULAz.x ACC, VF26x, VF27z NOP<br>
+&nbsp;&nbsp;&nbsp; MULAw.y ACC, VF26y, VF27w NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xy VF26xy, VF27xy, VF00w NOP<br>
+<br>
+&nbsp;&nbsp; <font color="#FFFF00"> ; --- 
+求められた位置をスクリーン座標に変換する ---</font><br>
+&nbsp;&nbsp;&nbsp; MULAx.xyzw ACC, VF28, VF25x NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAy.xyzw ACC, VF29, VF25y NOP<br>
+&nbsp;&nbsp;&nbsp; MADDAz.xyzw ACC, VF30, VF25z NOP<br>
+&nbsp;&nbsp;&nbsp; MADDw.xyzw VF21, VF31, VF25w SQ VF26, 0(VI09)<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI09, VI09, 3<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP DIV Q, VF00w, VF21w<br>
+&nbsp;&nbsp;&nbsp; NOP WAITQ<br>
+&nbsp;&nbsp;&nbsp; MULq VF22, VF21, Q NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; FTOI4 VF23, VF22 NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; NOP SQ.xyzw VF23, 0(VI05)<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI05, VI05, 3<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI01, VI01, 1<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP IBNE VI01, VI03, LOOP01 <font color="#FFFF00">; 
+パッチの分割頂点数回（２４）ループ</font><br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; </font><font face="FixedSys" size="3" color="#FFFF00">;----- 
+計算するパッチ数回ループ -----</font><font face="FixedSys" size="3"><br>
+&nbsp;&nbsp;&nbsp; NOP ISUBIU VI02, VI02, 1<br>
+&nbsp;&nbsp;&nbsp; ADDz.x VF27x, VF27x, VF27z NOP<br>
+&nbsp;&nbsp;&nbsp; NOP IBGTZ VI02, LOOP02<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">; ストリップの切れ目となる頂点にADC 
+bit を立てて描画を抑制する。</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI06, VI07, 38 <br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI02, VI11, 0<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI03, VI00, 0x7fff <font color="#FFFF00">; immは15bitしかないので、即値で0x8000の代入はできない。</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI03, VI03, 1 <font color="#FFFF00">; 0x7fff + 1 = 0x8000</font><br>
+LOOP3:<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 0(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 3(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 24(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 27(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 48(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP ISW.w VI03, 51(VI06)<br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI06, VI06, 72<br>
+&nbsp;&nbsp;&nbsp; NOP ISUBIU VI02, VI02, 1<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP IBGTZ VI02, LOOP3<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+<br>
+&nbsp;&nbsp;&nbsp; <font color="#FFFF00">;----- 処理終了。XGKICK -----</font><br>
+&nbsp;&nbsp;&nbsp; NOP IADDIU VI06, VI07, 35 <font color="#FFFF00">; XGKICK 
+する位置のポインタを設定</font><br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP XGKICK VI06<br>
+&nbsp;&nbsp;&nbsp; NOP[E] NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP B START0<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+&nbsp;&nbsp;&nbsp; NOP NOP<br>
+</font><br>
+<br>
+<br>
+<br>
+</p>
+</body>
+</html>

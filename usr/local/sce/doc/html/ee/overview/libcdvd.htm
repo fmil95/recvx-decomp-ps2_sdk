@@ -1,0 +1,615 @@
+<HTML>
+<HEAD>
+<TITLE> CD(DVD)-ROMライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libcdvd.htm" SELECTED> CD(DVD)-ROMライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CD(DVD)-ROMライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 CD(DVD)-ROMの仕様<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> セクタサイズ<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 回転速度・データ転送速度<BR></A><BR>
+    <A HREF="#Heading4_2_3"> ファイルシステム<BR></A><BR>
+    <A HREF="#Heading4_2_4"> CD-XAおよびCD-DA<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 CD(DVD)-ROMへのアクセス<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ファイルへのアクセス手順<BR></A><BR>
+    <A HREF="#Heading4_3_2"> コールバックの利用<BR></A><BR>
+    <A HREF="#Heading4_3_3"> ストリーミングサポート<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> EE側 / IOP側の差違<BR></A><BR>
+    <A HREF="#Heading4_4_2"> 実効データ読み出し速度<BR></A><BR>
+    <A HREF="#Heading4_4_3"> RPC再入に関する注意<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libcdvdはCD(DVD)-ROMドライブを制御するための基本的なライブラリです。CD(DVD)-ROMドライブを制御し、データをEE側およびIOP側メモリへ読み込む処理をサポートします。また、リアルタイムクロック機能がCD(DVD)-ROMドライブに搭載されているため、現在の日時を取得する関数がlibcdvdに含まれています。<BR>
+    libcdvdの各関数は、EE側/IOP側双方にインプリメントされています。EE上のプログラムからもIOP上のプログラムからでも、基本的に同じ機能の関数が同じ関数名で使用できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libcdvdを使用するために必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libcdvd.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">EE側ライブラリファイル</TD>
+<TD valign="TOP">libcdvd.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOP側ライブラリファイル</TD>
+<TD valign="TOP">cdvdman.ilb</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOP側モジュールファイル</TD>
+<TD valign="TOP">cdvdman.irx</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOP側モジュールファイル</TD>
+<TD valign="TOP">cdvdfsv.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    libcdvdのインクルードヘッダファイルは「libcdvd.h」で、EE側 / IOP側で共通に使用します。<BR>
+    libcdvdのライブラリファイルは、EE側のライブラリファイル「libcdvd.a」とIOP側のライブラリファイル「cdvdman.ilb」の2つがあります。それぞれ適切なライブラリファイルをリンクする必要があります。<BR>
+    このほかランタイムに必要なファイルとして、IOP側でlibcdvdの各サービスを提供するモジュール「cdvdman.irx」および、EE側からのリクエストにより「cdvdman.irx」の各モジュールを呼び出す「cdvdfsv.irx」があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libcdvdのサンプルプログラムとして、以下のものがありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1">
+(1) <B>sce/ee/sample/cdvd/smp_ee</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      libcdvdライブラリの基本的な関数のEE側からの呼び出しサンプルです。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_2">
+(2) <B>sce/iop/sample/cdvd/smp_iop</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      libcdvdライブラリの基本的な関数のIOP側からの呼び出しサンプルです。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_3">
+(3) <B>sce/iop/sample/cdvd/stmread</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ストリーム関数を使用してのファイルリードサンプルです。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_4">
+(4) <B>sce/iop/sample/cdvd/stmspcm</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ストリーム関数を利用してのストレートPCM再生のサンプルです。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_5">
+(5) <B>sce/iop/sample/cdvd/stmadpcm</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ストリーム関数を利用してのADPCM再生のサンプルです。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>CD(DVD)-ROMの仕様</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>セクタサイズ</B>
+</A>
+</H3>
+<blockquote>
+    データセクタの読み込み実効ユーザエリアは、DVD-ROMでは2048バイト、CD-ROMでも標準的には2048バイトですが、libcdvdでは以下に示すデータサイズをサポートしています。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ディスク</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>モード</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データサイズ</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">DVD-ROM</TD>
+<TD valign="TOP"></TD>
+<TD valign="TOP">USER_DATA(2048 byte)※</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE1</TD>
+<TD valign="TOP">USER_DATA(2048 byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE2/FORM1</TD>
+<TD valign="TOP">USER_DATA(2048 byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE2/FORM2</TD>
+<TD valign="TOP">USER_DATA(2324 byte) + Reserved(4<BR> byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE1</TD>
+<TD valign="TOP">Header(4 byte) + USER_DATA(2048<BR> byte) + Parity(288 byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE2</TD>
+<TD valign="TOP">Header(4 byte) + USER_DATA(2336<BR> byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE2/FORM1</TD>
+<TD valign="TOP">Header(4 byte) + SubHeader(8 byte) +<BR>USER_DATA(2048 byte) + Parity(280<BR> byte)</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD-ROM</TD>
+<TD valign="TOP">MODE2/FORM2</TD>
+<TD valign="TOP">Header(4 byte) + SubHeader(8 byte) +<BR>USER_DATA(2324 byte) + Reserved(4<BR> byte)</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+      <BLOCKQUOTE>
+      ※DVD-ROMは、USER_DATA (2048 byte)のみサポート<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>回転速度・データ転送速度</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"では、ドライブの回転速度はヘッド位置によらず一定のCAV方式を採用しています。したがって、メディア内周と外周とではデータ転送速度が異なります。<BR>
+    仕様上のデータ転送速度は次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ヘッド位置</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>速度</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">CD内周側</TD>
+<TD valign="TOP">10倍速 ＝1500KB/sec（12.3Mbps）</TD>
+</TR>
+<TR>
+<TD valign="TOP">CD外周側</TD>
+<TD valign="TOP">24倍速 ＝3600KB/sec（28.8Mbps）</TD>
+</TR>
+<TR>
+<TD valign="TOP">DVD内周側</TD>
+<TD valign="TOP">1.6倍速＝2000KB/sec</TD>
+</TR>
+<TR>
+<TD valign="TOP">DVD外周側</TD>
+<TD valign="TOP">4倍速  ＝5000KB/sec</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    現実には、エラーリトライ処理などが発生するためCD外周側で20倍速（3000KB/sec＝24Mbps）程度が上限となります。安定したデータ読み出しができるストリーミング速度としては、CD内周側で8Mbps、外周側で14Mbps、DVDでは15Mbps程度を目安としてください。<BR>
+    回転速度は以下の2とおりの方式で制御することができます。<BR>
+<UL>
+         <LI> ストリーミングモード（SCECdSpinStm）：一定のデータ転送レートで安定した読み出しが行えるよう、回転速度を抑える。<BR>
+         <LI> 通常データモード（SCECdSpinNom）：まず最高速でトライし、エラーが発生すれば読み出しが行えるまで回転速度を落とす。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>ファイルシステム</B>
+</A>
+</H3>
+<blockquote>
+    DVD-ROMおよびCD-ROMのファイルシステムはISO-9660をサポートしています。<BR>
+    ただし、ディレクトリ数およびファイル数等に下記の制限があります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>制限</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ数</TD>
+<TD valign="TOP">40ディレクトリ／システム</TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ階層の深さ</TD>
+<TD valign="TOP">最大８階層</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル数</TD>
+<TD valign="TOP">30ファイル／ディレクトリ</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    なお、ISO-9660にはファイル名・ディレクトリ名に関して次の制限があります。<BR>
+      <BLOCKQUOTE>
+      <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>制限</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル名・ディレクトリ名に<BR>使用できる文字</TD>
+<TD valign="TOP">0～9、A～Z、_</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル名の形式</TD>
+<TD valign="TOP">(ファイル名8文字)．(拡張子3文字)；１<BR>※ロングファイル名不可</TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ名の形式</TD>
+<TD valign="TOP">（ディレクトリ名8文字）※拡張子なし</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>CD-XAおよびCD-DA</B>
+</A>
+</H3>
+<blockquote>
+    CD-XAは"PlayStation2"用ディスクとしては採用しません。ハードウェアによる再生サポートもありません。<BR>
+    CD-DAもハードウェアによる再生サポートはなく、音声等の再生はSPUストリーミング等の手法によって行います。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>CD(DVD)-ROMへのアクセス</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ファイルへのアクセス手順</B>
+</A>
+</H3>
+<blockquote>
+    CD(DVD)-ROMへのアクセスはロジカルセクタナンバを指定して行うことと、ノンブロック型処理となることが特徴です。手順としては次のようになります。<BR>
+    <OL>
+         <LI VALUE= 1> ファイル名からセクタ番号を取得する<BR>sceCdSearchFile()を用いて、ファイル名からロジカルセクタナンバを取得します（第1引数で指定するsceCdlFILE構造体のlsnに格納されます）。<BR>（例）	ret = sceCdSearchFile(&fp, "cdrom0:\\SYSTEM.CNF;1");<BR>
+         <LI VALUE= 2> 読み込みの開始<BR>sceCdRead()関数などにより、データの読み込みを開始します。sceCdRead()はノンブロック型であり、コマンドを発行するだけですぐにリターンします。<BR>（例）	ret = sceCdRead(fp.lsn, rsec, (u_int *)bf, &mode);<BR>
+         <LI VALUE= 3> 読み込み終了を待つ<BR>sceCdSync()関数を用いて読み込み処理の終了を待ちます。ブロッキングして待つ方法とポーリングする方法があります。<BR>（ブロッキングの例）<BR>		ret = sceCdSync(0);<BR>（ポーリングの例）<BR>		while(sceCdSync(1)) {<BR>			/*他の処理*/<BR>		}<BR>
+         <LI VALUE= 4> エラー情報の取得<BR>sceCdGetError()関数を用いてエラー発生の有無を確認します。<BR>（例）	if (sceCdGetError()==SCECdErNO) /*エラーなし*/<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>コールバックの利用</B>
+</A>
+</H3>
+<blockquote>
+    ノンブロック型関数の終了を待つ際に、コールバック関数を利用する方法があります。<BR>
+    あらかじめsceCdCallback()を用いてコールバック関数を設定しておくと、sceCdRead()などのノンブロック型関数が終了したときに、どのノンブロック型関数が終了したのかを表すパラメータとともにそのコールバック関数が呼び出されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>ストリーミングサポート</B>
+</A>
+</H3>
+<blockquote>
+    ストリーミング処理をサポートするために、IOPメモリにリングバッファを設けてディスクからバックグラウンドでデータを読み込む関数群が用意されています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStInit</TD>
+<TD valign="TOP">ストリーマ初期化・バッファ設定</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStStart</TD>
+<TD valign="TOP">ストリーミング開始</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStRead</TD>
+<TD valign="TOP">バッファからのデータ読み出し</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStPause</TD>
+<TD valign="TOP">ストリーミング一時停止</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStResume</TD>
+<TD valign="TOP">ストリーミング再開</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStSeek</TD>
+<TD valign="TOP">ストリーム読み出し位置の変更</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStStat</TD>
+<TD valign="TOP">バッファへの読み込み状況取得</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceCdStStop</TD>
+<TD valign="TOP">ストリーミング終了</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    sceCdStInit()で初期化したあと、sceCdStStart()を呼び出すと指定セクタ以降のデータがバックグラウンドで読み込まれ、バッファに蓄積されます。sceCdStRead()を呼び出すとバッファにあるデータを順次読み出すことができます。<BR>
+    ストリーミング処理中は、他のlibcdvdの関数を使ってディスクにアクセスすることはできませんので注意してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>EE側 / IOP側の差違</B>
+</A>
+</H3>
+<blockquote>
+    libcdvdの各関数は、EE側 / IOP側どちらからでも、基本的に同じ機能の関数を同じ関数名で使用できます。ただし、CD(DVD)-ROMドライブはIOP側に接続されているため、図に示すように、EE側の関数はIOP側で読み出したデータをSIF経由で転送するという、間接的な処理を行っています。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/cdvdf1.gif">
+<P>
+    <B>図 1 libcdvdのデータフロー</B>
+</DIV>
+    このようにデータフローが異なるため、EE側ライブラリとIOP側ライブラリでは下記のような差違が生じます。<BR>
+<UL>
+         <LI> データ読み込みの終了は、EE側ではドライブのデータ読み込みの終了ではなく、EE側メモリへのデータ転送の終了となる。<BR>
+         <LI> 各関数からのサブシステムへのコマンド発行の成否は、EE側ではドライブのステータスに加えてSIFのステータスにも影響を受ける。SIF RPCの再入についても注意を払う必要がある。<BR>
+         <LI> EE側へのデータ転送に際して、バッファアドレスのアライメント補正を行う場合がある。なるべく64バイトのアライメントが望ましい。<BR>
+         <LI> EE側でlibcdvdの関数を呼び出した場合、IOP側の動作モジュールのプライオリティは81に設定される。一方、IOP側でlibcdvdの関数を呼び出した場合、プライオリティはユーザーアプリケーションと同じ値となる。したがってIOP側では他の動作中スレッドのプライオリティを考慮に入れたコーディングが必要になる。<BR>
+</UL>
+    なお、EE側から呼び出されるlibcdvdの関数とIOP側から呼び出される関数とは互いに独立しています。EE側から呼び出した処理のステータスをIOP側でsceCDSync()を呼び出して取得するといったことはできません。また、ドライブサブシステムに対するコマンド発行が重複した場合、libcdvdはコマンド発行に失敗したものとしてエラー0を返します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_2">
+<A HREF="#Heading3_4"> 4. </A>2 <B>実効データ読み出し速度</B>
+</A>
+</H3>
+<blockquote>
+    CD(DVD)-ROMからのデータ読み出し速度は内外周で異なるうえ、メディアの傷や偏重心などによるエラーの発生状況は予測できません。<BR>
+    読み出し速度が落ちる場合もあることを十分に考慮し、読み出し速度に直接依存するようなプログラミングは避けるようにしてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_3">
+<A HREF="#Heading3_4"> 4. </A>3 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    libcdvdのほとんどの関数は、EE側から呼び出した場合はSIF RPCを内部で使用します。そのため、libcdvdの関数を複数のスレッドで利用する場合はRPC再入を起さないように注意が必要です。RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_1">
+(1) <B>RPC WAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceCdBreak()<BR>
+         <LI> sceCdDiskReady()<BR>
+         <LI> sceCdGetDiskType()<BR>
+         <LI> sceCdGetError()<BR>
+         <LI> sceCdGetReadPos()<BR>
+         <LI> sceCdGetToc()<BR>
+         <LI> sceCdInit()<BR>
+         <LI> sceCdReadClock()<BR>
+         <LI> sceCdSearchFile()<BR>
+         <LI> sceCdStatus()<BR>
+         <LI> sceCdStInit()<BR>
+         <LI> sceCdStPause()<BR>
+         <LI> sceCdStRead()<BR>
+         <LI> sceCdStResume()<BR>
+         <LI> sceCdStSeek()<BR>
+         <LI> sceCdStStart()<BR>
+         <LI> sceCdStStat()<BR>
+         <LI> sceCdStStop()<BR>
+         <LI> sceCdTrayReq()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_2">
+(2) <B>RPC NOWAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数（sceCdSync()で処理終了を検出するタイプの関数）はsceSifBindRpc() / sceSifCallRpc()をNOWAIT実行します。RPC再入に注意するほか、割り込みハンドラ内では呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceCdReadChain()<BR>
+         <LI> sceCdRead()<BR>
+         <LI> sceCdReadIOPm()<BR>
+         <LI> sceCdSeek()<BR>
+         <LI> sceCdStandby()<BR>
+         <LI> sceCdStop()<BR>
+         <LI> sceCdPause()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_3">
+(3) <B>RPCチェック関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifCheckStatRpc()を呼び出します。RPC再入に注意して使用してください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceCdSync()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_4">
+(4) <B>非RPC関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()を使用しません。RPC再入を考慮することなく使用できます（これらの関数自体が再入可能という意味ではありません）。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceCdCallback()<BR>
+         <LI> sceCdInitEeCB()<BR>
+         <LI> sceCdIntToPos()<BR>
+         <LI> sceCdPosToInt()<BR>
+         <LI> sceCdSync()
+</UL>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

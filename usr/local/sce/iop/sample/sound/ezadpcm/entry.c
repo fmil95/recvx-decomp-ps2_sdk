@@ -1,5 +1,5 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                  I/O Processor sample program
@@ -39,9 +39,13 @@ start (void)
     struct ThreadParam param;
     int th;
 
+    CpuEnableIntr();
+
+    if (! sceSifCheckInit ())
+	sceSifInit ();
     sceSifInitRpc (0);
 
-    printf ("EzADPCM driver version 0.12\n");
+    printf ("EzADPCM driver version 0.11\n");
 
     param.attr         = TH_C;
     param.entry        = sce_adpcm_loop;

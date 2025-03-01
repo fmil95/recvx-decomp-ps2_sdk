@@ -1,0 +1,951 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm605</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm604.htm">[前]</A> <A HREF="arm606.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>6.5 <A NAME="anchor3326959"></A>データ処理命令</H3>
+
+<BLOCKQUOTE>
+  <P><BR>
+  Thumbデータ処理命令は、以下に示すとおりARMデータ処理命令のサブセットです。</P>
+  <P>すべてのThumbデータ処理命令がコンディション・コードをセットします。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="654726"></A><B>ニーモニック</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654728"></A><B>オペレーション</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654730"></A><B>処理</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ADC Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878780"></A>キャリ付き加算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878782"></A>Rd := Rd + Rm + Carry Flag</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ADD Rd, Rn, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878798"></A>加算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878800"></A>Rd := Rn + Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ADD Rd, Rn, #0 to 7</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878804"></A>加算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878806"></A>Rd := Rn + 3-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ADD Rd, #0 to 255</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878810"></A>加算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878812"></A>Rd := Rd + 8-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>AND Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878827"></A>論理AND</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878829"></A>Rd := Rd AND Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ASR Rd, Rm, #0 to 31</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878843"></A>算術右シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878845"></A>Rd := Rm ASR 5-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ASR Rd, Rs</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878849"></A>算術右シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878851"></A>Rd := Rd ASR Rs</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>BIC Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878866"></A>ビット・クリア</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878868"></A>Rd := Rd AND NOT Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>CMN Rn, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878872"></A>比較、負数</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878874"></A>update flags after Rn + Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>CMP Rn, #0 to 255</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878886"></A>比較</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878888"></A>update flags after Rn - 8-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>CMP Rn, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878892"></A>比較</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878894"></A>update flags after Rn - Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>EOR Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878911"></A>排他的論理OR</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878913"></A>Rd := Rd EOR Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>LSL Rd, Rm, #0 to 31</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878925"></A>論理左シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878927"></A>Rd := Rm LSL 5-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>LSL Rd, Rs</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878931"></A>論理左シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878933"></A>Rd := Rd LSL Rs</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>LSR Rd, Rm, #0 to 31</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878937"></A>論理右シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878939"></A>Rd := Rm LSR 5-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>LSR Rd, Rs</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878943"></A>論理右シフト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878945"></A>Rd := Rd LSR Rs</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>MOV Rd, #0 to 255</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654734"></A>移動</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654736"></A>Rd := 8-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>MUL Rd, Rs</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878959"></A>乗算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878961"></A>Rd := Rs x Rd</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>MVN Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654740"></A>Move Not</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654742"></A>Rd := NOT Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>NEG Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878969"></A>否定</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878971"></A>Rd := 0 - Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ORR Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878977"></A>論理（包含的）OR</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878979"></A>Rd := Rd OR Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>ROR Rd, Rs</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878986"></A>右ローテート</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878988"></A>Rd := Rd ROR Rs</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>SBC Rd, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="878995"></A>キャリ付き減算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="878997"></A>Rd := Rd - Rm - NOT(Carry Flag)</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>SUB Rd, Rn, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654770"></A>減算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654772"></A>Rd := Rn - Rm</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>SUB Rd, Rn, #0 to 7</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654776"></A>減算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654778"></A>Rd := Rn - 3-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>SUB Rd, #0 to 255</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654782"></A>減算</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654784"></A>Rd := Rd - 8-bit immediate</TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP">
+    <PRE>TST Rn, Rm</PRE>
+</TD>
+    <TD VALIGN="TOP">
+    <A NAME="654842"></A>テスト</TD> 
+    <TD VALIGN="TOP">
+    <A NAME="654844"></A>update flags after Rn AND Rm</TD> 
+  </TR>
+</TABLE></P>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表6-2：Thumbデータ処理命令</FONT></P>
+
+<BLOCKQUOTE>
+  <P><A NAME="anchor3327954"></A><B>例</B></P>
+  <BLOCKQUOTE>
+    <PRE>ADD	  R0, R4, R7	 ; R0 = R4 + R7
+SUB	  R6, R1, R2	 ; R6 = R1 - R2
+ADD	  R0, #255	 ; R0 = R0 + 255
+ADD	  R1, R4, #4	 ; R1 = R4 + 4
+NEG	  R3, R1		 ; R3 = 0 - R1
+AND	  R2, R5		 ; R2 = R2 AND R5
+EOR	  R1, R6		 ; R1 = R1 EOR R6
+CMP	  R2, R3		 ; update flags after R2 - R3
+CMP	  R7, #100	 ; update flags after R7 - 100
+MOV	  R0, #200	 ; R0 = 200</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4><BR>
+6.5.1 <A NAME="anchor3607942"></A>上位レジスタ</H4>
+
+<BLOCKQUOTE>
+  <P>ARMレジスタ8～14およびPC（上位レジスタと呼ばれます）を操作する7種類のデータ処理命令があります。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="677868"></A><B>ニーモニック</B></TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677870"></A><B>オペレーション</B></TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677872"></A><B>処理</B></TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>MOV Rd, Rn</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677876"></A>移動</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677878"></A>Rd := Rn</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>ADD Rd, Rn</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677882"></A>加算</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677884"></A>Rd := Rd + Rm</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>CMP Rn, Rm</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677888"></A>比較</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677890"></A>update flags after Rn - Rm</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>ADD SP, SP, #0 to 508</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677894"></A>スタック・ポインタのインクリメント</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677896"></A>R13 = R13 + 4* (7-bit immediate)</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>SUB SP, SP, #0 to 508</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677900"></A>スタック・ポインタのデクリメント</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="879044"></A>R13 = R13 - 4* (7-bit immediate)</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>ADD Rd, SP, #0 to 1020</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677906"></A>スタック・アドレスの形成</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677908"></A>Rd = R13 + 4* (7-bit immediate)</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <PRE>ADD Rd, PC, #0 to 1020</PRE>
+</TD>
+      <TD VALIGN="TOP">
+      <A NAME="677912"></A>PCアドレスの形成</TD> 
+      <TD VALIGN="TOP">
+      <A NAME="677914"></A>Rd = PC + 4* (7-bit immediate)</TD> 
+    </TR>
+  </TABLE></P>
+  <P>表6-3：上位レジスタのデータ処理命令</P>
+  <P><B>例</B></P>
+  <BLOCKQUOTE>
+    <PRE>MOV	  R0, R12	 ; R0 = R12
+ADD	  R10, R1, R2	 ; R6 = R1 - R2
+MOV	  PC, LR		 ; PC = R14
+CMP	  R10, R11	 ; update flags after R10 - R11
+SUB	  SP, SP, #10	 ; increase stack size by 10 bytes
+ADD	  SP, SP, #16	 ; decrease stack size by 16 bytes
+ADD	  R2, SP, #20	 ; R2 = SP + 20
+ADD	  R0, PC, #500	 ; R0 = PC + 500</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>6.5.2 フォーマット</H4>
+
+<BLOCKQUOTE>
+  <P>データ処理命令は、汎用プロセッサ・レジスタに対して以下の操作を実行します。</P>
+  <P><B>フォーマット1</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode1&gt;  Rd, Rn, Rm
+&lt;opcode1&gt; := ADD | SUB</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<PRE><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0"><TR><TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872838"></A><B>15</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872840"></A><B>14</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872842"></A><B>13</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872844"></A><B>12</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872846"></A><B>11</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872848"></A><B>10</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872850"></A><B>9</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872852"></A><B>8</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872854"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872856"></A><B>6</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872858"></A><B>5</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872860"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872862"></A><B>3</B></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872864"></A><B>2</B></TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872866"></A><FONT COLOR="#ffffff">-</FONT></TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872868"></A><B>0</B></TD> </TR>
+<TR><TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872870"></A><BR>
+    0</TD> <TD ALIGN="CENTER" 
+VALIGN="TOP">
+    <A NAME="872872"></A><BR>
+    0</TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872874"></A><BR>
+    0</TD> <TD 
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872876"></A><BR>
+    1</TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872878"></A><BR>
+    1</TD> <TD
+ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872880"></A><BR>
+    0</TD> <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872882"></A><BR>
+    op_1</TD> <TD
+ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="872884"></A><BR>
+    Rm</TD> <TD ALIGN="CENTER"
+VALIGN="TOP" COLSPAN="3">
+    <A NAME="872890"></A><BR>
+    Rn</TD> <TD ALIGN="CENTER" VALIGN="TOP"
+COLSPAN="3">
+    <A NAME="872896"></A><BR>
+    Rd</TD> </TR></TABLE></PRE>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット2</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode2&gt;  Rd, Rn, #&lt;3_bit_immed&gt;
+&lt;opcode2&gt; := ADD | SUB</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872904"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872906"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872908"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872910"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872912"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872914"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872916"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872918"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872920"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872922"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872924"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872926"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872928"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872930"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872932"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872934"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872936"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872938"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872940"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872942"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872944"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872946"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872948"></A><BR>
+    op_2</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="872950"></A><BR>
+    3_bit_immediate</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="872956"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="872962"></A><BR>
+    Rd</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット3</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode3&gt;  Rd|Rn, #&lt;8_bit_immed&gt;
+&lt;opcode3&gt; := ADD | SUB | MOV | CMP</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872970"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872972"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872974"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872976"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872978"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872980"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872982"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872984"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872986"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872988"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872990"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872992"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872994"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872996"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="872998"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873000"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873002"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873004"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873006"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="873008"></A><BR>
+    op_3</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873012"></A><BR>
+    Rd|Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="873018"></A><BR>
+    8_bit_immediate</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット4</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode4&gt;  Rd, Rn, #&lt;shift_imm&gt;
+&lt;opcode4&gt; := LSL | LSR | ASR</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873036"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873038"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873040"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873042"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873044"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873046"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873048"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873050"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873052"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873054"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873056"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873058"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873060"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873062"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873064"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873066"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873068"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873070"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873072"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+    <A NAME="873074"></A><BR>
+    op_4</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+    <A NAME="873078"></A><BR>
+    shift_immediate</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873088"></A><BR>
+    Rm</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873094"></A><BR>
+    Rd</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット5</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode5&gt;  Rd|Rn, Rm|Rs
+&lt;opcode5&gt; := MVN | CMP | CMN | TST | ADC | SBC | NEG | MUL |
+                LSL | LSR | ASR | ROR | AND | EOR | ORR | BIC</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873102"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873104"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873106"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873108"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873110"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873112"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873114"></A><B>9</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873116"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873118"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873120"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873122"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873124"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873126"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873128"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873130"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873132"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873134"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873136"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873138"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873140"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873142"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873144"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="873146"></A><BR>
+    op_5</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873154"></A><BR>
+    Rm|Rs</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873160"></A><BR>
+    Rd|Rn</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット6</B></P>
+  <BLOCKQUOTE>
+    <PRE>ADD Rd, &lt;reg&gt;, #&lt;8_bit_immed&gt;
+&lt;reg&gt; := SP | PC</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873382"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873384"></A><B>14</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873386"></A><B>13</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873388"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873390"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873392"></A><B>10</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873394"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873396"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873398"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873400"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873402"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873404"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873406"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873408"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873410"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873412"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873414"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873416"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873418"></A><BR>
+    1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873420"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="873422"></A><BR>
+    reg</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+    <A NAME="873424"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+    <A NAME="873430"></A><BR>
+    8_bit_immediate</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>フォーマット7</B></P>
+  <BLOCKQUOTE>
+    <PRE>&lt;opcode6&gt;  SP, SP, #&lt;7_bit_immed&gt;
+&lt;opcode6&gt; := ADD | SUB</PRE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="873446"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873448"></A><B>14</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873450"></A><B>13</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873452"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873454"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873456"></A><B>10</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873458"></A><B>9</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873460"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873462"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873464"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873466"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873468"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873470"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873472"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873474"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="873476"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873478"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873480"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873482"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873484"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873486"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873488"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873490"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873492"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873494"></A><BR>
+    op_6</TD> 
+    <TD COLSPAN="7" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="873496"></A><BR>
+    7_bit_immediate</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>6.5.3 <A NAME="anchor3330366"></A>データ処理命令のリスト</H4>
+
+<P>以下の命令は、上記のフォーマットに従います。</P>
+
+<BLOCKQUOTE>
+  <BLOCKQUOTE>
+    <P><A HREF="t_add3.htm"><B>ADD</B></A> キャリ付加算（レジスタ）<BR>
+    <B><A HREF="t_add1.htm">ADD</A></B> 加算（イミディエート）<BR>
+    <B><A HREF="t_add2.htm">ADD</A></B> 加算（ラージ・イミディエート）<BR>
+    <B><A HREF="t_add3.htm">ADD</A></B> 加算（レジスタ）<BR>
+    <B><A HREF="t_add4.htm">ADD</A></B> 上位レジスタの加算<BR>
+    <B><A HREF="t_add5.htm">ADD</A></B> 加算（イミディエートをプログラム・カウンタへ）<BR>
+    <B><A HREF="t_add6.htm">ADD</A></B> 加算（イミディエートをスタッフ・ポインタへ）<BR>
+    <B><A HREF="t_add7.htm">ADD</A></B> スタッフポインタのインクリメント<BR>
+    <B><A HREF="t_and.htm">AND</A></B> 論理 ＡＮＤ<BR>
+    <B><A HREF="t_asr1.htm">ASR</A></B> 算術右シフト（イミディエート）<BR>
+    <B><A HREF="t_asr2.htm">ASR</A></B> 算術右シフト（レジスタ）<BR>
+    <B><A HREF="t_bic.htm">BIC</A></B> ビットクリア<BR>
+    <B><A HREF="t_cmn.htm">CMN</A></B> 負数比較（レジスタ）<BR>
+    <B><A HREF="t_cmp.htm">CMP</A></B> 比較（イミディエート）<BR>
+    <B><A HREF="t_cmp2.htm">CMP</A></B> 比較（レジスタ）<BR>
+    <B><A HREF="t_cmp3.htm">CMP</A></B> 上位レジスタ比較<BR>
+    <B><A HREF="t_eor.htm">EOR</A></B> 排他的論理OR<BR>
+    <B><A HREF="t_lsl.htm">LSL</A></B> 論理左シフト（イミディエート）<BR>
+    <B><A HREF="t_lsl2.htm">LSL</A></B> 論理左シフト（レジスタ）<BR>
+    <B><A HREF="t_lsr.htm">LSR</A></B> 論理右シフト（イミディエート）<BR>
+    <B><A HREF="t_lsr2.htm">LSR</A></B> 論理右シフト（レジスタ）<BR>
+    <B><A HREF="t_mov1.htm">MOV</A></B> ＭＯＶＥ（イミディエート）<BR>
+    <B><A HREF="t_mov2.htm">MOV</A></B> ＭＯＶＥ（下位レジスタを別の下位レジスタへ）<BR>
+    <B><A HREF="t_mov2.htm">MOV</A></B> ＭＯＶＥ（上位レジスタ）<BR>
+    <B><A HREF="t_mul.htm">MUL</A></B> 乗算<BR>
+    <B><A HREF="t_mvn.htm">MVN</A></B> ＭＯＶＥ ＮＯＴ（レジスタ）<BR>
+    <B><A HREF="t_neg.htm">NEG</A></B> 否定（レジスタ）<BR>
+    <B><A HREF="t_orr.htm">ORR</A></B> 論理 ＯＲ<BR>
+    <B><A HREF="t_ror.htm">ROR</A></B> 右ローテート（レジスタ）<BR>
+    <B><A HREF="t_sbc.htm">SBC</A></B> キャリー付減算（レジスタ）<BR>
+    <B><A HREF="t_sub1.htm">SUB</A></B> 減算（イミディエート）<BR>
+    <B><A HREF="t_sub2.htm">SUB</A></B> 減算（ラージ・イミディエート）<BR>
+    <B><A HREF="t_sub3.htm">SUB</A></B> 減算（レジスタ）<BR>
+    <B><A HREF="t_sub4.htm">SUB</A></B> スタッフポインタ・ディクリメント<BR>
+    <B><A HREF="t_tst.htm">TST</A></B> テスト（レジスタ）<BR>
+    </P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm604.htm">[前]</A> <A HREF="arm606.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

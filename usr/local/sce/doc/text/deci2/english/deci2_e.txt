@@ -1,0 +1,292 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                               June 11, 1999
+
+DECI2(Communication Environment between Host and Target)
+========================================================
+
+This document outlines the communication method via the DECI2 protocol 
+between various application programs, which operate on the host, and 
+the application program, which operates on the target.  It also provides 
+description of the feature of the protocol and its background concept so 
+that the user can efficiently develop the application, which uses 
+the DECI2 protocol. 
+
+   *The contents of this document are based on determinate information 
+    as of May, '99.  Note that the information disclosed in this document 
+    might be changed in the future.
+
+   *In this document, PC or workstation is called a host, and development 
+    tool hardware (e.g. EB2000) is called a target. 
+
+Contents
+========
+1.  Communication between Host and Target
+1.1 DECI2 Manager
+1.2 "dsnetm" and "dsnet" Package
+2.  DECI2 Protocol
+2.1 Features of DECI2 Protocol
+2.2 Header Format
+3.  Higher Level Protocols Defined by SCE
+4.  Creating Applications
+
+
+
+1.  Communication between Host and Target
+=========================================
+  In the DECI2 environment, general data can be transmitted and received
+  between the host and each processor on the target.  The communication 
+  between the host and target is performed in the unit of "DECI2 packet" 
+  consisting of the DECI2 protocol and a higher level protocol.  
+  The block diagram of the communication between the host and target is 
+  shown as follows. 
+
+         Host         |                         Target
+                      |
+    +-----------+     |      +-----------------+       +-----------------+
+    |application|(a)  |      | protocol driver |(c)    | protocol driver |(e)
+    +-----------+     |      +-----------------+       +-----------------+
+          |           |               |                         |
+          |           |         IOP   |                   EE    |
+      +--------+      |       +---------------+         +---------------+
+      | dsnetm |==============| DECI2 Manager |=========| DECI2 Manager |
+      +--------+   driver     +---------------+         +---------------+
+          |           |               |                         |
+          |           |               |                         |
+    +-----------+     |      +-----------------+       +-----------------+
+    |application|(b)  |      | protocol driver |(d)    | protocol driver |(f)
+    +-----------+     |      +-----------------+       +-----------------+
+                      |
+
+           Figure 1  Block Diagram of Host <-> Target Communication
+
+  The "DECI2 Manager" is a module made available by SCE.  It operates 
+  with each processor on the target, and provides the API function for 
+  the application program on the target.  The application program on 
+  the target communicates with the host by using the provided API 
+  function. 
+
+  The "protocol driver" is the application program on the target or a 
+  part of the modules of it, and handles higher level protocols.  
+  The user can freely create a protocol driver.  Some protocol drivers 
+  have been made available by SCE.
+
+  The "dsnetm" is one of the application programs in the "denet package", 
+  a group application programs on the host provided by SCE.  All 
+  the applications on the host communicate with the target via the TCP/IP 
+  socket communication with the dsnetm.
+
+  In Figure 1, for example, (a) can communicate with (e) and (f) and (b) 
+  can communicate with (c) and (d).  Basically, however, two or more 
+  applications cannot communicate with one protocol driver at the same 
+  time.  For example, while (a) is communicating with (e) in Figure 1, 
+  (b) cannot communicate with (e). 
+
+1.1 DECI2 Manager
+------------------
+  Each processor on the target has one DECI2 Manager.  The relation 
+  between the DECI2 Manager and various protocol drivers is shown in 
+  the following figure. 
+
+    +---------+---------+---------+---------+---------+---------+---------+
+    |         |         |         | user    |         | user    |         |
+    | DBGP    | TTYP    | DRFP    | defined |   ...   | defined | DCMP    |
+    | driver  | driver  | driver  | protocol|         | protocol| driver  |
+    |         |         |         | driver 0|         | driver n|         |
+    +---------+---------+---------+---------+---------+---------+         |
+    |                      DECI2 Manager                                  |
+    +---------------------------------------------------------------------+
+
+                  Figure 2  DECI2 Manager and Various Protocol Drivers
+
+  The "DBGP", "TTYP", "DRFP" and "DCMP" in the figure are the names of 
+  the higher level protocols SCE provides.  The "DCMP" (DECI2 Control 
+  Message Protocol) is a special protocol, whose protocol driver is 
+  implemented as a part of the DECI2 Manager. 
+
+  DECI2 Manager offers the following functions. 
+
+    - Registration (16 max) and deletion of various protocol drivers
+    - Transmission and receipt of the DECI2 packet
+    - Delivery of the received DECI2 packet to the protocol driver
+    - Reply to DECI2 packet transmission request from the protocol driver
+    - Notification of error event and status event
+    - Establishment of connection with host and route control 
+    - Reply to the request to lock/unlock other higher-level protocols
+
+  To lock other higher-level protocols is a direction given from one 
+  protocol driver to the DECI2 Manager to refuse the transmission and 
+  reception of the DECI2 packets via all the higher-level protocols 
+  except for the higher-level protocol handled by this protocol driver, 
+  when two or more protocol drivers exist on the target as shown in 
+  Figure 2.  The essential reason this lock function exists is because 
+  it is necessary to refuse to transmit and receive the DECI2 packet 
+  while the debugger is suspending the execution of the user's program.  
+  This function can be used by general protocol drivers.  In that 
+  case, however, the program suspend command etc. from the debugger 
+  might not be accepted.
+
+1.2 "dsnetm" and "dsnet" Package
+--------------------------------
+  The dsnet package is a group of applications such as debugger, driver 
+  and manager to operate the target in the DECI2 environment.  
+  This document does not provide detailed description of the dsnet 
+  package.  For further details,  refer to dsnet.txt. 
+
+  The dsnetm is the DECI2 Manager program on the host, which is 
+  included in the dsnet package.  It is located between the target 
+  and the applications on the host, and delivers the DECI2 packet 
+  from/to the target to/from each application.   
+
+  All the applications on the host communicate with the target via 
+  the TCP/IP socket communication with the dsnetm.  The instruction from 
+  the application to the dsnetm is executed by means of a high-level 
+  protocol "NETMP", which is only used between the dsnetm and 
+  the application. 
+
+  The dsnetm offers the following functions. 
+
+    - Registration and deletion of application
+    - Reply to the request to deliver the DECI2 packet via 
+      the higher-level protocol specified by the application 
+      (only request for delivery at receipt.  For transmission, 
+      request is unnecessary since the delivery is always permitted.)
+    - Reset of target
+    - Establishment of connection with target and route control
+    - Notification of error and status
+    - Status information management
+    - Response to the request to release the connection with 
+      the application, which is using the specified higher-level protocol
+
+   
+
+2.  DECI2 Protocol
+=====================
+  The DECI2 protocol is a protocol to transmit/receive generic data 
+  between the host and each processor on the target.  The DECI2 protocol 
+  has been designed on the assumption that it is used with other higher 
+  level protocols.  Communications are enabled when the programmer freely 
+  defines a higher level protocol and creates the application to handle 
+  to protocol on the host and target.  The following diagram illustrates 
+  the relashion between the DECI2 protocol and other protocols.
+
+           +-------+ +--------+ +-----------+     +-----+  
+           |Monitor| |Debugger| |Application| ... | ... |  
+           +-------+ +--------+ +-----------+     +-----+  
+                 |    |            |                |     
+                +------+        +------+          +-----+  
+                | DBGP |        | TTYP |    ...   | ... |  
+                +------+        +------+          +-----+  
+                    |              |                |     
+                  +-----------------------------------+
+                  |       DECI2 Protocol & DCMP       |
+                  +-----------------------------------+
+
+                       Figure 3  DECI2 Protocol Hierarchy
+
+
+2.1 Features
+---------------------------
+  With the DECI2 protocol, DECI2 packets can be transmitted from 
+  the source node to the desitination node by specifying the "node ID", 
+  which shows the host and each processor in the source/destination field 
+  of the protocol header.
+ 
+  The DECI2 protocol is a protocol which is very simply and has a high 
+  degree of flexibility.  For this reason, it is limited in functions. 
+  The DECI2 can perform only the addressing function above, and does not 
+  perform any of fragmentation, flow control, sequencing, etc.  It 
+  guarantees in order of DECI2 packets, but it is not equipped with error 
+  detection system such as check sum and is unreliable.  By using 
+  the DCMP (DECI2 Control Message Protocol) together, however, the DECI2 
+  protocol can perform reliable communications.
+
+2.2 Header Format
+-------------------------
+  The header format of the DECI2 protocol is little endian as shown 
+  below.  The DECI2 Manager and the dsnetm never generate this header 
+  for a higher level protocol.  The client application and protocol 
+  driver should generate this header and take it over to the DECI2 
+  Manager and dsnetm with their own data. 
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            reserved           |             Length            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  Destination  |    Source     |            Protocol           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 4  DECI2 Protocol Header Format
+
+  Length shows the whole length of the packet including the DECI2 
+  protocol header in byte units.  The maximum length of the packet is 
+  64k bytes.       
+
+  Protocol shows the number of a higher level protocol.  The protocol 
+  number indicates SCE, tool maker, local use, etc. , and is assigned 
+  as follows. 
+
+    0x0000          : reserved (do not use)
+    0x0001          : DCMP
+    0x0002 - 0x0fff : SCE use
+    0x1000 - 0xdfff : Tool licensee use
+    0xe000 - 0xefff : local use for licensee
+    0xf000 - 0xffff : reserved
+
+  The Source and Destination show the source and destination of DECI2 
+  packets with the node ID below.  As a special case, 'H' is set to 
+  both of the source and destination of the packets transmitted directly 
+  from the dsnetm to the application on the host.  Similarly, 'E' and 'I' 
+  are set to both of the source and destination of the packets from 
+  the DECI2 Manager to the protocol driver. 
+
+      I(0x49): IOP
+      E(0x45): EE
+      H(0x48): HOST
+
+
+
+3.  Higher Level Protocols Defined by SCE
+=========================================
+  The higher level protocols defined by SCE are as follows.  For further 
+  details, refer to the documentation of each protocol.
+
+  DCMP : DECI2 Control Message Protocol
+  NETMP: DECI2 Net Manager Protocol
+  DBGP : DECI2 Debug Protocol
+  DRFP : DECI2 Remote File Protocol
+  TTYP : DECI2 Tty Protocol
+
+
+
+4.  Creating Applications
+===========================
+  When using the DECI2 protocol for creating an application, following 
+  two types are considered roughly.
+ 
+    a. Creating an application on the host, which uses only 
+       the higher-level protocol defined by SCE. 
+    b. Creating an application on both of the host and target by newly 
+       defining a higher-level protocol.
+     
+  To create an application of type "a" above, it is necessary to 
+  understand DCMP and NETMP in readiness besides the higher-level 
+  protocol to be used. 
+
+  When creating an application of type "b" above, it is necessary to 
+  understand DECI2 API on the target in readiness in addition to 
+  the above-mentioned higher-level protocols. For the DECI API, refer 
+  to libd2_e.txt. 
+
+  In communication of big data between the host and EE, a faster 
+  communication can be achieved if the DECI2 protocol is used between 
+  the host and IOP first and then ordinary DMA transfer is applied 
+  between the IOP and EE. 
+
+  It is possible to use the DECI2 protocol for the communication between 
+  the EE and IOP, but use ordinary DMA transfer. It is fast in transfer 
+  rate.  Besides, there is a possibility that the DECI2 Manager has not 
+  been implemented in the "PlayStation2" console. 

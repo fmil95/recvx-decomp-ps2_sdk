@@ -1,14 +1,20 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
- * Emotion Engine / I/O Processor Common Header
+ *                     I/O Processor Library
+ *                          Version 0.60
+ *                           Shift-JIS
  *
- * Copyright (C) 1998-1999,2001 Sony Computer Entertainment Inc.
- * All Rights Reserved.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                       All Rights Reserved.
  *
- * modhsyn.h
- *	IOP SPU2 Synthesizer
+ *                       modhsyn - modhsyn.h
+ *                       IOP SPU2 Synthesizer
+ *
+ *     Version   Date          Design     Log
+ *  --------------------------------------------------------------------
+ *     0.60      Oct.12.1999   katayama   first checked in.
  */
 #ifndef _modhsyn_h_
 #define _modhsyn_h_
@@ -22,7 +28,7 @@ extern "C" {
 
 typedef struct {
 	unsigned char	id;
-	unsigned short	waveLen;	/* in sample */
+	unsigned short	waveLen;	// in sample
 	short			*wave;
 } sceHSynUserLfoWave;
 
@@ -32,19 +38,10 @@ typedef struct {
 	unsigned char	velMap[sceHSynNumVelocity];
 } sceHSynUserVelocityMap;
 
-#define sceHSynEnvSize	1348
+#define sceHSynEnvSize	1284
 typedef struct {
 	unsigned char			priority;
 	unsigned char			maxPolyphony;
-#define sceHSynModeHSyn  0
-#define sceHSynModeSESyn 1
-#define sceHSynTypeHSyn  0
-#define sceHSynTypeSESyn 1
-#define sceHSynTypeProgram 0
-#define sceHSynTypeTimbre  1
-#define sceHSynModeNone  0xff
-        unsigned char			portMode;
-        unsigned char			waveType;
 	int						lfoWaveNum;
 	sceHSynUserLfoWave		*lfoWaveTbl;
 	int						velocityMapNum;
@@ -59,11 +56,9 @@ int sceHSyn_Init(sceCslCtx*,unsigned int);
 int sceHSyn_ATick(sceCslCtx*);
 #define sceHSynMaxBank	15
 int sceHSyn_Load(sceCslCtx*,unsigned int,void*,void*,unsigned int);
-int sceHSyn_Unload(sceCslCtx*,unsigned int,unsigned int);
 int sceHSyn_VoiceTrans(short,unsigned char*,unsigned char*,unsigned int);
 #define sceHSyn_VoisTrans(w,x,y,z) sceHSyn_VoiceTrans(w,x,y,z)
 int sceHSyn_SetReservVoice(unsigned int*);
-int sceHSyn_GetReservVoice(unsigned int*);
 #define sceHSyn_Volume_0db	0x100
 int sceHSyn_SetVolume(sceCslCtx*,unsigned int,unsigned short);
 unsigned short sceHSyn_GetVolume(sceCslCtx*,unsigned int);
@@ -124,7 +119,6 @@ int sceHSyn_GetChStat(sceCslCtx*,unsigned int,sceHSynChStat*);
 #define sceHSynOutputMode_Mono		0
 #define sceHSynOutputMode_Stereo	1
 int sceHSyn_SetOutputMode(int);
-int sceHSyn_GetOutputMode(void);
 /****** DEBUG SUPPORT *********/
 #define sceHSyn_SdCall_inProcess	0x80000000
 #define sceHSyn_sceSdInit						0
@@ -162,19 +156,11 @@ typedef struct {
 } sceHSyn_DebugInfo;
 int sceHSyn_SetDebugInfoBuffer(sceHSyn_DebugInfo*);
 
-extern int sceHSyn_SESetMaxVoices(unsigned char);
-extern int sceHSyn_SEAllNoteOff(sceCslCtx *, unsigned int);
-extern int sceHSyn_SEAllSoundOff(sceCslCtx *, unsigned int);
-extern int sceHSyn_SERetrieveVoiceNumberByID(sceCslCtx *, unsigned int, unsigned int, char *, char);
-extern int sceHSyn_SERetrieveAllSEMsgIDs(sceCslCtx *, unsigned int, unsigned int *, int);
-extern int sceHSyn_MSGetVoiceStateByID(sceCslCtx *, unsigned int, unsigned char, unsigned char *, char);
-extern int sceHSyn_MSGetVoiceEnvelopeByID(sceCslCtx *, unsigned int, unsigned char, unsigned short *, char);
-
 #ifdef __cplusplus
 }
 #endif
 
 /*****************************/	
-#endif /* !_modhsyn_h_ */
-/* $Id: modhsyn.h,v 1.13.2.2 2002/03/03 11:44:00 kaol Exp $ */
+#endif //!_modhsyn_h_
+/* $Id: modhsyn.h,v 1.3.2.1 2000/08/14 12:17:52 kaol Exp $ */
 

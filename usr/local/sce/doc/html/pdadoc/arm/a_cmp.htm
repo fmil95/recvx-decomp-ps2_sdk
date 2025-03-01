@@ -1,0 +1,199 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_cmp</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_cmn.htm">[前]</A> <A HREF="a_eor.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">CMP</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>データ処理</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アドレッシングモード</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アドレッシングモード１</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%" HEIGHT="47">
+      <B>アーキテクチャ v4T のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">CMP{&lt;cond&gt;} Rn, &lt;shifter_operand&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>CMP（Compare）命令は、2つの算術値を比較し、コンディション・コード・フラグをセットします。これに基づいて以降の命令を条件付きで実行できます。比較は最初のオペランドから2番目のオペランドを減算して行います。</P>
+  <P>CMPはレジスタRnの値から&lt;shifter_operand&gt;の値を減算して比較を実行し、（結果に基づいて）コンディション・コード・フラグを更新します。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致する場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385916"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385918"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385920"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385922"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385924"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385926"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385928"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385930"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385932"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385934"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385936"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385938"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385940"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385942"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385944"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385946"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385948"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385950"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385952"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385954"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385956"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385958"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385960"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385962"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385964"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385966"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385968"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385970"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385972"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385974"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385976"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385978"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385980"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385988"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385990"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385992"></A><BR>
+    I</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385994"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385996"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385998"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1386000"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1386002"></A><BR>
+    1</TD> 
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1386004"></A><BR>
+    Rn</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1386012"></A><BR>
+    SBZ</TD>
+     
+    <TD COLSPAN="12" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1386020"></A><BR>
+    shifter_operand</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        &lt;alu_out&gt; = Rn - &lt;shifter_operand&gt;
+        N Flag = &lt;alu_out&gt;[31]
+        Z Flag = if &lt;alu_out&gt; == 0 then 1 else 0
+        C Flag = NOT BorrowFrom(Rn - &lt;shifter_operand&gt;)
+        V Flag = OverflowFrom (Rn - &lt;shifter_operand&gt;)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>シフタ・オペランド：</B>この命令のシフタ・オペランドは、セクション3.16以降の「アドレッシング・モード1」で説明しています。</P>
+  <P><B>Iビット：</B>ビット25を使用して、&lt;shifter_operand&gt;のイミディエイト形式とレジスタ形式を区別することができます。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_cmn.htm">[前]</A> <A HREF="a_eor.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,256 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm320</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo404.htm">[前]</A> <A HREF="arm321.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.20 ロードおよびストア・マルチプル・アドレッシング・モード（代替名）</H3>
+
+<H4>3.20.1 ブロック転送</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="arm318.htm">3.18</A>「ハーフワードのロードおよびストア、または符号付きバイトのロード・アドレッシング・モード」に記載した4つのアドレッシング・モード名（IA、IB、DA、DB）は、ロードおよびストア・マルチプル命令がブロック・データ転送に使用されているときに最も有用です。これは、ロード・マルチプルとストア・マルチプルが同じアドレッシング・モードを持つ可能性が高く、その場合にはデータはロードされたのと同じ方法でストアされるためです。</P>
+  <P>しかし、ロード・マルチプルとストア・マルチプルをスタックへのアクセスに使用している場合、ロード（ポップ）オペレーションとストア（プッシュ）オペレーションでスタックを反対方向に調整しなければならないため、データはストアに使用したのと同じアドレッシング・モードではロードされません。</P>
+</BLOCKQUOTE>
+
+<H4>3.20.2 <A NAME="anchor2203909"></A>スタック・オペレーション</H4>
+
+<BLOCKQUOTE>
+  <P>ロード・マルチプルおよびストア・マルチプル・アドレッシング・モードは、スタック・オペレーションにより適した別の構文で指定することができます。スタックの記述には、以下の2種類の属性が使用されます。</P>
+  <P><B>フルまたはエンプティ</B></P>
+  <BLOCKQUOTE>
+    <P><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="21%">
+        フル</TD> 
+        <TD WIDTH="79%">
+        スタック・ポインタは、スタックで最後に使用された（フル）ロケーションを指します。</TD> 
+      </TR>
+      <TR>
+        <TD WIDTH="21%">
+        エンプティ</TD> 
+        <TD WIDTH="79%">
+        スタック・ポインタは、スタックの最初の未使用（エンプティ）ロケーションを指します。</TD> 
+      </TR>
+    </TABLE></P>
+  </BLOCKQUOTE>
+  <P><B>昇順または降順</B></P>
+  <BLOCKQUOTE>
+    <P><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="21%">
+        昇順</TD> 
+        <TD WIDTH="79%">
+        下位メモリ・アドレス方向（メモリの最後尾方向に）に成長します。</TD> 
+      </TR>
+      <TR>
+        <TD WIDTH="21%">
+        降順</TD> 
+        <TD WIDTH="79%">
+        上位メモリ・アドレス方向（メモリの先頭方向に）に成長します。</TD> 
+      </TR>
+    </TABLE></P>
+  </BLOCKQUOTE>
+  <P>これによって、以下の4種類のスタックを定義できます。</P>
+  <BLOCKQUOTE>
+    <P>1. フル降順（FD）<BR>
+    2. エンプティ降順（ED）<BR>
+    3. フル昇順（FA）<BR>
+    4. エンプティ昇順（EA）</P>
+  </BLOCKQUOTE>
+  <P>表3-1：LDM/STMアドレッシング・モードは、4種類のスタック、上記の4種類のアドレッシング・モード、命令形式のL、U、およびPビット間の関係を示します。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="16%">
+      <B>命令</B></TD> 
+      <TD WIDTH="31%">
+      <B>アドレッシング・モード</B></TD> 
+      <TD WIDTH="21%">
+      <B>スタック・タイプ</B></TD> 
+      <TD WIDTH="10%">
+      <B>Lビット</B></TD> 
+      <TD WIDTH="11%">
+      <B>Pビット</B></TD> 
+      <TD WIDTH="11%">
+      <B>Uビット</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      LDM(ロード)</TD> 
+      <TD WIDTH="31%">
+      IA(インクリメント・アフタ)</TD> 
+      <TD WIDTH="21%">
+      FD（フル降順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      STM(ストア)</TD> 
+      <TD WIDTH="31%">
+      IA(インクリメント・アフタ)</TD> 
+      <TD WIDTH="21%">
+      EA（エンプティ昇順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      LDM(ロード)</TD> 
+      <TD WIDTH="31%">
+      IB(インクリメント・ビフォ)</TD> 
+      <TD WIDTH="21%">
+      ED（エンプティ降順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      STM(ストア)</TD> 
+      <TD WIDTH="31%">
+      IB(インクリメント・ビフォ)</TD> 
+      <TD WIDTH="21%">
+      FA（フル昇順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      LDM(ロード)</TD> 
+      <TD WIDTH="31%">
+      DA(デクリメント・アフタ)</TD> 
+      <TD WIDTH="21%">
+      FA（フル昇順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      STM(ストア)</TD> 
+      <TD WIDTH="31%">
+      DA(デクリメント・アフタ)</TD> 
+      <TD WIDTH="21%">
+      ED（エンプティ降順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      LDM(ロード)</TD> 
+      <TD WIDTH="31%">
+      DB(デクリメント・ビフォ)</TD> 
+      <TD WIDTH="21%">
+      EA（エンプティ昇順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="16%">
+      STM(ストア)</TD> 
+      <TD WIDTH="31%">
+      DB(デクリメント・ビフォ)</TD> 
+      <TD WIDTH="21%">
+      FD（フル降順）</TD> 
+      <TD WIDTH="10%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        1</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="11%">
+      <BLOCKQUOTE>
+        0</BLOCKQUOTE>
+</TD>
+    </TR>
+  </TABLE></P>
+  <P ALIGN=RIGHT><FONT SIZE="-1">表3-1：LDM/STMアドレッシング・モード</FONT></P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo404.htm">[前]</A> <A HREF="arm321.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

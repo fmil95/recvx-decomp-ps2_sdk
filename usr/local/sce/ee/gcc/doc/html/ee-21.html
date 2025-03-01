@@ -1,0 +1,1426 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Debugger</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Debugger</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-20.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-22.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-500358"></A><A NAME="marker-500357"></A><A NAME="42423"></A>Debugger</H2>
+<P CLASS="Body">
+<A NAME="pgfId-535966"></A>The debug environment is based on GDB, a powerful debugger that has already been ported to many platforms. However, there are several features of the SKY simulator that impose special challenges with respect to the GDB interface. In particular, <A NAME="marker-803504"></A>GDB was not designed to handle multiple heterogeneous processors, or the multiple memory spaces introduced by the local VU instruction and data memory. </P>
+<P CLASS="Body">
+<A NAME="pgfId-463366"></A>This section describes the extensions that have been added to GDB in order to support the SKY simulator. Any commands or functionality not explicitly mentioned are assumed to behave as in standard GDB.</P>
+<P CLASS="Body">
+<A NAME="pgfId-803510"></A>You can communicate with the simulator through a single GDB session, which supports debugging of the Emotion Engine core processor and the VU and VIF units. Although GDB always assumes that the complete system is present, you can use it to debug subsystems A and B. For more information about the subsystems, see <A HREF="ee-22.html#22705" CLASS="XRef">Subsystems A, B and C</A>. GDB does not support source-level debugging of the GIF.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-545346"></A>Running the simulator under <A NAME="marker-545345"></A>GDB</H3>
+<P CLASS="Body">
+<A NAME="pgfId-604489"></A>GDB's built-in software simulation of the Emotion Engine processor allows you to debug programs compiled for the Emotion Engine without access to actual hardware. Activate this mode in GDB by entering <TT CLASS="Code">
+target sim.</TT>
+ Any run-time arguments that can be specified on the <TT CLASS="Code">
+ee-run</TT>
+ command line can also be specified here. Then, load code into the simulator by entering the <TT CLASS="Code">
+load</TT>
+ command. Debug it in the normal fashion.</P>
+<P CLASS="Body">
+<A NAME="pgfId-615188"></A>If the simulator needs to be restarted from the beginning, use the following command sequence:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-615224"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ sim reset</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-615226"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ load</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-615241"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ run</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-615196"></A>This ensures that all devices are reinitialized appropriately.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-524977"></A>SKY-specific commands</H4>
+<P CLASS="Body">
+<A NAME="pgfId-537939"></A>Processor contexts serve as the primary method of differentiating between multiple processors and address spaces. </P>
+<P CLASS="Body">
+<A NAME="pgfId-537940"></A>You can set or display the processor contexts using the following commands: </P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-490370"></A><TT CLASS="Code">
+set cpu</TT>
+<A NAME="marker-515581"></A> <VAR CLASS="CodeVariant">
+processor</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-531668"></A>Sets the current CPU context, where <VAR CLASS="CodeVariant">
+processor</VAR>
+ is one of:</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-803523"></A><TT CLASS="Code">
+master </TT>
+Commands are relative to Emotion Engine processor and address space.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-803524"></A><TT CLASS="Code">
+vu0    </TT>
+Commands are relative to the VU0 processor and its local memory.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-568404"></A><TT CLASS="Code">
+vu1    </TT>
+Commands are relative to the VU1 processor and its local memory.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-803529"></A><TT CLASS="Code">
+vif0   </TT>
+Commands are relative to the VIF0 unit.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-568410"></A><TT CLASS="Code">
+vif1   </TT>
+Commands are relative to the VIF1 unit.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-557201"></A><TT CLASS="Code">
+auto   </TT>
+Commands refer to the overall system, but will switch to one of the above contexts when certain events are generated.  </P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-557203"></A><TT CLASS="Code">
+show cpu</TT>
+<A NAME="marker-557202"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-531331"></A>Displays the current CPU context.</P>
+<P CLASS="Body">
+<A NAME="pgfId-531683"></A>By specifying the processor context, you provide a reference point for commands that are otherwise ambiguous. </P>
+<P CLASS="Body">
+<A NAME="pgfId-570755"></A>For example, there are five sets of registers between the Emotion Engine, the two VUs, and the two VIF units. By default (i.e. when the context is <TT CLASS="Code">
+auto</TT>
+), <TT CLASS="Code">
+</TT>
+<A NAME="marker-803535"></A>the<TT CLASS="Code">
+ info reg </TT>
+command will show all five sets of registers. If the VU1 context is selected (using <TT CLASS="Code">
+set cpu vu1</TT>
+), the same command will show only the registers of processor VU1.</P>
+<P CLASS="Body">
+<A NAME="pgfId-569219"></A>To allow easy identification of the current CPU context, the following command has been added:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-534069"></A><TT CLASS="Code">
+set context-in-prompt on|off|1|0|yes|no</TT>
+<A NAME="marker-535892"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-534070"></A>When <TT CLASS="Code">
+on</TT>
+, shows the current CPU context as part of the prompt. If the CPU context is <TT CLASS="Code">
+auto</TT>
+, the original prompt is used. When this feature is <TT CLASS="Code">
+off,</TT>
+ GDB will print a single line identifying the new CPU context every time it changes.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-534075"></A><A NAME="marker-535893"></A><TT CLASS="Code">
+show context-in-prompt</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-534076"></A>Shows the current setting of the context-in-prompt feature.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-490641"></A>Memory addresses</H4>
+<P CLASS="Body">
+<A NAME="pgfId-806130"></A>Memory on the SKY board is natively accessed with three different address granularities: the <A NAME="marker-806131"></A>Emotion Engine uses byte addressability; <A NAME="marker-806132"></A>VU text memory is accessed with double-word granularity; and VU data memory uses quadword addressing. Internally, GDB always assumes byte addressing. However, the casting facilities of GDB can be used to facilitate address specifications while working in the VU or <A NAME="marker-806134"></A>VIF contexts. </P>
+<P CLASS="Body">
+<A NAME="pgfId-490807"></A>Some examples are:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-490659"></A><TT CLASS="Code">
+x /i (double*) foo + 4 </TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490660"></A>Disassemble memory starting 4 double words past the address <TT CLASS="Code">
+foo.</TT>
+</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-490661"></A><TT CLASS="Code">
+break *($vu1_text + 49) </TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490662"></A>Break at double word address 49 in VU1 text space, where </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-531269"></A><TT CLASS="Code">
+set $vu1_text = (double *) 0xb1008000</TT>
+ was used to set the GDB convenience variable <TT CLASS="Code">
+$vu1_text.</TT>
+</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-490663"></A><TT CLASS="Code">
+print *($vu0_data + 27) </TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490664"></A>Suppose one defines the following structure:</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-490665"></A>			typedef struct {</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-490666"></A>			   float x, y, z, w;</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-490743"></A>			} vec;</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490669"></A>and sets <TT CLASS="Code">
+$vu0_data = (vec *) 0xb1004000. </TT>
+This command will print the 27th quadword of VU0 data memory as a 4 element floating point vector.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490670"></A>Note that GDB is still using byte addressing internally: the casting is used to scale the constants appropriate to the type of data in each memory section. This means that values will still be reported in bytes: <TT CLASS="Code">
+info break</TT>
+ will show the address as: </P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-490671"></A>	$vu1_text+49=0xb1008000+49*8=0xb1008188</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490655"></A>and the disassembly listing will show the offset from <TT CLASS="Code">
+foo</TT>
+ in bytes (i.e. starting at offset 32 in the above example).</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-490814"></A><A NAME="30836"></A>Examining source files</H3>
+<P CLASS="Body">
+<A NAME="pgfId-490926"></A>You can use the line numbers of source files to locate instructions in memory. Conversely, any memory resident instruction (excluding those allocated on the heap) can be related back to its original source line. </P>
+<P CLASS="Body">
+<A NAME="pgfId-490928"></A>Instructions and data in the local memory of the VUs are dynamically loaded through the DMA and VIF units. However, the mapping between the source lines and location in VU local memory is maintained so as to be transparent to the user. </P>
+<P CLASS="Body">
+<A NAME="pgfId-490929"></A>CPU contexts are used to distinguish between multiple address spaces. This affects the interpretation of the commands that examine source. GDB normally maintains the concept of a current source file and line number. With multiple contexts, this concept is extended so that there is now a current source file and line number for each context.</P>
+<P CLASS="Body">
+<A NAME="pgfId-534001"></A>The detailed behavior of each command and/or argument is as follows:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-490931"></A><TT CLASS="Code">
+list [</TT>
+<A NAME="marker-535894"></A><VAR CLASS="CodeVariant">
+linespec</VAR>
+<TT CLASS="Code">
+]</TT>
+ </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-490932"></A>Prints lines from the source file relative to the current CPU context, where <VAR CLASS="CodeVariant">
+linespec</VAR>
+ is one of the following:</P>
+<P CLASS="BodyHang2">
+<A NAME="pgfId-490935"></A><TT CLASS="Code">
+[first][,last]</TT>
+ </P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-490936"></A>Specifies a range of line numbers of the current source file in the current CPU context. If the CPU context is <TT CLASS="Code">
+auto,</TT>
+ the current source file is the last source file referenced in any context. </P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-490937"></A>Either <TT CLASS="Code">
+first</TT>
+ or <TT CLASS="Code">
+last</TT>
+ or both may be omitted. If both are omitted, the last line number in the current CPU context is used.</P>
+<P CLASS="BodyHang2">
+<A NAME="pgfId-490938"></A><TT CLASS="Code">
++|-offset</TT>
+ </P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-532087"></A>Specifies an offset (either forward or back) from the last line printed in the current CPU context.</P>
+<P CLASS="BodyHang2">
+<A NAME="pgfId-532088"></A><TT CLASS="Code">
+file:</TT>
+<VAR CLASS="CodeVariant">
+linenum</VAR>
+</P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-532089"></A>Specifies a line number in the source file <TT CLASS="Code">
+file</TT>
+. This <TT CLASS="Code">
+file </TT>
+and the <VAR CLASS="CodeVariant">
+linenum </VAR>
+specified in the command becomes the current source location for the current CPU context.</P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-803562"></A>For example, <A NAME="marker-803561"></A>context <TT CLASS="Code">
+vu1</TT>
+ could have <TT CLASS="Code">
+foo.vuasm:23</TT>
+ associated with it; and context <TT CLASS="Code">
+master</TT>
+ could have <TT CLASS="Code">
+main.c:124</TT>
+ as its <VAR CLASS="CodeVariant">
+file:linenum</VAR>
+. If you are in context <TT CLASS="Code">
+master</TT>
+ and specify <TT CLASS="Code">
+list malloc</TT>
+, the new <VAR CLASS="CodeVariant">
+file:linenum</VAR>
+ for the <TT CLASS="Code">
+master</TT>
+ context would become <TT CLASS="Code">
+malloc.c:1028</TT>
+ (assuming that is where <TT CLASS="Code">
+malloc</TT>
+ is located). The <VAR CLASS="CodeVariant">
+file:linenum</VAR>
+ for context <TT CLASS="Code">
+vu1</TT>
+ would not change. </P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-615742"></A>The term &quot;current&quot; applies to both the CPU context and the <VAR CLASS="CodeVariant">
+file:linenum.</VAR>
+ This is important if you specify a <TT CLASS="Code">
+list</TT>
+ (or break) command whose <VAR CLASS="CodeVariant">
+linespec </VAR>
+is relative to a source location. If the current context is <TT CLASS="Code">
+vu1</TT>
+, the <TT CLASS="Code">
+list</TT>
+ command will list lines starting from <TT CLASS="Code">
+foo.vuasm:23</TT>
+; and if the current context is <TT CLASS="Code">
+master,</TT>
+ the lines will be listed from <TT CLASS="Code">
+malloc.c:1028.</TT>
+ </P>
+<P CLASS="BodyHang2">
+<A NAME="pgfId-615734"></A><TT CLASS="Code">
+[file:]</TT>
+<VAR CLASS="CodeVariant">
+function</VAR>
+</P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-490943"></A>Lists lines starting at <VAR CLASS="CodeVariant">
+function.</VAR>
+ The <TT CLASS="Code">
+file</TT>
+ specifier can be used if <VAR CLASS="CodeVariant">
+function</VAR>
+ is multiply defined or in a different file from the current source file. This file becomes the current source location for the current CPU context. </P>
+<P CLASS="BodyHang2">
+<A NAME="pgfId-490944"></A><TT CLASS="Code">
+*address</TT>
+ </P>
+<P CLASS="BodyListFollow2">
+<A NAME="pgfId-490818"></A>Specifies the line containing <TT CLASS="Code">
+address</TT>
+ in the program. The address is interpreted relative to the current CPU context, if it is in range (when the CPU context is <TT CLASS="Code">
+vu0</TT>
+ or <TT CLASS="Code">
+vu1</TT>
+). If the address is out of range for the current context, it is interpreted as an address in main memory. Note that if the CPU context is <TT CLASS="Code">
+auto</TT>
+ or <TT CLASS="Code">
+master,</TT>
+ VU memory is still visible through its aliased main memory address. The source file and the line number for the corresponding address become the current source location for the current CPU context.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-490820"></A>Stopping and continuing</H3>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-490863"></A>Stack frames</H4>
+<P CLASS="Body">
+<A NAME="pgfId-490864"></A>Stack frames for assembly source files are not supported. For assembly source, GDB always assumes frame 0 (the innermost frame). The <TT CLASS="Code">
+call</TT>
+ command is not supported for the VUs, since <TT CLASS="Code">
+call</TT>
+ creates and uses a dummy stack for its execution. </P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-491065"></A><A NAME="marker-524463"></A>Breakpoints</H4>
+<P CLASS="Body">
+<A NAME="pgfId-531297"></A>CPU contexts are used to set breakpoints relative to a particular processor's address space. When a breakpoint on any unit is encountered, the CPU context is set to that unit.</P>
+<P CLASS="Body">
+<A NAME="pgfId-491077"></A>The <A NAME="marker-515589"></A>breakpoint commands are:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491078"></A><TT CLASS="Code">
+break [</TT>
+<A NAME="marker-535895"></A><VAR CLASS="CodeVariant">
+file</VAR>
+<TT CLASS="Code">
+:]</TT>
+<VAR CLASS="CodeVariant">
+function</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491079"></A>Stop on entry to the specified function. The optional <TT CLASS="Code">
+file</TT>
+ specifier is not required unless the function is defined in multiple files. Functions in assembler source are identified using the <TT CLASS="Code">
+.func</TT>
+ and <TT CLASS="Code">
+.endfunc</TT>
+ assembler directives. For more information, refer to <A HREF="ee-19.html#27097" CLASS="XRef">Directives</A>.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491082"></A><TT CLASS="Code">
+break +|-offset </TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491083"></A>Set a breakpoint <TT CLASS="Code">
+offset</TT>
+ lines forward or backward from the position at which execution stopped. The position is relative to the current CPU context.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491084"></A><TT CLASS="Code">
+break [</TT>
+<VAR CLASS="CodeVariant">
+file</VAR>
+<TT CLASS="Code">
+:]</TT>
+<VAR CLASS="CodeVariant">
+linenum</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491085"></A>Set a breakpoint at the specified line number of <VAR CLASS="CodeVariant">
+file.</VAR>
+ If the <VAR CLASS="CodeVariant">
+file </VAR>
+specifier is omitted, GDB uses the last source file whose text was printed in the current CPU context. If the CPU context is <TT CLASS="Code">
+auto</TT>
+, the source file is the last one whose text was printed in any context. This method of setting breakpoints is applicable to both C/C++ and assembler source.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491086"></A><TT CLASS="Code">
+break *</TT>
+<VAR CLASS="CodeVariant">
+address</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491087"></A>Set a breakpoint at <VAR CLASS="CodeVariant">
+address</VAR>
+. The <VAR CLASS="CodeVariant">
+address</VAR>
+ is relative to the current context, so the local memories of the VUs can be specified. VU and VIF addresses can also be specified from their memory-mapped addresses in the Emotion Engine address space. This is useful when the CPU context is <TT CLASS="Code">
+auto</TT>
+ or <TT CLASS="Code">
+master</TT>
+ and a breakpoint in VU or VIF space is needed.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-534180"></A>Note that the memory at <TT CLASS="Code">
+address</TT>
+ must contain the opcode part of a machine instruction. This is a consideration for VIF instructions, which can have operands that are several hundred bytes long. Undefined behavior will result unless the first word of such an instruction is specified.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491090"></A><TT CLASS="Code">
+break</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491091"></A>If the current context is <TT CLASS="Code">
+master</TT>
+, the breakpoint is set at the next instruction in the selected stack frame. If the frame is the innermost, which is always true for the VUs, the breakpoint is set at the current location (useful inside loops).</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-665469"></A><TT CLASS="Code">
+watch </TT>
+<A NAME="marker-665468"></A><VAR CLASS="CodeVariant">
+expr</VAR>
+<TT CLASS="Code">
+ </TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-665470"></A>Execution stops when <VAR CLASS="CodeVariant">
+expr </VAR>
+is written into and its value changes. The current context is used to resolve the address or register specified by <VAR CLASS="CodeVariant">
+expr.</VAR>
+</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491096"></A><TT CLASS="Code">
+info break [n] </TT>
+<A NAME="marker-535897"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491097"></A>Show the current breakpoint settings. The address shown is normally relative to the memory space to which the breakpoint applies. However, a VU breakpoint can be set before the instruction is downloaded to the local memory space, or the local instruction could have been over-written by a subsequent VIF download. </P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491098"></A><TT CLASS="Code">
+clear </TT>
+<A NAME="marker-535898"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491099"></A>Delete any breakpoints at the next instruction to be executed in the selected stack frame. Since the context is set to the unit that encountered the breakpoint, this is typically not ambiguous.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491100"></A><TT CLASS="Code">
+clear [</TT>
+<VAR CLASS="CodeVariant">
+file</VAR>
+<TT CLASS="Code">
+:]</TT>
+<VAR CLASS="CodeVariant">
+linenum </VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491101"></A>Delete any breakpoints at the specified line number of <VAR CLASS="CodeVariant">
+file.</VAR>
+ If the <VAR CLASS="CodeVariant">
+file </VAR>
+specifier is omitted, GDB uses the last source file whose text was printed in the current context. If the CPU context is <TT CLASS="Code">
+auto,</TT>
+ the source file is the last one whose text was printed in any context.</P>
+<P CLASS="Body">
+<A NAME="pgfId-491102"></A>Breakpoint conditions and commands work as usual, but the expressions should be legal in the current context.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-491103"></A>Resuming execution</H4>
+<P CLASS="Body">
+<A NAME="pgfId-491104"></A>The simulator always steps the entire machine one instruction at a time. As a result, it is not possible to step a single unit individually. The GDB commands that resume execution are usually specified in terms of source lines. For high-level languages, a single source line can require many machine instructions to implement; for assembly programs, each instruction is normally a separate source line. The exception is if the assembler source line is a macro that expands to multiple instructions.</P>
+<P CLASS="Body">
+<A NAME="pgfId-491105"></A>For the commands that follow, the current <A NAME="marker-535679"></A>CPU context is used to interpret the definition of a single source line.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491106"></A><TT CLASS="Code">
+step [count]</TT>
+<A NAME="marker-535899"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491107"></A>Continue the program until it has executed <TT CLASS="Code">
+count</TT>
+ source lines (one line, if <TT CLASS="Code">
+count</TT>
+ is omitted). The scope of a source line is determined by the current CPU context.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491108"></A><TT CLASS="Code">
+next [count]</TT>
+<A NAME="marker-535900"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491109"></A>Like step, but any functions encountered are executed without stopping.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491110"></A><TT CLASS="Code">
+finish</TT>
+<A NAME="marker-535901"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491111"></A>Continue until just after the function in the selected stack frame returns. For high-level source, the return value (if any) is printed. For assembly source, there is only the inner-most frame, which never returns.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491112"></A><TT CLASS="Code">
+until</TT>
+<A NAME="marker-535902"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491113"></A>Continue running until a source line past the current line, in the current stack frame, is reached. The scope of a source line is determined by the current CPU context.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491114"></A><TT CLASS="Code">
+until location</TT>
+<A NAME="marker-535903"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491069"></A>Continue running until either the specified location is reached, or the current stack frame returns. Location is any of the forms acceptable to <TT CLASS="Code">
+break,</TT>
+ and so the same context resolution rules apply.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-491348"></A><A NAME="marker-524464"></A>Examining registers</H3>
+<P CLASS="Body">
+<A NAME="pgfId-665193"></A>Each of the Emotion Engine and VU registers has a unique global name. The Emotion Engine registers have the standard unprefixed MIPS names (for example, <TT CLASS="Code">
+t2</TT>
+ or <TT CLASS="Code">
+t2h</TT>
+). The VU and VIF register names are prefixed with the CPU number (for example, <TT CLASS="Code">
+vu1_vi01</TT>
+ or <TT CLASS="Code">
+vif1_stat</TT>
+). If the CPU context is set to <TT CLASS="Code">
+vu0, vu1, vif0,</TT>
+ or <TT CLASS="Code">
+vif1, </TT>
+the prefix can be dropped, because the register name is assumed relative to the current context. However, the global name can still be used to refer to a register that is outside the current context.</P>
+<P CLASS="Body">
+<A NAME="pgfId-491355"></A>This register context is incorporated into the following commands:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491356"></A><TT CLASS="Code">
+info registers</TT>
+<A NAME="marker-535904"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-615911"></A>With no arguments, show integer and special purpose registers relative to the current CPU context. Since the VUs are primarily floating-point processors, the vector registers are also displayed. If the CPU context is <TT CLASS="Code">
+auto,</TT>
+ the registers for all CPUs are displayed. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-615907"></A>This command also accepts a list of individual register names. If the context is <TT CLASS="Code">
+auto</TT>
+ or <TT CLASS="Code">
+master,</TT>
+ only global register names may be used. Otherwise, the CPU prefix on the register name is optional.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-605821"></A>Because the VU floating point registers are vector registers, GDB permits the use of vector register names to specify that all four elements of the vector should be printed. See the description of the <TT CLASS="Code">
+printvector</TT>
+ command below for more details.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-803648"></A><TT CLASS="Code">
+info all-registers</TT>
+<A NAME="marker-803647"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-803649"></A>Same as <TT CLASS="Code">
+info registers,</TT>
+ except that when no arguments are specified the display includes the floating point registers, as well as the integer and control registers.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491361"></A><VAR CLASS="CodeVariant">
+&lt;expr&gt;</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491362"></A>Register values may be used in expressions by prefixing the register name with a  <TT CLASS="Code">
+$</TT>
+ (for example, <TT CLASS="Code">
+print $vu1_vi10</TT>
+). No unit prefix is necessary to specify registers in the current context. Note that vector registers are not legal expressions; <VAR CLASS="CodeVariant">
+&lt;expr&gt;</VAR>
+ must have a single-valued result.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-605891"></A><TT CLASS="Code">
+printvector reg [...reg]</TT>
+<A NAME="marker-638302"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-605892"></A>This command is similar to <TT CLASS="Code">
+info register reg</TT>
+ in that it prints the value of the register specified as its argument. In particular, it allows <TT CLASS="Code">
+reg</TT>
+ to be a vector register. As a convenience, this command has the alias <TT CLASS="Code">
+pv</TT>
+.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-605897"></A><TT CLASS="Code">
+set printvector-order [wzyx|xyzw]</TT>
+<A NAME="marker-638303"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-609375"></A>Set the order in which the elements of a vector register are printed. Without an argument, the command resets the order to the default <TT CLASS="Code">
+wzyx</TT>
+ order.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-609376"></A>The setting of this variable affects the order of all commands that print vector registers. These commands include <TT CLASS="Code">
+info registers, printvector,</TT>
+ and <TT CLASS="Code">
+sim pipe.</TT>
+</P>
+<P CLASS="Body">
+<A NAME="pgfId-803654"></A>      The following session demonstrates how these commands may be used:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609503"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ info register vu1_vf00</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609505"></A><STRONG CLASS="CodeOutput">
+vu1_vf00wzyx: 1 0 0 0 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609507"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ set context-in-prompt on</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609509"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ printvector vf04</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609511"></A><STRONG CLASS="CodeOutput">
+vu1_vf04wzyx: 1 0.5 2 2</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609513"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ set printvector-order xyzw</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609515"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ pv 4</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-609517"></A><STRONG CLASS="CodeOutput">
+vu1_vf04xyzw: 2 2 0.5 1</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-803655"></A>COP2 registers are the VU0 status and control registers as viewed from the Emotion Engine CPU. These registers are displayed as part of the VU0 and VU1 register sets (for example, <TT CLASS="Code">
+vu0_clip</TT>
+ or <TT CLASS="Code">
+vu1_cmsar</TT>
+) and may be accessed from GDB by their symbolic names.</P>
+<P CLASS="Body">
+<A NAME="pgfId-609598"></A>DMA registers have no symbolic names. They are examined and set using their memory-mapped addresses.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-710799"></A>Examining data</H3>
+<P CLASS="Body">
+<A NAME="pgfId-710800"></A>The <TT CLASS="Code">
+print </TT>
+<VAR CLASS="CodeVariant">
+&lt;expr&gt;</VAR>
+ command works as usual, although high-level type information is not recorded for variables that are declared in assembler source files. The cast operator of GDB can be used to overcome this restriction for primitive types, and even for complex types provided they have been declared somewhere in the high-level source part of the program. </P>
+<P CLASS="Body">
+<A NAME="pgfId-508168"></A>Expressions containing addresses or registers are interpreted relative to the current CPU context. If the CPU context is <TT CLASS="Code">
+vu0</TT>
+ or <TT CLASS="Code">
+vu1</TT>
+ and the address is out of the range of the local address space, the address is interpreted as a main memory address. This is true for all the memory examining commands: <TT CLASS="Code">
+print,</TT>
+ <TT CLASS="Code">
+x</TT>
+ (examine), and <TT CLASS="Code">
+disassem</TT>
+.</P>
+<P CLASS="Body">
+<A NAME="pgfId-491496"></A>Caution: When using the <TT CLASS="Code">
+display</TT>
+ command, remember that the expression will be interpreted relative to the CPU context that is in effect when the program stops. This context may be different than the one in which the <TT CLASS="Code">
+display</TT>
+ command was issued.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-535120"></A>GDB <A NAME="marker-535678"></A>overlay support</H3>
+<P CLASS="Body">
+<A NAME="pgfId-535121"></A>Support for tracking and debugging the dynamically downloaded code of the VUs is based on the overlay mechanism already present in GDB. As with the existing overlay support, GDB assumes that VU code sections are downloaded in their entirety, and that a particular section has a unique runtime address. For example, a particular function can be downloaded to either or both VUs, but must run at the same local address in each VU. Unlike the standard overlay support, the SKY extensions do not require custom linker scripts or a user provided overlay manager. Instead, the runtime addresses are obtained from the source code during assembly, and the overlay tracking is managed by the SKY simulator.</P>
+<P CLASS="Body">
+<A NAME="pgfId-535122"></A>GDB provides the following commands to inspect and manage the current overlay state:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-535123"></A><TT CLASS="Code">
+overlay manual|auto</TT>
+<A NAME="marker-535912"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-535124"></A>GDB allows users to manually map and unmap overlays in <TT CLASS="Code">
+manual</TT>
+ mode. For the SKY extensions, GDB starts in <TT CLASS="Code">
+auto</TT>
+ mode to allow the simulator to track the overlays transparently. It is not normally necessary to change this default setting.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-535125"></A><TT CLASS="Code">
+overlay list</TT>
+<A NAME="marker-535913"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-605607"></A>	Show the currently active (mapped) overlays and their load and runtime 	addresses. The overlays listed are relative to the current CPU context, or to all overlays if the context is <TT CLASS="Code">
+auto</TT>
+ or <TT CLASS="Code">
+master</TT>
+. </P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-535127"></A><TT CLASS="Code">
+overlay map</TT>
+<A NAME="marker-535914"></A> <VAR CLASS="CodeVariant">
+&lt;section-name&gt;</VAR>
+</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-535128"></A><TT CLASS="Code">
+overlay unmap</TT>
+<A NAME="marker-535915"></A> <VAR CLASS="CodeVariant">
+&lt;section-name&gt;</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-535129"></A>Manually map or unmap the overlay in <TT CLASS="Code">
+section-name</TT>
+ to or from its runtime address. If multiple overlays share the same runtime address range, then mapping a new section implies unmapping the currently mapped section (if one is mapped). Unmapping an overlay informs GDB that <TT CLASS="Code">
+section-name</TT>
+ is no longer resident at its runtime address, and must be accessed from its load-time address.</P>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-535130"></A>Debugging with overlays</H4>
+<P CLASS="Body">
+<A NAME="pgfId-535131"></A>When GDB's overlay support is active, GDB's concept of a symbol's address is controlled by which overlays are mapped into which <A NAME="marker-535675"></A>memory regions. For instance, if you <TT CLASS="Code">
+print</TT>
+ a variable that is in an overlay which is currently mapped (that is, located in its runtime address region) GDB will fetch the variable's memory from the runtime address. If the variable's overlay is currently not mapped, GDB will fetch it from its load-time address.</P>
+<P CLASS="Body">
+<A NAME="pgfId-535132"></A>Similarly, if you disassemble a function that is in an unmapped overlay, or use a symbol's address to examine memory, GDB will fetch the memory from the symbol's load-time address range instead of the runtime range. If GDB's output contains labels that are relative to an overlay's load-time address instead of the runtime address, the labels will be distinguished like this:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535135"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ overlay map .ovly0</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535137"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535139"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ x /x <VAR CLASS="CodeVariant">
+foo</VAR>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535141"></A><STRONG CLASS="CodeOutput">
+  0x300000 &lt;foo&gt;:   0x2d7f4ffc</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535143"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535145"></A><STRONG CLASS="CodeOutput">
+(gdb) overlay unmap .ovly0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535147"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535149"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ x /x <VAR CLASS="CodeVariant">
+foo</VAR>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535151"></A>  <STRONG CLASS="CodeOutput">
+0x400000 &lt;*foo*&gt;: 0x2d7f4ffc</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-535152"></A>The asterisks (*) around the label <VAR CLASS="CodeVariant">
+foo </VAR>
+may be interpreted as meaning that this is where <VAR CLASS="CodeVariant">
+foo </VAR>
+is presently, but not where it will be when it is in use by the target program.</P>
+<P CLASS="Body">
+<A NAME="pgfId-535153"></A>The <TT CLASS="Code">
+info address</TT>
+ command can tell you what overlay a symbol is in, as well as where it is loaded and mapped. The <TT CLASS="Code">
+info symbol</TT>
+ command can list all of the symbols that are mapped to an address.</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535156"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ info <VAR CLASS="CodeVariant">
+addr</VAR>
+ <VAR CLASS="CodeVariant">
+foo</VAR>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535158"></A><STRONG CLASS="CodeOutput">
+  Symbol &quot;foo&quot; is a function at address 0x300000,</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535160"></A><STRONG CLASS="CodeOutput">
+  -- loaded at 0x400000 in overlay section .ovly0.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535162"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535164"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ info symbol 0x300000</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535166"></A><STRONG CLASS="CodeOutput">
+  foo in mapped overlay section .ovly0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-535168"></A><STRONG CLASS="CodeOutput">
+  bar in unmapped overlay section .ovly1</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<H4 CLASS="Heading3">
+<A NAME="pgfId-535169"></A>Breakpoints</H4>
+<P CLASS="Body">
+<A NAME="pgfId-535170"></A>As long as the overlay sections are located in RAM rather than ROM, GDB can set breakpoints in them. The breakpoints work by inserting trap instructions into the load-time address region. When the overlay is mapped into the runtime region, the trap instructions are mapped along with it, and when executed, cause the target program to break out to the debugger. If the overlay regions are located in ROM, you can only set breakpoints in them after they have been mapped into the runtime region in RAM.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-491497"></A><A NAME="17670"></A>Debugging the VUs </H3>
+<P CLASS="Body">
+<A NAME="pgfId-491498"></A>The timing and positioning of instructions is determined by the programmer; therefore, debugging support is required. This support is provided through the following command:</P>
+<P CLASS="Body">
+<A NAME="pgfId-491499"></A><TT CLASS="Code">
+sim pipe [</TT>
+<A NAME="marker-535916"></A><VAR CLASS="CodeVariant">
+unit</VAR>
+<TT CLASS="Code">
+]</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-557235"></A>Displays the contents of the pipeline for the specified <TT CLASS="Code">
+unit</TT>
+ (<TT CLASS="Code">
+[vu]0</TT>
+ or <TT CLASS="Code">
+[vu]1</TT>
+). If <TT CLASS="Code">
+unit</TT>
+ is not specified, both pipes are displayed. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-610822"></A>The columns of the pipeline display show:</P>
+<UL>
+<UL>
+<UL>
+<LI>
+<A NAME="pgfId-610824"></A>The instruction address</LI>
+<LI>
+<A NAME="pgfId-610825"></A>The delay, in cycles, before the instruction completes</LI>
+<LI>
+<A NAME="pgfId-610826"></A>The target of the instruction</LI>
+<LI>
+<A NAME="pgfId-610827"></A>The value to be written to the target</LI>
+</UL>
+</UL>
+</UL>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-557283"></A>The following is an example VU pipe listing: </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610735"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ </P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610737"></A><STRONG CLASS="CodeOutput">
+126            ADDw.x VF04, VF04, VF00w       ESIN P, VF01x </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610739"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ sim pipe vu1</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610741"></A><STRONG CLASS="CodeOutput">
+VU1 Pipeline:</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610743"></A><STRONG CLASS="CodeOutput">
+Addr  Dly Insn  Tgt       Value</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610745"></A><STRONG CLASS="CodeOutput">
+ 121  1 MUL  VF05.wzyx &lt;0.000000,-0.000000,0.000000,0.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610747"></A><STRONG CLASS="CodeOutput">
+ 122  2 MUL  VF06.wzyx &lt;0.000000,-0.000000,0.000000,0.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610749"></A><STRONG CLASS="CodeOutput">
+ 121  1 LQI  VF02.wzyx &lt;0.000000,-0.700000,0.000000,-0.700000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610751"></A><STRONG CLASS="CodeOutput">
+ 122  2 LQI  VF03.wzyx &lt;1.000000,1024.000000,0.000000,0.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610753"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ step</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610755"></A><STRONG CLASS="CodeOutput">
+127              NOP     NOP   </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610757"></A><STRONG CLASS="CodeOutput">
+(gdb-vu1)</STRONG>
+ sim pipe vu1</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610759"></A><STRONG CLASS="CodeOutput">
+VU1 Pipeline:</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610761"></A><STRONG CLASS="CodeOutput">
+Addr  Dly Insn  Tgt       Value</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610763"></A><STRONG CLASS="CodeOutput">
+ 122  1 MUL   VF06.wzyx &lt;0.000000,-0.000000,0.000000,0.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610765"></A><STRONG CLASS="CodeOutput">
+ 124  3 ADD   VF04.x    &lt;0.000000,-0.000000,0.000000,1.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610767"></A><STRONG CLASS="CodeOutput">
+ 122  1 LQI   VF03.wzyx &lt;1.000000,1024.000000,0.000000,0.000000&gt;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-610769"></A><STRONG CLASS="CodeOutput">
+ 124 26 ESIN  P         0.644218</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-491524"></A>To further aid debugging, the VU pipelines allow non-intrusive debugging, which means that breakpoints and single-stepping do not affect the calculated results. Note that this is different from the hardware behavior, in which the results can differ after a stopped pipeline is resumed.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-491525"></A><A NAME="15524"></A>Debugging the VIF units </H3>
+<P CLASS="Body">
+<A NAME="pgfId-491526"></A>The VIFs are modeled as having infinitely long FIFO streams of instructions. The instructions in these streams are numbered by a pseudo-instruction counter that advances as each VIF instruction is executed. The FIFO contents can be examined using the following command:</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491527"></A><TT CLASS="Code">
+sim list-vif[0|1] [</TT>
+<A NAME="marker-803718"></A><VAR CLASS="CodeVariant">
+range</VAR>
+<TT CLASS="Code">
+]</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-534223"></A>Prints the instructions in the FIFO of the specified VIF unit. Note that VIF and DMA instructions only are disassembled. Embedded VU code/data is indicated by a single line giving its source address and a byte count. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-807016"></A>Instruction ranges are specified as a <TT CLASS="Code">
+start,end</TT>
+ pair or <TT CLASS="Code">
+count</TT>
+ specifier that follows a subset of the <VAR CLASS="CodeVariant">
+linespec </VAR>
+syntax of the standard <TT CLASS="Code">
+list</TT>
+ command (see <A HREF="ee-21.html#30836" CLASS="XRef">Examining source files</A>). For example, the command <TT CLASS="Code">
+sim list vif1 15,25</TT>
+ will print the instructions corresponding to pseudo-PC values 15 through 25 of unit VIF1. Open-ended ranges can be specified by omitting either the <TT CLASS="Code">
+start</TT>
+ or <TT CLASS="Code">
+end</TT>
+ specifier. Thus, <TT CLASS="Code">
+',25'</TT>
+ specifies all instructions from 0 to 25, and <TT CLASS="Code">
+'25,'</TT>
+ specifies all instructions from 25 up to the current pseudo-PC. If no range is specified, the default is to print the last 10 instructions. This can be changed by giving a single <TT CLASS="Code">
+count</TT>
+ argument (no commas), which print the last <TT CLASS="Code">
+count</TT>
+ instructions.</P>
+<P CLASS="Body">
+<A NAME="pgfId-803793"></A>The following is an example VIF FIFO debug session: </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803736"></A>...</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803738"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ list vuctl.dvpasm:23</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803740"></A><STRONG CLASS="CodeOutput">
+18      .text</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803742"></A><STRONG CLASS="CodeOutput">
+19      DMAref *, data1</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803744"></A><STRONG CLASS="CodeOutput">
+20</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803746"></A><STRONG CLASS="CodeOutput">
+21      .section &quot;.dmadata&quot;, &quot;aw&quot;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803748"></A><STRONG CLASS="CodeOutput">
+22      .DmaData data1</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803750"></A><STRONG CLASS="CodeOutput">
+23      MPG *, *</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803752"></A><STRONG CLASS="CodeOutput">
+24      NOP     IADDIU VI01, VI00, 912</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803754"></A><STRONG CLASS="CodeOutput">
+25      NOP     IADDIU VI02, VI00, 904</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803756"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ <TT CLASS="Code">
+break 23</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803758"></A><STRONG CLASS="CodeOutput">
+Breakpoint 1 at 0x133b0: file vuctl.dvpasm, line 23.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803760"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ continue</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803762"></A><STRONG CLASS="CodeOutput">
+Continuing</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803764"></A>CPU context is now vif1</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803766"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803768"></A>Breakpoint 1, data1 () at vuctl.dvpasm:23</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803770"></A>23      MPG *, *</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803772"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ sim list vif1</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803774"></A><STRONG CLASS="CodeOutput">
+    0: (0x00012280)     dmaref 1,0x000133a0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803776"></A><STRONG CLASS="CodeOutput">
+    2: (0x00012288)     vifnop</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803778"></A><STRONG CLASS="CodeOutput">
+    3: (0x0001228c)     vifnop</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803780"></A><STRONG CLASS="CodeOutput">
+    4: (0x000133a0)     stcycl 4,4</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803782"></A><STRONG CLASS="CodeOutput">
+    5: (0x000133a4)     stmask 0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803784"></A><STRONG CLASS="CodeOutput">
+    7: (0x000133ac)     stmod direct</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803786"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ printf &quot;%x, %x&#92;n&quot;, $pc, $vif1_pc</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803788"></A>133b0, 133b0</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803790"></A><STRONG CLASS="CodeOutput">
+(gdb) </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-803792"></A>...</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="Body">
+<A NAME="pgfId-605794"></A>&nbsp;</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-605795"></A>Interactive simulator options</H3>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-601443"></A><TT CLASS="Code">
+sim log </TT>
+<A NAME="marker-601442"></A><VAR CLASS="CodeVariant">
+unit</VAR>
+<TT CLASS="Code">
+=[on|off]</TT>
+ </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491556"></A>Used to enable or disable trace file generation for the specified unit, where unit is one of: <TT CLASS="Code">
+vu0, vu1, vif0, vif1, gif, gif1, gif2, gif3</TT>
+ or <TT CLASS="Code">
+gs</TT>
+. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-803803"></A>The <VAR CLASS="CodeVariant">
+unit=</VAR>
+ specifier may be omitted, in which case trace files will either be enabled for all units, or disabled for all units.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-491557"></A><TT CLASS="Code">
+sim log-file </TT>
+<A NAME="marker-535690"></A><VAR CLASS="CodeVariant">
+unit</VAR>
+<TT CLASS="Code">
+=</TT>
+<VAR CLASS="CodeVariant">
+file</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-491558"></A>Specifies the file for the output log of the specified unit as file, where <VAR CLASS="CodeVariant">
+unit </VAR>
+is one of: <TT CLASS="Code">
+vu0, vu1, vif0, vif1, gif, gif1, gif2, gif3</TT>
+ or <TT CLASS="Code">
+gs</TT>
+. For more information, refer to <A HREF="ee-22.html#22649" CLASS="XRef">Emotion Engine-specific command-line options</A>.</P>
+<P CLASS="BodyHang1">
+<A NAME="pgfId-601425"></A><TT CLASS="Code">
+sim reset</TT>
+<A NAME="marker-601473"></A> </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-601426"></A>Returns the following peripheral devices to their start-up state:  <TT CLASS="Code">
+vu0, vu1, vif0, vif1, dmac, gif</TT>
+ and <TT CLASS="Code">
+gs.</TT>
+</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Debugger</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-20.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-22.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

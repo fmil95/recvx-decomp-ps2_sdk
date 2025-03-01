@@ -1,25 +1,18 @@
-# Target selection dialog for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# TargetSelection
 # ----------------------------------------------------------------------
 # Implements GDB TargetSelection dialog
 # ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt <hunt@cygnus.com>
+#   Copyright (C) 1997, 1998 Cygnus Solutions
+#
 
 # ------------------------------------------------------------------
 #  CONSTRUCTOR - create new target selection window
 # ------------------------------------------------------------------
 body TargetSelection::constructor {args} {
+  global gdb_loaded
+  debug "TargetSelection::constructor"
   eval itk_initialize $args
   set top [winfo toplevel $itk_interior]
   _init
@@ -27,10 +20,6 @@ body TargetSelection::constructor {args} {
 }
 
 body TargetSelection::getname {target name} {
-
-  # Init target database if we haven't already done so
-  init_target_db
-
   if {[info exists gdb_target($target,$name)]} {
     return $gdb_target($target,$name)
   } else {
@@ -38,7 +27,7 @@ body TargetSelection::getname {target name} {
   }
 }
 
-body TargetSelection::init_target_db {} {
+body TargetSelection::_init_db {} {
   # check to see if we already initialized this database
   if {$db_inited} { 
     return 
@@ -53,7 +42,7 @@ body TargetSelection::init_target_db {} {
   # TARGET,cmd: Abstracted command to run for this target (tcpX and com1 are
   #          replaced with the real port and host/port in set_target)
   # TARGET,runlist: List of preferences for the target: {attach download run cont}
-  # TARGET,after_attaching: a command to run after attaching to the target
+  # TARGET,after_attach: a command to run after attaching to the target
 
   # Default target
   set gdb_target(default,pretty-name) "Default"
@@ -62,7 +51,6 @@ body TargetSelection::init_target_db {} {
   set gdb_target(default,cmd) ""
   set gdb_target(default,runlist) {0 0 1 0}
   set gdb_target(default,options) ""
-  set gdb_target(default,after_attaching) {}
 
   # Exec target
   set gdb_target(exec,pretty-name) "Exec"
@@ -78,7 +66,7 @@ body TargetSelection::init_target_db {} {
   set gdb_target(sds,defbaud) "38400"
   set gdb_target(sds,baud-rates) {9600 38400}
   set gdb_target(sds,cmd) "sds com1"
-  set gdb_target(sds,runlist) {1 1 0 1}
+  set gdb_target(sds,runlist) {1 0 0 1}
   set gdb_target(sds,after_attaching) {}
 
   # Simulator
@@ -92,8 +80,8 @@ body TargetSelection::init_target_db {} {
 
   # Remote
   set gdb_target(remote,pretty-name) "Remote/Serial"
-  set gdb_target(remote,defbaud) "9600"
-  set gdb_target(remote,baud-rates) {9600 19200 38400 57600 115200}
+  set gdb_target(remote,defbaud) "38400"
+  set gdb_target(remote,baud-rates) {9600 38400}
   set gdb_target(remote,cmd) "remote com1"
   set gdb_target(remote,runlist) {1 1 0 1}
   set gdb_target(remote,after_attaching) {}
@@ -105,75 +93,67 @@ body TargetSelection::init_target_db {} {
   set gdb_target(remotetcp,after_attaching) {}
 
   # ARM Angel
-  set gdb_target(rdi,pretty-name) "ARM Angel/Serial"
+  set gdb_target(rdi,pretty-name) "ARM Angel"
   set gdb_target(rdi,defbaud) "9600"
-  set gdb_target(rdi,baud-rates) {9600 19200 38400 57600 115200}
+  set gdb_target(rdi,baud-rates) {9600}
   set gdb_target(rdi,cmd) "rdi com1"
-  set gdb_target(rdi,runlist) {1 1 0 1}
+  set gdb_target(rdi,runlist) {1 0 0 1}
   set gdb_target(rdi,after_attaching) {}
-
-  # ARM Angel/Ethernet
-  set gdb_target(rditcp,pretty-name) "ARM Angel/Ethernet"
-  set gdb_target(rditcp,defbaud) "ETH"
-  set gdb_target(rditcp,baud-rates) {}
-  set gdb_target(rditcp,cmd) "rdi ethX"
-  set gdb_target(rditcp,runlist) {1 1 0 1}
-  set gdb_target(rditcp,after_attaching) {}
 
   # ARM Remote
   set gdb_target(rdp,pretty-name) "ARM Remote/Serial"
   set gdb_target(rdp,defbaud) "9600"
   set gdb_target(rdp,baud-rates) {9600}
   set gdb_target(rdp,cmd) "rdp com1"
-  set gdb_target(rdp,runlist) {1 1 0 1}
+  set gdb_target(rdp,runlist) {1 0 0 1}
   set gdb_target(rdp,after_attaching) {}
   set gdb_target(rdptcp,pretty-name) "ARM Remote/TCP"
   set gdb_target(rdptcp,defbaud) "TCP"
   set gdb_target(rdptcp,baud-rates) {}
   set gdb_target(rdptcp,cmd) "rdp tcpX"
-  set gdb_target(rdptcp,runlist) {1 1 0 1}
+  set gdb_target(rdptcp,runlist) {1 0 0 1}
   set gdb_target(rdptcp,after_attaching) {}
 
-  # m32r rev C
+  # d10v
+  set gdb_target(d10v,pretty-name) "D10V/Serial"
+  set gdb_target(d10v,defbaud) "38400"
+  set gdb_target(d10v,baud-rates) {9600 38400}
+  set gdb_target(d10v,cmd) "d10v com1"
+  set gdb_target(d10v,runlist) {1 0 0 1}
+  set gdb_target(d10v,after_attaching) {}
+  set gdb_target(d10vtcp,pretty-name) "D10V/TCP"
+  set gdb_target(d10vtcp,cmd) "d10v tcpX"
+  set gdb_target(d10vtcp,defbaud) "TCP"
+  set gdb_target(d10vtcp,baud-rates) {}
+  set gdb_target(d10vtcp,runlist) {1 0 0 1}
+  set gdb_target(d10vtcp,after_attaching) {}
+
+  # m32r
   set gdb_target(m32r,pretty-name) "M32R/Serial"
-  set gdb_target(m32r,defbaud) "9600"
-  set gdb_target(m32r,baud-rates) {9600}
+  set gdb_target(m32r,defbaud) "38400"
+  set gdb_target(m32r,baud-rates) {9600 38400}
   set gdb_target(m32r,cmd) "m32r com1"
-  set gdb_target(m32r,runlist) {1 1 0 1}
+  set gdb_target(m32r,runlist) {1 0 0 1}
   set gdb_target(m32r,after_attaching) {}
   set gdb_target(m32rtcp,pretty-name) "M32R/TCP"
   set gdb_target(m32rtcp,defbaud) "TCP"
   set gdb_target(m32rtcp,baud-rates) {}
   set gdb_target(m32rtcp,cmd) "m32r tcpX"
-  set gdb_target(m32rtcp,runlist) {1 1 0 1}
+  set gdb_target(m32rtcp,runlist) {1 0 0 1}
   set gdb_target(m32rtcp,after_attaching) {}
-
-  # m32r msa2000
-  set gdb_target(mon2000,pretty-name) "MON2000/Serial"
-  set gdb_target(mon2000,defbaud) "9600"
-  set gdb_target(mon2000,baud-rates) {9600}
-  set gdb_target(mon2000,cmd) "mon2000 com1"
-  set gdb_target(mon2000,runlist) {1 1 0 1}
-  set gdb_target(mon2000,after_attaching) {}
-  set gdb_target(mon2000tcp,pretty-name) "MON2000/TCP"
-  set gdb_target(mon2000tcp,defbaud) "TCP"
-  set gdb_target(mon2000tcp,baud-rates) {}
-  set gdb_target(mon2000tcp,cmd) "mon2000 tcpX"
-  set gdb_target(mon2000tcp,runlist) {1 1 0 1}
-  set gdb_target(mon2000tcp,after_attaching) {}
 
   # sparclite
   set gdb_target(sparclite,pretty-name) "SPARClite/Serial"
   set gdb_target(sparclite,defbaud) "9600"
   set gdb_target(sparclite,baud-rates) {9600}
   set gdb_target(sparclite,cmd) "sparclite com1"
-  set gdb_target(sparclite,runlist) {1 1 0 1}
+  set gdb_target(sparclite,runlist) {1 0 0 1}
   set gdb_target(sparclite,after_attaching) {}
   set gdb_target(sparclitetcp,pretty-name) "SPARClite/TCP"
   set gdb_target(sparclitetcp,defbaud) "TCP"
   set gdb_target(sparclitetcp,baud-rates) {}
   set gdb_target(sparclitetcp,cmd) "sparclite tcpX"
-  set gdb_target(sparclitetcp,runlist) {1 1 0 1}
+  set gdb_target(sparclitetcp,runlist) {1 0 0 1}
   set gdb_target(sparclitetcp,after_attaching) {}
 
   # V850 ICE
@@ -189,42 +169,12 @@ body TargetSelection::init_target_db {} {
   set gdb_target(mips,defbaud) "9600"
   set gdb_target(mips,baud-rates) {9600}
   set gdb_target(mips,cmd) "mips com1"
-  set gdb_target(mips,runlist) {1 1 0 1}
-  set gdb_target(mips,after_attaching) {}
+  set gdb_target(mips,runlist) {1 0 0 1}
   set gdb_target(mipstcp,pretty-name) "MIPS/TCP"
   set gdb_target(mipstcp,defbaud) "TCP"
   set gdb_target(mipstcp,baud-rates) {}
   set gdb_target(mipstcp,cmd) "mips tcpX"
-  set gdb_target(mipstcp,runlist) {1 1 0 1}
-  set gdb_target(mipstcp,after_attaching) {}
-
-  # Picobug
-  set gdb_target(picobug,pretty-name) "Picobug/Serial"
-  set gdb_target(picobug,defbaud) "19200"
-  set gdb_target(picobug,baud-rates) {19200}
-  set gdb_target(picobug,cmd) "picobug com1"
-  set gdb_target(picobug,runlist) {1 1 0 1}
-  set gdb_target(picobug,after_attaching) {}
-  set gdb_target(picobugtcp,pretty-name) "Picobug/TCP"
-  set gdb_target(picobugtcp,defbaud) "TCP"
-  set gdb_target(picobugtcp,baud-rates) {}
-  set gdb_target(picobugtcp,cmd) "picobug tcpX"
-  set gdb_target(picobugtcp,runlist) {1 1 0 1}
-  set gdb_target(picobugtcp,after_attaching) {}
-
-  # Cisco.
-  set gdb_target(cisco,pretty-name) "Cisco/Serial"
-  set gdb_target(cisco,defbaud) "38400"
-  set gdb_target(cisco,baud-rates) {9600 19200 38400 56000}
-  set gdb_target(cisco,cmd) "cisco com1"
-  set gdb_target(cisco,runlist) {1 0 0 0}
-  set gdb_target(cisco,after_attaching) "set os cisco"
-  set gdb_target(ciscotcp,pretty-name) "Cisco/TCP"
-  set gdb_target(ciscotcp,defbaud) "TCP"
-  set gdb_target(ciscotcp,baud-rates) {}
-  set gdb_target(ciscotcp,cmd) "cisco tcpX"
-  set gdb_target(ciscotcp,runlist) {1 0 0 0}
-  set gdb_target(ciscotcp,after_attaching) "set os cisco"
+  set gdb_target(mipstcp,runlist) {1 0 0 1}
 
   # DECI2
   set gdb_target(deci2,pretty-name) "deci2"
@@ -241,7 +191,7 @@ body TargetSelection::default_port {} {
   global tcl_platform
   switch -regexp $tcl_platform(os) {
     Windows { set port com1 }
-    Linux   { set port /dev/ttyS0 }
+    Linux   { set port /dev/cua0 }
     SunOS   { set port /dev/ttya }
     AIX     { set port /dev/foo1 }
     ULTRIX  { set port /dev/foo1 }
@@ -279,7 +229,6 @@ body TargetSelection::_init_prefs {} {
   # set up the defaults
   pref define gdb/load/default-verbose 0
   pref define gdb/load/default-port [default_port]
-  pref define gdb/load/default-portname 1000
   pref define gdb/load/default-hostname ""
   pref define gdb/load/default-after_attaching {}
 }
@@ -329,7 +278,7 @@ body TargetSelection::_init {} {
   }
   set trace_inited 1
 
-  init_target_db	;# initialize database
+  _init_db	;# initialize database
   _init_prefs	;# initialize load prefs 
   _init_target	;# initialize target prefs
   set_saved
@@ -433,7 +382,7 @@ body TargetSelection::build_win {} {
   entry $fr.porte -textvariable [pref varname gdb/load/$target-port] -width $Width
 
   frame $f.fr
-  checkbutton $f.fr.main -text [gettext "Set breakpoint at 'main'"] \
+  checkbutton $f.fr.main -text [gettext "Run until 'main'"] \
     -variable [pref varname gdb/load/main]
   checkbutton $f.fr.exit -text [gettext "Set breakpoint at 'exit'"] \
     -variable [pref varname gdb/load/exit]
@@ -621,10 +570,31 @@ body TargetSelection::fill_targets {} {
   foreach val $target_list {
     if {[info exists gdb_target($val,pretty-name)]} {
       $fr.tar list insert end $gdb_target($val,pretty-name)
-
-      # Insert TCP target, if it exists
-      if {[info exists gdb_target(${val}tcp,pretty-name)]} {
-	$fr.tar list insert end $gdb_target(${val}tcp,pretty-name)
+      switch $val {
+	remote {
+	  # insert fake remotetcp target
+	  $fr.tar list insert end $gdb_target(remotetcp,pretty-name)
+	}
+	d10v {
+	  # insert fake remotetcp target
+	  $fr.tar list insert end $gdb_target(d10vtcp,pretty-name)
+	}
+	m32r {
+	  # insert fake remotetcp target
+	  $fr.tar list insert end $gdb_target(m32rtcp,pretty-name)
+	}
+	sparclite {
+	  # insert fake remotetcp target
+	  $fr.tar list insert end $gdb_target(sparclitetcp,pretty-name)
+	}
+	rdp {
+	  # insert fake tcp target
+	  $fr.tar insert end $gdb_target(rdptcp,pretty-name)
+	}
+	mips {
+	  # insert fake tcp target
+	  $fr.tar insert end $gdb_target(mipstcp,pretty-name)
+	}
       }
     }
   }
@@ -637,6 +607,7 @@ body TargetSelection::fill_targets {} {
 body TargetSelection::config_dialog {t} {
   pref define gdb/load/$t-verbose [pref get gdb/load/verbose]
   $f.fr.verb config -variable [pref varname gdb/load/$t-verbose]
+
   # Map the correct entries and comboboxes onto the screen
   if {$gdb_target($t,defbaud) == "TCP"} {
     # we have a tcp target
@@ -655,28 +626,10 @@ body TargetSelection::config_dialog {t} {
       grid $mapped2 -row 2 -column 1 -sticky w -padx 5 -pady 5
     }
     $fr.portl configure -text {Port:}
-    $fr.porte config -textvariable [pref varname gdb/load/$t-portname] -fg black
+    $fr.porte config -textvariable [pref varname gdb/load/$t-portname]
 
     $mapped1 configure -state normal
     $mapped2 configure -state normal
-  } elseif {$gdb_target($t,defbaud) == "ETH"} {
-    # we have a udp target
-    # map host and porte
-    if {$mapped1 != "$fr.host"} {
-      grid forget $mapped1
-      set mapped1 $fr.host
-      grid $mapped1 -row 1 -column 1 -sticky w -padx 5 -pady 5
-    }
-    $fr.cbl configure -text "Hostname:"
-    $fr.host config -textvariable [pref varname gdb/load/$t-hostname]
-
-    if {$mapped2 != "$fr.porte"} {
-      grid forget $mapped2
-    }
-    $fr.portl configure -text {Port: N/A (fixed)}
-
-    $mapped1 configure -state normal
-    $mapped2 configure -state disabled
   } elseif {$gdb_target($t,defbaud) == "deci2"} {
     # we have a deci2 target
     # map host and porte
@@ -709,7 +662,7 @@ body TargetSelection::config_dialog {t} {
     }
     $fr.cbl configure -text "Baud Rate:"
     $fr.cb configure -textvariable [pref varname gdb/load/$t-baud]
-    
+
     if {$mapped2 != "$fr.port"} {
       grid forget $mapped2
       set mapped2 $fr.port
@@ -726,8 +679,6 @@ body TargetSelection::config_dialog {t} {
     # options
     $mapped1 configure -state disabled
     $mapped2 configure -state disabled
-    $fr.porte configure -fg gray
-
     if {[info exists gdb_target($t,options)]} {
       if {$mapped1 != "$fr.host"} {
 	grid forget $mapped1
@@ -755,7 +706,7 @@ body TargetSelection::config_dialog {t} {
 body TargetSelection::change_target {w {name ""}} {
   if {$name == ""} {return}
   set target [get_target $name]
-  debug "$target"
+  debug "new target: $target"
   set defbaud $gdb_target($target,defbaud)
   pref define gdb/load/$target-baud $defbaud
   if {$defbaud =="deci2"} {
@@ -806,7 +757,7 @@ body TargetSelection::change_target {w {name ""}} {
 # ------------------------------------------------------------------
 body TargetSelection::change_baud {w {baud ""}} {
   if {$baud != ""} {
-    if {[string compare $baud "TCP"] != 0 && [string compare $baud "deci2"] != 0 && ([string compare $baud "ETX"] != 0)} {
+    if {[string compare $baud "TCP"] != 0 && [string compare $baud "deci2"] != 0} {
       gdb_cmd "set remotebaud $baud"
       if {[catch {gdb_cmd "show remotebaud"} res]} {
 	set newbaud 0
@@ -836,7 +787,7 @@ body TargetSelection::port_list {} {
   # may be setting up the remote target manually with
   # a terminal program.
   for {set i 1} {$i < 9} { incr i} {
-    if {[catch { set fd [::open COM$i: RDWR] } msg]} {
+    if {[catch { set fd [open COM$i: RDWR] } msg]} {
       # Failed.  Find out why.
       if {[string first "permission denied" $msg] != -1} {
 	# Port is there, but busy right now. That's OK.
@@ -882,7 +833,7 @@ body TargetSelection::save {} {
     set_saved
     write_saved
     set gdb_target_name $target
-    pref setd gdb/load/target $target
+    pref set gdb/load/target $target
   } errtxt]
   if {$err} {debug "target: $errtxt"}
   if {[valid_target $gdb_target_name]} {
@@ -952,7 +903,7 @@ body TargetSelection::get_target {name} {
     incr i -1
     set t [lindex [split [lindex $list $i] ,] 0]
   } else {
-    debug "unknown pretty-name \"$name\""
+    debug "TargetSelection::get_target unknown pretty-name \"$name\""
   }
   return $t
 }
@@ -1025,8 +976,12 @@ body TargetSelection::valid_target {target} {
 
 # Returns 1 if this is not a cross debugger.
 body TargetSelection::native_debugging {} {
-  global GDBStartup
+  global tcl_platform
 
-  set r [string compare $GDBStartup(host_name) $GDBStartup(target_name)]
-  return [expr {!$r}]
+  if {$tcl_platform(os) == "SunOS" && [regexp "^5" $tcl_platform(osVersion)]} {
+    set err [catch {gdb_cmd "help target procfs"}]
+  } else {
+    set err [catch {gdb_cmd "help target child"}]
+  }
+  return [expr {$err == 0}]
 }

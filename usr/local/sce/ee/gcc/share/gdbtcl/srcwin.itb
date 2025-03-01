@@ -1,17 +1,3 @@
-# Source window for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 # ------------------------------------------------------------------
 #  CONSTRUCTOR - create new source window
 # ------------------------------------------------------------------
@@ -44,7 +30,6 @@ body SrcWin::constructor {args} {
   add_hook gdb_no_inferior_hook "$this no_inferior"
   add_hook download_progress_hook "$this download_progress"
   add_hook state_hook [code $this _set_state]
-  add_hook gdb_clear_file_hook [code $this clear_file]
   after idle "
       update idletasks
       $this sizeWinByChild toolbar"
@@ -61,7 +46,6 @@ body SrcWin::destructor {} {
   remove_hook gdb_idle_hook "$this idle"
   remove_hook download_progress_hook "$this download_progress"
   remove_hook state_hook [code $this _set_state]
-  remove_hook gdb_clear_file_hook [code $this clear_file]
 }
 
 # ------------------------------------------------------------------
@@ -72,7 +56,7 @@ body SrcWin::_build_win {} {
 
   # build source toolbar
   set _toolbar [conAdd toolbar -resizable 0]
-  GDBSrcBar $_toolbar $this \
+  GDBSrcBar $_toolbar -source $this \
     -updatecommand [list $this toggle_updates] \
     -updatevalue $do_updates
 
@@ -144,7 +128,7 @@ body SrcWin::_build_win {} {
   if {$gdb_running} {
     update
   } else {
-    if {[set linespec [gdbtk_locate_main]] != ""} {
+    if {![catch {gdb_loc main} linespec]} {
       location BROWSE_TAG $linespec
     }
   }
@@ -181,7 +165,6 @@ body SrcWin::_set_state {varname} {
 body SrcWin::download_progress { section num tot {msg ""} } {
   global download_start_time download_cancel_ok gdb_loaded
 
-  #debug "$section $num $tot $msg"
   if {$last_section_start == 0} {
     pack forget $_statbar.frame.search
     pack $_statbar.frame.progress -fill both -expand yes
@@ -219,7 +202,7 @@ body SrcWin::download_progress { section num tot {msg ""} } {
   }
 
   if {$last_done == $tot || $section == "CANCEL"} {
-    $_toolbar configure -runstop normal
+    $_toolbar configure -runstop 0
     if {!$gdb_loaded} {
       update
       # errored or canceled
@@ -420,7 +403,7 @@ body SrcWin::location {tag linespec} {
     set tag BROWSE_TAG
     debug "not running: name=$name funcname=$funcname line=$line"
     if {$name == ""} {
-      if {[set linespec [gdbtk_locate_main]] == ""} {
+      if {[catch {gdb_loc main} linespec]} {
 	# no "main" function found
 	return 
       }
@@ -483,7 +466,7 @@ body SrcWin::update {} {
 #  Called when the target is idle, so enable all buttons.
 # ------------------------------------------------------------------
 body SrcWin::idle {} {
-  $_toolbar configure -runstop normal
+  $_toolbar configure -runstop 0
   enable_ui 1
 }
 
@@ -493,7 +476,7 @@ body SrcWin::idle {} {
 body SrcWin::mode {w new_mode {go 1}} {
   gdbtk_busy
   $_statbar.mode entryset $new_mode
-  catch {$twin mode_set $new_mode $go} errorVal
+  $twin mode_set $new_mode $go
   $_toolbar configure -displaymode $new_mode
   gdbtk_idle
 }
@@ -508,25 +491,24 @@ body SrcWin::_update_title {name} {
   } else {
     set prefix "$fn - "
   }
-  window_name "${prefix}Source Window" $fn
+  window_name "${prefix}Source Window"
 }
 
 # ------------------------------------------------------------------
 #  PUBLIC METHOD:  busy - disable things when gdb is busy
 # ------------------------------------------------------------------
 body SrcWin::busy {} {
-  global gdb_loaded gdb_target_name
-#  debug "gdb_loaded=$gdb_loaded, gdb_target_name=$gdb_target_name"
+  global gdb_loaded
+  #debug "$gdb_loaded"
 
   enable_ui 0
   if {$Running} {
-    $_toolbar configure -runstop running
-    if {$gdb_loaded || \
-	  ([TargetSelection::native_debugging] && $gdb_target_name != "remote")} {
+    $_toolbar configure -runstop 1
+    if {$gdb_loaded} {
       set_status "Program is running."
     } 
   } else {
-    $_toolbar configure -runstop busy
+    $_toolbar configure -runstop 3
   }
 }
 
@@ -575,8 +557,6 @@ body SrcWin::set_status { {msg ""} {tmp 0} } {
 # ------------------------------------------------------------------
 body SrcWin::set_execution_status { {line ""} {pc ""}} {
   global gdb_running gdb_loaded gdb_program_has_run gdb_target_changed
-  #debug "line=$line pc=$pc [gdb_target_has_execution] running=$gdb_running loaded=$gdb_loaded"
-  set message ""
 
   if {![gdb_target_has_execution]} {
     if {$gdb_running} {
@@ -596,19 +576,13 @@ body SrcWin::set_execution_status { {line ""} {pc ""}} {
 	set message "Program is ready to run."
       }
     } else {
-      set message "Program not running. Click on run icon to start."
+      set message "No program loaded."
     }
   } else {
-
-    # gdb_target_has_execution has returned true, so we must be running.
-    #
-    # This can cause problems on targets which do not set inferior_pid.
-    # Although this is bogus, much of gdb (and gdbtk) relies on
-    # gdb_target_has_execution (and thus inferior_pid), so we should
-    # not try to second guess it and fix those targets which do not set
-    # inferior_pid when opened.
-    set gdb_running 1
-
+    if {!$gdb_running} {
+      set gdb_running 1
+    }
+    
     # only do a gdb_loc if we have to
     if {$line == "" && $pc == ""} {
       if {[catch {gdb_loc} loc] == 0} {
@@ -625,7 +599,7 @@ body SrcWin::set_execution_status { {line ""} {pc ""}} {
 	  set message "Program stopped."
 	}
       } else {
-	set message [gdb_cmd "printf \"Program stopped at %lx\",$pc"]
+	set message [format "Program stopped at %\#08x" $pc]
       }
     } else {
       if {$Tracing} {
@@ -634,9 +608,9 @@ body SrcWin::set_execution_status { {line ""} {pc ""}} {
 	set msg "Program stopped"
       }
       switch [$twin mode_get] {
-	ASSEMBLY {set message [gdb_cmd "printf \"$msg at 0x%lx\",$pc"] }
-	MIXED {set message [gdb_cmd "printf \"$msg at line $line, 0x%lx\",$pc"] }
-	SRC+ASM {set message [gdb_cmd "printf \"$msg at line $line, 0x%lx\",$pc"] }
+	ASSEMBLY {set message [format "$msg at %\#08x" $pc] }
+	MIXED {set message [format "$msg at line $line, %\#08x" $pc] }
+	SRC+ASM {set message [format "$msg at line $line, %\#08x" $pc] }
 	default {set message "$msg at line $line" }
       }
     }
@@ -765,11 +739,11 @@ body SrcWin::point_to_main {} {
   # We need to force this to some default location. Assume main and
   # if that fails, let the source window guess (via gdb_loc using stop_pc).
   set src [lindex [ManagedWin::find SrcWin] 0]
-  if {[set linespec [gdbtk_locate_main]] == ""} {
+  if {[catch {gdb_loc main} loc]} {
     gdbtk_update
     debug "could not find main"
   } else {
-    $src location BROWSE_TAG [list $linespec]
+    $src location BROWSE_TAG [list $loc]
   }
 }
 
@@ -790,81 +764,4 @@ body SrcWin::test_get {var {private_func 0}} {
     return [code $this $var]
   }
   return [set $var]
-}
-
-# ------------------------------------------------------------------
-#  PUBLIC METHOD: toolbar - configure the toolbar's "state"
-# ------------------------------------------------------------------
-#
-#  This method is used to configure the toolbar's running state.
-#  Valid states include anything that the "runtest" variable of
-#  the GDBSrcBar may accept. Specifically,
-#
-#  busy        - Run button becomes disabled
-#  running     - Stop button appears, allowing user to stop executing target
-#  downloading - Stop button appears, allowing user to interrupt downloading
-#  normal      - Run button appears, allowing user to run/re-run exe
-body SrcWin::toolbar {state} {
-  $_toolbar configure -runstop $state
-}
-
-# ------------------------------------------------------------------
-#  METHOD:  inferior - change execution state of inferior
-# ------------------------------------------------------------------
-#
-# ACTION may be:
-#   step       -  step the inferior one source line (stepping into functions)
-#   next       -  step the inferior one source line (stepping over functions)
-#   finish     -  finish the current frame of execution
-#   continue   -  continue executing the inferior
-#   stepi      -  step one machine instruction (stepping into calls)
-#   nexti      -  step one machine instruction (stepping over calls)
-#   run        -  run/re-run the inferior
-#   stop       -  stop or detach from target
-#
-# FIXME: This should really be in an object which describes gdb's state.
-# Unfortunately, this doesn't exist, so it's here for now.
-body SrcWin::inferior {action} {
-
-  switch $action {
-    step { gdbtk_step }
-
-    next { gdbtk_next }
-
-    finish { gdbtk_finish }
-
-    continue { gdbtk_continue }
-
-    stepi { gdbtk_stepi }
-
-    nexti { gdbtk_nexti }
-
-    run { gdbtk_run }
-
-    stop { gdbtk_stop }
-  }
-}
-
-# ------------------------------------------------------------------
-#  METHOD:  clear_file
-#  Tasks for SrcWin to clear file:
-#
-# - clear window
-# - reset to src mode
-# - clear func/file comboboxes
-# - clear status (done by no_inferior)
-# - allow SrcTextWin to clear_file
-# ------------------------------------------------------------------
-body SrcWin::clear_file {} {
-
-  # Reset to Source mode
-  if {[$twin mode_get] != "SOURCE"} {
-    mode {} SOURCE
-  }
-
-  no_inferior
-  reset
-
-  # run srctextwin clear_file
-  $twin clear_file
 }

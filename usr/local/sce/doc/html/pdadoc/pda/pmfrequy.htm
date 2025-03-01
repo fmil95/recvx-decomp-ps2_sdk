@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<!-- 関数名 -->
+<TITLE>
+    PMFrequency
+</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="100%">
+<TD ALIGN="left">
+<A HREF="pdaspec1.htm">PDA仕様書 </A>
+</TD><TD ALIGN="center">
+<ADDRESS><A HREF="../pda/index.htm">PDA </A></ADDRESS>
+</TD><TD ALIGN="right">
+<A HREF="pdaspec3.htm">デバイスレジスタ一覧</A>
+</TD></TABLE>
+<HR NOSHADE SIZE="8">
+
+<H1>
+    PMFrequency
+<HR SIZE="5">
+</H1>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        システムクロック周波数レジスタ
+</DIV><P>
+</PRE>
+</blockquote>
+
+<!-- アクセス型 -->
+<B>アクセス型</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+<PRE>Read/Write
+</PRE>
+</blockquote>
+
+<!-- リセット値 -->
+<B>リセット値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0x00000000 <BR>
+<BR>
+</blockquote>
+
+<!-- 機能 -->
+<B>機能</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このレジスタは、システムクロックを管理するためのビットスイッチを内蔵する。 <BR>
+<BR>
+</blockquote>
+
+<!-- ビット詳細 -->
+<B>ビット詳細</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    <B>第０．．３ビット</B> <BR>
+    ビット名称：FREQ(Clock FREQuency) <BR>
+    ビット機能：このビットにより、クロック周波数を選択する。 <BR>
+    ビット値：0：32.768KHz(デフォルト値) <BR>
+    ：1：62.5KHz(63.488KHz) <BR>
+    ：2：125KHz(126.976KHz) <BR>
+    ：3：250KHz(253.952KHz) <BR>
+    ：4：500KHz(507.904KHz) <BR>
+    ：5：1MHz(1.015808MHz) <BR>
+    ：6：2MHz(1.998848MHz) <BR>
+    <blockquote>
+    	：7：4MHz(3.9977MHz) <BR>
+    </blockquote>
+    <blockquote>
+    	：8以上： 8MHz(7.9954Hz) <BR>
+    </blockquote>
+    <B>第4ビット</B> <BR>
+    ビット名称：LOCK(PLL LOCK bit status) <BR>
+    ビット機能：このビットは読み出し専用である。 <BR>
+    リード値：0：PLLがロックされていない。 <BR>
+    <blockquote>
+    	：1：PLLがロックされている。 <BR>
+    </blockquote>
+<BR>
+</blockquote>
+<HR>
+<DIV ALIGN="right">
+<ADDRESS>
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.
+</ADDRESS>
+</DIV>
+</BODY>
+</HTML>

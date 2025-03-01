@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Controller Library
@@ -12,16 +12,13 @@
  *                       libpad - libpad.h
  *                     header file of libpad
  *
- *      Version    Date        Design   Log
+ *       Version        Date            Design      Log
  *  --------------------------------------------------------------------
- *      0.00       1999- 7-28  makoto   the first version
- *      1.10       1999-10-15  iwano    remove sce Prefix
- *      1.20       1999-11-22           added scePrefix
- *      1.30       1999-12-14           support cplus
- *      1.31       1999-12-20           cplus native support
- *      2.00       2000-08-15           remove "scePadStateFindCTP2"
- *      2.10       2000-10-18           added scePadStateClosed
- *      2.324      2001-07-25           added scePadInitGun()/EndGun()
+ *      0.00          1999- 7-28        makoto      the first version
+ *      1.10          1999-10-15        iwano       remove sce Prefix
+ *      1.20          1999-11-22                    Added scePrefix
+ *      1.30          1999-12-14                    support cplus
+ *      1.31          1999-12-20                    cplus native support
  */
 
 #ifndef _LIBPAD_H_
@@ -56,10 +53,10 @@
 #define scePadStateDiscon	(0)
 #define scePadStateFindPad	(1)
 #define scePadStateFindCTP1	(2)
+#define scePadStateFindCTP2	(3)
 #define scePadStateExecCmd	(5)
 #define scePadStateStable	(6)
 #define scePadStateError	(7)
-#define scePadStateClosed	( 99 )
 
 #define scePadReqStateComplete	(0)
 #define scePadReqStateFaild	(1)
@@ -102,9 +99,6 @@ void scePadStateIntToStr(int state, char* str);
 int scePadEnd(void);
 int scePadPortClose( int port, int slot );
 int scePadGetSlotMax( int port );
-int scePadSetWarningLevel(int level);
-int scePadInitGun(int mode);
-int scePadEndGun(void);
 
 #if defined(__LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
 }

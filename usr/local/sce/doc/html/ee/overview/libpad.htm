@@ -1,0 +1,601 @@
+<HTML>
+<HEAD>
+<TITLE> コントローラライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libpad.htm" SELECTED> コントローラライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+コントローラライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 使用手順<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 基本的な使用手順<BR></A><BR>
+    <A HREF="#Heading4_2_2"> ポート / スロット<BR></A><BR>
+    <A HREF="#Heading4_2_3"> サンプルソースコード<BR></A><BR>
+    <A HREF="#Heading4_2_4"> マルチタップの使用手順<BR></A><BR>
+    <A HREF="#Heading4_2_5"> アナログコントローラ(DUALSHOCK 2)感圧モードの使用手順<BR></A><BR>
+    <A HREF="#Heading4_2_6"> アクチュエータ操作の手順<BR></A><BR>
+    <A HREF="#Heading4_2_7"> スレッドプライオリティの変更手順<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 ライブラリの動作<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> コントローラデータの読み取りタイミング<BR></A><BR>
+    <A HREF="#Heading4_3_2"> 非同期処理<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> 動作環境<BR></A><BR>
+    <A HREF="#Heading4_4_2"> ガンコントローラについて<BR></A><BR>
+    <A HREF="#Heading4_4_3"> RPC再入に関する注意<BR></A><BR>
+    <A HREF="#Heading4_4_4"> 出力メッセージについて<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libpadは、EE上で利用するコントローラ制御ライブラリで、主な機能は次のとおりです。<BR>
+    <OL>
+         <LI VALUE= 1> ボタンデータの取得<BR>
+         <LI VALUE= 2> コントローラモードの変更<BR>
+         <LI VALUE= 3> アクチュエータの操作（振動）<BR>
+    </OL>
+    マルチタップライブラリ（libmtap）と併用することにより、マルチタップを介して接続されたコントローラを制御することができます。<BR>
+    現在のバージョンでは、"PlayStation 2" / PlayStation用コントローラのうち、以下のものに対応しています。<BR>
+    <OL>
+         <LI VALUE= 1> デジタルコントローラ（ID=4）<BR>
+         <LI VALUE= 2> DUALSHOCK,アナログコントローラ(DUALSHOCK 2)（ID=7）<BR>
+         <LI VALUE= 3> ネジコン（ID=2）<BR>
+         <LI VALUE= 4> アナログジョイスティック（ID=5）<BR>
+         <LI VALUE= 5> ナムコ製ガンコントローラ（ID=6）<BR>
+         <LI VALUE= 6> ジョグコン,釣りコン（拡張ID）<BR>
+    </OL>
+    対応コントローラは順次追加され、将来的にはほぼすべての"PlayStation 2" / PlayStation用コントローラに対応する予定です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libpadを使用するために必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libpad.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libpad.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOPモジュールファイル</TD>
+<TD valign="TOP">sio2man.irx<BR>padman.irx<BR>mtapman.irx（マルチタップ使用時）</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    IOPモジュールは、EE側プログラムの起動時にsceSifLoadModule()を用いてロードしてください。<BR>
+    また、リンクするライブラリを指定するため、各Makefile中でリンクオプションに「-lpad」を追加してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libpadのサンプルプログラムとして以下のものがありますので、適宜参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1">
+(1) <B>sce/ee/sample/pad/basic</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コントローラライブラリの基本的な使用例。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_2">
+(2) <B>sce/ee/sample/pad/dual2</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      アナログコントローラ(DUALSHOCK 2)の感圧機能を利用したサンプル。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_3">
+(3) <B>sce/ee/sample/pad/mtap</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      マルチタップライブラリを併用し、マルチタップに接続された最大４つのコントローラと通信を行うサンプル。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_4">
+(4) <B>sce/ee/sample/pad/gun</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ガンコントローラを使用したサンプル。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>使用手順</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>基本的な使用手順</B>
+</A>
+</H3>
+<blockquote>
+    libpadを使用してコントローラを操作する基本的な手順は次のとおりです。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_1">
+(1) <B>IOPモジュールのロード</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      sceSifLoadModule()を使用して、sio2man.irxをロード後、padman.irxをロードします。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_2">
+(2) <B>ライブラリの初期化</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      scePadInit()を呼び出して、コントローラライブラリを初期化します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_3">
+(3) <B>コントローラポートのオープン</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      scePadPortOpen()を呼び出して、使用するコントローラポートを宣言します。パラメータにはポート番号、スロット番号（通常は0）と作業用バッファへのポインタを指定します。<BR>
+      作業用バッファはIOPからのDMA転送に使われる領域で、キャッシュの関係上64バイトアラインメントで確保しておく必要があります。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_4">
+(4) <B>ボタン情報取得</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コントローラポートをオープンすると、ライブラリは自動的にコントローラとの通信を開始します。コントローラが通常状態になれば、scePadRead()を使用してコントローラのボタン情報を取得することができます。コントローラが通常状態かどうかを調べるにはscePadGetState()を使用します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1_5">
+(5) <B>終了処理</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コントローラとの通信が不要となった場合はscePadPortClose()を呼び出してすべてのコントローラポートをクローズし、scePadEnd()を呼び出します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>ポート / スロット</B>
+</A>
+</H3>
+<blockquote>
+    libpadの多くの関数には、通信対象のコントローラを指定するためにportとslotの2つの引数が設けられています。portは"PlayStation 2"本体のコントローラ端子を、slotはマルチタップのコントローラ端子を指定するための引数です。本体に直接接続されたコントローラを操作するときは、portに適切なポート番号を指定し、slotには0を指定します。マルチタップを介して接続されたコントローラを操作するときは、portとslotをそれぞれ適切に指定します。次の図は、本体のコントローラ端子2にマルチタップが接続されている場合のポート番号・スロット番号を示します。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/padn1.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>サンプルソースコード</B>
+</A>
+</H3>
+<blockquote>
+<PRE>        main()
+        {
+            unsigned char rdata[32];
+            u_long128 pad_dma_buff[scePadDmaBufferMax] __attribute__((aligned(64)));
+        
+            scePadInit();
+            scePadPortOpen(0, 0, pad_dma_buff);
+            while(1) {
+                scePadRead(0,0,rdata);
+                .
+                .
+                .
+            }
+            scePadPortClose(0,0);
+            scePadEnd();
+        }
+</PRE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>マルチタップの使用手順</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"用マルチタップを使用する場合はマルチタップライブラリ（libmtap）を併用する必要があります。手順の詳細はマルチタップライブラリのドキュメントを参照してください。<BR>
+    マルチタップを使用する場合は、libpadの多くの関数に用意されている引数slotを使用します。マルチタップライブラリを適切に初期化することにより、引数slotでスロット番号を指定して、マルチタップに接続されたコントローラを扱うことができるようになります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>アナログコントローラ(DUALSHOCK 2)感圧モードの使用手順</B>
+</A>
+</H3>
+<blockquote>
+    アナログコントローラ(DUALSHOCK 2)は、アナログコントローラ(DUALSHOCK)に感圧機能が加えられたコントローラです。アナログコントローラ(DUALSHOCK 2)の感圧機能を使用するには、以下の手順により感圧モードに移行する必要があります。<BR>
+    <OL>
+         <LI VALUE= 1> scePadSetMainMode()でアナログモードに移行する。<BR>
+         <LI VALUE= 2> scePadInfoPressMode()を呼び出し、コントローラがアナログコントローラ(DUALSHOCK 2)であることを確認する<BR>
+         <LI VALUE= 3> scePadEnterPressMode()を呼び出して感圧モードに移行する<BR>
+    </OL>
+    感圧モードではコントローラのボタン情報に感圧レベルのデータが追加されます。追加される感圧レベルデータ以外はアナログコントローラ(DUALSHOCK)と同等で、コントローラモードIDは0x79に変わります。<BR>
+    感圧レベルはボタンごとに8ビットの値で表され、強く押されるほど数値が大きくなります。0は押されていない状態ですので、押された強さは１から255までの255段階です。<BR>
+    感圧モードから抜けるにはscePadExitPressMode()を使用します。<BR>
+    感圧モード時にコントローラのANALOGモードスイッチが押された場合、（ロックしていなければ）デジタルモードに移行します。もう一度ANALOGモードスイッチが押されたときには、感圧モードではなくDUALSHOCKのアナログモードになりますので注意してください。感圧モードに移行するには再度scePadEnterPressMode()を呼び出す必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>アクチュエータ操作の手順</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> scePadSetActAlign()でalgin情報を設定する。<BR>
+         <LI VALUE= 2> scePadSetActDirect()で、振動値をコントローラに送信する。<BR>
+    </OL>
+        <BLOCKQUOTE><UL>
+        振動値と回転数の関係は、以下のとおりです。<BR>
+        <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">小モータ</TD>
+<TD valign="TOP">0 = 停止, 1 = 回転</TD>
+</TR>
+<TR>
+<TD valign="TOP">大モータ</TD>
+<TD valign="TOP">0～255  数値が大きいほど回転が速い</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+        </BLOCKQUOTE></UL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>スレッドプライオリティの変更手順</B>
+</A>
+</H3>
+<blockquote>
+    padmanが使用するスレッドプライオリティはHighとLowの2種類があります。<BR>
+    デフォルト値は High = 20, Low = 46 となっています。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>種類</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>プライオリティ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>処理内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">High</TD>
+<TD valign="TOP">20</TD>
+<TD valign="TOP">コントローラとの通信処理</TD>
+</TR>
+<TR>
+<TD valign="TOP">Low</TD>
+<TD valign="TOP">46</TD>
+<TD valign="TOP">その他の処理</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    スレッドプライオリティを上記のデフォルト値以外に設定したい場合はsceSifLoadModule()でpadman.irxをロードする際に、第3引数で指定することができます。次に示すのは、High = 32, Low = 34と設定する例です。<BR>
+    <BR>
+<PRE>        char* mes = "thpri=32,34";
+        sceSifLoadModule( "host0:/usr/local/sce/iop/modules/padman.irx", strlen(mes)+1, mes );
+</PRE>
+    <BR>
+    同様にsio2man.irxでも、起動時にスレッドプライオリティを指定できるようになりました。<BR>
+    <BR>
+    注意：<BR>
+    padman.irx, sio2man.irxの動作中にスレッドプラオリティを変更する機能は追加する予定はありません。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>ライブラリの動作</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>コントローラデータの読み取りタイミング</B>
+</A>
+</H3>
+<blockquote>
+    コントローラライブラリの主な処理、つまりコントローラとの通信は、IOP上のpadman.irxによって自動的に行われます。通信は１フレームに１回、VBlank割り込みによって行われ、通信結果はそのつどEE側のメインメモリにDMAで送られ、scePadRead()などの関数で取得することができます。つまり、EE側で動作するアプリケーションは任意のタイミングでlibpadの関数を呼び出してコントローラのデータを読むことができますが、そのデータは最大で1Vsync前の状態を表していることになります。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/padn2.gif">
+<P>
+    <BR>
+    コントローラと通信を行うタイミングは、将来アプリケーションから自由に設定できるように機能拡張される予定です。ただ、同じコントローラに対して通信する間隔は、最小で１フレームほど必要です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>非同期処理</B>
+</A>
+</H3>
+<blockquote>
+    コントローラのモード設定を行うscePadSetMainMode()など、コントローラ側の処理に数フレームの時間を要する以下の関数は非同期関数として実装されています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadSetMainMode</TD>
+<TD valign="TOP">コントローラモードの切り替え／ロック</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadSetActAlign</TD>
+<TD valign="TOP">アクチュエータパラメータの内容設定</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadEnterPressMode</TD>
+<TD valign="TOP">感圧モードへの移行</TD>
+</TR>
+<TR>
+<TD valign="TOP">scePadExitPressMode</TD>
+<TD valign="TOP">感圧モードからの抜け出し</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    これらの関数を呼び出すと直ちにリターンしますが、処理の終了はscePadGetState()またはscePadGetReqState()で調べる必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>動作環境</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> libpadは、開発ツールDTL-T10000で動作が確認されています。これ以外の開発機材（EB-2000など）では動作しません。<BR>
+         <LI VALUE= 2> libpadと、fileio.irxモジュールが提供するsceOpen()で使用するpad/padsドライバとは共存できません。これらのドライバは実行しないでください。また、これらのドライバを使用する場合はpadman.irxをロードしないようにしてください。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_2">
+<A HREF="#Heading3_4"> 4. </A>2 <B>ガンコントローラについて</B>
+</A>
+</H3>
+<blockquote>
+    ガンコントローラに対応したアプリケーションを作成する場合は、IOP側の負荷に注意してください。ガンコントローラはその特性上、VBLANK期間内に通信処理を完了しなければなりませんが、IOPで動作するスレッドの負荷状態によってはコントローラモジュール（padman.irx）の処理が遅れ、VBLANK内で通信を終えることができず、座標情報が正しく取得できない場合があります。<BR>
+    また、ガンコントローラをマルチタップに複数接続することはできません。ガンコントローラを使用する場合は本体の1P / 2Pまたはマルチタップの1-A、2-Aに接続しなければなりません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_3">
+<A HREF="#Heading3_4"> 4. </A>3 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    libpadの関数はSIF RPCを使用しているため、複数のスレッドで利用する場合はRPC再入を起さないように注意が必要です。RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_1">
+(1) <B>RPC WAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> scePadEnd()<BR>
+         <LI> scePadEnterPressMode()<BR>
+         <LI> scePadExitPressMode()<BR>
+         <LI> scePadGetSlotMax()<BR>
+         <LI> scePadInfoPressMode()<BR>
+         <LI> scePadInit()<BR>
+         <LI> scePadPortClose()<BR>
+         <LI> scePadPortOpen()<BR>
+         <LI> scePadSetActAlign()<BR>
+         <LI> scePadSetActDirect()<BR>
+         <LI> scePadSetMainMode()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_4_3_2">
+(2) <B>非RPC関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()を使用しません。RPC再入を考慮することなく使用できます（関数自体が再入可能という意味ではありません）。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> scePadGetReqState()<BR>
+         <LI> scePadGetState()<BR>
+         <LI> scePadInfoAct()<BR>
+         <LI> scePadInfoComb()<BR>
+         <LI> scePadInfoMode()<BR>
+         <LI> scePadRead()<BR>
+         <LI> scePadReqIntToStr()<BR>
+         <LI> scePadStateIntToStr()<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_4">
+<A HREF="#Heading3_4"> 4. </A>4 <B>出力メッセージについて</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>"padman: DMA Busy"</B></H4>
+
+      <BLOCKQUOTE>
+      padmanが "padman: DMA Busy" というメッセージを出力する事があります。この場合、以下の2通りの可能性が考えられます。<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> SIFDMA(またはDMAC全体)が無反応になっている<BR>この現象は、描画処理などで Dn_CHCR.STR を落としてDMAを停止しているような場合にまれに発生します。<BR>回避策としては、Dn_CHCR.STRビットを操作する前に、D_ENABLEWによって一度全DMAを一時停止し、Dn_CHCR.STR を落とした後に、DMAを再開することで回避可能です。<BR>
+         <LI VALUE= 2> EEが停止している<BR>EEプロセッサが致命的エラーなどでHaltした場合も IOP からの SIFDMAが処理されず、エラーメッセージが出力されるようになります。<BR>また、まれに dsedb 側の CTRL-Cにより、プログラムを中止した場合にも、表示されるときがあります。<BR>
+    </OL>
+
+     <H4><B>"PADMAN: *** VBLANK OVERLAP ***"</B></H4>
+
+      <BLOCKQUOTE>
+      padmanが "PADMAN: *** VBLANK OVERLAP ***" というメッセージを出力する事があります。<BR>
+      これは、コントローラとの通信が1フレーム中に完結できなかったときに表示されます。<BR>
+      具体的には、padman以外のスレッド負荷によって padman のスレッドが動けない状態が続き、1フレーム中に行うべき処理を行えなかったときに表示されます。<BR>
+      この場合、padmanは次のフレームにまたがって処理を続けます。その結果、この表示の出たフレームは、EE側のボタン情報等が更新されなくなり、scePadRead()は前回のボタン情報を返します。<BR>
+      コントローラのレスポンスがゲーム性に著しい影響をあたえるようなタイトルでは、padmanよりも高いプライオリティで動作している、スレッドの負荷を軽減し、padmanの処理の足かせとならないように改善する必要があります。<BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

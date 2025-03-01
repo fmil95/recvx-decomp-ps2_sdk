@@ -6,8 +6,7 @@ else
 include PathDefs
 endif
 
-TOPDIR = /usr/local/sce
-INCOPT = -I$(TOPDIR)/common/include -I$(TOPDIR)/iop/include
+INCOPT = -I../../../../common/include -I../../../include
 
 CFLAGS  = $(INCOPT) -I. -Wall -G0 -g
 ASFLAGS = $(INCOPT) -G0
@@ -30,7 +29,7 @@ clean:
 
 $(PROGNAME).irx: $(OBJS)
 	$(LINK.o)  -o $@ \
-		$(OBJS) -L$(TOPDIR)/iop/lib -L./  -ilb=libsd.ilb $(ILIBS)
+		$(OBJS) -L../../../lib -L./  -ilb=libsd.ilb  -ilb=cdvdman.ilb  $(ILIBS)
 
 entry.o:	ezadpcm.h
 command.o:	ezadpcm.h

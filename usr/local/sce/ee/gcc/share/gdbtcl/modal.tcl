@@ -1,17 +1,5 @@
-# Modal dialog class for GDBtk.
-# Copyright 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# ModalDialog
 # ----------------------------------------------------------------------
 # Implements the post and unpost behavior of a Modal Dialog.
 #
@@ -22,11 +10,15 @@
 # active application to the foreground (Doh!).
 #
 # ----------------------------------------------------------------------
+#   AUTHOR:  Jim Ingham <jingham@cygnus.com>
+#   Copyright (C) 1998 Cygnus Solutions
+#
 
 class ModalDialog {
+
   # This is the variable we vwait on when the dialog is posted.  
   # It is set to 1 in the unpost method, and to -1 in the destructor.
-  
+
   private variable unpost_notification 0
 
   destructor {
@@ -70,16 +62,7 @@ class ModalDialog {
     focus $top
     grab set $top
  
-    if {$expire > 0} {
-      set afterID [after $expire [code $this cancel]]
-    }
-
     vwait [scope unpost_notification]
-
-    if {$afterID != ""} {
-      after cancel $afterID
-      set afterID ""
-    }
 
     grab release $top
  
@@ -98,8 +81,4 @@ class ModalDialog {
       ::delete object $this
     } 
   }
-
-  public variable expire -1 ;# If this is set to a number > 0, the
-                             # dialog will time out after this interval.
-  private variable afterID ""; # The id for the expiration after event.
 }

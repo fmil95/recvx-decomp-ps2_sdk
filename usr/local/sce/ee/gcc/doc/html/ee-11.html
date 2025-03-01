@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Compile, Assemble and Link Sample Code</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Compile, Assemble and Link Sample Code</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-10.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-12.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-475106"></A><A NAME="marker-513888"></A>Compile, Assemble and <A NAME="marker-513889"></A>Link Sample Code</H2>
+<P CLASS="Body">
+<A NAME="pgfId-475107"></A>Throughout these examples, screen samples are shown with a gray background. Code input is shown in plain monofont. Code output is shown in bold monofont. All samples are displayed in UNIX format. The UNIX command prompt is shown as <STRONG CLASS="CodeOutput">
+%</STRONG>
+. On Win32 systems, the samples are exactly the same, but the command prompt is shown as <STRONG CLASS="CodeOutput">
+C:&#92;&gt;</STRONG>
+.</P>
+<P CLASS="Body">
+<A NAME="pgfId-474936"></A>To <A NAME="marker-474900"></A>compile, assemble and link this example for the simulator, enter the following command:</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-513898"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+ee</TT>
+-gcc -g -c sky_main.c -o sky_main.o</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-513899"></A><STRONG CLASS="CodeOutput">
+% </STRONG>
+<TT CLASS="Code">
+dvp-elf-as sky_test.dvpasm -o sky_test.o</TT>
+</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-515003"></A><STRONG CLASS="CodeOutput">
+% </STRONG>
+<TT CLASS="Code">
+dvp-elf-as sky_refresh.s -o sky_refresh.o</TT>
+</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-515007"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ <TT CLASS="Code">
+ee</TT>
+-gcc -g -Tsky.ld sky_main.o &#92;</P>
+<P CLASS="CodeExample">
+<A NAME="pgfId-515008"></A>sky_test.o sky_refresh.o -o sky_main.exe</P>
+<P CLASS="Body">
+<A NAME="pgfId-476033"></A><STRONG CLASS="CodeOutput">
+</STRONG>
+You must specify a linker script (for example, <TT CLASS="Code">
+sky.ld</TT>
+). The <TT CLASS="Code">
+-T</TT>
+ option specifies the linker script. The syntax requires that there be no space between the <TT CLASS="Code">
+-T </TT>
+and the linker script name.</P>
+<P CLASS="Body">
+<A NAME="pgfId-513910"></A>The option <TT CLASS="Code">
+-g </TT>
+generates debugging information and the option <TT CLASS="Code">
+-o </TT>
+specifies the name of the executable to be produced. Other useful options include, <TT CLASS="Code">
+-O </TT>
+for standard optimization, and <TT CLASS="Code">
+-O2 </TT>
+for extensive optimization. When no optimization option is specified, GCC will perform no optimizations on the code. Refer to &quot;GNU CC Command Options&quot; in <EM CLASS="Emphasis">
+Using GNU CC</EM>
+ in <STRONG CLASS="BoldEmphasis">
+GNUPro Compiler Tools</STRONG>
+ for a complete list of available options.</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Compile, Assemble and Link Sample Code</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-10.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-12.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

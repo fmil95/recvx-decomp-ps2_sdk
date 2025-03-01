@@ -47,232 +47,6 @@ in the `REGISTER_NAME' and related macros.
    GDB can handle big-endian, little-endian, and bi-endian
 architectures.
 
-Pointers Are Not Always Addresses
-=================================
-
-   On almost all 32-bit architectures, the representation of a pointer
-is indistinguishable from the representation of some fixed-length number
-whose value is the byte address of the object pointed to.  On such
-machines, the words `pointer' and `address' can be used interchangeably.
-However, architectures with smaller word sizes are often cramped for
-address space, so they may choose a pointer representation that breaks
-this identity, and allows a larger code address space.
-
-   For example, the Mitsubishi D10V is a 16-bit VLIW processor whose
-instructions are 32 bits long(1).  If the D10V used ordinary byte
-addresses to refer to code locations, then the processor would only be
-able to address 64kb of instructions.  However, since instructions must
-be aligned on four-byte boundaries, the low two bits of any valid
-instruction's byte address are always zero -- byte addresses waste two
-bits.  So instead of byte addresses, the D10V uses word addresses --
-byte addresses shifted right two bits -- to refer to code.  Thus, the
-D10V can use 16-bit words to address 256kb of code space.
-
-   However, this means that code pointers and data pointers have
-different forms on the D10V.  The 16-bit word `0xC020' refers to byte
-address `0xC020' when used as a data address, but refers to byte address
-`0x30080' when used as a code address.
-
-   (The D10V also uses separate code and data address spaces, which also
-affects the correspondence between pointers and addresses, but we're
-going to ignore that here; this example is already too long.)
-
-   To cope with architectures like this -- the D10V is not the only one!
--- GDB tries to distinguish between "addresses", which are byte
-numbers, and "pointers", which are the target's representation of an
-address of a particular type of data.  In the example above, `0xC020'
-is the pointer, which refers to one of the addresses `0xC020' or
-`0x30080', depending on the type imposed upon it.  GDB provides
-functions for turning a pointer into an address and vice versa, in the
-appropriate way for the current architecture.
-
-   Unfortunately, since addresses and pointers are identical on almost
-all processors, this distinction tends to bit-rot pretty quickly.  Thus,
-each time you port GDB to an architecture which does distinguish
-between pointers and addresses, you'll probably need to clean up some
-architecture-independent code.
-
-   Here are functions which convert between pointers and addresses:
-
- - Function: CORE_ADDR extract_typed_address (void *BUF, struct type
-          *TYPE)
-     Treat the bytes at BUF as a pointer or reference of type TYPE, and
-     return the address it represents, in a manner appropriate for the
-     current architecture.  This yields an address GDB can use to read
-     target memory, disassemble, etc.  Note that BUF refers to a buffer
-     in GDB's memory, not the inferior's.
-
-     For example, if the current architecture is the Intel x86, this
-     function extracts a little-endian integer of the appropriate
-     length from BUF and returns it.  However, if the current
-     architecture is the D10V, this function will return a 16-bit
-     integer extracted from BUF, multiplied by four if TYPE is a
-     pointer to a function.
-
-     If TYPE is not a pointer or reference type, then this function
-     will signal an internal error.
-
- - Function: CORE_ADDR store_typed_address (void *BUF, struct type
-          *TYPE, CORE_ADDR ADDR)
-     Store the address ADDR in BUF, in the proper format for a pointer
-     of type TYPE in the current architecture.  Note that BUF refers to
-     a buffer in GDB's memory, not the inferior's.
-
-     For example, if the current architecture is the Intel x86, this
-     function stores ADDR unmodified as a little-endian integer of the
-     appropriate length in BUF.  However, if the current architecture
-     is the D10V, this function divides ADDR by four if TYPE is a
-     pointer to a function, and then stores it in BUF.
-
-     If TYPE is not a pointer or reference type, then this function
-     will signal an internal error.
-
- - Function: CORE_ADDR value_as_pointer (value_ptr VAL)
-     Assuming that VAL is a pointer, return the address it represents,
-     as appropriate for the current architecture.
-
-     This function actually works on integral values, as well as
-     pointers.  For pointers, it performs architecture-specific
-     conversions as described above for `extract_typed_address'.
-
- - Function: CORE_ADDR value_from_pointer (struct type *TYPE, CORE_ADDR
-          ADDR)
-     Create and return a value representing a pointer of type TYPE to
-     the address ADDR, as appropriate for the current architecture.
-     This function performs architecture-specific conversions as
-     described above for `store_typed_address'.
-
-   GDB also provides functions that do the same tasks, but assume that
-pointers are simply byte addresses; they aren't sensitive to the
-current architecture, beyond knowing the appropriate endianness.
-
- - Function: CORE_ADDR extract_address (void *ADDR, int len)
-     Extract a LEN-byte number from ADDR in the appropriate endianness
-     for the current architecture, and return it.  Note that ADDR
-     refers to GDB's memory, not the inferior's.
-
-     This function should only be used in architecture-specific code; it
-     doesn't have enough information to turn bits into a true address
-     in the appropriate way for the current architecture.  If you can,
-     use `extract_typed_address' instead.
-
- - Function: void store_address (void *ADDR, int LEN, LONGEST VAL)
-     Store VAL at ADDR as a LEN-byte integer, in the appropriate
-     endianness for the current architecture.  Note that ADDR refers to
-     a buffer in GDB's memory, not the inferior's.
-
-     This function should only be used in architecture-specific code; it
-     doesn't have enough information to turn a true address into bits
-     in the appropriate way for the current architecture.  If you can,
-     use `store_typed_address' instead.
-
-   Here are some macros which architectures can define to indicate the
-relationship between pointers and addresses.  These have default
-definitions, appropriate for architectures on which all pointers are
-simple byte addresses.
-
- - Target Macro: CORE_ADDR POINTER_TO_ADDRESS (struct type *TYPE, char
-          *BUF)
-     Assume that BUF holds a pointer of type TYPE, in the appropriate
-     format for the current architecture.  Return the byte address the
-     pointer refers to.
-
-     This function may safely assume that TYPE is either a pointer or a
-     C++ reference type.
-
- - Target Macro: void ADDRESS_TO_POINTER (struct type *TYPE, char *BUF,
-          CORE_ADDR ADDR)
-     Store in BUF a pointer of type TYPE representing the address ADDR,
-     in the appropriate format for the current architecture.
-
-     This function may safely assume that TYPE is either a pointer or a
-     C++ reference type.
-
-Using Different Register and Memory Data Representations
-========================================================
-
-   Some architectures use one representation for a value when it lives
-in a register, but use a different representation when it lives in
-memory.  In GDB's terminology, the "raw" representation is the one used
-in the target registers, and the "virtual" representation is the one
-used in memory, and within GDB `struct value' objects.
-
-   For almost all data types on almost all architectures, the virtual
-and raw representations are identical, and no special handling is
-needed.  However, they do occasionally differ.  For example:
-
-   * The x86 architecture supports an 80-bit long double type.
-     However, when we store those values in memory, they occupy twelve
-     bytes: the floating-point number occupies the first ten, and the
-     final two bytes are unused.  This keeps the values aligned on
-     four-byte boundaries, allowing more efficient access.  Thus, the
-     x86 80-bit floating-point type is the raw representation, and the
-     twelve-byte loosely-packed arrangement is the virtual
-     representation.
-
-   * Some 64-bit MIPS targets present 32-bit registers to GDB as 64-bit
-     registers, with garbage in their upper bits.  GDB ignores the top
-     32 bits.  Thus, the 64-bit form, with garbage in the upper 32
-     bits, is the raw representation, and the trimmed 32-bit
-     representation is the virtual representation.
-
-   In general, the raw representation is determined by the
-architecture, or GDB's interface to the architecture, while the virtual
-representation can be chosen for GDB's convenience.  GDB's register
-file, `registers', holds the register contents in raw format, and the
-GDB remote protocol transmits register values in raw format.
-
-   Your architecture may define the following macros to request raw /
-virtual conversions:
-
- - Target Macro: int REGISTER_CONVERTIBLE (int REG)
-     Return non-zero if register number REG's value needs different raw
-     and virtual formats.
-
-     You should not use `REGISTER_CONVERT_TO_VIRTUAL' for a register
-     unless this macro returns a non-zero value for that register.
-
- - Target Macro: int REGISTER_RAW_SIZE (int REG)
-     The size of register number REG's raw value.  This is the number
-     of bytes the register will occupy in `registers', or in a GDB
-     remote protocol packet.
-
- - Target Macro: int REGISTER_VIRTUAL_SIZE (int REG)
-     The size of register number REG's value, in its virtual format.
-     This is the size a `struct value''s buffer will have, holding that
-     register's value.
-
- - Target Macro: struct type *REGISTER_VIRTUAL_TYPE (int REG)
-     This is the type of the virtual representation of register number
-     REG.  Note that there is no need for a macro giving a type for the
-     register's raw form; once the register's value has been obtained,
-     GDB always uses the virtual form.
-
- - Target Macro: void REGISTER_CONVERT_TO_VIRTUAL (int REG, struct type
-          *TYPE, char *FROM, char *TO)
-     Convert the value of register number REG to TYPE, which should
-     always be `REGISTER_VIRTUAL_TYPE (REG)'.  The buffer at FROM holds
-     the register's value in raw format; the macro should convert the
-     value to virtual format, and place it at TO.
-
-     Note that `REGISTER_CONVERT_TO_VIRTUAL' and
-     `REGISTER_CONVERT_TO_RAW' take their REG and TYPE arguments in
-     different orders.
-
-     You should only use `REGISTER_CONVERT_TO_VIRTUAL' with registers
-     for which the `REGISTER_CONVERTIBLE' macro returns a non-zero
-     value.
-
- - Target Macro: void REGISTER_CONVERT_TO_RAW (struct type *TYPE, int
-          REG, char *FROM, char *TO)
-     Convert the value of register number REG to TYPE, which should
-     always be `REGISTER_VIRTUAL_TYPE (REG)'.  The buffer at FROM holds
-     the register's value in raw format; the macro should convert the
-     value to virtual format, and place it at TO.
-
-     Note that REGISTER_CONVERT_TO_VIRTUAL and REGISTER_CONVERT_TO_RAW
-     take their REG and TYPE arguments in different orders.
-
 Frame Interpretation
 ====================
 
@@ -301,25 +75,13 @@ target machine.
      configuration.
 
 `ADDR_BITS_REMOVE (addr)'
-     If a raw machine instruction address includes any bits that are not
-     really part of the address, then define this macro to expand into
-     an expression that zeros those bits in ADDR.  This is only used for
-     addresses of instructions, and even then not in all contexts.
-
-     For example, the two low-order bits of the PC on the
-     Hewlett-Packard PA 2.0 architecture contain the privilege level of
-     the corresponding instruction.  Since instructions must always be
-     aligned on four-byte boundaries, the processor masks out these
-     bits to generate the actual address of the instruction.
-     ADDR_BITS_REMOVE should filter out these bits with an expression
-     such as `((addr) & ~3)'.
-
-`ADDRESS_TO_POINTER (TYPE, BUF, ADDR)'
-     Store in BUF a pointer of type TYPE representing the address ADDR,
-     in the appropriate format for the current architecture.  This
-     macro may safely assume that TYPE is either a pointer or a C++
-     reference type.  *Note Pointers Are Not Always Addresses: Target
-     Architecture Definition.
+     If a raw machine address includes any bits that are not really
+     part of the address, then define this macro to expand into an
+     expression that zeros those bits in ADDR.  For example, the two
+     low-order bits of a Motorola 88K address may be used by some
+     kernels for their own purposes, since addresses must always be
+     4-byte aligned, and so are of no use for addressing.  Those bits
+     should be filtered out with an expression such as `((addr) & ~3)'.
 
 `BEFORE_MAIN_LOOP_HOOK'
      Define this to expand into any code that you want to execute
@@ -355,15 +117,10 @@ target machine.
      breakpoint must be no longer than the shortest instruction of the
      architecture.
 
-     BREAKPOINT has been deprecated in favour of BREAKPOINT_FROM_PC.
-
 `BIG_BREAKPOINT'
 
 `LITTLE_BREAKPOINT'
      Similar to BREAKPOINT, but used for bi-endian targets.
-
-     BIG_BREAKPOINT and LITTLE_BREAKPOINT have been deprecated in
-     favour of BREAKPOINT_FROM_PC.
 
 `REMOTE_BREAKPOINT'
 
@@ -371,9 +128,6 @@ target machine.
 
 `BIG_REMOTE_BREAKPOINT'
      Similar to BREAKPOINT, but used for remote targets.
-
-     BIG_REMOTE_BREAKPOINT and LITTLE_REMOTE_BREAKPOINT have been
-     deprecated in favour of BREAKPOINT_FROM_PC.
 
 `BREAKPOINT_FROM_PC (pcptr, lenptr)'
      Use the program counter to determine the contents and size of a
@@ -387,57 +141,16 @@ target machine.
      invalid instruction.  The breakpoint must be no longer than the
      shortest instruction of the architecture.
 
-     Replaces all the other BREAKPOINT macros.
-
-`MEMORY_INSERT_BREAKPOINT (addr, contents_cache)'
-
-`MEMORY_REMOVE_BREAKPOINT (addr, contents_cache)'
-     Insert or remove memory based breakpoints.  Reasonable defaults
-     (`default_memory_insert_breakpoint' and
-     `default_memory_remove_breakpoint' respectively) have been
-     provided so that it is not necessary to define these for most
-     architectures.  Architectures which may want to define
-     MEMORY_INSERT_BREAKPOINT and MEMORY_REMOVE_BREAKPOINT will likely
-     have instructions that are oddly sized or are not stored in a
-     conventional manner.
-
-     It may also be desirable (from an efficiency standpoint) to define
-     custom breakpoint insertion and removal routines if
-     BREAKPOINT_FROM_PC needs to read the target's memory for some
-     reason.
-
-`CALL_DUMMY_P'
-     A C expresson that is non-zero when the target suports inferior
-     function calls.
-
-`CALL_DUMMY_WORDS'
-     Pointer to an array of LONGEST words of data containing
-     host-byte-ordered REGISTER_BYTES sized values that partially
-     specify the sequence of instructions needed for an inferior
-     function call.
-
-     Should be deprecated in favour of a macro that uses
-     target-byte-ordered data.
-
-`SIZEOF_CALL_DUMMY_WORDS'
-     The size of CALL_DUMMY_WORDS.  When CALL_DUMMY_P this must return
-     a positive value.  See also CALL_DUMMY_LENGTH.
+     Replaces all the other BREAKPOINTs.
 
 `CALL_DUMMY'
-     A static initializer for CALL_DUMMY_WORDS.  Deprecated.
+     valops.c
 
 `CALL_DUMMY_LOCATION'
      inferior.h
 
 `CALL_DUMMY_STACK_ADJUST'
-     Stack adjustment needed when performing an inferior function call.
-
-     Should be deprecated in favor of something like STACK_ALIGN.
-
-`CALL_DUMMY_STACK_ADJUST_P'
-     Predicate for use of CALL_DUMMY_STACK_ADJUST.
-
-     Should be deprecated in favor of something like STACK_ALIGN.
+     valops.c
 
 `CANNOT_FETCH_REGISTER (regno)'
      A C expression that should be nonzero if REGNO cannot be fetched
@@ -458,31 +171,6 @@ target machine.
 
      Currently only implemented correctly for native Sparc
      configurations?
-
-`COERCE_FLOAT_TO_DOUBLE (FORMAL, ACTUAL)'
-     If we are calling a function by hand, and the function was declared
-     (according to the debug info) without a prototype, should we
-     automatically promote floats to doubles?  This macro must evaluate
-     to non-zero if we should, or zero if we should leave the value
-     alone.
-
-     The argument ACTUAL is the type of the value we want to pass to
-     the function.  The argument FORMAL is the type of this argument,
-     as it appears in the function's definition.  Note that FORMAL may
-     be zero if we have no debugging information for the function, or if
-     we're passing more arguments than are officially declared (for
-     example, varargs).  This macro is never invoked if the function
-     definitely has a prototype.
-
-     The default behavior is to promote only when we have no type
-     information for the formal parameter.  This is different from the
-     obvious behavior, which would be to promote whenever we have no
-     prototype, just as the compiler does.  It's annoying, but some
-     older targets rely on this.  If you want GDB to follow the typical
-     compiler behavior -- to always promote when there is no prototype
-     in scope -- your gdbarch init function can call
-     `set_gdbarch_coerce_float_to_double' and select the
-     `standard_coerce_float_to_double' function.
 
 `CPLUS_MARKER'
      Define this to expand into the character that G++ uses to
@@ -523,30 +211,22 @@ target machine.
      into VALBUF.
 
 `EXTRACT_STRUCT_VALUE_ADDRESS(regbuf)'
-     When EXTRACT_STRUCT_VALUE_ADDRESS_P this is used to to extract
-     from an array REGBUF (containing the raw register state) the
-     address in which a function should return its structure value, as a
-     CORE_ADDR (or an expression that can be used as one).
-
-`EXTRACT_STRUCT_VALUE_ADDRESS_P'
-     Predicate for EXTRACT_STRUCT_VALUE_ADDRESS.
+     Define this to extract from an array REGBUF containing the (raw)
+     register state, the address in which a function should return its
+     structure value, as a CORE_ADDR (or an expression that can be used
+     as one).
 
 `FLOAT_INFO'
      If defined, then the `info float' command will print information
      about the processor's floating point unit.
 
 `FP_REGNUM'
-     If the virtual frame pointer is kept in a register, then define
-     this macro to be the number (greater than or equal to zero) of
-     that register.
+     The number of the frame pointer register.
 
-     This should only need to be defined if `TARGET_READ_FP' and
-     `TARGET_WRITE_FP' are not defined.
-
-`FRAMELESS_FUNCTION_INVOCATION(fi)'
-     Define this to an expression that returns 1 if the function
+`FRAMELESS_FUNCTION_INVOCATION(fi, frameless)'
+     Define this to set the variable FRAMELESS to 1 if the function
      invocation represented by FI does not have a stack frame
-     associated with it.  Otherwise return 0.
+     associated with it.  Otherwise set it to 0.
 
 `FRAME_ARGS_ADDRESS_CORRECT'
      stack.c
@@ -562,16 +242,12 @@ target machine.
 `FRAME_CHAIN_VALID(chain,thisframe)'
      Define this to be an expression that returns zero if the given
      frame is an outermost frame, with no caller, and nonzero
-     otherwise.  Several common definitions are available.
-
-     `file_frame_chain_valid' is nonzero if the chain pointer is nonzero
-     and given frame's PC is not inside the startup file (such as
-     `crt0.o').  `func_frame_chain_valid' is nonzero if the chain
-     pointer is nonzero and the given frame's PC is not in `main()' or a
-     known entry point function (such as `_start()').
-     `generic_file_frame_chain_valid' and
-     `generic_func_frame_chain_valid' are equivalent implementations for
-     targets using generic dummy frames.
+     otherwise.  Three common definitions are available.
+     `default_frame_chain_valid' (the default) is nonzero if the chain
+     pointer is nonzero and given frame's PC is not inside the startup
+     file (such as `crt0.o').  `alternate_frame_chain_valid' is nonzero
+     if the chain pointer is nonzero and the given frame's PC is not in
+     `main()' or a known entry point function (such as `_start()').
 
 `FRAME_INIT_SAVED_REGS(frame)'
      See `frame.h'.  Determines the address of all registers in the
@@ -581,10 +257,9 @@ target machine.
 
      FRAME_FIND_SAVED_REGS and EXTRA_FRAME_INFO are deprecated.
 
-`FRAME_NUM_ARGS (fi)'
-     For the frame described by FI return the number of arguments that
-     are being passed.  If the number of arguments is not known, return
-     `-1'.
+`FRAME_NUM_ARGS (val, fi)'
+     For the frame described by FI, set VAL to the number of arguments
+     that are being passed.
 
 `FRAME_SAVED_PC(frame)'
      Given FRAME, return the pc saved there.  That is, the return
@@ -596,20 +271,6 @@ target machine.
      `FUNCTION_EPILOGUE_SIZE' to expand into the standard size of a
      function's epilogue.
 
-`FUNCTION_START_OFFSET'
-     An integer, giving the offset in bytes from a function's address
-     (as used in the values of symbols, function pointers, etc.), and
-     the function's first genuine instruction.
-
-     This is zero on almost all machines: the function's address is
-     usually the address of its first instruction.  However, on the
-     VAX, for example, each function starts with two bytes containing a
-     bitmask indicating which registers to save upon entry to the
-     function.  The VAX `call' instructions check this value, and save
-     the appropriate registers automatically.  Thus, since the offset
-     from the function's address to its first instruction is two bytes,
-     `FUNCTION_START_OFFSET' would be 2 on the VAX.
-
 `GCC_COMPILED_FLAG_SYMBOL'
 
 `GCC2_COMPILED_FLAG_SYMBOL'
@@ -618,20 +279,18 @@ target machine.
      `gcc_compiled.' and `gcc2_compiled.', respectively. (Currently
      only defined for the Delta 68.)
 
-`GDB_MULTI_ARCH'
-     If defined and non-zero, enables suport for multiple architectures
-     within GDB.
-
-     The support can be enabled at two levels.  At level one, only
-     definitions for previously undefined macros are provided; at level
-     two, a multi-arch definition of all architecture dependant macros
-     will be defined.
-
 `GDB_TARGET_IS_HPPA'
      This determines whether horrible kludge code in dbxread.c and
      partial-stab.h is used to mangle multiple-symbol-table files from
      HPPA's.  This should all be ripped out, and a scheme like elfread.c
      used.
+
+`GDB_TARGET_IS_MACH386'
+
+`GDB_TARGET_IS_SUN3'
+
+`GDB_TARGET_IS_SUN386'
+     Kludges that should go away.
 
 `GET_LONGJMP_TARGET'
      For most machines, this is a target-dependent parameter.  On the
@@ -646,7 +305,8 @@ target machine.
 
 `GET_SAVED_REGISTER'
      Define this if you need to supply your own definition for the
-     function `get_saved_register'.
+     function `get_saved_register'.  Currently this is only done for
+     the a29k.
 
 `HAVE_REGISTER_WINDOWS'
      Define this if the target has register windows.
@@ -660,15 +320,6 @@ target machine.
      conditional should be eliminated (FIXME) and replaced by
      feature-specific macros.  It was introduced in haste and we are
      repenting at leisure.
-
-`SYMBOLS_CAN_START_WITH_DOLLAR'
-     Some systems have routines whose names start with `$'.  Giving this
-     macro a non-zero value tells GDB's expression parser to check for
-     such routines when parsing tokens that begin with `$'.
-
-     On HP-UX, certain system routines (millicode) have names beginning
-     with `$' or `$$'.  For example, `$$dyncall' is a millicode routine
-     that handles inter-space procedure calls on PA-RISC.
 
 `IEEE_FLOAT'
      Define this if the target system uses IEEE-format floating point
@@ -709,17 +360,6 @@ target machine.
      Define this to evaluate to nonzero if the program is stopped in the
      trampoline that returns from a shared library.
 
-`IN_SOLIB_DYNSYM_RESOLVE_CODE pc'
-     Define this to evaluate to nonzero if the program is stopped in the
-     dynamic linker.
-
-`SKIP_SOLIB_RESOLVER pc'
-     Define this to evaluate to the (nonzero) address at which execution
-     should continue to get past the dynamic linker's symbol resolution
-     function.  A zero value indicates that it is not important or
-     necessary to set a breakpoint to get through the dynamic linker
-     and that single stepping will suffice.
-
 `IS_TRAPPED_INTERNALVAR (name)'
      This is an ugly hook to allow the specification of special actions
      that should occur as a side-effect of setting the value of a
@@ -733,67 +373,6 @@ target machine.
 `NO_HIF_SUPPORT'
      (Specific to the a29k.)
 
-`POINTER_TO_ADDRESS (TYPE, BUF)'
-     Assume that BUF holds a pointer of type TYPE, in the appropriate
-     format for the current architecture.  Return the byte address the
-     pointer refers to.  *Note Pointers Are Not Always Addresses:
-     Target Architecture Definition.
-
-`REGISTER_CONVERTIBLE (REG)'
-     Return non-zero if REG uses different raw and virtual formats.
-     *Note Using Different Register and Memory Data Representations:
-     Target Architecture Definition.
-
-`REGISTER_RAW_SIZE (REG)'
-     Return the raw size of REG.  *Note Using Different Register and
-     Memory Data Representations: Target Architecture Definition.
-
-`REGISTER_VIRTUAL_SIZE (REG)'
-     Return the virtual size of REG.  *Note Using Different Register
-     and Memory Data Representations: Target Architecture Definition.
-
-`REGISTER_VIRTUAL_TYPE (REG)'
-     Return the virtual type of REG.  *Note Using Different Register
-     and Memory Data Representations: Target Architecture Definition.
-
-`REGISTER_CONVERT_TO_VIRTUAL(REG, TYPE, FROM, TO)'
-     Convert the value of register REG from its raw form to its virtual
-     form.  *Note Using Different Register and Memory Data
-     Representations: Target Architecture Definition.
-
-`REGISTER_CONVERT_TO_RAW(TYPE, REG, FROM, TO)'
-     Convert the value of register REG from its virtual form to its raw
-     form.  *Note Using Different Register and Memory Data
-     Representations: Target Architecture Definition.
-
-`RETURN_VALUE_ON_STACK(TYPE)'
-     Return non-zero if values of type TYPE are returned on the stack,
-     using the "struct convention" (i.e., the caller provides a pointer
-     to a buffer in which the callee should store the return value).
-     This controls how the `finish' command finds a function's return
-     value, and whether an inferior function call reserves space on the
-     stack for the return value.
-
-     The full logic GDB uses here is kind of odd.
-        * If the type being returned by value is not a structure,
-          union, or array, and `RETURN_VALUE_ON_STACK' returns zero,
-          then GDB concludes the value is not returned using the struct
-          convention.
-
-        * Otherwise, GDB calls `USE_STRUCT_CONVENTION' (see below).  If
-          that returns non-zero, GDB assumes the struct convention is
-          in use.
-
-     In other words, to indicate that a given type is returned by value
-     using the struct convention, that type must be either a struct,
-     union, array, or something `RETURN_VALUE_ON_STACK' likes, *and*
-     something that `USE_STRUCT_CONVENTION' likes.
-
-     Note that, in C and C++, arrays are never returned by value.  In
-     those languages, these predicates will always see a pointer type,
-     never an array type.  All the references above to arrays being
-     returned by value apply only to other languages.
-
 `SOFTWARE_SINGLE_STEP_P'
      Define this as 1 if the target does not have a hardware single-step
      mechanism. The macro `SOFTWARE_SINGLE_STEP' must also be defined.
@@ -803,32 +382,6 @@ target machine.
      INSERT_BREAPOINTS_P) breakpoints at each possible destinations of
      the next instruction. See `sparc-tdep.c' and `rs6000-tdep.c' for
      examples.
-
-`SOFUN_ADDRESS_MAYBE_MISSING'
-     Somebody clever observed that, the more actual addresses you have
-     in the debug information, the more time the linker has to spend
-     relocating them.  So whenever there's some other way the debugger
-     could find the address it needs, you should omit it from the debug
-     info, to make linking faster.
-
-     `SOFUN_ADDRESS_MAYBE_MISSING' indicates that a particular set of
-     hacks of this sort are in use, affecting `N_SO' and `N_FUN'
-     entries in stabs-format debugging information.  `N_SO' stabs mark
-     the beginning and ending addresses of compilation units in the text
-     segment.  `N_FUN' stabs mark the starts and ends of functions.
-
-     `SOFUN_ADDRESS_MAYBE_MISSING' means two things:
-        * `N_FUN' stabs have an address of zero.  Instead, you should
-          find the addresses where the function starts by taking the
-          function name from the stab, and then looking that up in the
-          minsyms (the linker/ assembler symbol table).  In other
-          words, the stab has the name, and the linker / assembler
-          symbol table is the only place that carries the address.
-
-        * `N_SO' stabs have an address of zero, too.  You just look at
-          the `N_FUN' stabs that appear before and after the `N_SO'
-          stab, and guess the starting and ending addresses of the
-          compilation unit from them.
 
 `PCC_SOL_BROKEN'
      (Used only in the Convex target.)
@@ -842,11 +395,8 @@ target machine.
 
 `PC_REGNUM'
      If the program counter is kept in a register, then define this
-     macro to be the number (greater than or equal to zero) of that
-     register.
-
-     This should only need to be defined if `TARGET_READ_PC' and
-     `TARGET_WRITE_PC' are not defined.
+     macro to be the number of that register.  This need be defined
+     only if `TARGET_WRITE_PC' is not defined.
 
 `NPC_REGNUM'
      The number of the "next program counter" register, if defined.
@@ -854,10 +404,6 @@ target machine.
 `NNPC_REGNUM'
      The number of the "next next program counter" register, if defined.
      Currently, this is only defined for the Motorola 88K.
-
-`PARM_BOUNDARY'
-     If non-zero, round arguments to a boundary of this many bits before
-     pushing them on the stack.
 
 `PRINT_REGISTER_HOOK (regno)'
      If defined, this must be a function that prints the contents of the
@@ -883,7 +429,7 @@ target machine.
 
 `PUSH_ARGUMENTS (nargs, args, sp, struct_return, struct_addr)'
      Define this to push arguments onto the stack for inferior function
-     call. Return the updated stack pointer value.
+     call.
 
 `PUSH_DUMMY_FRAME'
      Used in `call_function_by_hand' to create an artificial stack
@@ -897,18 +443,9 @@ target machine.
      Return the name of register I as a string.  May return NULL or NUL
      to indicate that register I is not valid.
 
-`REGISTER_NAMES'
-     Deprecated in favor of REGISTER_NAME.
-
 `REG_STRUCT_HAS_ADDR (gcc_p, type)'
      Define this to return 1 if the given type will be passed by pointer
      rather than directly.
-
-`SAVE_DUMMY_FRAME_TOS (sp)'
-     Used in `call_function_by_hand' to notify the target dependent code
-     of the top-of-stack value that will be passed to the the inferior
-     code.  This is the value of the SP after both the dummy frame and
-     space for parameters/results have been allocated on the stack.
 
 `SDB_REG_TO_REGNUM'
      Define this to convert sdb register numbers into GDB regnums.  If
@@ -917,22 +454,12 @@ target machine.
 `SHIFT_INST_REGS'
      (Only used for m88k targets.)
 
-`SKIP_PERMANENT_BREAKPOINT'
-     Advance the inferior's PC past a permanent breakpoint.  GDB
-     normally steps over a breakpoint by removing it, stepping one
-     instruction, and re-inserting the breakpoint.  However, permanent
-     breakpoints are hardwired into the inferior, and can't be removed,
-     so this strategy doesn't work.  Calling SKIP_PERMANENT_BREAKPOINT
-     adjusts the processor's state so that execution will resume just
-     after the breakpoint.  This macro does the right thing even when
-     the breakpoint is in the delay slot of a branch or jump.
-
 `SKIP_PROLOGUE (pc)'
-     A C expression that returns the address of the "real" code beyond
-     the function entry prologue found at PC.
+     A C statement that advances the PC across any function entry
+     prologue instructions so as to reach "real" code.
 
 `SKIP_PROLOGUE_FRAMELESS_P'
-     A C expression that should behave similarly, but that can stop as
+     A C statement that should behave similarly, but that can stop as
      soon as the function is known to have a frame.  If not defined,
      `SKIP_PROLOGUE' will be used instead.
 
@@ -942,11 +469,8 @@ target machine.
      return a new PC that is at the start of the real function.
 
 `SP_REGNUM'
-     If the stack-pointer is kept in a register, then define this macro
-     to be the number (greater than or equal to zero) of that register.
-
-     This should only need to be defined if `TARGET_WRITE_SP' and
-     `TARGET_WRITE_SP' are not defined.
+     Define this to be the number of the register that serves as the
+     stack pointer.
 
 `STAB_REG_TO_REGNUM'
      Define this to convert stab register numbers (as gotten from `r'
@@ -992,8 +516,6 @@ target machine.
      Number of bits in a complex number; defaults to `2 *
      TARGET_FLOAT_BIT'.
 
-     At present this macro is not used.
-
 `TARGET_DOUBLE_BIT'
      Number of bits in a double float; defaults to `8 *
      TARGET_CHAR_BIT'.
@@ -1001,8 +523,6 @@ target machine.
 `TARGET_DOUBLE_COMPLEX_BIT'
      Number of bits in a double complex; defaults to `2 *
      TARGET_DOUBLE_BIT'.
-
-     At present this macro is not used.
 
 `TARGET_FLOAT_BIT'
      Number of bits in a float; defaults to `4 * TARGET_CHAR_BIT'.
@@ -1091,12 +611,10 @@ Adding a New Target
 `gdb/config/ARCH/TTT.mt'
      Contains a Makefile fragment specific to this target.  Specifies
      what object files are needed for target TTT, by defining
-     `TDEPFILES=...' and `TDEPLIBS=...'.  Also specifies the header
-     file which describes TTT, by defining `TM_FILE= tm-TTT.h'.
-
-     You can also define `TM_CFLAGS', `TM_CLIBS', `TM_CDEPS', but these
-     are now deprecated, replaced by autoconf, and may go away in
-     future versions of GDB.
+     `TDEPFILES=...'.  Also specifies the header file which describes
+     TTT, by defining `TM_FILE= tm-TTT.h'.  You can also define
+     `TM_CFLAGS', `TM_CLIBS', `TM_CDEPS', but these are now deprecated
+     and may go away in future versions of GDB.
 
 `gdb/config/ARCH/tm-TTT.h'
      (`tm.h' is a link to this file, created by configure).  Contains
@@ -1126,13 +644,6 @@ add a `config/tm-OS.h' file that describes the operating system
 facilities that are unusual (extra symbol table info; the breakpoint
 instruction needed; etc).  Then write a `ARCH/tm-OS.h' that just
 `#include's `tm-ARCH.h' and `config/tm-OS.h'.
-
-   ---------- Footnotes ----------
-
-   (1) Some D10V instructions are actually pairs of 16-bit
-sub-instructions.  However, since you can't jump into the middle of
-such a pair, code addresses can only refer to full 32 bit instructions,
-which is what matters in this explanation.
 
 
 File: gdbint.info,  Node: Target Vector Definition,  Next: Native Debugging,  Prev: Target Architecture Definition,  Up: Top
@@ -1204,4 +715,624 @@ Transport Layer
 
 Builtin Simulator
 =================
+
+
+File: gdbint.info,  Node: Native Debugging,  Next: Support Libraries,  Prev: Target Vector Definition,  Up: Top
+
+Native Debugging
+****************
+
+   Several files control GDB's configuration for native support:
+
+`gdb/config/ARCH/XYZ.mh'
+     Specifies Makefile fragments needed when hosting *or native* on
+     machine XYZ.  In particular, this lists the required
+     native-dependent object files, by defining `NATDEPFILES=...'.
+     Also specifies the header file which describes native support on
+     XYZ, by defining `NAT_FILE= nm-XYZ.h'.  You can also define
+     `NAT_CFLAGS', `NAT_ADD_FILES', `NAT_CLIBS', `NAT_CDEPS', etc.; see
+     `Makefile.in'.
+
+`gdb/config/ARCH/nm-XYZ.h'
+     (`nm.h' is a link to this file, created by configure).  Contains C
+     macro definitions describing the native system environment, such as
+     child process control and core file support.
+
+`gdb/XYZ-nat.c'
+     Contains any miscellaneous C code required for this native support
+     of this machine.  On some machines it doesn't exist at all.
+
+   There are some "generic" versions of routines that can be used by
+various systems.  These can be customized in various ways by macros
+defined in your `nm-XYZ.h' file.  If these routines work for the XYZ
+host, you can just include the generic file's name (with `.o', not
+`.c') in `NATDEPFILES'.
+
+   Otherwise, if your machine needs custom support routines, you will
+need to write routines that perform the same functions as the generic
+file.  Put them into `XYZ-nat.c', and put `XYZ-nat.o' into
+`NATDEPFILES'.
+
+`inftarg.c'
+     This contains the *target_ops vector* that supports Unix child
+     processes on systems which use ptrace and wait to control the
+     child.
+
+`procfs.c'
+     This contains the *target_ops vector* that supports Unix child
+     processes on systems which use /proc to control the child.
+
+`fork-child.c'
+     This does the low-level grunge that uses Unix system calls to do a
+     "fork and exec" to start up a child process.
+
+`infptrace.c'
+     This is the low level interface to inferior processes for systems
+     using the Unix `ptrace' call in a vanilla way.
+
+Native core file Support
+========================
+
+`core-aout.c::fetch_core_registers()'
+     Support for reading registers out of a core file.  This routine
+     calls `register_addr()', see below.  Now that BFD is used to read
+     core files, virtually all machines should use `core-aout.c', and
+     should just provide `fetch_core_registers' in `XYZ-nat.c' (or
+     `REGISTER_U_ADDR' in `nm-XYZ.h').
+
+`core-aout.c::register_addr()'
+     If your `nm-XYZ.h' file defines the macro `REGISTER_U_ADDR(addr,
+     blockend, regno)', it should be defined to set `addr' to the
+     offset within the `user' struct of GDB register number `regno'.
+     `blockend' is the offset within the "upage" of `u.u_ar0'.  If
+     `REGISTER_U_ADDR' is defined, `core-aout.c' will define the
+     `register_addr()' function and use the macro in it.  If you do not
+     define `REGISTER_U_ADDR', but you are using the standard
+     `fetch_core_registers()', you will need to define your own version
+     of `register_addr()', put it into your `XYZ-nat.c' file, and be
+     sure `XYZ-nat.o' is in the `NATDEPFILES' list.  If you have your
+     own `fetch_core_registers()', you may not need a separate
+     `register_addr()'.  Many custom `fetch_core_registers()'
+     implementations simply locate the registers themselves.
+
+   When making GDB run native on a new operating system, to make it
+possible to debug core files, you will need to either write specific
+code for parsing your OS's core files, or customize `bfd/trad-core.c'.
+First, use whatever `#include' files your machine uses to define the
+struct of registers that is accessible (possibly in the u-area) in a
+core file (rather than `machine/reg.h'), and an include file that
+defines whatever header exists on a core file (e.g. the u-area or a
+`struct core').  Then modify `trad_unix_core_file_p()' to use these
+values to set up the section information for the data segment, stack
+segment, any other segments in the core file (perhaps shared library
+contents or control information), "registers" segment, and if there are
+two discontiguous sets of registers (e.g.  integer and float), the
+"reg2" segment.  This section information basically delimits areas in
+the core file in a standard way, which the section-reading routines in
+BFD know how to seek around in.
+
+   Then back in GDB, you need a matching routine called
+`fetch_core_registers()'.  If you can use the generic one, it's in
+`core-aout.c'; if not, it's in your `XYZ-nat.c' file.  It will be
+passed a char pointer to the entire "registers" segment, its length,
+and a zero; or a char pointer to the entire "regs2" segment, its
+length, and a 2.  The routine should suck out the supplied register
+values and install them into GDB's "registers" array.
+
+   If your system uses `/proc' to control processes, and uses ELF
+format core files, then you may be able to use the same routines for
+reading the registers out of processes and out of core files.
+
+ptrace
+======
+
+/proc
+=====
+
+win32
+=====
+
+shared libraries
+================
+
+Native Conditionals
+===================
+
+   When GDB is configured and compiled, various macros are defined or
+left undefined, to control compilation when the host and target systems
+are the same.  These macros should be defined (or left undefined) in
+`nm-SYSTEM.h'.
+
+`ATTACH_DETACH'
+     If defined, then GDB will include support for the `attach' and
+     `detach' commands.
+
+`CHILD_PREPARE_TO_STORE'
+     If the machine stores all registers at once in the child process,
+     then define this to ensure that all values are correct.  This
+     usually entails a read from the child.
+
+     [Note that this is incorrectly defined in `xm-SYSTEM.h' files
+     currently.]
+
+`FETCH_INFERIOR_REGISTERS'
+     Define this if the native-dependent code will provide its own
+     routines `fetch_inferior_registers' and `store_inferior_registers'
+     in `HOST-nat.c'.  If this symbol is *not* defined, and
+     `infptrace.c' is included in this configuration, the default
+     routines in `infptrace.c' are used for these functions.
+
+`FILES_INFO_HOOK'
+     (Only defined for Convex.)
+
+`FP0_REGNUM'
+     This macro is normally defined to be the number of the first
+     floating point register, if the machine has such registers.  As
+     such, it would appear only in target-specific code.  However,
+     /proc support uses this to decide whether floats are in use on
+     this target.
+
+`GET_LONGJMP_TARGET'
+     For most machines, this is a target-dependent parameter.  On the
+     DECstation and the Iris, this is a native-dependent parameter,
+     since <setjmp.h> is needed to define it.
+
+     This macro determines the target PC address that longjmp() will
+     jump to, assuming that we have just stopped at a longjmp
+     breakpoint.  It takes a CORE_ADDR * as argument, and stores the
+     target PC value through this pointer.  It examines the current
+     state of the machine as needed.
+
+`KERNEL_U_ADDR'
+     Define this to the address of the `u' structure (the "user
+     struct", also known as the "u-page") in kernel virtual memory.  GDB
+     needs to know this so that it can subtract this address from
+     absolute addresses in the upage, that are obtained via ptrace or
+     from core files.  On systems that don't need this value, set it to
+     zero.
+
+`KERNEL_U_ADDR_BSD'
+     Define this to cause GDB to determine the address of `u' at
+     runtime, by using Berkeley-style `nlist' on the kernel's image in
+     the root directory.
+
+`KERNEL_U_ADDR_HPUX'
+     Define this to cause GDB to determine the address of `u' at
+     runtime, by using HP-style `nlist' on the kernel's image in the
+     root directory.
+
+`ONE_PROCESS_WRITETEXT'
+     Define this to be able to, when a breakpoint insertion fails, warn
+     the user that another process may be running with the same
+     executable.
+
+`PROC_NAME_FMT'
+     Defines the format for the name of a `/proc' device.  Should be
+     defined in `nm.h' *only* in order to override the default
+     definition in `procfs.c'.
+
+`PTRACE_FP_BUG'
+     mach386-xdep.c
+
+`PTRACE_ARG3_TYPE'
+     The type of the third argument to the `ptrace' system call, if it
+     exists and is different from `int'.
+
+`REGISTER_U_ADDR'
+     Defines the offset of the registers in the "u area".
+
+`SHELL_COMMAND_CONCAT'
+     If defined, is a string to prefix on the shell command used to
+     start the inferior.
+
+`SHELL_FILE'
+     If defined, this is the name of the shell to use to run the
+     inferior.  Defaults to `"/bin/sh"'.
+
+`SOLIB_ADD (filename, from_tty, targ)'
+     Define this to expand into an expression that will cause the
+     symbols in FILENAME to be added to GDB's symbol table.
+
+`SOLIB_CREATE_INFERIOR_HOOK'
+     Define this to expand into any shared-library-relocation code that
+     you want to be run just after the child process has been forked.
+
+`START_INFERIOR_TRAPS_EXPECTED'
+     When starting an inferior, GDB normally expects to trap twice;
+     once when the shell execs, and once when the program itself execs.
+     If the actual number of traps is something other than 2, then
+     define this macro to expand into the number expected.
+
+`SVR4_SHARED_LIBS'
+     Define this to indicate that SVR4-style shared libraries are in
+     use.
+
+`USE_PROC_FS'
+     This determines whether small routines in `*-tdep.c', which
+     translate register values between GDB's internal representation
+     and the /proc representation, are compiled.
+
+`U_REGS_OFFSET'
+     This is the offset of the registers in the upage.  It need only be
+     defined if the generic ptrace register access routines in
+     `infptrace.c' are being used (that is, `infptrace.c' is configured
+     in, and `FETCH_INFERIOR_REGISTERS' is not defined).  If the
+     default value from `infptrace.c' is good enough, leave it
+     undefined.
+
+     The default value means that u.u_ar0 *points to* the location of
+     the registers.  I'm guessing that `#define U_REGS_OFFSET 0' means
+     that u.u_ar0 *is* the location of the registers.
+
+`CLEAR_SOLIB'
+     objfiles.c
+
+`DEBUG_PTRACE'
+     Define this to debug ptrace calls.
+
+
+File: gdbint.info,  Node: Support Libraries,  Next: Coding,  Prev: Native Debugging,  Up: Top
+
+Support Libraries
+*****************
+
+BFD
+===
+
+   BFD provides support for GDB in several ways:
+
+*identifying executable and core files*
+     BFD will identify a variety of file types, including a.out, coff,
+     and several variants thereof, as well as several kinds of core
+     files.
+
+*access to sections of files*
+     BFD parses the file headers to determine the names, virtual
+     addresses, sizes, and file locations of all the various named
+     sections in files (such as the text section or the data section).
+     GDB simply calls BFD to read or write section X at byte offset Y
+     for length Z.
+
+*specialized core file support*
+     BFD provides routines to determine the failing command name stored
+     in a core file, the signal with which the program failed, and
+     whether a core file matches (i.e. could be a core dump of) a
+     particular executable file.
+
+*locating the symbol information*
+     GDB uses an internal interface of BFD to determine where to find
+     the symbol information in an executable file or symbol-file.  GDB
+     itself handles the reading of symbols, since BFD does not
+     "understand" debug symbols, but GDB uses BFD's cached information
+     to find the symbols, string table, etc.
+
+opcodes
+=======
+
+   The opcodes library provides GDB's disassembler.  (It's a separate
+library because it's also used in binutils, for `objdump').
+
+readline
+========
+
+mmalloc
+=======
+
+libiberty
+=========
+
+gnu-regex
+=========
+
+   Regex conditionals.
+
+`C_ALLOCA'
+
+`NFAILURES'
+
+`RE_NREGS'
+
+`SIGN_EXTEND_CHAR'
+
+`SWITCH_ENUM_BUG'
+
+`SYNTAX_TABLE'
+
+`Sword'
+
+`sparc'
+include
+=======
+
+
+File: gdbint.info,  Node: Coding,  Next: Porting GDB,  Prev: Support Libraries,  Up: Top
+
+Coding
+******
+
+   This chapter covers topics that are lower-level than the major
+algorithms of GDB.
+
+Cleanups
+========
+
+   Cleanups are a structured way to deal with things that need to be
+done later.  When your code does something (like `malloc' some memory,
+or open a file) that needs to be undone later (e.g. free the memory or
+close the file), it can make a cleanup.  The cleanup will be done at
+some future point: when the command is finished, when an error occurs,
+or when your code decides it's time to do cleanups.
+
+   You can also discard cleanups, that is, throw them away without doing
+what they say.  This is only done if you ask that it be done.
+
+   Syntax:
+
+`struct cleanup *OLD_CHAIN;'
+     Declare a variable which will hold a cleanup chain handle.
+
+`OLD_CHAIN = make_cleanup (FUNCTION, ARG);'
+     Make a cleanup which will cause FUNCTION to be called with ARG (a
+     `char *') later.  The result, OLD_CHAIN, is a handle that can be
+     passed to `do_cleanups' or `discard_cleanups' later.  Unless you
+     are going to call `do_cleanups' or `discard_cleanups' yourself,
+     you can ignore the result from `make_cleanup'.
+
+`do_cleanups (OLD_CHAIN);'
+     Perform all cleanups done since `make_cleanup' returned OLD_CHAIN.
+     E.g.:
+          make_cleanup (a, 0);
+          old = make_cleanup (b, 0);
+          do_cleanups (old);
+
+     will call `b()' but will not call `a()'.  The cleanup that calls
+     `a()' will remain in the cleanup chain, and will be done later
+     unless otherwise discarded.
+
+`discard_cleanups (OLD_CHAIN);'
+     Same as `do_cleanups' except that it just removes the cleanups from
+     the chain and does not call the specified functions.
+
+   Some functions, e.g. `fputs_filtered()' or `error()', specify that
+they "should not be called when cleanups are not in place".  This means
+that any actions you need to reverse in the case of an error or
+interruption must be on the cleanup chain before you call these
+functions, since they might never return to your code (they `longjmp'
+instead).
+
+Wrapping Output Lines
+=====================
+
+   Output that goes through `printf_filtered' or `fputs_filtered' or
+`fputs_demangled' needs only to have calls to `wrap_here' added in
+places that would be good breaking points.  The utility routines will
+take care of actually wrapping if the line width is exceeded.
+
+   The argument to `wrap_here' is an indentation string which is
+printed *only* if the line breaks there.  This argument is saved away
+and used later.  It must remain valid until the next call to
+`wrap_here' or until a newline has been printed through the
+`*_filtered' functions.  Don't pass in a local variable and then return!
+
+   It is usually best to call `wrap_here()' after printing a comma or
+space.  If you call it before printing a space, make sure that your
+indentation properly accounts for the leading space that will print if
+the line wraps there.
+
+   Any function or set of functions that produce filtered output must
+finish by printing a newline, to flush the wrap buffer, before switching
+to unfiltered ("`printf'") output.  Symbol reading routines that print
+warnings are a good example.
+
+GDB Coding Standards
+====================
+
+   GDB follows the GNU coding standards, as described in
+`etc/standards.texi'.  This file is also available for anonymous FTP
+from GNU archive sites.  GDB takes a strict interpretation of the
+standard; in general, when the GNU standard recommends a practice but
+does not require it, GDB requires it.
+
+   GDB follows an additional set of coding standards specific to GDB,
+as described in the following sections.
+
+   You can configure with `--enable-build-warnings' to get GCC to check
+on a number of these rules.  GDB sources ought not to engender any
+complaints, unless they are caused by bogus host systems.  (The exact
+set of enabled warnings is currently `-Wall -Wpointer-arith
+-Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations'.
+
+Formatting
+----------
+
+   The standard GNU recommendations for formatting must be followed
+strictly.
+
+   Note that while in a definition, the function's name must be in
+column zero; in a function declaration, the name must be on the same
+line as the return type.
+
+   In addition, there must be a space between a function or macro name
+and the opening parenthesis of its argument list (except for macro
+definitions, as required by C).  There must not be a space after an open
+paren/bracket or before a close paren/bracket.
+
+   While additional whitespace is generally helpful for reading, do not
+use more than one blank line to separate blocks, and avoid adding
+whitespace after the end of a program line (as of 1/99, some 600 lines
+had whitespace after the semicolon).  Excess whitespace causes
+difficulties for diff and patch.
+
+Comments
+--------
+
+   The standard GNU requirements on comments must be followed strictly.
+
+   Block comments must appear in the following form, with no `/*'- or
+'*/'-only lines, and no leading `*':
+
+     /* Wait for control to return from inferior to debugger.  If inferior
+        gets a signal, we may decide to start it up again instead of
+        returning.  That is why there is a loop in this function.  When
+        this function actually returns it means the inferior should be left
+        stopped and GDB should read more commands.  */
+
+   (Note that this format is encouraged by Emacs; tabbing for a
+multi-line comment works correctly, and M-Q fills the block
+consistently.)
+
+   Put a blank line between the block comments preceding function or
+variable definitions, and the definition itself.
+
+   In general, put function-body comments on lines by themselves, rather
+than trying to fit them into the 20 characters left at the end of a
+line, since either the comment or the code will inevitably get longer
+than will fit, and then somebody will have to move it anyhow.
+
+C Usage
+-------
+
+   Code must not depend on the sizes of C data types, the format of the
+host's floating point numbers, the alignment of anything, or the order
+of evaluation of expressions.
+
+   Use functions freely.  There are only a handful of compute-bound
+areas in GDB that might be affected by the overhead of a function call,
+mainly in symbol reading.  Most of GDB's performance is limited by the
+target interface (whether serial line or system call).
+
+   However, use functions with moderation.  A thousand one-line
+functions are just as hard to understand as a single thousand-line
+function.
+
+Function Prototypes
+-------------------
+
+   Prototypes must be used to *declare* functions but never to *define*
+them.  Prototypes for GDB functions must include both the argument type
+and name, with the name matching that used in the actual function
+definition.
+
+   For the sake of compatibility with pre-ANSI compilers, define
+prototypes with the `PARAMS' macro:
+
+     extern int memory_remove_breakpoint PARAMS ((CORE_ADDR addr,
+                                                  char *contents_cache));
+
+   Note the double parentheses around the parameter types.  This allows
+an arbitrary number of parameters to be described, without freaking out
+the C preprocessor.  When the function has no parameters, it should be
+described like:
+
+     extern void noprocess PARAMS ((void));
+
+   The `PARAMS' macro expands to its argument in ANSI C, or to a simple
+`()' in traditional C.
+
+   All external functions should have a `PARAMS' declaration in a
+header file that callers include, except for `_initialize_*' functions,
+which must be external so that `init.c' construction works, but
+shouldn't be visible to random source files.
+
+   All static functions must be declared in a block near the top of the
+source file.
+
+Clean Design
+------------
+
+   In addition to getting the syntax right, there's the little question
+of semantics.  Some things are done in certain ways in GDB because long
+experience has shown that the more obvious ways caused various kinds of
+trouble.
+
+   You can't assume the byte order of anything that comes from a target
+(including VALUEs, object files, and instructions).  Such things must
+be byte-swapped using `SWAP_TARGET_AND_HOST' in GDB, or one of the swap
+routines defined in `bfd.h', such as `bfd_get_32'.
+
+   You can't assume that you know what interface is being used to talk
+to the target system.  All references to the target must go through the
+current `target_ops' vector.
+
+   You can't assume that the host and target machines are the same
+machine (except in the "native" support modules).  In particular, you
+can't assume that the target machine's header files will be available
+on the host machine.  Target code must bring along its own header files
+- written from scratch or explicitly donated by their owner, to avoid
+copyright problems.
+
+   Insertion of new `#ifdef''s will be frowned upon.  It's much better
+to write the code portably than to conditionalize it for various
+systems.
+
+   New `#ifdef''s which test for specific compilers or manufacturers or
+operating systems are unacceptable.  All `#ifdef''s should test for
+features.  The information about which configurations contain which
+features should be segregated into the configuration files.  Experience
+has proven far too often that a feature unique to one particular system
+often creeps into other systems; and that a conditional based on some
+predefined macro for your current system will become worthless over
+time, as new versions of your system come out that behave differently
+with regard to this feature.
+
+   Adding code that handles specific architectures, operating systems,
+target interfaces, or hosts, is not acceptable in generic code.  If a
+hook is needed at that point, invent a generic hook and define it for
+your configuration, with something like:
+
+     #ifdef	WRANGLE_SIGNALS
+        WRANGLE_SIGNALS (signo);
+     #endif
+
+   In your host, target, or native configuration file, as appropriate,
+define `WRANGLE_SIGNALS' to do the machine-dependent thing.  Take a bit
+of care in defining the hook, so that it can be used by other ports in
+the future, if they need a hook in the same place.
+
+   If the hook is not defined, the code should do whatever "most"
+machines want.  Using `#ifdef', as above, is the preferred way to do
+this, but sometimes that gets convoluted, in which case use
+
+     #ifndef SPECIAL_FOO_HANDLING
+     #define SPECIAL_FOO_HANDLING(pc, sp) (0)
+     #endif
+
+   where the macro is used or in an appropriate header file.
+
+   Whether to include a "small" hook, a hook around the exact pieces of
+code which are system-dependent, or whether to replace a whole function
+with a hook depends on the case.  A good example of this dilemma can be
+found in `get_saved_register'.  All machines that GDB 2.8 ran on just
+needed the `FRAME_FIND_SAVED_REGS' hook to find the saved registers.
+Then the SPARC and Pyramid came along, and `HAVE_REGISTER_WINDOWS' and
+`REGISTER_IN_WINDOW_P' were introduced.  Then the 29k and 88k required
+the `GET_SAVED_REGISTER' hook.  The first three are examples of small
+hooks; the latter replaces a whole function.  In this specific case, it
+is useful to have both kinds; it would be a bad idea to replace all the
+uses of the small hooks with `GET_SAVED_REGISTER', since that would
+result in much duplicated code.  Other times, duplicating a few lines
+of code here or there is much cleaner than introducing a large number
+of small hooks.
+
+   Another way to generalize GDB along a particular interface is with an
+attribute struct.  For example, GDB has been generalized to handle
+multiple kinds of remote interfaces - not by #ifdef's everywhere, but
+by defining the "target_ops" structure and having a current target (as
+well as a stack of targets below it, for memory references).  Whenever
+something needs to be done that depends on which remote interface we are
+using, a flag in the current target_ops structure is tested (e.g.
+`target_has_stack'), or a function is called through a pointer in the
+current target_ops structure.  In this way, when a new remote interface
+is added, only one module needs to be touched - the one that actually
+implements the new remote interface.  Other examples of
+attribute-structs are BFD access to multiple kinds of object file
+formats, or GDB's access to multiple source languages.
+
+   Please avoid duplicating code.  For example, in GDB 3.x all the code
+interfacing between `ptrace' and the rest of GDB was duplicated in
+`*-dep.c', and so changing something was very painful.  In GDB 4.x,
+these have all been consolidated into `infptrace.c'.  `infptrace.c' can
+deal with variations between systems the same way any
+system-independent file would (hooks, #if defined, etc.), and machines
+which are radically different don't need to use infptrace.c at all.
 

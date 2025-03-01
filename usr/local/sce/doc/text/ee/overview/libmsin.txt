@@ -1,0 +1,57 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+CSL MIDI stream 生成
+=====================
+
+
+ 1 概要
+--------
+
+    libmsinは、CSL（Component Sound Library）に準拠して実装されているEEラ
+    イブラリで、アプリケーションプログラムからのAPI呼び出しによってMIDI 
+    streamを生成し出力する機能を持っています。典型的なCSLモジュールとは異
+    なり、APIによる設定が中心で、ATick()関数はありません。
+    libmsinは効果音用にSCEが定義した拡張MIDIメッセージに対応しています。
+    
+
+ 2 利用方法
+------------
+
+
+  2.1 バッファ構造
+
+
+    Buffer Group 0：（なし）
+
+
+    Buffer Group 1：出力ポートグループ
+
+    +------------+---------------------------+-------------------------+
+    |BufCtx Index 内容                        データ構造               |
+    +            +                           +                         +
+    |N            出力ポートN番の出力バッファ sceCslMidiStream         |
+    |                                         void[ buffsize - sizeof  |
+    |                                             (sceCslMidiStream) ] |
+    +------------+---------------------------+-------------------------+
+        
+    Nの範囲は0～15です。
+
+  2.2 MIDIメッセージのパック
+
+    libmsinでは、2～3byteのMIDIメッセージを32bitワードにパックしてから出
+    力します。
+    まずsceMSIn_MakeMsg()などのマクロを用いてパックしたMIDIメッセージを用
+    意し、それをsceMSIn_PutMsg()関数で出力ストリームに書き込む、という手
+    順になります。
+
+  2.3 拡張MIDIメッセージ
+
+    libmsinでは、sceMSIn_PutHsMsg()関数を使用することで、効果音用にSCEが
+    定義した拡張MIDIメッセージを出力ストリームに埋め込むことができます。
+    また、拡張MIDIメッセージの各パラメータを整形するマクロが用意されてい
+    ます。
+    拡張MIDIメッセージの内容については「CSL概要」ドキュメントを参照してく
+    ださい。

@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<TITLE> DMA基本ライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libdma.htm" SELECTED> DMAライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+DMA基本ライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 関数一覧<BR></A><BR>
+    <A HREF="#Heading4_1_4"> 参考資料<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libdmaは、DMA転送処理を支援するライブラリです。DMACを制御してDMA転送を行うほかに、転送リストの作成をサポートするためにChainモード用のタグを生成する機能があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libdmaに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libdma.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">Libdma.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>関数一覧</B>
+</A>
+</H3>
+<blockquote>
+    libdmaの関数のうち、タグを生成して転送リストに追加する関数は、生成するDMAタグの種類と割り込み発生ビットの設定に応じて、次のように整理することができます。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc" valign="top"><B>割り込みなし関数</B></TD>
+<TD bgcolor="#cccccc" valign="top"><B>割り込みあり関数</B></TD>
+<TD bgcolor="#cccccc" valign="top"><B>機能（生成するタグ）</B></TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddRef</TD>
+<TD valign="top">SceDmaAddIRef</TD>
+<TD valign="top">REFタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddRefe</TD>
+<TD valign="top">SceDmaAddIRefe</TD>
+<TD valign="top">REFEタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddRefs</TD>
+<TD valign="top">SceDmaAddIRefs</TD>
+<TD valign="top">REFSタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddCont</TD>
+<TD valign="top">SceDmaAddICont</TD>
+<TD valign="top">CNTタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddNext</TD>
+<TD valign="top">SceDmaAddINext</TD>
+<TD valign="top">NEXTタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddCall</TD>
+<TD valign="top">SceDmaAddICall</TD>
+<TD valign="top">CALLタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddRet</TD>
+<TD valign="top">SceDmaAddIRet</TD>
+<TD valign="top">RETタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddEnd</TD>
+<TD valign="top">SceDmaAddIEnd</TD>
+<TD valign="top">ENDタグの追加（Source Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddDest</TD>
+<TD valign="top">SceDmaAddIDest</TD>
+<TD valign="top">CNTタグの追加<BR>（Destination Chain用）</TD>
+</TR>
+<TR>
+<TD valign="top">SceDmaAddDests</TD>
+<TD valign="top">SceDmaAddIDests</TD>
+<TD valign="top">CNTSタグの追加<BR>（Destination Chain用）</TD>
+</TR></TABLE>
+<BR>
+    <BR>
+    DMAの終了割り込みのハンドラの登録は、カーネルのAPIである AddDmacHandler() によって行う事ができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>参考資料</B>
+</A>
+</H3>
+<blockquote>
+    DMA転送機能の詳細については、「EE User's Manual」の3章を参照してください。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

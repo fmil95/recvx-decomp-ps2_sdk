@@ -1,0 +1,1993 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CSL MIDIシーケンサ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CSL MIDIシーケンサ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceMidiEnv>sceMidiEnv </A><BR>
+</TD><TD> </TD>
+<TD>Sequence Data環境</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidiLoopInfo>sceMidiLoopInfo </A><BR>
+</TD><TD> </TD>
+<TD>LOOP(Repeat) コールバック用情報</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#chMsgCallBack>chMsgCallBack </A><BR>
+</TD><TD> </TD>
+<TD>チャンネルメッセージ コールバック 仕様</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#excMsgCallBack>excMsgCallBack </A><BR>
+</TD><TD> </TD>
+<TD>エクスクルーシブメッセージ コールバック 仕様</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#metaMsgCallBack>metaMsgCallBack </A><BR>
+</TD><TD> </TD>
+<TD>メタイベント コールバック 仕様</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#repeatCallBack>repeatCallBack </A><BR>
+</TD><TD> </TD>
+<TD>ループ制御 コールバック 仕様</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_ATick>sceMidi_ATick </A><BR>
+</TD><TD> </TD>
+<TD>割り込み処理</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_GetEnv>sceMidi_GetEnv </A><BR>
+</TD><TD> </TD>
+<TD>環境アドレスの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_GetTempo>sceMidi_GetTempo </A><BR>
+</TD><TD> </TD>
+<TD>相対、絶対テンポから演奏テンポを取得(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_Init>sceMidi_Init </A><BR>
+</TD><TD> </TD>
+<TD>初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_isDataEnd>sceMidi_isDataEnd </A><BR>
+</TD><TD> </TD>
+<TD>環境の状態取得（データエンドかどうか）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_isInPlay>sceMidi_isInPlay </A><BR>
+</TD><TD> </TD>
+<TD>環境の状態取得（演奏中かどうか）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_Load>sceMidi_Load </A><BR>
+</TD><TD> </TD>
+<TD>シーケンスデータの読み込み</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiGetAbsoluteTempo>sceMidi_MidiGetAbsoluteTempo </A><BR>
+</TD><TD> </TD>
+<TD>絶対テンポの取得(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiGetRelativeTempo>sceMidi_MidiGetRelativeTempo </A><BR>
+</TD><TD> </TD>
+<TD>相対テンポの取得(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiPlaySwitch>sceMidi_MidiPlaySwitch </A><BR>
+</TD><TD> </TD>
+<TD>演奏開始／停止(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiSetAbsoluteTempo>sceMidi_MidiSetAbsoluteTempo </A><BR>
+</TD><TD> </TD>
+<TD>絶対テンポの変更(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiSetLocation>sceMidi_MidiSetLocation </A><BR>
+</TD><TD> </TD>
+<TD>演奏位置の変更(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiSetRelativeTempo>sceMidi_MidiSetRelativeTempo </A><BR>
+</TD><TD> </TD>
+<TD>相対テンポの変更(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiSetVolume>sceMidi_MidiSetVolume </A><BR>
+</TD><TD> </TD>
+<TD>チャンネルボリューム（相対）の変更(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_MidiVolumeChange>sceMidi_MidiVolumeChange </A><BR>
+</TD><TD> </TD>
+<TD>チャンネルボリュームの変更(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SelectMidi>sceMidi_SelectMidi </A><BR>
+</TD><TD> </TD>
+<TD>演奏対象となる Midi Blockを選択(MIDI)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SelectSong>sceMidi_SelectSong </A><BR>
+</TD><TD> </TD>
+<TD>演奏対象となる Song Blockを選択(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongPlaySwitch>sceMidi_SongPlaySwitch </A><BR>
+</TD><TD> </TD>
+<TD>演奏開始／停止(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongSetAbsoluteTempo>sceMidi_SongSetAbsoluteTempo </A><BR>
+</TD><TD> </TD>
+<TD>絶対テンポの変更(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongSetLocation>sceMidi_SongSetLocation </A><BR>
+</TD><TD> </TD>
+<TD>演奏位置の設定／変更(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongSetRelativeTempo>sceMidi_SongSetRelativeTempo </A><BR>
+</TD><TD> </TD>
+<TD>相対テンポの変更(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongSetVolume>sceMidi_SongSetVolume </A><BR>
+</TD><TD> </TD>
+<TD>ボリューム（相対）の変更(SONG)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceMidi_SongVolumeChange>sceMidi_SongVolumeChange </A><BR>
+</TD><TD> </TD>
+<TD>ボリュームの変更(SONG)</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceMidiEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidiEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Sequence Data環境
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned int <I>songNum</I>;
+	unsigned int <I>midiNum</I>;
+	unsigned int <I>position</I>;
+	unsigned int <I>status</I>;
+	unsigned short <I>outPort[sceMidiNumMidiCh]</I>;
+	unsigned short <I>excOutPort</I>;
+	unsigned int (*<I>chMsgCallBack</I>)(unsigned int,unsigned int);
+	unsigned int <I>chMsgCallBackPrivateData</I>;
+	Bool	(*<I>metaMsgCallBack</I>)(unsigned char,unsigned char*
+				unsigned int,unsigned int);
+	unsigned int	<I>metaMsgCallBackPrivateData</I>;
+	Bool	(*<I>excMsgCallBack</I>)(unsigned char*,unsigned int,
+				unsigned int);
+	unsigned int	<I>excMsgCallBackPrivateData</I>;
+	Bool	(*<I>repeatCallBack</I>)(sceMidiLoopInfo*,unsigned int);
+	unsigned int	<I>repeatCallBackPrivateData</I>;
+	unsigned char	<I>system[sceMidiEnvSize]</I>;
+} <B>sceMidiEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>songNum</I>	現在演奏中もしくは選択されている SongChunk 番号
+<I>midiNum</I>	現在演奏中もしくは選択されている MidiChunk 番号
+<I>position</I>		Sequence Data の現在位置(単位は tick)
+<I>status</I>		演奏状態
+<I>sceMidiStat_ready</I>	初期化済 ビット
+<I>sceMidiStat_inPlay</I>	演奏中 ビット
+<I>sceMidiStat_dataEnd</I>	データエンド到達 ビット
+<I>sceMidiStat_noLoop</I>	ループメッセージ無視 ビット
+このビットを 1 にするとデータ中のループメッセージが無視されます。
+<I>outPort</I>			チャンネル毎の出力ポート指定
+			どのチャンネルをどのポートに出力するかを設定できます。
+設定はビットマスクなので、１つのチャンネルを複数のポートに出力できます。
+<I>excOutPort</I>		エクスクルーシブの出力ポート。設定値はビットマスクです。
+<I>chMsgCallBack</I>		チャンネルメッセージ用コールバック
+<I>chMsgCallBackPrivateData</I>	チャンネルメッセージコールバック用データ
+<I>metaMsgCallBack</I>			メタイベント用コールバック
+<I>metaMsgCallBackPrivateData</I>	メタイベントコールバック用データ
+<I>excMsgCallBack</I>			エクスクルーシブ用コールバック
+<I>excMsgCallBackPrivateData</I>	エクスクルーシブコールバック用データ
+<I>repeatCallBack</I>			ループ制御用コールバック
+<I>repeatCallBackPrivateData</I>	ループ制御コールバック用データ
+<I>system</I>				Sequencer Module の内部変数領域
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Sequence Data buffer毎に演奏状態等を管理するための環境バッファです。 <BR>
+        </BLOCKQUOTE>
+<BR>
+</blockquote>
+<A name=sceMidiLoopInfo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidiLoopInfo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LOOP(Repeat) コールバック用情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char <I>type</I>;
+	unsigned char <I>loopTimes</I>;
+	unsigned char <I>loopCount</I>;
+	unsigned int <I>loopId</I>;
+} <B>sceMidiLoopInfo</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>type</I>		LOOP(Repeat)の発生チャンクの種類
+		sceMidiLoopInfoType_Midi:	Midi Chunk
+		sceMidiLoopInfoType_Song:	Song Chunk
+<I>loopTimes</I>	メッセージ中のループ回数（0の場合無限ループ）
+<I>loopCount</I>	ループ回数（<I>loopTimes</I> == 0の場合不定）
+<I>loopId</I>		ループの識別ID
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ループ制御用コールバックの引数に使われる構造体です。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=chMsgCallBack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>chMsgCallBack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャンネルメッセージ コールバック 仕様
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>chMsgCallBack</B>(
+	unsigned int <I>message</I>,
+	 unsigned int <I>private_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>message	</I>	Sequence Command Message
+			bit 0-7:		status
+			bit 8-14:		1st data
+			bit 16-22 :	2nd data
+<I>private_data</I>	sceMidiEnv の chMsgCallBackPrivateData
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    送信する Sequence Command Message <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    環境バッファに指定する、チャンネルメッセージの送信直前に呼出されるコールバック関数の仕様です。 <BR>
+    実際に送信されるメッセージはこの関数が返した値となります。ただし、この関数がsceMidi_ChMsgNoDataを返した場合、メッセージの送信は行われません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=excMsgCallBack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>excMsgCallBack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        エクスクルーシブメッセージ コールバック 仕様
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>Bool <B>excMsgCallBack</B>(
+	unsigned char *<I>exclusive_data</I>,
+	unsigned int <I>data_length</I>,
+	unsigned int <I>private_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>exclusive_data</I>	エクスクルーシブデータのアドレス
+<I>data_length</I>	エクスクルーシブデータデータのバイト数
+<I>private_data</I>	sceMidiEnv の excMsgCallBackPrivateData
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    True	エクスクルーシブメッセージを送信する <BR>
+    False	エクスクルーシブメッセージを送信しない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    環境バッファに指定する、エクスクルーシブメッセージの送信制御用コールバック関数の仕様です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=metaMsgCallBack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>metaMsgCallBack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        メタイベント コールバック 仕様
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>Bool <B>metaMsgCallBack</B>(
+	unsigned char <I>meta_number</I>,
+	unsigned char *<I>meta_data</I>,
+	unsigned int <I>data_length</I>,
+	unsigned int <I>private_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>meta_number</I>	メタ イベント番号
+<I>meta_data</I>	メタ イベントデータのアドレス
+<I>data_length</I>	メタ イベントデータのバイト数
+<I>private_data</I>	sceMidiEnv の metaMsgCallBackPrivateData
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    True	Sequencer Module でこのメタイベントの処理を行なう <BR>
+    False	Sequencer Module でこのメタイベントの処理を行なわない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    環境バッファに指定する、メタイベントの処理制御用コールバック関数の仕様です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=repeatCallBack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>repeatCallBack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ループ制御 コールバック 仕様
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>Bool <B>repeatCallBack</B>(
+	sceMidiLoopInfo *<I>loop_information</I>,
+	unsigned int <I>private_data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>loop_information</I>		ループ情報
+<I>private_data</I>		sceMidiEnv の repeatCallBackPrivateData
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    True	loop(repeat)を行なう <BR>
+    False	loop(repeat)を行なわない <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    環境バッファに指定する、ループ制御用コールバック関数の仕様です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_ATick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_ATick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込み処理
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_ATick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I> 	Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みから定期的に呼出される処理です。 <BR>
+    演奏中の環境を sceMidiEnv の tickInterval だけ演奏を進めます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_GetEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_GetEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        環境アドレスの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceMidiEnv *<B>sceMidi_GetEnv</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    環境アドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>port_number</I>に対応する環境アドレスを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_GetTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_GetTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        相対、絶対テンポから演奏テンポを取得(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceMidi_GetTempo</B>(
+	unsigned char <I>a_tempo</I>,
+	unsigned short <I>r_tempo</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>a_tempo	</I>	絶対テンポ
+<I>r_tempo</I>		相対テンポ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    演奏テンポ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    絶対テンポと相対テンポから演奏テンポを取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_Init>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_Init
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_Init</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>interval</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>interval</I> 		ATick() の呼び出し周期をマイクロ秒で表したもの
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MIDI シーケンサ モジュールの内部環境の初期化を行ないます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_isDataEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_isDataEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        環境の状態取得（データエンドかどうか）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceMidi_isDataEnd</B>(
+	sceCslCtx *<I>module_context</I>,
+	 unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0以外でデータの終わりに到達 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定した環境がデータの終わりに到達しているかの問い合わせを行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_isInPlay>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_isInPlay
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        環境の状態取得（演奏中かどうか）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>sceMidi_isInPlay</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0以外で演奏中 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定した環境が演奏中であるか問い合わせます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_Load>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_Load
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        シーケンスデータの読み込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_Load</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    シーケンスデータの更新通知を行います。 <BR>
+    指定する環境が演奏中の場合、その環境へのデータの変更およびsceMidi_Load() 呼出しは禁止です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiGetAbsoluteTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiGetAbsoluteTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        絶対テンポの取得(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned char <B>sceMidi_MidiGetAbsoluteTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    絶対テンポ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    絶対テンポを取得します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiGetRelativeTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiGetRelativeTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        相対テンポの取得(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned short <B>sceMidi_MidiGetRelativeTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相対テンポ <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相対テンポを取得します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiPlaySwitch>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiPlaySwitch
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏開始／停止(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiPlaySwitch</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	int <I>command</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>command</I>	sceMidi_MidiPlayStop	演奏停止
+		sceMidi_MidiPlayStart	演奏開始
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    演奏の開始／停止を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiSetAbsoluteTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiSetAbsoluteTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        絶対テンポの変更(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiSetAbsoluteTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>tempo</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>tempo</I>		テンポ (20 -- 255)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テンポの変更を行います。 <BR>
+    テンポメタイベントと同等です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiSetLocation>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiSetLocation
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏位置の変更(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiSetLocation</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>position</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>position</I>		シーケンスデータ内の位置(Tick)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    シーケンスデータ内の位置を変更します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiSetRelativeTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiSetRelativeTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        相対テンポの変更(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiSetRelativeTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned short <I>tempo</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>tempo</I>		相対テンポ(sceMidi_RelativeTempoNoEffect で効果無し)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相対テンポの設定を行います。 <BR>
+    絶対テンポをa_tempo、相対テンポをr_tempoとした場合、演奏テンポtempoは <BR>
+    <blockquote>
+    	tempo = (a_tempo * r_tempo) / sceMidi_RelativeTempoNoEffect <BR>
+    </blockquote>
+    となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiSetVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiSetVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャンネルボリューム（相対）の変更(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiSetVolume</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>ch</I>		チャンネル (0--15)
+		256: マスターボリューム
+<I>vol</I>		ボリューム(sceMidi_Volume0db で変化無し)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャンネル<I>ch</I>の相対ボリュームを設定します。 <BR>
+    チャンネルのボリュームをch_vol、マスターボリュームをm_vol、相対ボリュームをr_volとした場合、出力されるボリュームvolは、 <BR>
+    <blockquote>
+    	vol = (ch_vol * m_vol * r_vol) / (sceMidi_Volume0db*sceMidi_Volume0db) <BR>
+    </blockquote>
+    となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_MidiVolumeChange>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_MidiVolumeChange
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャンネルボリュームの変更(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_MidiVolumeChange</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>ch</I>,
+	unsigned char <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>ch</I>		チャンネル (0--15)
+		255 は、全てのチャンネルが指定されたものとする
+<I>vol</I>		ボリューム(0--127)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャンネル<I>ch</I>のボリュームを設定します。 <BR>
+    シーケンスコマンドのボリュームと同等です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SelectMidi>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SelectMidi
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏対象となる Midi Blockを選択(MIDI)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SelectMidi</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>midi_block_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>		Module Context のアドレス
+<I>port_number</I>		入力ポート番号
+<I>midi_block_number</I>	Midi Block 番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    演奏を行なうMidi Blockの選択を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SelectSong>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SelectSong
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏対象となる Song Blockを選択(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SelectSong</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>song_block_number</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>		Module Context のアドレス
+<I>port_number</I>		入力ポート番号
+<I>song_block_number</I>	Song Block 番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    演奏を行なうSong Blockの選択を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SongPlaySwitch>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongPlaySwitch
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏開始／停止(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongPlaySwitch</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	int <I>command</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>command</I>	sceMidi_SongPlayStop :	Songの演奏を中止
+		sceMidi_SongPlayPause :	Songの演奏を一旦停止
+		sceMidi_SongPlayStart :	Songの演奏開始
+		sceMidi_SongPlayContinue :	Songの演奏開始
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    演奏の開始／停止／一旦停止を行います。 <BR>
+    <I>command</I>にsceMidi_SongPlayStartまたはsceMidi_SongPlayContinueを指定した場合、Stop中もしくはSelect直後であれば、Songを先頭から演奏します。Pause中であれば、その位置から演奏を再開します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SongSetAbsoluteTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongSetAbsoluteTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        絶対テンポの変更(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongSetAbsoluteTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>tempo</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>tempo</I>		テンポ (20 -- 255)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テンポの変更を行います。 <BR>
+    ソングテンポメッセージと同等です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SongSetLocation>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongSetLocation
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        演奏位置の設定／変更(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongSetLocation</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>position</I>,
+	unsigned int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>position	</I>	演奏位置
+<I>mode</I>	動作モード
+	sceMidi_SSL_Now :  直ちに演奏を中断し、<I>position</I>に移動して演奏再開する
+	sceMidi_SSL_Delay : 現在の演奏が終了するまで待ってから、<I>position</I>に移動して
+			   演奏再開する
+	sceMidi_SSL_WithPreCommand :
+			   <I>position</I>の1個手前のMIDI演奏開始コマンドから演奏開始
+			  （再開）する
+	sceMidi_SSL_WithoutPreCommand:
+			   <I>position</I>で示されるMIDI演奏開始コマンドから演奏開始
+			  （再開）する
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Song内の位置の設定／変更を行います。 <BR>
+    <I>position</I>は、移動先の位置がSong Block内の先頭から数えていくつめのMIDI演奏開始コマンドにあたるかを指定します。先頭のMIDI演奏開始コマンドを０として数えます。 <BR>
+    <I>mode</I>は、4つの定数の適切な和をとって指定します。ただし、sceMidi_SSL_NowとsceMidi_SSL_Delayを同時に指定することはできません。sceMidi_SSL_WithPreCommandとsceMidi_SSL_WithoutPreCommandを同時に指定することもできません。 <BR>
+    sceMidi_SSL_Now / sceMidi_SSL_Delayは、位置を移動する前に現在演奏中のSong Blockに関する処置を指定します。もし演奏停止中であれば、どちらもsceMidi_SSL_Nowと同様にただちに位置を移動しますが、演奏再開は行いません。 <BR>
+    sceMidi_SSL_WithPreCommand / sceMidi_SSL_WithoutPreCommandは、移動後に実行するMIDIコマンドに関する指定です。sceMidi_SSL_WithPreCommandを指定した場合は、<I>position</I>が示すMIDI演奏開始コマンドより1個手前のMIDI演奏開始コマンドにさかのぼってMIDIコマンドが実行されます。ただし、さかのぼった範囲内にあるリピートコマンドは無視されます。 <BR>
+        </BLOCKQUOTE>
+<BR>
+</blockquote>
+<A name=sceMidi_SongSetRelativeTempo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongSetRelativeTempo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        相対テンポの変更(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongSetRelativeTempo</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned short <I>tempo</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>tempo</I>		相対テンポ(sceMidi_RelativeTempoNoEffect で効果無し)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相対テンポの設定を行います。 <BR>
+    絶対テンポをa_tempo、相対テンポをr_tempoとした場合、演奏テンポtempoは <BR>
+    <blockquote>
+    	tempo = (a_tempo * r_tempo) / sceMidi_RelativeTempoNoEffect <BR>
+    </blockquote>
+    となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SongSetVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongSetVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ボリューム（相対）の変更(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongSetVolume</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>vol</I>		ボリューム(sceMidi_Volume0db で変化無し)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ソングの相対ボリュームを設定します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceMidi_SongVolumeChange>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceMidi_SongVolumeChange
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ボリュームの変更(SONG)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceMidi_SongVolumeChange</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned char <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>vol</I>		ボリューム(0--128)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合	0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ボリュームの設定を行います。 <BR>
+    ソングコマンドのボリュームと同等です。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

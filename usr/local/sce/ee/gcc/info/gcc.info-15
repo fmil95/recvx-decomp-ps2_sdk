@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1088 +36,932 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Gcov Data Files,  Prev: Gcov and Optimization,  Up: Gcov
+File: gcc.info,  Node: Global Declarations,  Next: VMS Misc,  Prev: Include Files and VMS,  Up: VMS
 
-Brief description of `gcov' data files
-======================================
+Global Declarations and VMS
+===========================
 
-   `gcov' uses three files for doing profiling.  The names of these
-files are derived from the original *source* file by substituting the
-file suffix with either `.bb', `.bbg', or `.da'.  All of these files
-are placed in the same directory as the source file, and contain data
-stored in a platform-independent method.
+   GNU CC does not provide the `globalref', `globaldef' and
+`globalvalue' keywords of VAX-C.  You can get the same effect with an
+obscure feature of GAS, the GNU assembler.  (This requires GAS version
+1.39 or later.)  The following macros allow you to use this feature in
+a fairly natural way:
 
-   The `.bb' and `.bbg' files are generated when the source file is
-compiled with the GNU CC `-ftest-coverage' option.  The `.bb' file
-contains a list of source files (including headers), functions within
-those files, and line numbers corresponding to each basic block in the
-source file.
+     #ifdef __GNUC__
+     #define GLOBALREF(TYPE,NAME)                      \
+       TYPE NAME                                       \
+       asm ("_$$PsectAttributes_GLOBALSYMBOL$$" #NAME)
+     #define GLOBALDEF(TYPE,NAME,VALUE)                \
+       TYPE NAME                                       \
+       asm ("_$$PsectAttributes_GLOBALSYMBOL$$" #NAME) \
+         = VALUE
+     #define GLOBALVALUEREF(TYPE,NAME)                 \
+       const TYPE NAME[1]                              \
+       asm ("_$$PsectAttributes_GLOBALVALUE$$" #NAME)
+     #define GLOBALVALUEDEF(TYPE,NAME,VALUE)           \
+       const TYPE NAME[1]                              \
+       asm ("_$$PsectAttributes_GLOBALVALUE$$" #NAME)  \
+         = {VALUE}
+     #else
+     #define GLOBALREF(TYPE,NAME) \
+       globalref TYPE NAME
+     #define GLOBALDEF(TYPE,NAME,VALUE) \
+       globaldef TYPE NAME = VALUE
+     #define GLOBALVALUEDEF(TYPE,NAME,VALUE) \
+       globalvalue TYPE NAME = VALUE
+     #define GLOBALVALUEREF(TYPE,NAME) \
+       globalvalue TYPE NAME
+     #endif
 
-   The `.bb' file format consists of several lists of 4-byte integers
-which correspond to the line numbers of each basic block in the file.
-Each list is terminated by a line number of 0.  A line number of -1 is
-used to designate that the source file name (padded to a 4-byte
-boundary and followed by another -1) follows.  In addition, a line
-number of -2 is used to designate that the name of a function (also
-padded to a 4-byte boundary and followed by a -2) follows.
+(The `_$$PsectAttributes_GLOBALSYMBOL' prefix at the start of the name
+is removed by the assembler, after it has modified the attributes of
+the symbol).  These macros are provided in the VMS binaries
+distribution in a header file `GNU_HACKS.H'.  An example of the usage
+is:
 
-   The `.bbg' file is used to reconstruct the program flow graph for
-the source file.  It contains a list of the program flow arcs (possible
-branches taken from one basic block to another) for each function which,
-in combination with the `.bb' file, enables gcov to reconstruct the
-program flow.
+     GLOBALREF (int, ijk);
+     GLOBALDEF (int, jkl, 0);
 
-   In the `.bbg' file, the format is:
-             number of basic blocks for function #0 (4-byte number)
-             total number of arcs for function #0 (4-byte number)
-             count of arcs in basic block #0 (4-byte number)
-             destination basic block of arc #0 (4-byte number)
-             flag bits (4-byte number)
-             destination basic block of arc #1 (4-byte number)
-             flag bits (4-byte number)
-             ...
-             destination basic block of arc #N (4-byte number)
-             flag bits (4-byte number)
-             count of arcs in basic block #1 (4-byte number)
-             destination basic block of arc #0 (4-byte number)
-             flag bits (4-byte number)
-             ...
+   The macros `GLOBALREF' and `GLOBALDEF' cannot be used
+straightforwardly for arrays, since there is no way to insert the array
+dimension into the declaration at the right place.  However, you can
+declare an array with these macros if you first define a typedef for the
+array type, like this:
 
-   A -1 (stored as a 4-byte number) is used to separate each function's
-list of basic blocks, and to verify that the file has been read
-correctly.
+     typedef int intvector[10];
+     GLOBALREF (intvector, foo);
 
-   The `.da' file is generated when a program containing object files
-built with the GNU CC `-fprofile-arcs' option is executed.  A separate
-`.da' file is created for each source file compiled with this option,
-and the name of the `.da' file is stored as an absolute pathname in the
-resulting object file.  This path name is derived from the source file
-name by substituting a `.da' suffix.
+   Array and structure initializers will also break the macros; you can
+define the initializer to be a macro of its own, or you can expand the
+`GLOBALDEF' macro by hand.  You may find a case where you wish to use
+the `GLOBALDEF' macro with a large array, but you are not interested in
+explicitly initializing each element of the array.  In such cases you
+can use an initializer like: `{0,}', which will initialize the entire
+array to `0'.
 
-   The format of the `.da' file is fairly simple.  The first 8-byte
-number is the number of counts in the file, followed by the counts
-(stored as 8-byte numbers).  Each count corresponds to the number of
-times each arc in the program is executed.  The counts are cumulative;
-each time the program is executed, it attemps to combine the existing
-`.da' files with the new counts for this invocation of the program.  It
-ignores the contents of any `.da' files whose number of arcs doesn't
-correspond to the current program, and merely overwrites them instead.
+   A shortcoming of this implementation is that a variable declared with
+`GLOBALVALUEREF' or `GLOBALVALUEDEF' is always an array.  For example,
+the declaration:
 
-   All three of these files use the functions in `gcov-io.h' to store
-integers; the functions in this header provide a machine-independent
-mechanism for storing and retrieving data from a stream.
+     GLOBALVALUEREF(int, ijk);
+
+declares the variable `ijk' as an array of type `int [1]'.  This is
+done because a globalvalue is actually a constant; its "value" is what
+the linker would normally consider an address.  That is not how an
+integer value works in C, but it is how an array works.  So treating
+the symbol as an array name gives consistent results--with the
+exception that the value seems to have the wrong type.  *Don't try to
+access an element of the array.*  It doesn't have any elements.  The
+array "address" may not be the address of actual storage.
+
+   The fact that the symbol is an array may lead to warnings where the
+variable is used.  Insert type casts to avoid the warnings.  Here is an
+example; it takes advantage of the ANSI C feature allowing macros that
+expand to use the same name as the macro itself.
+
+     GLOBALVALUEREF (int, ss$_normal);
+     GLOBALVALUEDEF (int, xyzzy,123);
+     #ifdef __GNUC__
+     #define ss$_normal ((int) ss$_normal)
+     #define xyzzy ((int) xyzzy)
+     #endif
+
+   Don't use `globaldef' or `globalref' with a variable whose type is
+an enumeration type; this is not implemented.  Instead, make the
+variable an integer, and use a `globalvaluedef' for each of the
+enumeration values.  An example of this would be:
+
+     #ifdef __GNUC__
+     GLOBALDEF (int, color, 0);
+     GLOBALVALUEDEF (int, RED, 0);
+     GLOBALVALUEDEF (int, BLUE, 1);
+     GLOBALVALUEDEF (int, GREEN, 3);
+     #else
+     enum globaldef color {RED, BLUE, GREEN = 3};
+     #endif
 
 
-File: gcc.info,  Node: Trouble,  Next: Bugs,  Prev: Gcov,  Up: Top
+File: gcc.info,  Node: VMS Misc,  Prev: Global Declarations,  Up: VMS
 
-Known Causes of Trouble with GCC
+Other VMS Issues
+================
+
+   GNU CC automatically arranges for `main' to return 1 by default if
+you fail to specify an explicit return value.  This will be interpreted
+by VMS as a status code indicating a normal successful completion.
+Version 1 of GNU CC did not provide this default.
+
+   GNU CC on VMS works only with the GNU assembler, GAS.  You need
+version 1.37 or later of GAS in order to produce value debugging
+information for the VMS debugger.  Use the ordinary VMS linker with the
+object files produced by GAS.
+
+   Under previous versions of GNU CC, the generated code would
+occasionally give strange results when linked to the sharable `VAXCRTL'
+library.  Now this should work.
+
+   A caveat for use of `const' global variables: the `const' modifier
+must be specified in every external declaration of the variable in all
+of the source files that use that variable.  Otherwise the linker will
+issue warnings about conflicting attributes for the variable.  Your
+program will still work despite the warnings, but the variable will be
+placed in writable storage.
+
+   Although the VMS linker does distinguish between upper and lower case
+letters in global symbols, most VMS compilers convert all such symbols
+into upper case and most run-time library routines also have upper case
+names.  To be able to reliably call such routines, GNU CC (by means of
+the assembler GAS) converts global symbols into upper case like other
+VMS compilers.  However, since the usual practice in C is to distinguish
+case, GNU CC (via GAS) tries to preserve usual C behavior by augmenting
+each name that is not all lower case.  This means truncating the name
+to at most 23 characters and then adding more characters at the end
+which encode the case pattern of those 23.   Names which contain at
+least one dollar sign are an exception; they are converted directly into
+upper case without augmentation.
+
+   Name augmentation yields bad results for programs that use
+precompiled libraries (such as Xlib) which were generated by another
+compiler.  You can use the compiler option `/NOCASE_HACK' to inhibit
+augmentation; it makes external C functions and variables
+case-independent as is usual on VMS.  Alternatively, you could write
+all references to the functions and variables in such libraries using
+lower case; this will work on VMS, but is not portable to other
+systems.  The compiler option `/NAMES' also provides control over
+global name handling.
+
+   Function and variable names are handled somewhat differently with GNU
+C++.  The GNU C++ compiler performs "name mangling" on function names,
+which means that it adds information to the function name to describe
+the data types of the arguments that the function takes.  One result of
+this is that the name of a function can become very long.  Since the
+VMS linker only recognizes the first 31 characters in a name, special
+action is taken to ensure that each function and variable has a unique
+name that can be represented in 31 characters.
+
+   If the name (plus a name augmentation, if required) is less than 32
+characters in length, then no special action is performed.  If the name
+is longer than 31 characters, the assembler (GAS) will generate a hash
+string based upon the function name, truncate the function name to 23
+characters, and append the hash string to the truncated name.  If the
+`/VERBOSE' compiler option is used, the assembler will print both the
+full and truncated names of each symbol that is truncated.
+
+   The `/NOCASE_HACK' compiler option should not be used when you are
+compiling programs that use libg++.  libg++ has several instances of
+objects (i.e.  `Filebuf' and `filebuf') which become indistinguishable
+in a case-insensitive environment.  This leads to cases where you need
+to inhibit augmentation selectively (if you were using libg++ and Xlib
+in the same program, for example).  There is no special feature for
+doing this, but you can get the result by defining a macro for each
+mixed case symbol for which you wish to inhibit augmentation.  The
+macro should expand into the lower case equivalent of itself.  For
+example:
+
+     #define StuDlyCapS studlycaps
+
+   These macro definitions can be placed in a header file to minimize
+the number of changes to your source code.
+
+
+File: gcc.info,  Node: Portability,  Next: Interface,  Prev: VMS,  Up: Top
+
+GNU CC and Portability
+**********************
+
+   The main goal of GNU CC was to make a good, fast compiler for
+machines in the class that the GNU system aims to run on: 32-bit
+machines that address 8-bit bytes and have several general registers.
+Elegance, theoretical power and simplicity are only secondary.
+
+   GNU CC gets most of the information about the target machine from a
+machine description which gives an algebraic formula for each of the
+machine's instructions.  This is a very clean way to describe the
+target.  But when the compiler needs information that is difficult to
+express in this fashion, I have not hesitated to define an ad-hoc
+parameter to the machine description.  The purpose of portability is to
+reduce the total work needed on the compiler; it was not of interest
+for its own sake.
+
+   GNU CC does not contain machine dependent code, but it does contain
+code that depends on machine parameters such as endianness (whether the
+most significant byte has the highest or lowest address of the bytes in
+a word) and the availability of autoincrement addressing.  In the
+RTL-generation pass, it is often necessary to have multiple strategies
+for generating code for a particular kind of syntax tree, strategies
+that are usable for different combinations of parameters.  Often I have
+not tried to address all possible cases, but only the common ones or
+only the ones that I have encountered.  As a result, a new target may
+require additional strategies.  You will know if this happens because
+the compiler will call `abort'.  Fortunately, the new strategies can be
+added in a machine-independent fashion, and will affect only the target
+machines that need them.
+
+
+File: gcc.info,  Node: Interface,  Next: Passes,  Prev: Portability,  Up: Top
+
+Interfacing to GNU CC Output
+****************************
+
+   GNU CC is normally configured to use the same function calling
+convention normally in use on the target system.  This is done with the
+machine-description macros described (*note Target Macros::.).
+
+   However, returning of structure and union values is done differently
+on some target machines.  As a result, functions compiled with PCC
+returning such types cannot be called from code compiled with GNU CC,
+and vice versa.  This does not cause trouble often because few Unix
+library routines return structures or unions.
+
+   GNU CC code returns structures and unions that are 1, 2, 4 or 8 bytes
+long in the same registers used for `int' or `double' return values.
+(GNU CC typically allocates variables of such types in registers also.)
+Structures and unions of other sizes are returned by storing them into
+an address passed by the caller (usually in a register).  The
+machine-description macros `STRUCT_VALUE' and `STRUCT_INCOMING_VALUE'
+tell GNU CC where to pass this address.
+
+   By contrast, PCC on most target machines returns structures and
+unions of any size by copying the data into an area of static storage,
+and then returning the address of that storage as if it were a pointer
+value.  The caller must copy the data from that memory area to the
+place where the value is wanted.  This is slower than the method used
+by GNU CC, and fails to be reentrant.
+
+   On some target machines, such as RISC machines and the 80386, the
+standard system convention is to pass to the subroutine the address of
+where to return the value.  On these machines, GNU CC has been
+configured to be compatible with the standard compiler, when this method
+is used.  It may not be compatible for structures of 1, 2, 4 or 8 bytes.
+
+   GNU CC uses the system's standard convention for passing arguments.
+On some machines, the first few arguments are passed in registers; in
+others, all are passed on the stack.  It would be possible to use
+registers for argument passing on any machine, and this would probably
+result in a significant speedup.  But the result would be complete
+incompatibility with code that follows the standard convention.  So this
+change is practical only if you are switching to GNU CC as the sole C
+compiler for the system.  We may implement register argument passing on
+certain machines once we have a complete GNU system so that we can
+compile the libraries with GNU CC.
+
+   On some machines (particularly the Sparc), certain types of arguments
+are passed "by invisible reference".  This means that the value is
+stored in memory, and the address of the memory location is passed to
+the subroutine.
+
+   If you use `longjmp', beware of automatic variables.  ANSI C says
+that automatic variables that are not declared `volatile' have undefined
+values after a `longjmp'.  And this is all GNU CC promises to do,
+because it is very difficult to restore register variables correctly,
+and one of GNU CC's features is that it can put variables in registers
+without your asking it to.
+
+   If you want a variable to be unaltered by `longjmp', and you don't
+want to write `volatile' because old C compilers don't accept it, just
+take the address of the variable.  If a variable's address is ever
+taken, even if just to compute it and ignore it, then the variable
+cannot go in a register:
+
+     {
+       int careful;
+       &careful;
+       ...
+     }
+
+   Code compiled with GNU CC may call certain library routines.  Most of
+them handle arithmetic for which there are no instructions.  This
+includes multiply and divide on some machines, and floating point
+operations on any machine for which floating point support is disabled
+with `-msoft-float'.  Some standard parts of the C library, such as
+`bcopy' or `memcpy', are also called automatically.  The usual function
+call interface is used for calling the library routines.
+
+   These library routines should be defined in the library `libgcc.a',
+which GNU CC automatically searches whenever it links a program.  On
+machines that have multiply and divide instructions, if hardware
+floating point is in use, normally `libgcc.a' is not needed, but it is
+searched just in case.
+
+   Each arithmetic function is defined in `libgcc1.c' to use the
+corresponding C arithmetic operator.  As long as the file is compiled
+with another C compiler, which supports all the C arithmetic operators,
+this file will work portably.  However, `libgcc1.c' does not work if
+compiled with GNU CC, because each arithmetic function would compile
+into a call to itself!
+
+
+File: gcc.info,  Node: Passes,  Next: RTL,  Prev: Interface,  Up: Top
+
+Passes and Files of the Compiler
 ********************************
 
-   This section describes known problems that affect users of GCC.  Most
-of these are not GCC bugs per se--if they were, we would fix them.  But
-the result for a user may be like the result of a bug.
+   The overall control structure of the compiler is in `toplev.c'.  This
+file is responsible for initialization, decoding arguments, opening and
+closing files, and sequencing the passes.
 
-   Some of these problems are due to bugs in other software, some are
-missing features that are too much work to add, and some are places
-where people's opinions differ as to what is best.
+   The parsing pass is invoked only once, to parse the entire input.
+The RTL intermediate code for a function is generated as the function
+is parsed, a statement at a time.  Each statement is read in as a
+syntax tree and then converted to RTL; then the storage for the tree
+for the statement is reclaimed.  Storage for types (and the expressions
+for their sizes), declarations, and a representation of the binding
+contours and how they nest, remain until the function is finished being
+compiled; these are all needed to output the debugging information.
+
+   Each time the parsing pass reads a complete function definition or
+top-level declaration, it calls either the function
+`rest_of_compilation', or the function `rest_of_decl_compilation' in
+`toplev.c', which are responsible for all further processing necessary,
+ending with output of the assembler language.  All other compiler
+passes run, in sequence, within `rest_of_compilation'.  When that
+function returns from compiling a function definition, the storage used
+for that function definition's compilation is entirely freed, unless it
+is an inline function (*note An Inline Function is As Fast As a Macro:
+Inline.).
+
+   Here is a list of all the passes of the compiler and their source
+files.  Also included is a description of where debugging dumps can be
+requested with `-d' options.
+
+   * Parsing.  This pass reads the entire text of a function definition,
+     constructing partial syntax trees.  This and RTL generation are no
+     longer truly separate passes (formerly they were), but it is
+     easier to think of them as separate.
+
+     The tree representation does not entirely follow C syntax, because
+     it is intended to support other languages as well.
+
+     Language-specific data type analysis is also done in this pass,
+     and every tree node that represents an expression has a data type
+     attached.  Variables are represented as declaration nodes.
+
+     Constant folding and some arithmetic simplifications are also done
+     during this pass.
+
+     The language-independent source files for parsing are
+     `stor-layout.c', `fold-const.c', and `tree.c'.  There are also
+     header files `tree.h' and `tree.def' which define the format of
+     the tree representation.
+
+     The source files to parse C are `c-parse.in', `c-decl.c',
+     `c-typeck.c', `c-aux-info.c', `c-convert.c', and `c-lang.c' along
+     with header files `c-lex.h', and `c-tree.h'.
+
+     The source files for parsing C++ are `cp-parse.y', `cp-class.c',
+     `cp-cvt.c', `cp-decl.c', `cp-decl2.c', `cp-dem.c', `cp-except.c',
+     `cp-expr.c', `cp-init.c', `cp-lex.c', `cp-method.c', `cp-ptree.c',
+     `cp-search.c', `cp-tree.c', `cp-type2.c', and `cp-typeck.c', along
+     with header files `cp-tree.def', `cp-tree.h', and `cp-decl.h'.
+
+     The special source files for parsing Objective C are
+     `objc-parse.y', `objc-actions.c', `objc-tree.def', and
+     `objc-actions.h'.  Certain C-specific files are used for this as
+     well.
+
+     The file `c-common.c' is also used for all of the above languages.
+
+   * RTL generation.  This is the conversion of syntax tree into RTL
+     code.  It is actually done statement-by-statement during parsing,
+     but for most purposes it can be thought of as a separate pass.
+
+     This is where the bulk of target-parameter-dependent code is found,
+     since often it is necessary for strategies to apply only when
+     certain standard kinds of instructions are available.  The purpose
+     of named instruction patterns is to provide this information to
+     the RTL generation pass.
+
+     Optimization is done in this pass for `if'-conditions that are
+     comparisons, boolean operations or conditional expressions.  Tail
+     recursion is detected at this time also.  Decisions are made about
+     how best to arrange loops and how to output `switch' statements.
+
+     The source files for RTL generation include `stmt.c', `calls.c',
+     `expr.c', `explow.c', `expmed.c', `function.c', `optabs.c' and
+     `emit-rtl.c'.  Also, the file `insn-emit.c', generated from the
+     machine description by the program `genemit', is used in this
+     pass.  The header file `expr.h' is used for communication within
+     this pass.
+
+     The header files `insn-flags.h' and `insn-codes.h', generated from
+     the machine description by the programs `genflags' and `gencodes',
+     tell this pass which standard names are available for use and
+     which patterns correspond to them.
+
+     Aside from debugging information output, none of the following
+     passes refers to the tree structure representation of the function
+     (only part of which is saved).
+
+     The decision of whether the function can and should be expanded
+     inline in its subsequent callers is made at the end of rtl
+     generation.  The function must meet certain criteria, currently
+     related to the size of the function and the types and number of
+     parameters it has.  Note that this function may contain loops,
+     recursive calls to itself (tail-recursive functions can be
+     inlined!), gotos, in short, all constructs supported by GNU CC.
+     The file `integrate.c' contains the code to save a function's rtl
+     for later inlining and to inline that rtl when the function is
+     called.  The header file `integrate.h' is also used for this
+     purpose.
+
+     The option `-dr' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.rtl' to
+     the input file name.
+
+   * Jump optimization.  This pass simplifies jumps to the following
+     instruction, jumps across jumps, and jumps to jumps.  It deletes
+     unreferenced labels and unreachable code, except that unreachable
+     code that contains a loop is not recognized as unreachable in this
+     pass.  (Such loops are deleted later in the basic block analysis.)
+     It also converts some code originally written with jumps into
+     sequences of instructions that directly set values from the
+     results of comparisons, if the machine has such instructions.
+
+     Jump optimization is performed two or three times.  The first time
+     is immediately following RTL generation.  The second time is after
+     CSE, but only if CSE says repeated jump optimization is needed.
+     The last time is right before the final pass.  That time,
+     cross-jumping and deletion of no-op move instructions are done
+     together with the optimizations described above.
+
+     The source file of this pass is `jump.c'.
+
+     The option `-dj' causes a debugging dump of the RTL code after
+     this pass is run for the first time.  This dump file's name is
+     made by appending `.jump' to the input file name.
+
+   * Register scan.  This pass finds the first and last use of each
+     register, as a guide for common subexpression elimination.  Its
+     source is in `regclass.c'.
+
+   * Jump threading.  This pass detects a condition jump that branches
+     to an identical or inverse test.  Such jumps can be `threaded'
+     through the second conditional test.  The source code for this
+     pass is in `jump.c'.  This optimization is only performed if
+     `-fthread-jumps' is enabled.
+
+   * Common subexpression elimination.  This pass also does constant
+     propagation.  Its source file is `cse.c'.  If constant propagation
+     causes conditional jumps to become unconditional or to become
+     no-ops, jump optimization is run again when CSE is finished.
+
+     The option `-ds' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.cse' to
+     the input file name.
+
+   * Global common subexpression elimination.  This pass performs GCSE
+     using Morel-Renvoise Partial Redundancy Elimination, with the
+     exception that it does not try to move invariants out of loops -
+     that is left to the loop optimization pass.  This pass also
+     performs global constant and copy propagation.
+
+     The source file for this pass is gcse.c.
+
+     The option `-dG' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.gcse' to
+     the input file name.
+
+   * Loop optimization.  This pass moves constant expressions out of
+     loops, and optionally does strength-reduction and loop unrolling
+     as well.  Its source files are `loop.c' and `unroll.c', plus the
+     header `loop.h' used for communication between them.  Loop
+     unrolling uses some functions in `integrate.c' and the header
+     `integrate.h'.
+
+     The option `-dL' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.loop' to
+     the input file name.
+
+   * If `-frerun-cse-after-loop' was enabled, a second common
+     subexpression elimination pass is performed after the loop
+     optimization pass.  Jump threading is also done again at this time
+     if it was specified.
+
+     The option `-dt' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.cse2' to
+     the input file name.
+
+   * Stupid register allocation is performed at this point in a
+     nonoptimizing compilation.  It does a little data flow analysis as
+     well.  When stupid register allocation is in use, the next pass
+     executed is the reloading pass; the others in between are skipped.
+     The source file is `stupid.c'.
+
+   * Data flow analysis (`flow.c').  This pass divides the program into
+     basic blocks (and in the process deletes unreachable loops); then
+     it computes which pseudo-registers are live at each point in the
+     program, and makes the first instruction that uses a value point at
+     the instruction that computed the value.
+
+     This pass also deletes computations whose results are never used,
+     and combines memory references with add or subtract instructions
+     to make autoincrement or autodecrement addressing.
+
+     The option `-df' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.flow' to
+     the input file name.  If stupid register allocation is in use, this
+     dump file reflects the full results of such allocation.
+
+   * Instruction combination (`combine.c').  This pass attempts to
+     combine groups of two or three instructions that are related by
+     data flow into single instructions.  It combines the RTL
+     expressions for the instructions by substitution, simplifies the
+     result using algebra, and then attempts to match the result
+     against the machine description.
+
+     The option `-dc' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.combine'
+     to the input file name.
+
+   * Instruction scheduling (`sched.c').  This pass looks for
+     instructions whose output will not be available by the time that
+     it is used in subsequent instructions.  (Memory loads and floating
+     point instructions often have this behavior on RISC machines).  It
+     re-orders instructions within a basic block to try to separate the
+     definition and use of items that otherwise would cause pipeline
+     stalls.
+
+     Instruction scheduling is performed twice.  The first time is
+     immediately after instruction combination and the second is
+     immediately after reload.
+
+     The option `-dS' causes a debugging dump of the RTL code after this
+     pass is run for the first time.  The dump file's name is made by
+     appending `.sched' to the input file name.
+
+   * Register class preferencing.  The RTL code is scanned to find out
+     which register class is best for each pseudo register.  The source
+     file is `regclass.c'.
+
+   * Local register allocation (`local-alloc.c').  This pass allocates
+     hard registers to pseudo registers that are used only within one
+     basic block.  Because the basic block is linear, it can use fast
+     and powerful techniques to do a very good job.
+
+     The option `-dl' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.lreg' to
+     the input file name.
+
+   * Global register allocation (`global.c').  This pass allocates hard
+     registers for the remaining pseudo registers (those whose life
+     spans are not contained in one basic block).
+
+   * Reloading.  This pass renumbers pseudo registers with the hardware
+     registers numbers they were allocated.  Pseudo registers that did
+     not get hard registers are replaced with stack slots.  Then it
+     finds instructions that are invalid because a value has failed to
+     end up in a register, or has ended up in a register of the wrong
+     kind.  It fixes up these instructions by reloading the
+     problematical values temporarily into registers.  Additional
+     instructions are generated to do the copying.
+
+     The reload pass also optionally eliminates the frame pointer and
+     inserts instructions to save and restore call-clobbered registers
+     around calls.
+
+     Source files are `reload.c' and `reload1.c', plus the header
+     `reload.h' used for communication between them.
+
+     The option `-dg' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.greg' to
+     the input file name.
+
+   * Instruction scheduling is repeated here to try to avoid pipeline
+     stalls due to memory loads generated for spilled pseudo registers.
+
+     The option `-dR' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.sched2'
+     to the input file name.
+
+   * Jump optimization is repeated, this time including cross-jumping
+     and deletion of no-op move instructions.
+
+     The option `-dJ' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.jump2' to
+     the input file name.
+
+   * Delayed branch scheduling.  This optional pass attempts to find
+     instructions that can go into the delay slots of other
+     instructions, usually jumps and calls.  The source file name is
+     `reorg.c'.
+
+     The option `-dd' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.dbr' to
+     the input file name.
+
+   * Conversion from usage of some hard registers to usage of a register
+     stack may be done at this point.  Currently, this is supported only
+     for the floating-point registers of the Intel 80387 coprocessor.
+     The source file name is `reg-stack.c'.
+
+     The options `-dk' causes a debugging dump of the RTL code after
+     this pass.  This dump file's name is made by appending `.stack' to
+     the input file name.
+
+   * Final.  This pass outputs the assembler code for the function.  It
+     is also responsible for identifying spurious test and compare
+     instructions.  Machine-specific peephole optimizations are
+     performed at the same time.  The function entry and exit sequences
+     are generated directly as assembler code in this pass; they never
+     exist as RTL.
+
+     The source files are `final.c' plus `insn-output.c'; the latter is
+     generated automatically from the machine description by the tool
+     `genoutput'.  The header file `conditions.h' is used for
+     communication between these files.
+
+   * Debugging information output.  This is run after final because it
+     must output the stack slot offsets for pseudo registers that did
+     not get hard registers.  Source files are `dbxout.c' for DBX
+     symbol table format, `sdbout.c' for SDB symbol table format, and
+     `dwarfout.c' for DWARF symbol table format.
+
+   Some additional files are used by all or many passes:
+
+   * Every pass uses `machmode.def' and `machmode.h' which define the
+     machine modes.
+
+   * Several passes use `real.h', which defines the default
+     representation of floating point constants and how to operate on
+     them.
+
+   * All the passes that work with RTL use the header files `rtl.h' and
+     `rtl.def', and subroutines in file `rtl.c'.  The tools `gen*' also
+     use these files to read and work with the machine description RTL.
+
+   * Several passes refer to the header file `insn-config.h' which
+     contains a few parameters (C macro definitions) generated
+     automatically from the machine description RTL by the tool
+     `genconfig'.
+
+   * Several passes use the instruction recognizer, which consists of
+     `recog.c' and `recog.h', plus the files `insn-recog.c' and
+     `insn-extract.c' that are generated automatically from the machine
+     description by the tools `genrecog' and `genextract'.
+
+   * Several passes use the header files `regs.h' which defines the
+     information recorded about pseudo register usage, and
+     `basic-block.h' which defines the information recorded about basic
+     blocks.
+
+   * `hard-reg-set.h' defines the type `HARD_REG_SET', a bit-vector
+     with a bit for each hard register, and some macros to manipulate
+     it.  This type is just `int' if the machine has few enough hard
+     registers; otherwise it is an array of `int' and some of the
+     macros expand into loops.
+
+   * Several passes use instruction attributes.  A definition of the
+     attributes defined for a particular machine is in file
+     `insn-attr.h', which is generated from the machine description by
+     the program `genattr'.  The file `insn-attrtab.c' contains
+     subroutines to obtain the attribute values for insns.  It is
+     generated from the machine description by the program `genattrtab'.
+
+
+File: gcc.info,  Node: RTL,  Next: Machine Desc,  Prev: Passes,  Up: Top
+
+RTL Representation
+******************
+
+   Most of the work of the compiler is done on an intermediate
+representation called register transfer language.  In this language,
+the instructions to be output are described, pretty much one by one, in
+an algebraic form that describes what the instruction does.
+
+   RTL is inspired by Lisp lists.  It has both an internal form, made
+up of structures that point at other structures, and a textual form
+that is used in the machine description and in printed debugging dumps.
+The textual form uses nested parentheses to indicate the pointers in
+the internal form.
 
 * Menu:
 
-* Actual Bugs::		      Bugs we will fix later.
-* Installation Problems::     Problems that manifest when you install GCC.
-* Cross-Compiler Problems::   Common problems of cross compiling with GCC.
-* Interoperation::      Problems using GCC with other compilers,
-			   and with certain linkers, assemblers and debuggers.
-* External Bugs::	Problems compiling certain programs.
-* Incompatibilities::   GCC is incompatible with traditional C.
-* Fixed Headers::       GNU C uses corrected versions of system header files.
-                           This is necessary, but doesn't always work smoothly.
-* Standard Libraries::  GNU C uses the system C library, which might not be
-                           compliant with the ISO/ANSI C standard.
-* Disappointments::     Regrettable things we can't change, but not quite bugs.
-* C++ Misunderstandings::     Common misunderstandings with GNU C++.
-* Protoize Caveats::    Things to watch out for when using `protoize'.
-* Non-bugs::		Things we think are right, but some others disagree.
-* Warnings and Errors:: Which problems in your code get warnings,
-                         and which get errors.
+* RTL Objects::       Expressions vs vectors vs strings vs integers.
+* Accessors::         Macros to access expression operands or vector elts.
+* Flags::             Other flags in an RTL expression.
+* Machine Modes::     Describing the size and format of a datum.
+* Constants::         Expressions with constant values.
+* Regs and Memory::   Expressions representing register contents or memory.
+* Arithmetic::        Expressions representing arithmetic on other expressions.
+* Comparisons::       Expressions representing comparison of expressions.
+* Bit Fields::        Expressions representing bitfields in memory or reg.
+* Conversions::       Extending, truncating, floating or fixing.
+* RTL Declarations::  Declaring volatility, constancy, etc.
+* Side Effects::      Expressions for storing in registers, etc.
+* Incdec::            Embedded side-effects for autoincrement addressing.
+* Assembler::         Representing `asm' with operands.
+* Insns::             Expression types for entire insns.
+* Calls::             RTL representation of function call insns.
+* Sharing::           Some expressions are unique; others *must* be copied.
+* Reading RTL::       Reading textual RTL from a file.
 
 
-File: gcc.info,  Node: Actual Bugs,  Next: Installation Problems,  Up: Trouble
+File: gcc.info,  Node: RTL Objects,  Next: Accessors,  Prev: RTL,  Up: RTL
 
-Actual Bugs We Haven't Fixed Yet
-================================
+RTL Object Types
+================
 
-   * The `fixincludes' script interacts badly with automounters; if the
-     directory of system header files is automounted, it tends to be
-     unmounted while `fixincludes' is running.  This would seem to be a
-     bug in the automounter.  We don't know any good way to work around
-     it.
+   RTL uses five kinds of objects: expressions, integers, wide integers,
+strings and vectors.  Expressions are the most important ones.  An RTL
+expression ("RTX", for short) is a C structure, but it is usually
+referred to with a pointer; a type that is given the typedef name `rtx'.
 
-   * The `fixproto' script will sometimes add prototypes for the
-     `sigsetjmp' and `siglongjmp' functions that reference the
-     `jmp_buf' type before that type is defined.  To work around this,
-     edit the offending file and place the typedef in front of the
-     prototypes.
+   An integer is simply an `int'; their written form uses decimal
+digits.  A wide integer is an integral object whose type is
+`HOST_WIDE_INT' (*note Config::.); their written form uses decimal
+digits.
 
-   * There are several obscure case of mis-using struct, union, and
-     enum tags that are not detected as errors by the compiler.
+   A string is a sequence of characters.  In core it is represented as a
+`char *' in usual C fashion, and it is written in C syntax as well.
+However, strings in RTL may never be null.  If you write an empty
+string in a machine description, it is represented in core as a null
+pointer rather than as a pointer to a null character.  In certain
+contexts, these null pointers instead of strings are valid.  Within RTL
+code, strings are most commonly found inside `symbol_ref' expressions,
+but they appear in other contexts in the RTL expressions that make up
+machine descriptions.
 
-   * When `-pedantic-errors' is specified, GCC will incorrectly give an
-     error message when a function name is specified in an expression
-     involving the comma operator.
+   A vector contains an arbitrary number of pointers to expressions.
+The number of elements in the vector is explicitly present in the
+vector.  The written form of a vector consists of square brackets
+(`[...]') surrounding the elements, in sequence and with whitespace
+separating them.  Vectors of length zero are not created; null pointers
+are used instead.
 
-   * Loop unrolling doesn't work properly for certain C++ programs.
-     This is a bug in the C++ front end.  It sometimes emits incorrect
-     debug info, and the loop unrolling code is unable to recover from
-     this error.
+   Expressions are classified by "expression codes" (also called RTX
+codes).  The expression code is a name defined in `rtl.def', which is
+also (in upper case) a C enumeration constant.  The possible expression
+codes and their meanings are machine-independent.  The code of an RTX
+can be extracted with the macro `GET_CODE (X)' and altered with
+`PUT_CODE (X, NEWCODE)'.
+
+   The expression code determines how many operands the expression
+contains, and what kinds of objects they are.  In RTL, unlike Lisp, you
+cannot tell by looking at an operand what kind of object it is.
+Instead, you must know from its context--from the expression code of
+the containing expression.  For example, in an expression of code
+`subreg', the first operand is to be regarded as an expression and the
+second operand as an integer.  In an expression of code `plus', there
+are two operands, both of which are to be regarded as expressions.  In
+a `symbol_ref' expression, there is one operand, which is to be
+regarded as a string.
+
+   Expressions are written as parentheses containing the name of the
+expression type, its flags and machine mode if any, and then the
+operands of the expression (separated by spaces).
+
+   Expression code names in the `md' file are written in lower case,
+but when they appear in C code they are written in upper case.  In this
+manual, they are shown as follows: `const_int'.
+
+   In a few contexts a null pointer is valid where an expression is
+normally wanted.  The written form of this is `(nil)'.
 
 
-File: gcc.info,  Node: Installation Problems,  Next: Cross-Compiler Problems,  Prev: Actual Bugs,  Up: Trouble
+File: gcc.info,  Node: Accessors,  Next: Flags,  Prev: RTL Objects,  Up: RTL
 
-Installation Problems
-=====================
-
-   This is a list of problems (and some apparent problems which don't
-really mean anything is wrong) that show up during installation of GNU
-CC.
-
-   * On certain systems, defining certain environment variables such as
-     `CC' can interfere with the functioning of `make'.
-
-   * If you encounter seemingly strange errors when trying to build the
-     compiler in a directory other than the source directory, it could
-     be because you have previously configured the compiler in the
-     source directory.  Make sure you have done all the necessary
-     preparations.  *Note Other Dir::.
-
-   * If you build GCC on a BSD system using a directory stored in a
-     System V file system, problems may occur in running `fixincludes'
-     if the System V file system doesn't support symbolic links.  These
-     problems result in a failure to fix the declaration of `size_t' in
-     `sys/types.h'.  If you find that `size_t' is a signed type and
-     that type mismatches occur, this could be the cause.
-
-     The solution is not to use such a directory for building GCC.
-
-   * In previous versions of GCC, the `gcc' driver program looked for
-     `as' and `ld' in various places; for example, in files beginning
-     with `/usr/local/lib/gcc-'.  GCC version 2 looks for them in the
-     directory `/usr/local/lib/gcc-lib/TARGET/VERSION'.
-
-     Thus, to use a version of `as' or `ld' that is not the system
-     default, for example `gas' or GNU `ld', you must put them in that
-     directory (or make links to them from that directory).
-
-   * Some commands executed when making the compiler may fail (return a
-     non-zero status) and be ignored by `make'.  These failures, which
-     are often due to files that were not found, are expected, and can
-     safely be ignored.
-
-   * It is normal to have warnings in compiling certain files about
-     unreachable code and about enumeration type clashes.  These files'
-     names begin with `insn-'.  Also, `real.c' may get some warnings
-     that you can ignore.
-
-   * Sometimes `make' recompiles parts of the compiler when installing
-     the compiler.  In one case, this was traced down to a bug in
-     `make'.  Either ignore the problem or switch to GNU Make.
-
-   * If you have installed a program known as purify, you may find that
-     it causes errors while linking `enquire', which is part of building
-     GCC.  The fix is to get rid of the file `real-ld' which purify
-     installs--so that GCC won't try to use it.
-
-   * On GNU/Linux SLS 1.01, there is a problem with `libc.a': it does
-     not contain the obstack functions.  However, GCC assumes that the
-     obstack functions are in `libc.a' when it is the GNU C library.
-     To work around this problem, change the `__GNU_LIBRARY__'
-     conditional around line 31 to `#if 1'.
-
-   * On some 386 systems, building the compiler never finishes because
-     `enquire' hangs due to a hardware problem in the motherboard--it
-     reports floating point exceptions to the kernel incorrectly.  You
-     can install GCC except for `float.h' by patching out the command to
-     run `enquire'.  You may also be able to fix the problem for real by
-     getting a replacement motherboard.  This problem was observed in
-     Revision E of the Micronics motherboard, and is fixed in Revision
-     F.  It has also been observed in the MYLEX MXA-33 motherboard.
-
-     If you encounter this problem, you may also want to consider
-     removing the FPU from the socket during the compilation.
-     Alternatively, if you are running SCO Unix, you can reboot and
-     force the FPU to be ignored.  To do this, type `hd(40)unix auto
-     ignorefpu'.
-
-   * On some 386 systems, GCC crashes trying to compile `enquire.c'.
-     This happens on machines that don't have a 387 FPU chip.  On 386
-     machines, the system kernel is supposed to emulate the 387 when you
-     don't have one.  The crash is due to a bug in the emulator.
-
-     One of these systems is the Unix from Interactive Systems: 386/ix.
-     On this system, an alternate emulator is provided, and it does
-     work.  To use it, execute this command as super-user:
-
-          ln /etc/emulator.rel1 /etc/emulator
-
-     and then reboot the system.  (The default emulator file remains
-     present under the name `emulator.dflt'.)
-
-     Try using `/etc/emulator.att', if you have such a problem on the
-     SCO system.
-
-     Another system which has this problem is Esix.  We don't know
-     whether it has an alternate emulator that works.
-
-     On NetBSD 0.8, a similar problem manifests itself as these error
-     messages:
-
-          enquire.c: In function `fprop':
-          enquire.c:2328: floating overflow
-
-   * On SCO systems, when compiling GCC with the system's compiler, do
-     not use `-O'.  Some versions of the system's compiler miscompile
-     GCC with `-O'.
-
-   * Sometimes on a Sun 4 you may observe a crash in the program
-     `genflags' or `genoutput' while building GCC.  This is said to be
-     due to a bug in `sh'.  You can probably get around it by running
-     `genflags' or `genoutput' manually and then retrying the `make'.
-
-   * On Solaris 2, executables of GCC version 2.0.2 are commonly
-     available, but they have a bug that shows up when compiling current
-     versions of GCC: undefined symbol errors occur during assembly if
-     you use `-g'.
-
-     The solution is to compile the current version of GCC without
-     `-g'.  That makes a working compiler which you can use to recompile
-     with `-g'.
-
-   * Solaris 2 comes with a number of optional OS packages.  Some of
-     these packages are needed to use GCC fully.  If you did not
-     install all optional packages when installing Solaris, you will
-     need to verify that the packages that GCC needs are installed.
-
-     To check whether an optional package is installed, use the
-     `pkginfo' command.  To add an optional package, use the `pkgadd'
-     command.  For further details, see the Solaris documentation.
-
-     For Solaris 2.0 and 2.1, GCC needs six packages: `SUNWarc',
-     `SUNWbtool', `SUNWesu', `SUNWhea', `SUNWlibm', and `SUNWtoo'.
-
-     For Solaris 2.2, GCC needs an additional seventh package:
-     `SUNWsprot'.
-
-   * On Solaris 2, trying to use the linker and other tools in
-     `/usr/ucb' to install GCC has been observed to cause trouble.  For
-     example, the linker may hang indefinitely.  The fix is to remove
-     `/usr/ucb' from your `PATH'.
-
-   * If you use the 1.31 version of the MIPS assembler (such as was
-     shipped with Ultrix 3.1), you will need to use the
-     -fno-delayed-branch switch when optimizing floating point code.
-     Otherwise, the assembler will complain when the GCC compiler fills
-     a branch delay slot with a floating point instruction, such as
-     `add.d'.
-
-   * If on a MIPS system you get an error message saying "does not have
-     gp sections for all it's [sic] sectons [sic]", don't worry about
-     it.  This happens whenever you use GAS with the MIPS linker, but
-     there is not really anything wrong, and it is okay to use the
-     output file.  You can stop such warnings by installing the GNU
-     linker.
-
-     It would be nice to extend GAS to produce the gp tables, but they
-     are optional, and there should not be a warning about their
-     absence.
-
-   * In Ultrix 4.0 on the MIPS machine, `stdio.h' does not work with GNU
-     CC at all unless it has been fixed with `fixincludes'.  This causes
-     problems in building GCC.  Once GCC is installed, the problems go
-     away.
-
-     To work around this problem, when making the stage 1 compiler,
-     specify this option to Make:
-
-          GCC_FOR_TARGET="./xgcc -B./ -I./include"
-
-     When making stage 2 and stage 3, specify this option:
-
-          CFLAGS="-g -I./include"
-
-   * Users have reported some problems with version 2.0 of the MIPS
-     compiler tools that were shipped with Ultrix 4.1.  Version 2.10
-     which came with Ultrix 4.2 seems to work fine.
-
-     Users have also reported some problems with version 2.20 of the
-     MIPS compiler tools that were shipped with RISC/os 4.x.  The
-     earlier version 2.11 seems to work fine.
-
-   * Some versions of the MIPS linker will issue an assertion failure
-     when linking code that uses `alloca' against shared libraries on
-     RISC-OS 5.0, and DEC's OSF/1 systems.  This is a bug in the
-     linker, that is supposed to be fixed in future revisions.  To
-     protect against this, GCC passes `-non_shared' to the linker
-     unless you pass an explicit `-shared' or `-call_shared' switch.
-
-   * On System V release 3, you may get this error message while
-     linking:
-
-          ld fatal: failed to write symbol name SOMETHING
-           in strings table for file WHATEVER
-
-     This probably indicates that the disk is full or your ULIMIT won't
-     allow the file to be as large as it needs to be.
-
-     This problem can also result because the kernel parameter `MAXUMEM'
-     is too small.  If so, you must regenerate the kernel and make the
-     value much larger.  The default value is reported to be 1024; a
-     value of 32768 is said to work.  Smaller values may also work.
-
-   * On System V, if you get an error like this,
-
-          /usr/local/lib/bison.simple: In function `yyparse':
-          /usr/local/lib/bison.simple:625: virtual memory exhausted
-
-     that too indicates a problem with disk space, ULIMIT, or `MAXUMEM'.
-
-   * Current GCC versions probably do not work on version 2 of the NeXT
-     operating system.
-
-   * On NeXTStep 3.0, the Objective C compiler does not work, due,
-     apparently, to a kernel bug that it happens to trigger.  This
-     problem does not happen on 3.1.
-
-   * On the Tower models 4N0 and 6N0, by default a process is not
-     allowed to have more than one megabyte of memory.  GCC cannot
-     compile itself (or many other programs) with `-O' in that much
-     memory.
-
-     To solve this problem, reconfigure the kernel adding the following
-     line to the configuration file:
-
-          MAXUMEM = 4096
-
-   * On HP 9000 series 300 or 400 running HP-UX release 8.0, there is a
-     bug in the assembler that must be fixed before GCC can be built.
-     This bug manifests itself during the first stage of compilation,
-     while building `libgcc2.a':
-
-          _floatdisf
-          cc1: warning: `-g' option not supported on this version of GCC
-          cc1: warning: `-g1' option not supported on this version of GCC
-          ./xgcc: Internal compiler error: program as got fatal signal 11
-
-     A patched version of the assembler is available by anonymous ftp
-     from `altdorf.ai.mit.edu' as the file
-     `archive/cph/hpux-8.0-assembler'.  If you have HP software support,
-     the patch can also be obtained directly from HP, as described in
-     the following note:
-
-          This is the patched assembler, to patch SR#1653-010439, where
-          the assembler aborts on floating point constants.
-
-          The bug is not really in the assembler, but in the shared
-          library version of the function "cvtnum(3c)".  The bug on
-          "cvtnum(3c)" is SR#4701-078451.  Anyway, the attached
-          assembler uses the archive library version of "cvtnum(3c)"
-          and thus does not exhibit the bug.
-
-     This patch is also known as PHCO_4484.
-
-   * On HP-UX version 8.05, but not on 8.07 or more recent versions,
-     the `fixproto' shell script triggers a bug in the system shell.
-     If you encounter this problem, upgrade your operating system or
-     use BASH (the GNU shell) to run `fixproto'.
-
-   * Some versions of the Pyramid C compiler are reported to be unable
-     to compile GCC.  You must use an older version of GCC for
-     bootstrapping.  One indication of this problem is if you get a
-     crash when GCC compiles the function `muldi3' in file `libgcc2.c'.
-
-     You may be able to succeed by getting GCC version 1, installing it,
-     and using it to compile GCC version 2.  The bug in the Pyramid C
-     compiler does not seem to affect GCC version 1.
-
-   * There may be similar problems on System V Release 3.1 on 386
-     systems.
-
-   * On the Intel Paragon (an i860 machine), if you are using operating
-     system version 1.0, you will get warnings or errors about
-     redefinition of `va_arg' when you build GCC.
-
-     If this happens, then you need to link most programs with the
-     library `iclib.a'.  You must also modify `stdio.h' as follows:
-     before the lines
-
-          #if     defined(__i860__) && !defined(_VA_LIST)
-          #include <va_list.h>
-
-     insert the line
-
-          #if __PGC__
-
-     and after the lines
-
-          extern int  vprintf(const char *, va_list );
-          extern int  vsprintf(char *, const char *, va_list );
-          #endif
-
-     insert the line
-
-          #endif /* __PGC__ */
-
-     These problems don't exist in operating system version 1.1.
-
-   * On the Altos 3068, programs compiled with GCC won't work unless you
-     fix a kernel bug.  This happens using system versions V.2.2 1.0gT1
-     and V.2.2 1.0e and perhaps later versions as well.  See the file
-     `README.ALTOS'.
-
-   * You will get several sorts of compilation and linking errors on the
-     we32k if you don't follow the special instructions.  *Note
-     Configurations::.
-
-   * A bug in the HP-UX 8.05 (and earlier) shell will cause the fixproto
-     program to report an error of the form:
-
-          ./fixproto: sh internal 1K buffer overflow
-
-     To fix this, change the first line of the fixproto script to look
-     like:
-
-          #!/bin/ksh
-
-
-File: gcc.info,  Node: Cross-Compiler Problems,  Next: Interoperation,  Prev: Installation Problems,  Up: Trouble
-
-Cross-Compiler Problems
-=======================
-
-   You may run into problems with cross compilation on certain machines,
-for several reasons.
-
-   * Cross compilation can run into trouble for certain machines because
-     some target machines' assemblers require floating point numbers to
-     be written as *integer* constants in certain contexts.
-
-     The compiler writes these integer constants by examining the
-     floating point value as an integer and printing that integer,
-     because this is simple to write and independent of the details of
-     the floating point representation.  But this does not work if the
-     compiler is running on a different machine with an incompatible
-     floating point format, or even a different byte-ordering.
-
-     In addition, correct constant folding of floating point values
-     requires representing them in the target machine's format.  (The C
-     standard does not quite require this, but in practice it is the
-     only way to win.)
-
-     It is now possible to overcome these problems by defining macros
-     such as `REAL_VALUE_TYPE'.  But doing so is a substantial amount of
-     work for each target machine.  *Note Cross-compilation::.
-
-   * At present, the program `mips-tfile' which adds debug support to
-     object files on MIPS systems does not work in a cross compile
-     environment.
-
-
-File: gcc.info,  Node: Interoperation,  Next: External Bugs,  Prev: Cross-Compiler Problems,  Up: Trouble
-
-Interoperation
-==============
-
-   This section lists various difficulties encountered in using GNU C or
-GNU C++ together with other compilers or with the assemblers, linkers,
-libraries and debuggers on certain systems.
-
-   * Objective C does not work on the RS/6000.
-
-   * GNU C++ does not do name mangling in the same way as other C++
-     compilers.  This means that object files compiled with one compiler
-     cannot be used with another.
-
-     This effect is intentional, to protect you from more subtle
-     problems.  Compilers differ as to many internal details of C++
-     implementation, including: how class instances are laid out, how
-     multiple inheritance is implemented, and how virtual function
-     calls are handled.  If the name encoding were made the same, your
-     programs would link against libraries provided from other
-     compilers--but the programs would then crash when run.
-     Incompatible libraries are then detected at link time, rather than
-     at run time.
-
-   * Older GDB versions sometimes fail to read the output of GCC version
-     2.  If you have trouble, get GDB version 4.4 or later.
-
-   * DBX rejects some files produced by GCC, though it accepts similar
-     constructs in output from PCC.  Until someone can supply a coherent
-     description of what is valid DBX input and what is not, there is
-     nothing I can do about these problems.  You are on your own.
-
-   * The GNU assembler (GAS) does not support PIC.  To generate PIC
-     code, you must use some other assembler, such as `/bin/as'.
-
-   * On some BSD systems, including some versions of Ultrix, use of
-     profiling causes static variable destructors (currently used only
-     in C++) not to be run.
-
-   * Use of `-I/usr/include' may cause trouble.
-
-     Many systems come with header files that won't work with GCC unless
-     corrected by `fixincludes'.  The corrected header files go in a new
-     directory; GCC searches this directory before `/usr/include'.  If
-     you use `-I/usr/include', this tells GCC to search `/usr/include'
-     earlier on, before the corrected headers.  The result is that you
-     get the uncorrected header files.
-
-     Instead, you should use these options (when compiling C programs):
-
-          -I/usr/local/lib/gcc-lib/TARGET/VERSION/include -I/usr/include
-
-     For C++ programs, GCC also uses a special directory that defines
-     C++ interfaces to standard C subroutines.  This directory is meant
-     to be searched *before* other standard include directories, so
-     that it takes precedence.  If you are compiling C++ programs and
-     specifying include directories explicitly, use this option first,
-     then the two options above:
-
-          -I/usr/local/lib/g++-include
-
-   * On some SGI systems, when you use `-lgl_s' as an option, it gets
-     translated magically to `-lgl_s -lX11_s -lc_s'.  Naturally, this
-     does not happen when you use GCC.  You must specify all three
-     options explicitly.
-
-   * On a Sparc, GCC aligns all values of type `double' on an 8-byte
-     boundary, and it expects every `double' to be so aligned.  The Sun
-     compiler usually gives `double' values 8-byte alignment, with one
-     exception: function arguments of type `double' may not be aligned.
-
-     As a result, if a function compiled with Sun CC takes the address
-     of an argument of type `double' and passes this pointer of type
-     `double *' to a function compiled with GCC, dereferencing the
-     pointer may cause a fatal signal.
-
-     One way to solve this problem is to compile your entire program
-     with GNU CC.  Another solution is to modify the function that is
-     compiled with Sun CC to copy the argument into a local variable;
-     local variables are always properly aligned.  A third solution is
-     to modify the function that uses the pointer to dereference it via
-     the following function `access_double' instead of directly with
-     `*':
-
-          inline double
-          access_double (double *unaligned_ptr)
-          {
-            union d2i { double d; int i[2]; };
-          
-            union d2i *p = (union d2i *) unaligned_ptr;
-            union d2i u;
-          
-            u.i[0] = p->i[0];
-            u.i[1] = p->i[1];
-          
-            return u.d;
-          }
-
-     Storing into the pointer can be done likewise with the same union.
-
-   * On Solaris, the `malloc' function in the `libmalloc.a' library may
-     allocate memory that is only 4 byte aligned.  Since GCC on the
-     Sparc assumes that doubles are 8 byte aligned, this may result in a
-     fatal signal if doubles are stored in memory allocated by the
-     `libmalloc.a' library.
-
-     The solution is to not use the `libmalloc.a' library.  Use instead
-     `malloc' and related functions from `libc.a'; they do not have
-     this problem.
-
-   * Sun forgot to include a static version of `libdl.a' with some
-     versions of SunOS (mainly 4.1).  This results in undefined symbols
-     when linking static binaries (that is, if you use `-static').  If
-     you see undefined symbols `_dlclose', `_dlsym' or `_dlopen' when
-     linking, compile and link against the file `mit/util/misc/dlsym.c'
-     from the MIT version of X windows.
-
-   * The 128-bit long double format that the Sparc port supports
-     currently works by using the architecturally defined quad-word
-     floating point instructions.  Since there is no hardware that
-     supports these instructions they must be emulated by the operating
-     system.  Long doubles do not work in Sun OS versions 4.0.3 and
-     earlier, because the kernel emulator uses an obsolete and
-     incompatible format.  Long doubles do not work in Sun OS version
-     4.1.1 due to a problem in a Sun library.  Long doubles do work on
-     Sun OS versions 4.1.2 and higher, but GCC does not enable them by
-     default.  Long doubles appear to work in Sun OS 5.x (Solaris 2.x).
-
-   * On HP-UX version 9.01 on the HP PA, the HP compiler `cc' does not
-     compile GCC correctly.  We do not yet know why.  However, GCC
-     compiled on earlier HP-UX versions works properly on HP-UX 9.01
-     and can compile itself properly on 9.01.
-
-   * On the HP PA machine, ADB sometimes fails to work on functions
-     compiled with GCC.  Specifically, it fails to work on functions
-     that use `alloca' or variable-size arrays.  This is because GCC
-     doesn't generate HP-UX unwind descriptors for such functions.  It
-     may even be impossible to generate them.
-
-   * Debugging (`-g') is not supported on the HP PA machine, unless you
-     use the preliminary GNU tools (*note Installation::.).
-
-   * Taking the address of a label may generate errors from the HP-UX
-     PA assembler.  GAS for the PA does not have this problem.
-
-   * Using floating point parameters for indirect calls to static
-     functions will not work when using the HP assembler.  There simply
-     is no way for GCC to specify what registers hold arguments for
-     static functions when using the HP assembler.  GAS for the PA does
-     not have this problem.
-
-   * In extremely rare cases involving some very large functions you may
-     receive errors from the HP linker complaining about an out of
-     bounds unconditional branch offset.  This used to occur more often
-     in previous versions of GCC, but is now exceptionally rare.  If
-     you should run into it, you can work around by making your
-     function smaller.
-
-   * GCC compiled code sometimes emits warnings from the HP-UX
-     assembler of the form:
-
-          (warning) Use of GR3 when
-            frame >= 8192 may cause conflict.
-
-     These warnings are harmless and can be safely ignored.
-
-   * The current version of the assembler (`/bin/as') for the RS/6000
-     has certain problems that prevent the `-g' option in GCC from
-     working.  Note that `Makefile.in' uses `-g' by default when
-     compiling `libgcc2.c'.
-
-     IBM has produced a fixed version of the assembler.  The upgraded
-     assembler unfortunately was not included in any of the AIX 3.2
-     update PTF releases (3.2.2, 3.2.3, or 3.2.3e).  Users of AIX 3.1
-     should request PTF U403044 from IBM and users of AIX 3.2 should
-     request PTF U416277.  See the file `README.RS6000' for more
-     details on these updates.
-
-     You can test for the presence of a fixed assembler by using the
-     command
-
-          as -u < /dev/null
-
-     If the command exits normally, the assembler fix already is
-     installed.  If the assembler complains that "-u" is an unknown
-     flag, you need to order the fix.
-
-   * On the IBM RS/6000, compiling code of the form
-
-          extern int foo;
-          
-          ... foo ...
-          
-          static int foo;
-
-     will cause the linker to report an undefined symbol `foo'.
-     Although this behavior differs from most other systems, it is not a
-     bug because redefining an `extern' variable as `static' is
-     undefined in ANSI C.
-
-   * AIX on the RS/6000 provides support (NLS) for environments outside
-     of the United States.  Compilers and assemblers use NLS to support
-     locale-specific representations of various objects including
-     floating-point numbers ("." vs "," for separating decimal
-     fractions).  There have been problems reported where the library
-     linked with GCC does not produce the same floating-point formats
-     that the assembler accepts.  If you have this problem, set the
-     LANG environment variable to "C" or "En_US".
-
-   * Even if you specify `-fdollars-in-identifiers', you cannot
-     successfully use `$' in identifiers on the RS/6000 due to a
-     restriction in the IBM assembler.  GAS supports these identifiers.
-
-   * On the RS/6000, XLC version 1.3.0.0 will miscompile `jump.c'.  XLC
-     version 1.3.0.1 or later fixes this problem.  You can obtain
-     XLC-1.3.0.2 by requesting PTF 421749 from IBM.
-
-   * There is an assembler bug in versions of DG/UX prior to 5.4.2.01
-     that occurs when the `fldcr' instruction is used.  GCC uses
-     `fldcr' on the 88100 to serialize volatile memory references.  Use
-     the option `-mno-serialize-volatile' if your version of the
-     assembler has this bug.
-
-   * On VMS, GAS versions 1.38.1 and earlier may cause spurious warning
-     messages from the linker.  These warning messages complain of
-     mismatched psect attributes.  You can ignore them.  *Note VMS
-     Install::.
-
-   * On NewsOS version 3, if you include both of the files `stddef.h'
-     and `sys/types.h', you get an error because there are two typedefs
-     of `size_t'.  You should change `sys/types.h' by adding these
-     lines around the definition of `size_t':
-
-          #ifndef _SIZE_T
-          #define _SIZE_T
-          ACTUAL TYPEDEF HERE
-          #endif
-
-   * On the Alliant, the system's own convention for returning
-     structures and unions is unusual, and is not compatible with GCC
-     no matter what options are used.
-
-   * On the IBM RT PC, the MetaWare HighC compiler (hc) uses a different
-     convention for structure and union returning.  Use the option
-     `-mhc-struct-return' to tell GCC to use a convention compatible
-     with it.
-
-   * On Ultrix, the Fortran compiler expects registers 2 through 5 to
-     be saved by function calls.  However, the C compiler uses
-     conventions compatible with BSD Unix: registers 2 through 5 may be
-     clobbered by function calls.
-
-     GCC uses the same convention as the Ultrix C compiler.  You can use
-     these options to produce code compatible with the Fortran compiler:
-
-          -fcall-saved-r2 -fcall-saved-r3 -fcall-saved-r4 -fcall-saved-r5
-
-   * On the WE32k, you may find that programs compiled with GCC do not
-     work with the standard shared C library.  You may need to link with
-     the ordinary C compiler.  If you do so, you must specify the
-     following options:
-
-          -L/usr/local/lib/gcc-lib/we32k-att-sysv/2.8.1 -lgcc -lc_s
-
-     The first specifies where to find the library `libgcc.a' specified
-     with the `-lgcc' option.
-
-     GCC does linking by invoking `ld', just as `cc' does, and there is
-     no reason why it *should* matter which compilation program you use
-     to invoke `ld'.  If someone tracks this problem down, it can
-     probably be fixed easily.
-
-   * On the Alpha, you may get assembler errors about invalid syntax as
-     a result of floating point constants.  This is due to a bug in the
-     C library functions `ecvt', `fcvt' and `gcvt'.  Given valid
-     floating point numbers, they sometimes print `NaN'.
-
-   * On Irix 4.0.5F (and perhaps in some other versions), an assembler
-     bug sometimes reorders instructions incorrectly when optimization
-     is turned on.  If you think this may be happening to you, try
-     using the GNU assembler; GAS version 2.1 supports ECOFF on Irix.
-
-     Or use the `-noasmopt' option when you compile GCC with itself,
-     and then again when you compile your program.  (This is a temporary
-     kludge to turn off assembler optimization on Irix.)  If this
-     proves to be what you need, edit the assembler spec in the file
-     `specs' so that it unconditionally passes `-O0' to the assembler,
-     and never passes `-O2' or `-O3'.
-
-
-File: gcc.info,  Node: External Bugs,  Next: Incompatibilities,  Prev: Interoperation,  Up: Trouble
-
-Problems Compiling Certain Programs
-===================================
-
-   Certain programs have problems compiling.
-
-   * Parse errors may occur compiling X11 on a Decstation running
-     Ultrix 4.2 because of problems in DEC's versions of the X11 header
-     files `X11/Xlib.h' and `X11/Xutil.h'.  People recommend adding
-     `-I/usr/include/mit' to use the MIT versions of the header files,
-     using the `-traditional' switch to turn off ANSI C, or fixing the
-     header files by adding this:
-
-          #ifdef __STDC__
-          #define NeedFunctionPrototypes 0
-          #endif
-
-   * On various 386 Unix systems derived from System V, including SCO,
-     ISC, and ESIX, you may get error messages about running out of
-     virtual memory while compiling certain programs.
-
-     You can prevent this problem by linking GCC with the GNU malloc
-     (which thus replaces the malloc that comes with the system).  GNU
-     malloc is available as a separate package, and also in the file
-     `src/gmalloc.c' in the GNU Emacs 19 distribution.
-
-     If you have installed GNU malloc as a separate library package,
-     use this option when you relink GCC:
-
-          MALLOC=/usr/local/lib/libgmalloc.a
-
-     Alternatively, if you have compiled `gmalloc.c' from Emacs 19, copy
-     the object file to `gmalloc.o' and use this option when you relink
-     GCC:
-
-          MALLOC=gmalloc.o
-
-
-File: gcc.info,  Node: Incompatibilities,  Next: Fixed Headers,  Prev: External Bugs,  Up: Trouble
-
-Incompatibilities of GCC
-========================
-
-   There are several noteworthy incompatibilities between GNU C and K&R
-(non-ANSI) versions of C.  The `-traditional' option eliminates many of
-these incompatibilities, *but not all*, by telling GNU C to behave like
-a K&R C compiler.
-
-   * GCC normally makes string constants read-only.  If several
-     identical-looking string constants are used, GCC stores only one
-     copy of the string.
-
-     One consequence is that you cannot call `mktemp' with a string
-     constant argument.  The function `mktemp' always alters the string
-     its argument points to.
-
-     Another consequence is that `sscanf' does not work on some systems
-     when passed a string constant as its format control string or
-     input.  This is because `sscanf' incorrectly tries to write into
-     the string constant.  Likewise `fscanf' and `scanf'.
-
-     The best solution to these problems is to change the program to use
-     `char'-array variables with initialization strings for these
-     purposes instead of string constants.  But if this is not possible,
-     you can use the `-fwritable-strings' flag, which directs GCC to
-     handle string constants the same way most C compilers do.
-     `-traditional' also has this effect, among others.
-
-   * `-2147483648' is positive.
-
-     This is because 2147483648 cannot fit in the type `int', so
-     (following the ANSI C rules) its data type is `unsigned long int'.
-     Negating this value yields 2147483648 again.
-
-   * GCC does not substitute macro arguments when they appear inside of
-     string constants.  For example, the following macro in GCC
-
-          #define foo(a) "a"
-
-     will produce output `"a"' regardless of what the argument A is.
-
-     The `-traditional' option directs GCC to handle such cases (among
-     others) in the old-fashioned (non-ANSI) fashion.
-
-   * When you use `setjmp' and `longjmp', the only automatic variables
-     guaranteed to remain valid are those declared `volatile'.  This is
-     a consequence of automatic register allocation.  Consider this
-     function:
-
-          jmp_buf j;
-          
-          foo ()
-          {
-            int a, b;
-          
-            a = fun1 ();
-            if (setjmp (j))
-              return a;
-          
-            a = fun2 ();
-            /* `longjmp (j)' may occur in `fun3'. */
-            return a + fun3 ();
-          }
-
-     Here `a' may or may not be restored to its first value when the
-     `longjmp' occurs.  If `a' is allocated in a register, then its
-     first value is restored; otherwise, it keeps the last value stored
-     in it.
-
-     If you use the `-W' option with the `-O' option, you will get a
-     warning when GCC thinks such a problem might be possible.
-
-     The `-traditional' option directs GNU C to put variables in the
-     stack by default, rather than in registers, in functions that call
-     `setjmp'.  This results in the behavior found in traditional C
-     compilers.
-
-   * Programs that use preprocessing directives in the middle of macro
-     arguments do not work with GCC.  For example, a program like this
-     will not work:
-
-          foobar (
-          #define luser
-                  hack)
-
-     ANSI C does not permit such a construct.  It would make sense to
-     support it when `-traditional' is used, but it is too much work to
-     implement.
-
-   * Declarations of external variables and functions within a block
-     apply only to the block containing the declaration.  In other
-     words, they have the same scope as any other declaration in the
-     same place.
-
-     In some other C compilers, a `extern' declaration affects all the
-     rest of the file even if it happens within a block.
-
-     The `-traditional' option directs GNU C to treat all `extern'
-     declarations as global, like traditional compilers.
-
-   * In traditional C, you can combine `long', etc., with a typedef
-     name, as shown here:
-
-          typedef int foo;
-          typedef long foo bar;
-
-     In ANSI C, this is not allowed: `long' and other type modifiers
-     require an explicit `int'.  Because this criterion is expressed by
-     Bison grammar rules rather than C code, the `-traditional' flag
-     cannot alter it.
-
-   * PCC allows typedef names to be used as function parameters.  The
-     difficulty described immediately above applies here too.
-
-   * PCC allows whitespace in the middle of compound assignment
-     operators such as `+='.  GCC, following the ANSI standard, does not
-     allow this.  The difficulty described immediately above applies
-     here too.
-
-   * GCC complains about unterminated character constants inside of
-     preprocessing conditionals that fail.  Some programs have English
-     comments enclosed in conditionals that are guaranteed to fail; if
-     these comments contain apostrophes, GCC will probably report an
-     error.  For example, this code would produce an error:
-
-          #if 0
-          You can't expect this to work.
-          #endif
-
-     The best solution to such a problem is to put the text into an
-     actual C comment delimited by `/*...*/'.  However, `-traditional'
-     suppresses these error messages.
-
-   * Many user programs contain the declaration `long time ();'.  In the
-     past, the system header files on many systems did not actually
-     declare `time', so it did not matter what type your program
-     declared it to return.  But in systems with ANSI C headers, `time'
-     is declared to return `time_t', and if that is not the same as
-     `long', then `long time ();' is erroneous.
-
-     The solution is to change your program to use `time_t' as the
-     return type of `time'.
-
-   * When compiling functions that return `float', PCC converts it to a
-     double.  GCC actually returns a `float'.  If you are concerned
-     with PCC compatibility, you should declare your functions to return
-     `double'; you might as well say what you mean.
-
-   * When compiling functions that return structures or unions, GCC
-     output code normally uses a method different from that used on most
-     versions of Unix.  As a result, code compiled with GCC cannot call
-     a structure-returning function compiled with PCC, and vice versa.
-
-     The method used by GCC is as follows: a structure or union which is
-     1, 2, 4 or 8 bytes long is returned like a scalar.  A structure or
-     union with any other size is stored into an address supplied by
-     the caller (usually in a special, fixed register, but on some
-     machines it is passed on the stack).  The machine-description
-     macros `STRUCT_VALUE' and `STRUCT_INCOMING_VALUE' tell GCC where
-     to pass this address.
-
-     By contrast, PCC on most target machines returns structures and
-     unions of any size by copying the data into an area of static
-     storage, and then returning the address of that storage as if it
-     were a pointer value.  The caller must copy the data from that
-     memory area to the place where the value is wanted.  GCC does not
-     use this method because it is slower and nonreentrant.
-
-     On some newer machines, PCC uses a reentrant convention for all
-     structure and union returning.  GCC on most of these machines uses
-     a compatible convention when returning structures and unions in
-     memory, but still returns small structures and unions in registers.
-
-     You can tell GCC to use a compatible convention for all structure
-     and union returning with the option `-fpcc-struct-return'.
-
-   * GNU C complains about program fragments such as `0x74ae-0x4000'
-     which appear to be two hexadecimal constants separated by the minus
-     operator.  Actually, this string is a single "preprocessing token".
-     Each such token must correspond to one token in C.  Since this
-     does not, GNU C prints an error message.  Although it may appear
-     obvious that what is meant is an operator and two values, the ANSI
-     C standard specifically requires that this be treated as erroneous.
-
-     A "preprocessing token" is a "preprocessing number" if it begins
-     with a digit and is followed by letters, underscores, digits,
-     periods and `e+', `e-', `E+', or `E-' character sequences.
-
-     To make the above program fragment valid, place whitespace in
-     front of the minus sign.  This whitespace will end the
-     preprocessing number.
-
-
-File: gcc.info,  Node: Fixed Headers,  Next: Standard Libraries,  Prev: Incompatibilities,  Up: Trouble
-
-Fixed Header Files
+Access to Operands
 ==================
 
-   GCC needs to install corrected versions of some system header files.
-This is because most target systems have some header files that won't
-work with GCC unless they are changed.  Some have bugs, some are
-incompatible with ANSI C, and some depend on special features of other
-compilers.
+   For each expression type `rtl.def' specifies the number of contained
+objects and their kinds, with four possibilities: `e' for expression
+(actually a pointer to an expression), `i' for integer, `w' for wide
+integer, `s' for string, and `E' for vector of expressions.  The
+sequence of letters for an expression code is called its "format".
+Thus, the format of `subreg' is `ei'.
 
-   Installing GCC automatically creates and installs the fixed header
-files, by running a program called `fixincludes' (or for certain
-targets an alternative such as `fixinc.svr4').  Normally, you don't
-need to pay attention to this.  But there are cases where it doesn't do
-the right thing automatically.
+   A few other format characters are used occasionally:
 
-   * If you update the system's header files, such as by installing a
-     new system version, the fixed header files of GCC are not
-     automatically updated.  The easiest way to update them is to
-     reinstall GCC.  (If you want to be clever, look in the makefile
-     and you can find a shortcut.)
+`u'
+     `u' is equivalent to `e' except that it is printed differently in
+     debugging dumps.  It is used for pointers to insns.
 
-   * On some systems, in particular SunOS 4, header file directories
-     contain machine-specific symbolic links in certain places.  This
-     makes it possible to share most of the header files among hosts
-     running the same version of SunOS 4 on different machine models.
+`n'
+     `n' is equivalent to `i' except that it is printed differently in
+     debugging dumps.  It is used for the line number or code number of
+     a `note' insn.
 
-     The programs that fix the header files do not understand this
-     special way of using symbolic links; therefore, the directory of
-     fixed header files is good only for the machine model used to
-     build it.
+`S'
+     `S' indicates a string which is optional.  In the RTL objects in
+     core, `S' is equivalent to `s', but when the object is read, from
+     an `md' file, the string value of this operand may be omitted.  An
+     omitted string is taken to be the null string.
 
-     In SunOS 4, only programs that look inside the kernel will notice
-     the difference between machine models.  Therefore, for most
-     purposes, you need not be concerned about this.
+`V'
+     `V' indicates a vector which is optional.  In the RTL objects in
+     core, `V' is equivalent to `E', but when the object is read from
+     an `md' file, the vector value of this operand may be omitted.  An
+     omitted vector is effectively the same as a vector of no elements.
 
-     It is possible to make separate sets of fixed header files for the
-     different machine models, and arrange a structure of symbolic
-     links so as to use the proper set, but you'll have to do this by
-     hand.
+`0'
+     `0' means a slot whose contents do not fit any normal category.
+     `0' slots are not printed at all in dumps, and are often used in
+     special ways by small parts of the compiler.
 
-   * On Lynxos, GCC by default does not fix the header files.  This is
-     because bugs in the shell cause the `fixincludes' script to fail.
+   There are macros to get the number of operands, the format, and the
+class of an expression code:
 
-     This means you will encounter problems due to bugs in the system
-     header files.  It may be no comfort that they aren't GCC's fault,
-     but it does mean that there's nothing for us to do about them.
+`GET_RTX_LENGTH (CODE)'
+     Number of operands of an RTX of code CODE.
 
-
-File: gcc.info,  Node: Standard Libraries,  Next: Disappointments,  Prev: Fixed Headers,  Up: Trouble
+`GET_RTX_FORMAT (CODE)'
+     The format of an RTX of code CODE, as a C string.
 
-Standard Libraries
-==================
+`GET_RTX_CLASS (CODE)'
+     A single character representing the type of RTX operation that code
+     CODE performs.
 
-   GCC by itself attempts to be what the ISO/ANSI C standard calls a
-"conforming freestanding implementation".  This means all ANSI C
-language features are available, as well as the contents of `float.h',
-`limits.h', `stdarg.h', and `stddef.h'.  The rest of the C library is
-supplied by the vendor of the operating system.  If that C library
-doesn't conform to the C standards, then your programs might get
-warnings (especially when using `-Wall') that you don't expect.
+     The following classes are defined:
 
-   For example, the `sprintf' function on SunOS 4.1.3 returns `char *'
-while the C standard says that `sprintf' returns an `int'.  The
-`fixincludes' program could make the prototype for this function match
-the Standard, but that would be wrong, since the function will still
-return `char *'.
+    `o'
+          An RTX code that represents an actual object, such as `reg' or
+          `mem'.  `subreg' is not in this class.
 
-   If you need a Standard compliant library, then you need to find one,
-as GCC does not provide one.  The GNU C library (called `glibc') has
-been ported to a number of operating systems, and provides ANSI/ISO,
-POSIX, BSD and SystemV compatibility.  You could also ask your operating
-system vendor if newer libraries are available.
+    `<'
+          An RTX code for a comparison.  The codes in this class are
+          `NE', `EQ', `LE', `LT', `GE', `GT', `LEU', `LTU', `GEU',
+          `GTU'.
+
+    `1'
+          An RTX code for a unary arithmetic operation, such as `neg'.
+
+    `c'
+          An RTX code for a commutative binary operation, other than
+          `NE' and `EQ' (which have class `<').
+
+    `2'
+          An RTX code for a noncommutative binary operation, such as
+          `MINUS'.
+
+    `b'
+          An RTX code for a bitfield operation, either `ZERO_EXTRACT' or
+          `SIGN_EXTRACT'.
+
+    `3'
+          An RTX code for other three input operations, such as
+          `IF_THEN_ELSE'.
+
+    `i'
+          An RTX code for a machine insn (`INSN', `JUMP_INSN', and
+          `CALL_INSN').
+
+    `m'
+          An RTX code for something that matches in insns, such as
+          `MATCH_DUP'.
+
+    `x'
+          All other RTX codes.
+
+   Operands of expressions are accessed using the macros `XEXP',
+`XINT', `XWINT' and `XSTR'.  Each of these macros takes two arguments:
+an expression-pointer (RTX) and an operand number (counting from zero).
+Thus,
+
+     XEXP (X, 2)
+
+accesses operand 2 of expression X, as an expression.
+
+     XINT (X, 2)
+
+accesses the same operand as an integer.  `XSTR', used in the same
+fashion, would access it as a string.
+
+   Any operand can be accessed as an integer, as an expression or as a
+string.  You must choose the correct method of access for the kind of
+value actually stored in the operand.  You would do this based on the
+expression code of the containing expression.  That is also how you
+would know how many operands there are.
+
+   For example, if X is a `subreg' expression, you know that it has two
+operands which can be correctly accessed as `XEXP (X, 0)' and `XINT (X,
+1)'.  If you did `XINT (X, 0)', you would get the address of the
+expression operand but cast as an integer; that might occasionally be
+useful, but it would be cleaner to write `(int) XEXP (X, 0)'.  `XEXP
+(X, 1)' would also compile without error, and would return the second,
+integer operand cast as an expression pointer, which would probably
+result in a crash when accessed.  Nothing stops you from writing `XEXP
+(X, 28)' either, but this will access memory past the end of the
+expression with unpredictable results.
+
+   Access to operands which are vectors is more complicated.  You can
+use the macro `XVEC' to get the vector-pointer itself, or the macros
+`XVECEXP' and `XVECLEN' to access the elements and length of a vector.
+
+`XVEC (EXP, IDX)'
+     Access the vector-pointer which is operand number IDX in EXP.
+
+`XVECLEN (EXP, IDX)'
+     Access the length (number of elements) in the vector which is in
+     operand number IDX in EXP.  This value is an `int'.
+
+`XVECEXP (EXP, IDX, ELTNUM)'
+     Access element number ELTNUM in the vector which is in operand
+     number IDX in EXP.  This value is an RTX.
+
+     It is up to you to make sure that ELTNUM is not negative and is
+     less than `XVECLEN (EXP, IDX)'.
+
+   All the macros defined in this section expand into lvalues and
+therefore can be used to assign the operands, lengths and vector
+elements as well as to access them.
 

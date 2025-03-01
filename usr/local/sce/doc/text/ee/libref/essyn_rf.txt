@@ -1,0 +1,685 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                      CSLソフトウェア・シンセサイザ
+                     ==============================
+
+    
+
+ 1 構造体
+==========
+
+=========================================================================
+sceSSynChOutAttrib                                               [構造体]
+=========================================================================
+                                         入力チャンネル毎の出力方法の指定
+[構造]
+        typedef struct {
+        	unsigned char	ch;
+        	unsigned char	ch_output;
+        	unsigned char	mode;
+        	unsigned char	output_line;
+        	unsigned int	att;
+        } sceSSynChOutAttrib;
+        
+[メンバ]
+        ch		設定を行なうチャンネル
+        ch_output	チャンネル内の出力ポート
+        mode		出力モード
+        		sceSSynMuteOut:	出力を行なわない
+        		sceSSynMonoOut:	モノ出力
+        		sceSSynLOut:	左チャンネル出力
+        		sceSSynROut:	右チャンネル出力
+        output_line	出力するPCM streamの番号
+        att		アッテネータ
+        		SSYN_VOLUME_0DBで0db
+        
+[解説]
+        入力チャンネルの出力指定を行う構造体。sceSSyn_SetOutputAssign()の
+        引数として指定する。
+        
+
+=========================================================================
+sceSSynConf                                                      [構造体]
+=========================================================================
+                                                             初期設定情報
+[構造]
+        #define sceSSynVoiceBufferSize	576
+        #define sceSSynInputBufferSize	(352*16)
+        typedef struct {
+        	unsigned int	unit_samples;
+        	unsigned int	sampling_frequency;
+        	unsigned int	n_voices;
+        	void		*voice_buffer;
+        	unsigned int	voice_buffer_size;
+        	unsigned int	n_input_port;
+        	void		*input_port_buffer;
+        	unsigned int	input_port_buffer_size;
+        } sceSSynConf;
+        
+[メンバ]
+        unit_samples		一回の演算で出力するデータ数（単位はサンプル）
+        sampling_frequency	出力PCMのサンプリングレート
+        n_voices			システム全体の最大発音数
+        voice_buffer		発音状態管理バッファ
+        voice_buffer_size		発音状態管理バッファのサイズ
+        			sceSSynVoiceBufferSize * n_voices以上必要
+        n_input_port		入力ポートの数（Buffer Group 0のbuffer context数と
+        同じ）
+        input_port_buffer		入力管理バッファ
+        input_port_buffer_size	入力管理バッファのサイズ
+        			sceSSynInputBufferSize * n_input_port以上必要
+        
+[解説]
+        初期設定情報の指定を行う構造体。CSL context構造体sceCslCtxのconfi
+        gメンバに割り当てる。
+
+=========================================================================
+sceSSynEnv                                                       [構造体]
+=========================================================================
+                                                                 入力環境
+[構造]
+        typedef struct {
+        	unsigned int	input_buff_len;
+        	void		*input_buff;
+        	void		*tone_param;
+        	unsigned int	(*msg_callback)(unsigned int,unsigned int);
+        	unsigned int	msg_callback_private_data;
+        	unsigned int	(*exc_callback)(unsigned int,unsigned char*,
+                                  unsigned int,unsigned char*,
+        			unsigned int);
+        	unsigned int	exc_callback_private_data;
+        	unsigned int	system[(sceSSynEnvSize+sizeof(int)-1)/sizeof(int)];
+        } sceSSynEnv;
+        
+[メンバ]
+        input_buff_len			IOPとの通信バッファのサイズ
+        				16の整数倍でなければならない
+        input_buff			IOPとの通信バッファ
+        				非キャッシュアクセスが行われるためアライメント等に
+        				注意が必要
+        tone_param			音色データへのポインタ（未使用）
+        msg_callback			MIDIメッセージのフィルタ用コールバックアドレス
+        msg_callback_private_data		MIDIメッセージのフィルタ用コールバック
+        の引数
+        				として渡されるユーザー用データ
+        exc_callback			MIDIエクスクルーシブ メッセージのフィルタ用
+        				コールバックアドレス
+        exc_callback_private_data		MIDIエクスクルーシブ メッセージのフィ
+        ルタ用コー
+        				ルバックの引数として渡されるユーザー用データ
+        system				内部変数
+        
+[解説]
+        ソフトウェア・シンセサイザの入力、演奏状態などを管理するための環
+        境バッファに用いる構造体。
+        
+[備考]
+        IOP MIDI Streamを使用しない場合、ポートでは、input_buff_len = 0;
+        input_buff = NULL;としておくことにより、そのポートに対するIOPから
+        の接続要求を拒否します。
+        
+
+=========================================================================
+sceSSynNrpnMsg                                                   [構造体]
+=========================================================================
+                                                         NRPN送信用構造体
+[構造]
+        typedef struct {
+        	unsigned char	ch;
+        	unsigned short	num;
+        	unsigned short	data;
+        } sceSSynNrpnMsg;
+        
+[メンバ]
+        ch	MIDIチャンネル
+        num	NRPN番号
+        data	NRPNデータ
+[解説]
+        NRPN送信用構造体。
+        
+
+=========================================================================
+sceSSynRpnMsg                                                    [構造体]
+=========================================================================
+                                                          RPN送信用構造体
+[構造]
+        typedef struct {
+        	unsigned char	ch;
+        	unsigned short	num;
+        	unsigned short	data;
+        } sceSSynRpnMsg;
+        
+[メンバ]
+        ch	MIDIチャンネル
+        num	RPN番号
+        data	RPNデータ
+[解説]
+        RPN送信用構造体。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceSSyn_Atick                                                      [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceSSyn_ATick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Contextのアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOPからのデータを読み込み、PCM Stream Dataを生成する。
+        
+
+=========================================================================
+sceSSyn_BreakAtick                                                 [関数]
+=========================================================================
+                                                       ATick() 処理の中断
+[形式]
+        int sceSSyn_BreakAtick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        現在実行中のATick()処理を中断する。割り込みハンドラから呼出しが可
+        能。
+        処理を中断するタイミングは、１処理単位（４音）の終了後行われる。
+        また、中断後も出力バッファのクリア、発音中ボイスの発音取り消し処
+        理は行われる。
+        
+
+=========================================================================
+sceSSyn_ClearBreakAtick                                            [関数]
+=========================================================================
+                                             ATick() 処理の中断の取り消し
+[形式]
+        int sceSSyn_ClearBreakAtick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        割り込みから呼出し可能。
+        sceSSyn_BreakAtick() 後 sceSSyn_ClearBreakAtick() が呼出されるま
+        での間 ATick() の処
+        理は中断される。
+        
+        通常時間計測開始時に sceSSyn_ClearBreakAtick()を呼出し、割り込み
+        等で許容時間を超えた場合 sceSSyn_BreakAtick() 呼出しにより処理の
+        中断を行なう。
+        
+        但し sceSSyn_BreakAtick() 緊急事態のための物で通常は、全体もしく
+        はポート毎の最大発音数の制限により負荷の制御を行なった方が出力音
+        声に関しては良好な結果が得られる。
+        
+
+=========================================================================
+sceSSyn_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceSSyn_Init(
+        	sceCslCtx *module_context,
+        	unsigned int interval
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        interval		ATick()が呼び出される周期をマイクロ秒で表したもの
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        内部変数の初期化。
+        
+
+=========================================================================
+sceSSyn_Load                                                       [関数]
+=========================================================================
+                                           音素及びパラメータデータの登録
+[形式]
+        int sceSSyn_Load(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	void *parameter
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        parameter	音素及びパラメータデータアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        音素及びパラメータデータを入力ポートに登録する。登録するデータは、
+        予め
+        sceSSyn_PrepareParameter()を使用しアドレスが解決されている必要が
+        ある。
+        
+
+=========================================================================
+sceSSyn_PrepareParameter                                           [関数]
+=========================================================================
+                                   音素及びパラメータデータのアドレス解決
+[形式]
+        int sceSSyn_PrepareParameter(
+        	void *parameter,
+        	unsigned int size
+        )
+        
+[引数]
+        parameter	音素及びパラメータデータアドレス
+        size		音素及びパラメータデータのサイズ
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        ディスク等に保存されている音素及びパラメータデータは、アドレスの
+        表現形式が、Software
+        Synthesizer 内で使用するものと異なるため、この sceSSyn_PreparePar
+        ameter() でアドレス
+        形式の変換を行なう必要があります。
+        また 一旦sceSSyn_PrepareParameter() を適用したデータはメモリ上で
+        位置を移動すること
+        はできません。
+        
+
+=========================================================================
+sceSSyn_RegisterRpc                                                [関数]
+=========================================================================
+                                  IOP との通信路確保用 RPC サーバーの登録
+[形式]
+        int sceSSyn_RegisterRpc(
+        	sceCslCtx *module_context,
+        	int priority
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        priority		サーバー thread の優先度
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP との通信路確保用 RPC サーバー を起動します。
+        IOP MIDI Stream を使用しない場合は、必要ありません。
+        
+
+=========================================================================
+sceSSyn_SendExcMsg                                                 [関数]
+=========================================================================
+                                    MIDI エクスクルーシブメッセージの入力
+[形式]
+        int sceSSyn_SendExcMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char *exc_data,
+        	unsigned int length
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        exc_data		エクスクルーシブ データアドレス
+        		0xF0 で始まり 0xF7 で終わらなければならない。
+        length		エクスクルーシブ データサイズ
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP を介さずに MIDI エクスクルーシブメッセージメッセージを入力す
+        るための API。
+        
+
+=========================================================================
+sceSSyn_SendNrpnMsg                                                [関数]
+=========================================================================
+                                               MIDI NRPN メッセージの入力
+[形式]
+        int sceSSyn_SendNrpnMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	sceSSynNrpnMsg *nrpn
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        nrpn		NRPN メッセージのアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP を介さずに MIDI NRPN メッセージを入力するための API。
+        
+
+=========================================================================
+sceSSyn_SendRpnMsg                                                 [関数]
+=========================================================================
+                                                MIDI RPN メッセージの入力
+[形式]
+        int sceSSyn_SendRpnMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	sceSSynRpnMsg *rpn
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        rpn		RPN メッセージのアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP を介さずに MIDI RPN メッセージを入力するための API。
+        
+
+=========================================================================
+sceSSyn_SendShortMsg                                               [関数]
+=========================================================================
+                                                    MIDI メッセージの入力
+[形式]
+        int sceSSyn_SendShortMsg(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int message
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        message		MIDI メッセージ
+        			bit 0 - 7 :　status
+        			8 - 15:　1st data
+        			16 - 23:　2nd data
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        IOP を介さずに MIDI メッセージを入力するための API。
+        
+
+=========================================================================
+sceSSyn_SetChPriority                                              [関数]
+=========================================================================
+                                                          CH の優先度設定
+[形式]
+        int sceSSyn_SetChPriority(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int ch,
+        	unsigned char priority
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        ch		MIDI チャンネル
+        priority		優先度
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        優先度は最小 ０、最大２５５となる。
+        
+
+=========================================================================
+sceSSyn_SetMasterVolume                                            [関数]
+=========================================================================
+                                                 マスターボリュームの設定
+[形式]
+        int sceSSyn_Load(
+        	sceCslCtx *module_context,
+        	unsigned int volume
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        volume		マスターヴォリュームの値
+        		SSYN_VOLUME_0DB で 0db
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        マスターヴォリュームの設定。
+        
+
+=========================================================================
+sceSSyn_SetOutPortVolume                                           [関数]
+=========================================================================
+                                                  PCM Stream のボリューム
+[形式]
+        int sceSSyn_SetOutPortVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	PCM Stream の番号
+        vol		ボリューム SSYN_VOLUME_0DB で 0db
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された 番号の PCM Stream のボリュームを設定。
+        
+
+=========================================================================
+sceSSyn_SetOutputAssign                                            [関数]
+=========================================================================
+                                                 チャンネル出力の割り当て
+[形式]
+        int sceSSyn_SetOutputAssign(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	sceSSynChOutAttrib *attrib
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        attrib		割り当て情報のアドレス
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        チャンネルの出力（４系統）を PCM Stream に割り当てます。
+        
+
+=========================================================================
+sceSSyn_SetOutputMode                                              [関数]
+=========================================================================
+                                     出力モード（モノ／ステレオ）切り替え
+[形式]
+        int sceSSyn_SetOutputMode(
+        	int output_mode
+        )
+        
+[引数]
+        output_mode	出力モード
+        		sceSSynOutputMode_Mono		パンポットを無効にする
+        	sceSSynOutputMode_Stereo	パンポットを有効にする
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        出力モード（パンポットの有効／無効）を設定する。
+        
+        
+
+=========================================================================
+sceSSyn_SetPortMaxPoly                                             [関数]
+=========================================================================
+                                                 入力ポート単位の音数制限
+[形式]
+        int sceSSyn_SetPortMaxPoly(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char max_polyphony
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        max_polyphony	最大同時発音数
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        入力ポート毎に同時に発音する音数の上限を設定する。
+        
+
+=========================================================================
+sceSSyn_SetPortVolume                                              [関数]
+=========================================================================
+                                               入力ポートのボリューム設定
+[形式]
+        int sceSSyn_SetPortVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        vol		ボリューム SSYN_VOLUME_0DB で 0db
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        指定された入力ポートを持つ音源のマスターボリュームの設定。
+
+=========================================================================
+sceSSyn_SetTvaEnvMode                                              [関数]
+=========================================================================
+                           ＴＶＡエンベロープ（リリース）動作モードの設定
+[形式]
+        int sceSSyn_ SetTvaEnvMode(
+        	int	env_mode
+        )
+        
+[引数]
+        env_mode	ＴＶＡエンベロープ（リリース）動作モード
+        		sceSSynTvaEnvMode_Fixed
+        					常にＴＶＡのリリース時間をパラメータに
+        					設定された時間で実行する
+        		sceSSynTvaEnvMode_ChangeByLevel
+        					パラメータに設定された時間を現在のレベルに
+        					あわせて変化させる（現在値が小さい時は短く、
+        					大きい時は長くなる）
+        					（デフォルト値、以前との互換性維持用）
+        
+[返り値]
+        成功の場合 0
+        
+[解説]
+        ＴＶＡエンベロープ（リリース）動作モードの設定を行う。
+        
+
+ 3 CALLBACK関数
+================
+
+
+=========================================================================
+exc_callback                                                       [関数]
+=========================================================================
+                  MIDI エクスクルーシブメッセージのフィルタ用コールバック
+[形式]
+        unsigned int exc_callback(
+        	unsigned int msg_callback_private_data,
+        	unsigned char *data1,
+        	unsigned int length1,
+        	unsigned char *data2,
+        	unsigned int length2
+        )
+        
+[引数]
+        exc_callback_private_data	sceSSynEnv の exc_callback_private_data
+        data1			エクスクルーシブデータアドレス
+        length1			data1 のデータサイズ
+        data2			エクスクルーシブデータアドレス
+        length2 			data2 のデータサイズ
+        
+[返り値]
+        ０を返した場合 メッセージの送信は行われない。
+        
+[解説]
+        MIDI エクスクルーシブメッセージのフィルタ用
+        リングバッファを直接参照しているため２個のアドレスを引数として持
+        つデータがリングバッファの終端をこえてバッファの先頭へ継続する場
+        合data2 と length2 に有効な値が入る。
+        連続した領域にデータが存在する場合はdata2 == NULL, length2 == 0。
+        保証されるデータの開始位置は エクスクルーシブステータス(0xF0)の次
+        のデータバイトからである。
+        library build 時に EXEC_CALLBACK を定義してビルドした時のみ有効。
+        
+        
+
+=========================================================================
+msg_callback                                                       [関数]
+=========================================================================
+                                  MIDI メッセージのフィルタ用コールバック
+[形式]
+        unsigned int msg_callback(
+        	unsigned int msg_callback_private_data,
+        	unsigned int message
+        )
+        
+[引数]
+        msg_callback_private_data		sceSSynEnv の msg_callback_private_dat
+        a
+        message		MIDI メッセージ
+        		bit 0  - 7 :  status
+        		8  - 15:	1st data
+        		16 - 23:	2nd data
+        
+[返り値]
+        Synthesizer に送信する MIDI メッセージ
+        ０を返した場合 メッセージの送信は行われない。
+        
+[解説]
+        MIDI メッセージのフィルタ用
+        library build 時に EXEC_CALLBACK を定義してビルドした時のみ有効。

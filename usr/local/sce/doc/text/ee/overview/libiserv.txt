@@ -1,0 +1,67 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+標準IOPサービス
+================
+
+
+ 1 ライブラリ概要
+------------------
+
+
+  1.1 概要
+
+    標準IOPサービス関数は、EE側からIOPモジュールをロードしたりIOP側のヒー
+    プ領域を操作する関数です。EE Kernelの拡張部分として、SIF RPCを使用し
+    て実装されています。大きく次の2つのカテゴリに分けられます。
+
+   (1) モジュール操作系
+
+      IOPのメモリ上にモジュールをロードしたり、EEのメモリ上にオブジェクト
+      をロードしたりするサービス関数群です。IOP側では、LoadModuleByEEとい
+      うモジュール名のモジュールがこのサービスを行います。
+
+   (2) メモリヒープ操作系
+
+      IOPのヒープ領域からメモリを確保・解放したり、確保した領域にファイル
+      を読み込むサービス関数群です。IOP側では、FILEIO_serviceというモジュ
+      ール名のモジュールがこのサービスを行います。
+
+  1.2 関連ファイル
+
+    標準IOPサービスAPIを使用するには次に示すヘッダファイルが必要です。
+    
+    +--------------+----------+
+    |カテゴリ       ファイル名|
+    +              +          +
+    |ヘッダファイル sifdev.h  |
+    +--------------+----------+
+
+  1.3 RPC再入に関する注意
+
+    標準IOPサービス関数はSIF RPCを使用するため、複数のスレッドで利用する
+    場合はカテゴリごとにRPC再入を起さないように注意が必要です。RPC再入に
+    ついては「SIFシステム」ドキュメントに解説がありますので参照してくださ
+    い。
+
+   (1) RPC WAIT関数
+
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC
+      再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さ
+      ないようにしてください。
+         ・sceSifLoadModule()
+         ・sceSifLoadElf()
+         ・sceSifLoadElfPart()
+         ・sceSifInitIopHeap()
+         ・sceSifAllocIopHeap()
+         ・sceSifFreeIopHeap()
+         ・sceSifLoadIopHeap()
+
+   (2) 非RPC関数
+
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()を使用しません。RPC再
+      入を考慮することなく使用できます（関数自体が再入可能という意味では
+      ありません）。
+         ・sceSifLoadFileReset()

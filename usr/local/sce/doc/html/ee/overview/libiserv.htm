@@ -1,0 +1,166 @@
+<HTML>
+<HEAD>
+<TITLE> 標準IOPサービス</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libiserv.htm" SELECTED> 標準IOPサービス
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+標準IOPサービス<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> RPC再入に関する注意<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    標準IOPサービス関数は、EE側からIOPモジュールをロードしたりIOP側のヒープ領域を操作する関数です。EE Kernelの拡張部分として、SIF RPCを使用して実装されています。大きく次の2つのカテゴリに分けられます。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_1">
+(1) <B>モジュール操作系</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      IOPのメモリ上にモジュールをロードしたり、EEのメモリ上にオブジェクトをロードしたりするサービス関数群です。IOP側では、LoadModuleByEEというモジュール名のモジュールがこのサービスを行います。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2">
+(2) <B>メモリヒープ操作系</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      IOPのヒープ領域からメモリを確保・解放したり、確保した領域にファイルを読み込むサービス関数群です。IOP側では、FILEIO_serviceというモジュール名のモジュールがこのサービスを行います。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    標準IOPサービスAPIを使用するには次に示すヘッダファイルが必要です。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">sifdev.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    標準IOPサービス関数はSIF RPCを使用するため、複数のスレッドで利用する場合はカテゴリごとにRPC再入を起さないように注意が必要です。RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1">
+(1) <B>RPC WAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceSifLoadModule()<BR>
+         <LI> sceSifLoadElf()<BR>
+         <LI> sceSifLoadElfPart()<BR>
+         <LI> sceSifInitIopHeap()<BR>
+         <LI> sceSifAllocIopHeap()<BR>
+         <LI> sceSifFreeIopHeap()<BR>
+         <LI> sceSifLoadIopHeap()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_2">
+(2) <B>非RPC関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()を使用しません。RPC再入を考慮することなく使用できます（関数自体が再入可能という意味ではありません）。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceSifLoadFileReset()
+</UL>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

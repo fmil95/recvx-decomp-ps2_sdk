@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm406</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm405.htm">[前]</A> <A HREF="arm600.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.6 <A NAME="anchor1530991"></A>その他のコード例</H3>
+
+<BLOCKQUOTE>
+  <P>以下のシーケンスは、ARMアセンブリ言語の他のアプリケーションを示しています。</P>
+  <P></P>
+</BLOCKQUOTE>
+
+<H4>4.6.1 <A NAME="anchor104026"></A>ソフトウェア割り込みディスパッチ</H4>
+
+<BLOCKQUOTE>
+  <P>このコード・セグメントは、ソフトウェア割り込み（SWI）を個々の<A NAME="anchor4076214"></A>ハンドラにディスパッチします。SWI命令には、特定のSWI関数をエンコードするのに使用できる24ビット・フィールドがあります。</P>
+  <PRE>STMFD    SP!, {R12}              ; save some registers
+LDR      R12, [R14, #-4]         ; load the SWI instruction
+BIC      R12, R12, #0xff000000   ; extract the SWI number
+CMP      R12, #MaximumSWI        ; check the SWI number is in range, if so
+LDRLE    PC, [PC, R12, LSL #2]   ; branch through a table to the handler
+B        UnknownSWI              ; this SWI number is not supported
+DCD      SWI0Handler             ; address of handler for SWI 0
+DCD      SWI1Handler             ; address of handler for SWI 1
+DCD      SWI2Handler             ; address of handler for SWI 2
+      ....</PRE>
+</BLOCKQUOTE>
+
+<H4>4.6.2 <A NAME="anchor3352875"></A>単一チャネルDMA転送</H4>
+
+<BLOCKQUOTE>
+  <P>以下のコードは、割り込みドリブンIO－メモリ転送（ソフトDMA）を実行するための割り込みハンドラです。このコードは、バンクのFIQレジスタを使用して割り込み間で状態を維持する<A
+  NAME="anchor4084423"></A>FIQハンドラとして特に便利です。したがって、このコードはロケーション0x1cに最適です。</P>
+  <P><TABLE BORDER="1" CELLSPACING="1" CELLPADDING="0" WIDTH="90%">
+    <TR>
+      <TD WIDTH="19%">
+      <B>R8</B></TD> 
+      <TD WIDTH="81%">
+      データが読み出されるIOデバイスのベース・アドレスを指します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="19%">
+      <B>IOData</B></TD> 
+      <TD WIDTH="81%">
+      ベース・アドレスから読まれる32ビットのデータ・レジスタへのオフセットです。<BR>
+      このレジスタを読むと、割り込みはディスエーブルされます</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="19%">
+      <B>R9</B></TD> 
+      <TD WIDTH="81%">
+      データが転送されるメモリ・ロケーションを指します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="19%">
+      <B>R10</B></TD> 
+      <TD WIDTH="81%">
+      転送先の最後のアドレスを指します</TD> 
+    </TR>
+  </TABLE></P>
+  <P>通常転送を処理するシーケンス全体で、命令は4つだけです。条件復帰の後のコードは、転送が完了したことを通知するために使用されます。</P>
+  <PRE>LDR       r11, [r8, #IOData]   ; load port data from the IO device
+STR       r11, [r9], #4        ; store it to memory: update the pointer
+CMP       r9, r10              ; reached the end?
+SUBLTS    pc, lr, #4           ; no, so return
+; Insert transfer complete code here</PRE>
+  <P>もちろん、ロード命令をバイトのロード命令に置き換えればバイト転送を行うことができ、ロード命令とストア命令間のアドレッシング・モードをスワップすれば、メモリからlOデバイスに転送することができます。</P>
+</BLOCKQUOTE>
+
+<H4>4.6.3 <A NAME="anchor3353574"></A>デュアル・チャネルDMA転送</H4>
+
+<BLOCKQUOTE>
+  <P>このコードは、2つのチャネル（同一チャネルの入力側と出力側のこともあります）を操作することを除いては、「4.6.2
+  単一チャネルDMA転送」の例と似ています。繰り返しになりますが、このコードはバンクのFIQレジスタを使用して割り込み間で状態を維持するので、FIQハンドラとして特に便利です。したがって、このコードはロケーション0x1cに最適です。</P>
+  <P>通常転送を処理するシーケンス全体で、命令はわずか9つです。条件復帰の後のコードは、転送が完了したことを通知するために使用されます。</P>
+  <PRE>LDR      r13, [r8, #IOStat]    ; load status register to find ....
+TST      r13, #IOPort1Active   ; .... which port caused the interrupt?
+LDREQ    r13, [r8, #IOPort1]   ; load port 1 data
+LDRNE    r13, [r8, #IOPort2]   ; load port 2 data
+STREQ    r13, [r9], #4         ; store to buffer 1
+STRNE    r13, [r10], #4        ; store to buffer 2
+CMP      r9, r11               ; reached the end?
+CMPNE    r10, r12              ; on either channel?
+SUBNES   pc, lr, #4            ; return
+; Insert transfer complete code here</PRE>
+  <P>ここで、</P>
+  <P><TABLE BORDER="1" CELLSPACING="1" CELLPADDING="0" WIDTH="90%">
+    <TR>
+      <TD WIDTH="32%">
+      <B>R8</B></TD> 
+      <TD WIDTH="68%">
+      データが読み出されるIOデバイスのベース・アドレスを指します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>IOStat</B></TD> 
+      <TD WIDTH="68%">
+      2つのポートのどちらで割り込みが発生したかを示す、ベース・アドレスからレジスタへのオフセットです</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>IOPort1Active</B></TD> 
+      <TD WIDTH="68%">
+      第1ポートで割り込みが発生したかどうかを示すビット・マスクです<BR>
+      （そうでない場合は、第2ポートで割り込みが発生したと仮定されます）</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>IOPort,IOPort2</B></TD> 
+      <TD WIDTH="68%">
+      読まれる2つのデータ・レジスタへのオフセットです。<BR>
+      データ・レジスタを読むと、そのポートで割り込みがディスエーブルされます</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>R9</B></TD> 
+      <TD WIDTH="68%">
+      第1ポートからデータが転送されるメモリ・ロケーションを指します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>R10</B></TD> 
+      <TD WIDTH="68%">
+      第2ポートからデータが転送されるメモリ・ロケーションを指します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="32%">
+      <B>R11およびR12</B></TD> 
+      <TD WIDTH="68%">
+      転送先の最後のアドレスを指します （R11は第1ポート、 R12は第2ポート用です）</TD> 
+    </TR>
+  </TABLE><BR>
+<BR>
+  ここでも、ロード命令をバイトのロード命令に置き換えればバイト転送を行うことができ、条件付きロード命令と条件付きストア命令間のアドレッシング・モードをスワップすれば、メモリからIOデバイスに転送することもできます。</P>
+</BLOCKQUOTE>
+
+<H4>4.6.4 <A NAME="anchor4088958"></A>割り込み優先順位指定</H4>
+
+<BLOCKQUOTE>
+  <P>このコードは、最高32の割り込みソースを所定のハンドラ・ルーチンにディスパッチします。このコードは通常の割り込みベクタを使用するようになっており、したがってロケーション0x18から分岐しなければなりません。</P>
+  <P>外部ハードウェアを使用して、 IOレジスタ内の割り込みに優先順位を指定し、アクティブな最高順位の割り込み番号が示されます。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" WIDTH="90%">
+    <TR>
+      <TD WIDTH="21%">
+      <B>IntBase</B></TD> 
+      <TD WIDTH="79%">
+      割り込みハンドラのベース・アドレスを保持しています</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="21%">
+      <B>IntLevel</B></TD> 
+      <TD WIDTH="79%">
+      アクティブな最高順位の割り込みを持つレジスタの（IntBasseからの）オフセットを保持しています</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="21%">
+      <B>R13</B></TD> 
+      <TD WIDTH="79%">
+      小さな（60バイトの）完全な降順スタックを指すと仮定されます</TD> 
+    </TR>
+  </TABLE></P>
+  <P>10の命令（このコードへの分岐を含みます）の後で割り込みがイネーブルされます。</P>
+  <PRE>    ; first save the critical state
+    SUB     r14, r14, #4       ; adjust return address before saving it
+    STMFD   r13!, {r12, r14}   ; stack return address and working register
+    MRS     r12, SPSR          ; get the SPSR ...
+    STMFD   r13!, {r12}        ; ... and stack that too
+    ;
+    ; now get the priority level of the highest priority active interrupt
+    MOV   r12, #IntBase         ; get interrupt controller's base address
+    LDR   r12, [r12, #IntLevel] ; get the interrupt level (0 to 31)
+    ;
+    ; now read-modify-write the CPSR to enable interrupts
+    MRS    r14, CPSR            ; read the status register
+    BIC    r14, r14, #0x80      ; clear the I bit (use 0x40 for the F bit)
+    MSR    CPSR, r14            ; write it back to re-enable interrupts
+    ; jump to the correct handler
+    LDR    PC, [PC, r12, LSL #2]; and jump to the correct handler
+                                ; PC base address points to this
+                                ; instruction + 8
+    NOP                         ; pad so the PC indexes this table
+    ;
+    ; table of handler start addresses
+    DCD    Priority0Handler
+    DCD    Priority1Handler ........
+Priority0Handler
+    STMFD   r13!, {r0 - r11}    ; save working registers
+    ;
+    ; insert handler code here
+    ........
+    MRS     r12, CPSR           ; Read-modify-write the CPSR to disable
+    ORR     r12, r12, #0x80     ; interrupts (use 0x40 instead for FIQs)
+    MSR     CPSR, r12           ; Note: Do not use r14 instead of r12, as it
+                                ; will be corrupted if an interrupt occurs
+    LDMFD   r13!, {r0-r12}      ; Recover the working registers and SPSR
+    MSR     SPSR, r12           ; Put the SPSR back
+    LDMFD   r13!, {r12, PC}^    ; Restore last working register and return
+Priority1Handler
+     ........</PRE>
+</BLOCKQUOTE>
+
+<H4>4.6.5 <A NAME="anchor3158465"></A>コンテクスト切り替え</H4>
+
+<BLOCKQUOTE>
+  <P>このコードは、ユーザ・モード・プロセスでコンテクスト切り替えを実行します。このコードは、実行する準備ができているプロセスのプロセス制御ブロック（PCB）を指すポインタのリストに基づきます。</P>
+  <P>次に実行するプロセスのPCBを指すポインタがR12で示され、リストの終わりにはゼロ・ポインタがあります。</P>
+  <P>R13はPCBを指すポインタで、タイムスライス間で保持されます（R13を入力すると現在実行しているプロセスのPCBを指します）。<BR>
+  </P>
+  <P><CENTER><FONT COLOR="#ff0000"><IMG SRC="03_coda1.gif" WIDTH="361"
+  HEIGHT="307" ALIGN="BOTTOM" BORDER="0" NATURALSIZEFLAG="3"></FONT></CENTER></P>
+  <P ALIGN=RIGHT><FONT SIZE="-1">図4-1：PCBレイアウト</FONT></P>
+  <P>このコードは、図4-1：PCBレイアウトで示すようなPCBのレイアウトを仮定しています。</P>
+  <PRE>STMIA    r13, {r0 - r14}^  ; Dump user registers above r13
+MRS      r0, SPSR          ; Pick up the user status
+STMDB    r13, {r0, r14}    ; and dump with return address below
+LDR      r13, [r12], #4    ; Load next process info pointer
+CMP      r13, #0           ; If it is zero, it is invalid
+LDMNEDB  r13, {r0, r14}    ; Pick up status and return address
+MSRNE    SPSR, r0          ; Restore the status
+LDMNEIA r13, {r0 - r14}^   ; get The rest of the registers
+NOP                        ; Note: Cannot use banked register
+                           ; immediately after a user mode LDM
+MOVNES  pc, r14            ; Return and restore CPSR
+                           ; insert &quot;no next process code&quot; here</PRE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm405.htm">[前]</A> <A HREF="arm600.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

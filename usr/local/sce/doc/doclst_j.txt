@@ -1,0 +1,385 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+							       Aug. 2000
+-------------------------------------------------------------------------
+ドキュメントのファイル構成
+-------------------------------------------------------------------------
+
+- 以下のファイルは、ファイル形式が限定されていますのでご注意下さい。
+   eetips,deci2の英語版以外Release1.5から更新されていません。
+
+　 TEXT版のみリリースされているファイル
+　　　text/general/eetips.txt
+　　　text/deci2/english/*_e.txt
+　　　text/ee/libref/librspu2.txt
+　　　text/iop/libref/libspu2.txt
+
+　 WORD版のみリリースされているファイル
+　　　word/tool/sky_sim.doc
+      word/tool/mipsinst.doc
+　 
+　 PowerPointのみリリースされているファイル
+　　　word/general/*.ppt
+
+- 新規追加ファイルには、(*)をつけています。
+doc
+├─wdview97.exe
+├─doclst_j.txt
+├─sce_net			SCE-NET技術情報
+├─text
+│  ├─deci2
+│  │  ├─japanese
+│  │  │  ├─dbgp.txt	DBGP デバッグプロトコル
+│  │  │  ├─dcmp.txt	DCMP
+│  │  │  ├─deci2.txt	DECI2(ホスト ⇔ ターゲット間通信環境)
+│  │  │  ├─drfp.txt	DRFP(DECI2 Remote File Protocol)
+│  │  │  ├─iloadp.txt	ILOADP(DECI2 IOP Load Protocol)
+│  │  │  ├─libd2.txt	DECI2ライブラリ概要
+│  │  │  ├─d2_rf.txt	DECI2ライブラリリファレンス
+│  │  │  ├─netmp.txt	NETMP
+│  │  │  └─ttyp.txt	TTYP
+│  │  └─english
+│  │      ├─dbgp_e.txt
+│  │      ├─dcmp_e.txt
+│  │      ├─deci2_e.txt
+│  │      ├─drfp_e.txt
+│  │      ├─iloadp_e.txt
+│  │      ├─libd2_e.txt
+│  │      ├─netmp_e.txt
+│  │      └─ttyp_e.txt
+│  ├─ee
+│  │  ├─libref (EEライブラリリファレンス)
+│  │  │  ├─scf_rf.txt		コンフィグレーションライブラリ (*)
+│  │  │  ├─cdvd_rf.txt		CD(DVD)-ROMライブラリ
+│  │  │  ├─dev_rf.txt		開発用デバッグ支援ライブラリ
+│  │  │  ├─dma_rf.txt		DMA基本ライブラリ
+│  │  │  ├─ekrnl_rf.txt		EEカーネル
+│  │  │  ├─emsin_rf.txt		CSL MIDI stream 生成
+│  │  │  ├─essyn_rf.txt		CSL ソフトウェア・シンセサイザ
+│  │  │  ├─graph_rf.txt		GS基本ライブラリ
+│  │  │  ├─io_rf.txt		入出力サービス
+│  │  │  ├─ipu_rf.txt		IPUライブラリ
+│  │  │  ├─iserv_rf.txt		標準IOPサービス関数
+│  │  │  ├─lout_rf.txt		CSLラインアウト
+│  │  │  ├─mc_rf.txt		メモリーカードライブラリ
+│  │  │  ├─mcx_rf.txt		PDAライブラリ			(*)
+│  │  │  ├─mpeg_rf.txt		MPEGライブラリ
+│  │  │  ├─mtap_rf.txt		マルチタップライブラリ
+│  │  │  ├─pad_rf.txt		コントローラライブラリ
+│  │  │  ├─pc_rf.txt		パフォーマンスカウンタライブラリ
+│  │  │  ├─pkt_rf.txt		パケットライブラリ
+│  │  │  ├─scmd_rf.txt		SIF CMD
+│  │  │  ├─sdma_rf.txt		SIF DMA
+│  │  │  ├─srpc_rf.txt		SIF RPC
+│  │  │  ├─sdr_rf.txt		低レベルサウンドライブラリ
+│  │  │  ├─librspu2.txt		暫定サウンドライブラリ
+│  │  │  └─vu0_rf.txt		VU0ライブラリ
+│  │  └─overview(EEライブラリ概要)
+│  │      ├─eekernel.txt		EEカーネル
+│  │      ├─libscf.txt		コンフィグレーションライブラリ  (*)
+│  │      ├─libcdvd.txt		CD(DVD)-ROMライブラリ
+│  │      ├─libdev.txt		開発用デバッグ支援ライブラリ
+│  │      ├─libdma.txt		DMA基本ライブラリ
+│  │      ├─libgraph.txt		GS基本ライブラリ
+│  │      ├─libio.txt		入出力サービス
+│  │      ├─libiserv.txt		標準サービス関数		(*)
+│  │      ├─libipu.txt		IPUライブラリ
+│  │      ├─liblout.txt		CSL ラインアウト
+│  │      ├─libmc.txt		メモリーカードライブラリ
+│  │      ├─libmcx.txt		PDAライブラリ      		(*)
+│  │      ├─libmpeg.txt		MPEGライブラリ
+│  │      ├─libmsin.txt		CSL MIDI stream 生成
+│  │      ├─libmtap.txt		マルチタップライブラリ
+│  │      ├─libpad.txt		コントローラライブラリ
+│  │      ├─libpc.txt		パフォーマンスカウンタライブラリ
+│  │      ├─libpkt.txt		パケットライブラリ
+│  │      ├─libsdr.txt		低レベルサウンドライブラリ
+│  │      ├─libssyn.txt		CSL ソフトウェア・シンセサイザ
+│  │      └─libvu0.txt		VU0ライブラリ
+│  ├─general(EE/IOP共通文書)
+│  │  ├─csl.txt			CSL概要
+│  │  ├─eetips.txt			EE Programming Tips
+│  │  ├─setup.txt			セットアップガイド
+│  │  ├─sif.txt			SIFシステム
+│  │  └─sysov.txt			システム概要
+│  ├─iop
+│  │  ├─libref (IOPライブラリリファレンス)
+│  │  │  ├─delay_rf.txt		CSL MIDIディレイ
+│  │  │  ├─hsyn_rf.txt		CSL ハードウェア・シンセサイザ
+│  │  │  ├─ikrnl_rf.txt		IOPカーネル
+│  │  │  ├─iL_rf.txt		i.LINKドライバライブラリ
+│  │  │  ├─iLskt_rf.txt		ソケットライブラリ
+│  │  │  ├─imsin_rf.txt		CSL MIDI stream 生成
+│  │  │  ├─issyn_rf.txt		CSL ソフトウェア・シンセサイザ
+│  │  │  ├─midi_rf.txt		CSL MIDI シーケンサ
+│  │  │  ├─mono_rf.txt		CSL MIDI モノフォニック
+│  │  │  ├─scmd_rf.txt		SIF CMD
+│  │  │  ├─sdma_rf.txt		SIF DMA
+│  │  │  ├─srpc_rf.txt		SIF RPC
+│  │  │  ├─sd_rf.txt		低レベルサウンドライブラリ
+│  │  │  ├─libspu2.txt		暫定サウンドライブラリ
+│  │  │  └─usbd_rf.txt		USBドライバライブラリ
+│  │  └─overview (IOPライブラリ概要)
+│  │      ├─iopkernl.txt		IOPカーネル
+│  │      ├─libsd.txt		低レベルサウンドライブラリ
+│  │      ├─loader.txt		IOPプログラムローダ
+│  │      ├─moddelay.txt		CSL MIDIディレイ
+│  │      ├─modhsyn.txt		CSL ハードウェア・シンセサイザ
+│  │      ├─modmidi.txt		CSL MIDI シーケンサ
+│  │      ├─modmono.txt		CSL MIDI モノフォニック
+│  │      ├─modmsin.txt		CSL MIDI stream 生成
+│  │      ├─modssyn.txt		CSL ソフトウェア・シンセサイザ
+│  │      ├─iLink.txt		i.LINKドライバライブラリ	(*)
+│  │      ├─iLsocket.txt		ソケットライブラリ
+│  │      └─usbd.txt		USBドライバライブラリ
+│  └─tool
+│       ├─compile.txt		IOPプログラムのコンパイル手順
+│       ├─dsnet.txt			DSNET概要
+│       ├─dsnet_rf.txt		dsedb/dsidbコマンドリファレンス
+│       └─thmon.txt			簡易スレッドモニタ		(*)
+├─html
+│  ├─index.htm
+│  ├─deci2
+│  │  ├─gif
+│  │  ├─index.htm
+│  │  ├─dbgp.htm
+│  │  ├─dcmp.htm
+│  │  ├─deci2.htm
+│  │  ├─drfp.htm
+│  │  ├─iloadp.htm
+│  │  ├─libd2.htm
+│  │  ├─d2_rf.htm
+│  │  ├─netmp.htm
+│  │  └─ttyp.htm
+│  ├─ee
+│  │  ├─libref
+│  │  │  ├─gif
+│  │  │  ├─index.htm
+│  │  │  ├─main.htm
+│  │  │  ├─alphabet.htm
+│  │  │  ├─category.htm
+│  │  │  ├─topmenu.htm
+│  │  │  ├─scf_rf.htm
+│  │  │  ├─cdvd_rf.htm
+│  │  │  ├─dev_rf.htm
+│  │  │  ├─dma_rf.htm
+│  │  │  ├─ekrnl_rf.htm
+│  │  │  ├─emsin_rf.htm
+│  │  │  ├─essyn_rf.htm
+│  │  │  ├─graph_rf.htm
+│  │  │  ├─io_rf.htm
+│  │  │  ├─ipu_rf.htm
+│  │  │  ├─iserv_rf.htm
+│  │  │  ├─lout_rf.htm
+│  │  │  ├─mc_rf.htm
+│  │  │  ├─mcx_rf.htm
+│  │  │  ├─mpeg_rf.htm
+│  │  │  ├─mtap_rf.htm
+│  │  │  ├─pad_rf.htm
+│  │  │  ├─pc_rf.htm
+│  │  │  ├─pkt_rf.htm
+│  │  │  ├─scmd_rf.htm
+│  │  │  ├─sdma_rf.htm
+│  │  │  ├─sdr_rf.htm
+│  │  │  ├─srpc_rf.htm
+│  │  │  └─vu0_rf.htm
+│  │  └─overview
+│  │      ├─gif
+│  │      ├─index.htm
+│  │      ├─eekernel.htm
+│  │      ├─libscf.htm
+│  │      ├─libcdvd.htm
+│  │      ├─libdev.htm
+│  │      ├─libdma.htm
+│  │      ├─libgraph.htm
+│  │      ├─libio.htm
+│  │      ├─libiserv.htm
+│  │      ├─libipu.htm
+│  │      ├─liblout.htm
+│  │      ├─libmc.htm
+│  │      ├─libmcx.htm
+│  │      ├─libmpeg.htm
+│  │      ├─libmsin.htm
+│  │      ├─libmtap.htm
+│  │      ├─libpad.htm
+│  │      ├─libpc.htm
+│  │      ├─libpkt.htm
+│  │      ├─libsdr.htm
+│  │      ├─libssyn.htm
+│  │      └─libvu0.htm
+│  ├─general
+│  │  ├─gif
+│  │  ├─index.htm
+│  │  ├─csl.htm
+│  │  ├─setup.htm
+│  │  ├─sif.htm
+│  │  └─sysov.htm
+│  ├─iop
+│  │  ├─libref
+│  │  │  ├─gif
+│  │  │  ├─index.htm
+│  │  │  ├─main.htm
+│  │  │  ├─alphabet.htm
+│  │  │  ├─category.htm
+│  │  │  ├─topmenu.htm
+│  │  │  ├─delay_rf.htm
+│  │  │  ├─hsyn_rf.htm
+│  │  │  ├─ikrnl_rf.htm
+│  │  │  ├─iL_rf.htm
+│  │  │  ├─imsin_rf.htm
+│  │  │  ├─issyn_rf.htm
+│  │  │  ├─midi_rf.htm
+│  │  │  ├─mono_rf.htm
+│  │  │  ├─scmd_rf.htm
+│  │  │  ├─sd_rf.htm
+│  │  │  ├─sdma_rf.htm
+│  │  │  ├─iLskt_rf.htm
+│  │  │  ├─srpc_rf.htm
+│  │  │  └─usbd_rf.htm
+│  │  └─overview
+│  │      ├─gif
+│  │      ├─index.htm
+│  │      ├─iopkernl.htm
+│  │      ├─libsd.htm
+│  │      ├─loader.htm
+│  │      ├─moddelay.htm
+│  │      ├─modhsyn.htm
+│  │      ├─modmidi.htm
+│  │      ├─modmono.htm
+│  │      ├─modmsin.htm
+│  │      ├─modssyn.htm
+│  │      ├─iLink.htm
+│  │      ├─iLsocket.htm
+│  │      └─usbd.htm
+│  ├─tool
+│  │  ├─gif
+│  │  ├─compile.htm
+│  │  ├─dsnet.htm
+│  │  ├─dsnet_rf.htm
+│  │  ├─thmon_htm
+│  │  └─index.htm
+│  └─pdadoc
+│      ├─pda
+│      └─arm
+└─word
+    ├─deci2
+    │  ├─dbgp.doc
+    │  ├─dcmp.doc
+    │  ├─deci2.doc
+    │  ├─drfp.doc
+    │  ├─iloadp.doc
+    │  ├─libd2.doc
+    │  ├─d2_rf.doc
+    │  ├─netmp.doc
+    │  └─ttyp.doc
+    ├─ee
+    │  ├─libref
+    │  │  ├─scf_rf.doc
+    │  │  ├─cdvd_rf.doc
+    │  │  ├─dev_rf.doc
+    │  │  ├─dma_rf.doc
+    │  │  ├─ekrnl_rf.doc
+    │  │  ├─emsin_rf.doc
+    │  │  ├─essyn_rf.doc
+    │  │  ├─graph_rf.doc
+    │  │  ├─io_rf.doc
+    │  │  ├─ipu_rf.doc
+    │  │  ├─iserv_rf.doc
+    │  │  ├─lout_rf.doc
+    │  │  ├─mc_rf.doc
+    │  │  ├─mcx_rf.doc
+    │  │  ├─mpeg_rf.doc
+    │  │  ├─mtap_rf.doc
+    │  │  ├─pad_rf.doc
+    │  │  ├─pc_rf.doc
+    │  │  ├─pkt_rf.doc
+    │  │  ├─scmd_rf.doc
+    │  │  ├─sdma_rf.doc
+    │  │  ├─sdr_rf.doc
+    │  │  ├─srpc_rf.doc
+    │  │  └─vu0_rf.doc
+    │  └─overview
+    │  　  ├─eekernel.doc
+    │  　  ├─libscf.doc
+    │  　  ├─libcdvd.doc
+    │  　  ├─libdev.doc
+    │  　  ├─libdma.doc
+    │  　  ├─libgraph.doc
+    │  　  ├─libio.doc
+    │  　  ├─libiserv.doc
+    │  　  ├─libipu.doc
+    │  　  ├─liblout.doc
+    │  　  ├─libmc.doc
+    │  　  ├─libmcx.doc
+    │  　  ├─libmpeg.doc
+    │  　  ├─libmsin.doc
+    │  　  ├─libmtap.doc
+    │  　  ├─libpad.doc
+    │  　  ├─libpc.doc
+    │  　  ├─libpkt.doc
+    │  　  ├─libsdr.doc
+    │  　  ├─libssyn.doc
+    │  　  └─libvu0.doc
+    ├─general
+    │  ├─eecore_j.ppt
+    │  ├─gsvpu_j.ppt
+    │  ├─movsys_j.ppt
+    │  ├─csl.doc
+    │  ├─sif.doc
+    │  ├─setup.doc
+    │  └─sysov.doc
+    ├─iop
+    │  ├─libref
+    │  │  ├─delay_rf.doc
+    │  │  ├─hsyn_rf.doc
+    │  │  ├─ikrnl_rf.doc
+    │  │  ├─iL_rf.doc
+    │  │  ├─imsin_rf.doc
+    │  │  ├─issyn_rf.doc
+    │  │  ├─midi_rf.doc
+    │  │  ├─mono_rf.doc
+    │  │  ├─scmd_rf.doc
+    │  │  ├─sd_rf.doc
+　  │  │  ├─sdma_rf.doc
+　  │  │  ├─iLskt_rf.doc
+　  │  │  ├─srpc_rf.doc
+　  │  │  └─usbd_rf.doc
+　  │  └─overview
+　  │  　  ├─iopkernl.doc
+　  │  　  ├─libsd.doc
+　  │  　  ├─loader.doc
+　  │  　  ├─moddelay.doc
+　  │  　  ├─modhsyn.doc
+　  │  　  ├─modmidi.doc
+　  │  　  ├─modmono.doc
+　  │  　  ├─modmsin.doc
+　  │  　  ├─modssyn.doc
+　  │  　  ├─iLink.doc
+　  │  　  ├─iLsocket.doc
+　  │  　  └─usbd.doc
+　  ├─tool
+　  │  ├─compile.doc
+　  │  ├─dsnet.doc
+　  │  ├─dsnet_rf.doc
+　  │  ├─thmon.doc			
+　  │  ├─sky_sim.doc			EE Simulator User's Guide
+　  │  └─mipsinst.doc		MIPS合成命令補足資料		(*)
+    └─pdadoc
+	├─pda		
+        │  ├─pdaspec1.doc		PDA仕様書			(*)
+        │  ├─pdaspec2.doc		デバイスレジスタ詳細		(*)
+        │  ├─pdaspec3.doc		デバイスレジスタ一覧		(*)
+        │  ├─kernel.doc		PDAカーネル仕様書		(*)
+        │  └─fat.doc			メモリーカードファイルシステム	(*)
+        └─arm				ARM Architecture Reference Manual(*)
+            ├─Arm1.doc		
+            ├─Arm2.doc
+            ├─Arm3.doc
+            ├─Arm4.doc
+            ├─Arm6.doc
+            ├─Errata.doc
+            ├─index.doc
+            └─Toc.doc
+

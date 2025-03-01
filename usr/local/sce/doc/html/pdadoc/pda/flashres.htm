@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<!-- 関数名 -->
+<TITLE>
+    FLASHREMAPStatus
+</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="100%">
+<TD ALIGN="left">
+<A HREF="pdaspec1.htm">PDA仕様書 </A>
+</TD><TD ALIGN="center">
+<ADDRESS><A HREF="../pda/index.htm">PDA </A></ADDRESS>
+</TD><TD ALIGN="right">
+<A HREF="pdaspec3.htm">デバイスレジスタ一覧</A>
+</TD></TABLE>
+<HR NOSHADE SIZE="8">
+
+<H1>
+    FLASHREMAPStatus
+<HR SIZE="5">
+</H1>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        フラッシュリマップステータスレジスタ
+</DIV><P>
+</PRE>
+</blockquote>
+
+<!-- アクセス型 -->
+<B>アクセス型</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+<PRE>Read
+</PRE>
+</blockquote>
+
+<!-- リセット値 -->
+<B>リセット値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    0x00000000 <BR>
+<BR>
+</blockquote>
+
+<!-- 機能 -->
+<B>機能</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    このレジスタは直近のREGRemapレジスタのFLASHVIRビットへの1設定時点での仮想フラッシュメモリ領域設定関連レジスタの内容解析結果を保持する。このレジスタはリードアクセスにより自動的にクリアされる。 <BR>
+<BR>
+</blockquote>
+
+<!-- ビット詳細 -->
+<B>ビット詳細</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    <B>第0ビット</B> <BR>
+    ビット名称：MULTIPLE(MULTIPLE blocks defined with the same virtual area) <BR>
+    リード値：1：複数のブロックが同一仮想ベースアドレスに割り当てられている。 <BR>
+    <B>第1ビット</B> <BR>
+    ビット名称：NOACTIVE(NO ACTIVE blocks) <BR>
+    リード値：1：仮想ベースアドレスが１セットも指定されていない。 <BR>
+    <B>第2ビット</B> <BR>
+    ビット名称：DABORT(Data ABORT (create a data abort exception)) <BR>
+    リード値：1：マップされていない仮想フラッシュメモリ領域へ、または、からの <BR>
+    <blockquote>
+    	データアクセスが行われた。 <BR>
+    </blockquote>
+    <B>第3ビット</B> <BR>
+    ビット名称：FABORT(Fetch ABORT (create a fetch abort exception)) <BR>
+    リード値：1：マップされていない仮想フラッシュメモリ領域からの命令フェッチ <BR>
+    <blockquote>
+    	が試みられた。 <BR>
+    </blockquote>
+<BR>
+</blockquote>
+<HR>
+<DIV ALIGN="right">
+<ADDRESS>
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.
+</ADDRESS>
+</DIV>
+</BODY>
+</HTML>

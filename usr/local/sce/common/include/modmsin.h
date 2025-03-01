@@ -1,14 +1,20 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
- * Emotion Engine / I/O Processor Common Header
+ *                     I/O Processor Library
+ *                          Version 0.60
+ *                           Shift-JIS
  *
- * Copyright (C) 1998,1999,2001 Sony Computer Entertainment Inc.
- * All Rights Reserved.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                       All Rights Reserved.
  *
- * modmsin.h
- *	IOP Midi Stream Message Input
+ *                       modmsin - modmsin.h
+ *                  IOP Midi Stream Message Input
+ *
+ *     Version   Date          Design     Log
+ *  --------------------------------------------------------------------
+ *     0.60      Dec.01.1999   katayama   first checked in.
  */
 #ifndef _modmsin_h_
 #define _modmsin_h_
@@ -32,18 +38,14 @@ int sceMSIn_PutExcMsg(sceCslCtx*,unsigned int,unsigned char*,unsigned int);
 #define sceMSIn_MakeMsg2(stat,d1) \
 	((((unsigned int)(stat))&0xff)|((((unsigned int)(d1))&0x7f)<<8))
 #define sceMSIn_NoteOn(ctx,port,ch,key,vel) \
-	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg3((unsigned int)(ch)|0x90,key,vel))
+	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg3((unsigned int)ch|0x90,key,vel))
 #define	sceMSIn_NoteOff(ctx,port,ch,key) \
-	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg2((unsigned int)(ch)|0x80,key))
+	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg2((unsigned int)ch|0x80,key))
 #define sceMSIn_ProgramChange(ctx,port,ch,prg) \
-	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg2((unsigned int)(ch)|0xc0,prg))
-#define sceMSIn_BankSelect(ctx,port,ch,bno) \
-	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg3((unsigned int)(ch)|0xb0,0,bno))
+	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg2((unsigned int)ch|0xc0,prg))
 #define	sceMSIn_NoteOnEx(ctx,port,ch,key,vel,prg) \
 	((sceMSIn_ProgramChange(ctx,port,ch,prg)==sceMSInNoError)?\
 	sceMSIn_NoteOn(ctx,port,ch,key,vel):sceMSInError)
-#define sceMSIn_ControlChange(ctx,port,ch,no,v) \
-	sceMSIn_PutMsg(ctx,port,sceMSIn_MakeMsg3((unsigned int)(ch)|0xb0,no,v))
 typedef struct {
 	unsigned char	d[7];
 } sceMSInHsMsg;
@@ -74,5 +76,5 @@ int sceMSIn_PutHsMsg(sceCslCtx*,unsigned int,sceMSInHsMsg*);
 #ifdef __cplusplus
 }
 #endif
-#endif /* !_modmsin_h_ */
-/* $Id: modmsin.h,v 1.5.2.1 2002/02/19 11:32:35 xokano Exp $ */
+#endif //!_modmsin_h_
+/* $Id: modmsin.h,v 1.2 2000/05/10 06:57:53 xokano Exp $ */

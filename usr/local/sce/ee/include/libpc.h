@@ -1,12 +1,12 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
- *                          Version 0.02
+ *                          Version 0.01
  *                           Shift-JIS
  *
- *         Copyright (C) 2001 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  *
  *                        libpc - libpc.h 
@@ -14,10 +14,8 @@
  *
  *      Version        Date            Design      Log
  *  --------------------------------------------------------------------
- *      0.00           06/21/1999      koji        first version
- *      0.01           12/08/1999      koji        bug fix, TLB to ITLB
- *      0.02           01/23/2001      akiyuki     addition of prototype
- *                                                  declaration and __asm__
+ *      0.00           06/21/99        koji        first version
+ *      0.01           12/08/99        koji        bug fix, TLB to ITLB
  */
 
 #ifndef _LIBPC_H
@@ -80,17 +78,15 @@ extern "C" {
 void scePcStart(int control, int counter0, int counter1);
 void scePcStop(void);
 
-extern __inline__ int scePcGetCounter0(void);
 extern __inline__ int scePcGetCounter0(void) {
 	register int ctr0;
-	__asm__ volatile ("mfpc %0, 0": "=r" (ctr0));
+	asm __volatile__("mfpc %0, 0": "=r" (ctr0));
 	return ctr0;
 };
 
-extern __inline__ int scePcGetCounter1(void);
 extern __inline__ int scePcGetCounter1(void) {
 	register int ctr1;
-	__asm__ volatile ("mfpc %0, 1": "=r" (ctr1));
+	asm __volatile__("mfpc %0, 1": "=r" (ctr1));
 	return ctr1;
 };
 

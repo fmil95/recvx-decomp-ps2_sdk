@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm308</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm307.htm">[前]</A> <A HREF="arm309.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.8 ロードおよびストア命令</H3>
+
+<BLOCKQUOTE>
+  <P>ARMv4は、1つのレジスタの値をメモリからロード、またはメモリへストアする命令をサポートしています。これらは以下の2つに大別されます。</P>
+  <UL>
+    <LI>32ビットのワードまたは8ビットの符号なしバイトをロードまたはストアできる命令
+    <LI>16ビットの符号なしハーフワードをロードまたはストアでき、また16ビットのハーフワードまたは8ビットのバイトをロードし符号拡張できる命令
+  </UL>
+  <P>前者（ワードおよび符号なしバイト）は、後者（ハーフワードおよび符号付きバイト）よりも広域なアドレッシング・モードが可能です。ワードおよび符号なしバイト・アドレッシング・モードは、以下の2つに分類できます。</P>
+  <UL>
+    <LI>ベース・レジスタ
+    <LI>オフセット
+  </UL>
+  <P>ベース・レジスタは、汎用レジスタ（位置独立コードを生成するためにPC相対アドレッシングを可能にするPCを含む）のいずれか1つを使用できます。</P>
+  <P>オフセットの形式は、以下の3つに分類できます。</P>
+  <P><B>1.イミディエイト・オフセット</B></P>
+  <BLOCKQUOTE>
+    <P>オフセットは12ビットの符号なし数値で、これはベース・レジスタに加算、またはベース・レジスタから減算できます。イミディエイト・オフセット・アドレッシングは、データ・オブジェクトの開始位置から固定距離にあるデータ要素（構造体フィールド、スタック・オフセット、IOレジスタなど）のアドレッシングに便利です。</P>
+  </BLOCKQUOTE>
+  <P><B>2.レジスタ・オフセット</B></P>
+  <BLOCKQUOTE>
+    <P>オフセットは汎用レジスタ（PCではない）で、ベース・レジスタへ加算、またはベースレジスタから減算できます。これはデータのアレイやブロックのアクセスに便利です。</P>
+  </BLOCKQUOTE>
+  <P><B>3.スケール・レジスタ・オフセット</B></P>
+  <BLOCKQUOTE>
+    <P>オフセットはイミディエイト値によってシフトされる汎用レジスタ（PCではない）で、ベース・レジスタへ加算、またはベース・レジスタから減算できます。データ処理命令に使用されるのと同じシフト・オペレーション（論理左シフト、論理右シフト、算術右シフト、算術右ローテート）を使用できますが、論理左シフトではインデックス付きのアレイを各アレイ要素のサイズでスケールできるため、最も便利です。</P>
+  </BLOCKQUOTE>
+  <P>オフセットのが3種類あるように、オフセットとベース・レジスタも異なる3とおりの方法でメモリ・アドレスを生成します。</P>
+  <P><B>1.オフセット・アドレッシング</B></P>
+  <BLOCKQUOTE>
+    <P>ベース・レジスタとオフセットは単純に加算、または減算されてメモリ・アドレスを生成します。</P>
+  </BLOCKQUOTE>
+  <P><B>2.プリインデックス・アドレッシング</B></P>
+  <BLOCKQUOTE>
+    <P>ベース・レジスタとオフセットは加算、または減算されて、メモリアドレスを生成します。次にベース・レジスタはこの新しいアドレスで更新され、アレイまたはメモリ・ブロックを通した自動インデクシングを可能にします。</P>
+  </BLOCKQUOTE>
+  <P><B>3.ポストインデックス・アドレッシング</B></P>
+  <BLOCKQUOTE>
+    <P>ベース・レジスタの値のみがメモリ・アドレスとして使用されます。ベース・アドレスとオフセットは加算、または減算され、値がベース・レジスタにストアされます。これでアレイまたはメモリ・ブロックを通した自動インデクシングが可能となります。</P>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>3.8.1 例</H4>
+
+<BLOCKQUOTE>
+  <PRE>LDR    R1,    [R0]           ; Load R1 from the address in register 0
+LDR    R8,    [R3, #4]       ; Load R8 from the address in R3 + 4
+LDR    R12,   [R13, #-4]     ; Load R12 from R13 - 4
+STR    R2,    [R1, #0x100]   ; Store R2 to the address in R1 + 0x100
+LDRB   R5,    [R9]           ; Load byte into R5 from R9 (zero top 3 bytes)
+LDRB   R3,    [R8, #3]       ; Load byte to R3 from R8 + 3 (zero top 3 bytes)
+STRB   R4,    [R10, #0x200]; Store byte from R4 to R10 + 0x200
+LDR    R11,   [R1, R2]       ; Load R11 from the address in R1 + R2
+STRB   R10,   [R7, -R4]      ; Store byte from R10 to the address in R7 - R4
+LDR    R11,   [R3,R5,LSL #2] ; Load R11 from R3 + (R5 x 4)
+LDR    R1,    [R0, #4]!      ; Load R1 from R0 + 4, then R0 = R0 + 4
+STRB   R7,    [R6, #-1]!     ; Store byte from R7 to R6 - 1, then R6 = R6 - 1
+LDR    R3,    [R9], #4       ; Load R3 from R9, then R9 = R9 + 4
+STR    R2,    [R5], #8       ; Store word from R2 to R5, then R5 = R5 + 8
+LDR    R0,    [PC, #40]      ; Load R0 from PC + 0x40 
+LDR    R0,    [R1], R2       ; Load R0 from R1, then R1 = R1 + R2</PRE>
+</BLOCKQUOTE>
+
+<H4>3.8.2 ハーフワードと符号付きバイトのアドレッシング・モード例</H4>
+
+<BLOCKQUOTE>
+  <P>ハーフワードと符号付きバイトのアドレッシング・モードは上記のアドレッシング・モードのサブセットです。スケールされたレジスタ・オフセットはサポートされていませんが、イミディエイト・オフセットは12ビットではなく8ビットを含みます。</P>
+  <PRE>LDRH    R1,     [R0]         ; Load a halfword to R1 from R0 (zero top bytes)
+LDRH    R8,     [R3, #2]     ; Load a halfword into R8 from R3 + 2
+LDRH    R12,    [R13, #-6]   ; Load a halfword into R12 from R13 - 6
+STRH    R2,     [R1, #0x80]  ; Store halfword from R2 to R1 + 0x80
+LDRSH   R5,     [R9]         ; Load signed halfword to R5 from R9
+LDRSB   R3,     [R8, #3      ; Load signed byte to R3 from R8 + 3
+LDRSB   R4,     [R10, #0xc1] ; Load signed byte to R4 from R10 + 0xc1
+LDRH    R11,    [R1, R2]     ; Load halfword into R11 from address in R1 + R2
+STRH    R10,    [R7, -R4]    ; Store halfword from R10 to R7 - R4
+LDRSH   R1,     [R0, #2]!    ; Load signed halfword R1 from R0+2,then R0=R0+2
+LDRSB   R7,     [R6, #-1]!   ; Load signed byte to R7 from R6-1, then R6=R6-1
+LDRH    R3,     [R9], #2     ; Load halfword to R3 from R9, then R9 = R9 + 2
+STRH    R2,     [R5], #8     ; Store halfword from R2 to R5, then R5 = R5 + 8</PRE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm307.htm">[前]</A> <A HREF="arm309.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,380 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                                Nov 29, 1999
+
+DRFP(DECI2 Remote File Protocol) Specification
+===============================================
+
+  This document provides description of the DRFP, one of higher level 
+  protocols than the DECI2 protocol.
+  
+
+Contents
+========
+1.  Overview
+2.  Message Format
+3.  Message
+3.1  DRFP_CODE_OPEN
+3.2  DRFP_CODE_OPENR
+3.3  DRFP_CODE_CLOSE
+3.4  DRFP_CODE_CLOSER
+3.5  DRFP_CODE_READ
+3.6  DRFP_CODE_READR
+3.7  DRFP_CODE_WRITE
+3.8  DRFP_CODE_WRITER
+3.9  DRFP_CODE_SEEK
+3.10 DRFP_CODE_SEEKR
+
+
+1.  Overview
+================
+  The DRFP is a protocol for accessing the file on the host from the 
+  target.  
+  The protocol numbers of the DRFP are as follows.  The generic name 
+  of the undermentioned two protocols is defined as the DRFP.
+
+    File access from the EE:  DRFP0 = 0x0120
+    File access from the IOP: DRFP1 = 0x0121
+
+  The DRFP protocol driver is implemented only on the IOP.  In the file 
+  access from the EE,  communication is performed with the IOP via a 
+  method other than the one using the DECI2 protocol, and then 
+  communication with the host is performed by the DRFP protocol driver 
+  on the IOP.  Therefore, the node to be connected to is 'I' for both 
+  protocols for the EE and the IOP. 
+
+  The application on the host is a server application which operates 
+  in such a way as to return a reply message corresponding to 
+  the request message from the protocol driver on the target. 
+
+
+
+2.  Message Format
+===========================
+  The DRFP message is transmitted by using a basic DECI2 header.  
+  The DRFP header shown below follows the DECI2 header. 
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                      Request/Reply Code                       |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                   Request Sequence Number                     |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                 Figure 1  Basic DRFP Message Header
+
+  Request/Reply Code
+    This shows the request/reply code.  It has 5 kinds of requests 
+    and the corresponding replies below. 
+
+    DRFP_CODE_OPEN  (0), DRFP_CODE_OPENR  (1)
+    DRFP_CODE_CLOSE (2), DRFP_CODE_CLOSER (3)
+    DRFP_CODE_READ  (4), DRFP_CODE_READR  (5)
+    DRFP_CODE_WRITE (6), DRFP_CODE_WRITER (7)
+    DRFP_CODE_SEEK  (8), DRFP_CODE_SEEKR  (9)
+
+  Request Sequence Number
+    The request sequence number is an integer, which is incremented every 
+    time a request message is generated.  The reply message generated in 
+    response to the request message has the request sequence number of 
+    the corresponding request message.
+
+
+
+3.  Message
+===============
+
+3.1  DRFP_CODE_OPEN
+--------------------
+  The DRFP_CODE_OPEN is a request message to open a file.  It has 
+  the format shown below following the DRFP header. 
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                             Flag                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                             Filename String ...    |
+                                             -+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 2  DRFP_CODE_OPEN Message
+
+  Flag
+    The lower 16 bits of the Flag have the following meanings.
+
+    DRFP_RDONLY  0x0001  Opens a file in read only mode.
+    DRFP_WRONLY  0x0002  Opens a file in write only mode.
+    DRFP_RDWR    0x0003  Opens a file in read/write mode.
+    DRFP_CREAT   0x0200  Creates a file, when no file exists.
+    DRFP_TRUNC   0x0400  Throws away contents of a file and sets 
+			 the size to 0 when opening the file by 
+			 writing.
+    DRFP_EXCL    0x0800  Treats files with the same name as an 
+                         error while creating a file.
+
+    The upper 16 bits of the Flag depend on the host system to which 
+    the file server application is implemented.  In the case of UNIX, 
+    for example, the permission of the file can be specified.  In 
+    the case of 0, it is considered that the default permission of 
+    the file server application has been specified. 
+
+  Filename String
+    This is a character string terminated with null showing the file 
+    name to open. 
+
+
+3.2  DRFP_CODE_OPENR
+---------------------
+  The DRFP_CODE_OPENR is a reply message to the request to open the file.
+  It has the format shown below following the DRFP header.
+  
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            Result                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        File Descriptor                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 3  DRFP_CODE_OPENR Message
+
+  Result
+    If the file has been opened normally, 0 is set.  If not, 
+    the following error codes are set.  When errors other than 
+    the following occur, 0xffff is set to the lower 16 bits. 
+ 
+    DRFP_EACCES (13)  Violation of the permission.
+    DRFP_EDQUOT (122) Space cannot be secured in the directory.
+    DRFP_EEXIST (17)  The file already exists.
+    DRFP_ENOENT (2)   The file is not found or the file name is abnormal. 
+    DRFP_ENOSPC (28)  Space cannot be secured on the disk.
+    DRFP_ENFILE (23)  The number of files opened at the same time has 
+                      reached the limit. 
+    DRFP_EROFS  (30)  Attempted to open the file on the read only disk 
+                      by writing.
+    DRFP_EBADF  (9)   Bad file number.
+    DRFP_EIO    (5)   I/O error.
+    DRFP_EISDIR (21)  Is a directory.
+ 
+  File Descriptor
+    The file number, which shows the opened file, is set.  This field is 
+    used for reading/writing and closing the file on the target. 
+
+
+3.3  DRFP_CODE_CLOSE
+---------------------
+  The DRFP_CODE_CLOSE is a request message to close a file.  It has 
+  the format shown below following the DRFP header. 
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        File Descriptor                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 4  DRFP_CODE_CLOSE Message
+
+  File Descriptor
+    The file number is set.
+
+
+3.4  DRFP_CODE_CLOSER
+----------------------
+  The DRFP_CODE_CLOSER is a reply message to the request to close 
+  the file.  It has the format shown below following the DRFP header.  
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                             Result                            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 5  DRFP_CODE_CLOSER Message
+
+  result
+    If the file has been closed normally, 0 is set.  If not, 
+    the following error code is set.  When errors other than 
+    the following occur, 0xffff is set to the lower 16 bits.
+
+    DRFP_EBADF  (9)   Bad file number.
+
+
+
+3.5  DRFP_CODE_READ
+--------------------
+  The DRFP_CODE_READ is a request message to read a file.  It has 
+  the format shown below following the DRFP header.  
+
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        File Descriptor                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        Number of Bytes                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 6  DRFP_CODE_READ Message
+
+  File Descriptor
+    The file number is set.
+
+  Number of Bytes
+    The number of bytes of the data to be read is set. 
+
+
+3.6  DRFP_CODE_READR
+---------------------
+  The DRFP_CODE_READR is a reply message to the request to read 
+  the file.  It has the format shown below following the DRFP header.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            Result                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        Number of Bytes                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                                        Data ...    |
+                                                       -+-+-+-+-+-+-+
+
+                      Figure 7  DRFP_CODE_READR Message
+
+  Result
+    If the file has been read normally, 0 is set.  If not, the following 
+    error codes are set.  When errors other than the following occur, 
+    0xffff is set to the lower 16 bits.
+
+    DRFP_EBADF  (9)   Bad file number.
+    DRFP_EIO    (5)   I/O error.
+
+  Number of Bytes
+    The size (number of bytes) of the data read.
+ 
+  Data
+    The data read.
+
+  In the following cases, the data size to be returned becomes smaller 
+  than the number of the requested read data. 
+  
+    1) When the number of data specified with the DRFP_CODE_READ 
+       overflows the packet.
+    2) When the file has reached its end.
+
+  The target side judges that the file has reached its end if 0 is set 
+  to both fields of Number of Bytes and Result. 
+
+
+3.7  DRFP_CODE_WRITE
+---------------------
+  The DRFP_CODE_WRITE is a request message to write a file.  It has 
+  the format shown below following the DRFP header.
+ 
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        File Descriptor                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        Number of Bytes                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                                        Data ...    |
+                                                       -+-+-+-+-+-+-+
+
+                      Figure 8  DRFP_CODE_WRITE Message
+
+  File Descriptor
+    The file number is set.
+
+  Number of Bytes
+   The number of bytes of the data to be written is set. 
+
+  Data
+    Data to be written is set.
+
+
+3.8  DRFP_CODE_WRITER
+----------------------
+  The DRFP_CODE_WRITER is a reply message to the request to write 
+  the file.  It has the format shown below following the DRFP header.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            Result                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        Number of Bytes                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 9  DRFP_CODE_WRITER Message
+  Result
+    If the file has been read normally, 0 is set.  If not, the following 
+    error codes are set.  When errors other than the following occur, 
+    0xffff is set to the lower 16 bits.
+   
+    DRFP_EBADF  (9)   Bad file number.
+    DRFP_EIO    (5)   I/O error.
+
+  Number of Bytes
+    The number of bytes written to the file is set. 
+
+
+3.9  DRFP_CODE_SEEK
+--------------------
+  The DRFP_CODE_SEEK is a request message to seek a file.  It has 
+  the format shown below following the DRFP header.
+  
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        File Descriptor                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                             Offset                            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                              Base                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 10 DRFP_CODE_SEEK Message
+
+  File Descriptor
+    The file number is set.
+
+  Offset
+    The amount of travel of the file pointer is set in byte units. 
+
+  Base
+    The reference point of the Offset is set with any value of 0, 1 
+    and 2 as follows. 
+
+    0  From the beginning of the file
+    1  From the present position
+    2  From the end of the file
+
+
+3.10 DRFP_CODE_SEEKR
+---------------------
+  The DRFP_CODE_SEEKR is a reply message to the request to seek the file. 
+  It has the format shown below following the DRFP header.
+
+       3                   2                   1                  
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            Result                             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                              Pos                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 11 DRFP_CODE_SEEKR Message
+
+  Result
+    If the file has been sought normally, 0 is set.  If not, 
+    the following error code is set.  When errors other than 
+    the following occur, 0xffff is set to the lower 16 bits.
+
+    DRFP_EBADF  (9)   Bad file number.
+
+  Pos
+    The position of the post-travel file pointer is set.
+

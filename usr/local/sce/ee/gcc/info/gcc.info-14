@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1145 +36,1009 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Function Names,  Next: Return Address,  Prev: Incomplete Enums,  Up: C Extensions
+File: gcc.info,  Node: Temporaries,  Prev: Static Definitions,  Up: C++ Misunderstandings
 
-Function Names as Strings
-=========================
+Temporaries May Vanish Before You Expect
+----------------------------------------
 
-   GNU CC predefines two magic identifiers to hold the name of the
-current function. The identifier `__FUNCTION__' holds the name of the
-function as it appears in the source. The identifier
-`__PRETTY_FUNCTION__' holds the name of the function pretty printed in
-a language specific fashion.
+   It is dangerous to use pointers or references to *portions* of a
+temporary object.  The compiler may very well delete the object before
+you expect it to, leaving a pointer to garbage.  The most common place
+where this problem crops up is in classes like the libg++ `String'
+class, that define a conversion function to type `char *' or `const
+char *'.  However, any class that returns a pointer to some internal
+structure is potentially subject to this problem.
 
-   These names are always the same in a C function, but in a C++
-function they may be different.  For example, this program:
+   For example, a program may use a function `strfunc' that returns
+`String' objects, and another function `charfunc' that operates on
+pointers to `char':
 
-     extern "C" {
-     extern int printf (char *, ...);
-     }
-     
-     class a {
-      public:
-       sub (int i)
-         {
-           printf ("__FUNCTION__ = %s\n", __FUNCTION__);
-           printf ("__PRETTY_FUNCTION__ = %s\n", __PRETTY_FUNCTION__);
-         }
-     };
-     
-     int
-     main (void)
-     {
-       a ax;
-       ax.sub (0);
-       return 0;
-     }
+     String strfunc ();
+     void charfunc (const char *);
 
-gives this output:
+In this situation, it may seem natural to write
+`charfunc (strfunc ());' based on the knowledge that class `String' has
+an explicit conversion to `char' pointers.  However, what really
+happens is akin to `charfunc (strfunc ().convert ());', where the
+`convert' method is a function to do the same data conversion normally
+performed by a cast.  Since the last use of the temporary `String'
+object is the call to the conversion function, the compiler may delete
+that object before actually calling `charfunc'.  The compiler has no
+way of knowing that deleting the `String' object will invalidate the
+pointer.  The pointer then points to garbage, so that by the time
+`charfunc' is called, it gets an invalid argument.
 
-     __FUNCTION__ = sub
-     __PRETTY_FUNCTION__ = int  a::sub (int)
+   Code like this may run successfully under some other compilers,
+especially those that delete temporaries relatively late.  However, the
+GNU C++ behavior is also standard-conforming, so if your program depends
+on late destruction of temporaries it is not portable.
 
-   The compiler automagically replaces the identifiers with a string
-literal containing the appropriate name. Thus, they are neither
-preprocessor macros, like `__FILE__' and `__LINE__', nor variables.
-This means that they catenate with other string literals, and that they
-can be used to initialize char arrays. For example
+   If you think this is surprising, you should be aware that the ANSI
+C++ committee continues to debate the lifetime-of-temporaries problem.
 
-     char here[] = "Function " __FUNCTION__ " in " __FILE__;
+   For now, at least, the safe way to write such code is to give the
+temporary a name, which forces it to remain until the end of the scope
+of the name.  For example:
 
-   On the other hand, `#ifdef __FUNCTION__' does not have any special
-meaning inside a function, since the preprocessor does not do anything
-special with the identifier `__FUNCTION__'.
-
-   GNU CC also supports the magic word `__func__', defined by the ISO
-standard C-99:
-
-     The identifier `__func__' is implicitly declared by the translator
-     as if, immediately following the opening brace of each function
-     definition, the declaration
-          static const char __func__[] = "function-name";
-     
-     appeared, where function-name is the name of the lexically-enclosing
-     function. This name is the unadorned name of the function.
-
-   By this definition, `__func__' is a variable, not a string literal.
-In particular, `__func__' does not catenate with other string literals.
-
-   In `C++', `__FUNCTION__' and `__PRETTY_FUNCTION__' are variables,
-declared in the same way as `__func__'.
+     String& tmp = strfunc ();
+     charfunc (tmp);
 
 
-File: gcc.info,  Node: Return Address,  Next: Other Builtins,  Prev: Function Names,  Up: C Extensions
+File: gcc.info,  Node: Protoize Caveats,  Next: Non-bugs,  Prev: C++ Misunderstandings,  Up: Trouble
 
-Getting the Return or Frame Address of a Function
-=================================================
+Caveats of using `protoize'
+===========================
 
-   These functions may be used to get information about the callers of a
-function.
+   The conversion programs `protoize' and `unprotoize' can sometimes
+change a source file in a way that won't work unless you rearrange it.
 
-`__builtin_return_address (LEVEL)'
-     This function returns the return address of the current function,
-     or of one of its callers.  The LEVEL argument is number of frames
-     to scan up the call stack.  A value of `0' yields the return
-     address of the current function, a value of `1' yields the return
-     address of the caller of the current function, and so forth.
+   * `protoize' can insert references to a type name or type tag before
+     the definition, or in a file where they are not defined.
 
-     The LEVEL argument must be a constant integer.
+     If this happens, compiler error messages should show you where the
+     new references are, so fixing the file by hand is straightforward.
 
-     On some machines it may be impossible to determine the return
-     address of any function other than the current one; in such cases,
-     or when the top of the stack has been reached, this function will
-     return `0'.
+   * There are some C constructs which `protoize' cannot figure out.
+     For example, it can't determine argument types for declaring a
+     pointer-to-function variable; this you must do by hand.  `protoize'
+     inserts a comment containing `???' each time it finds such a
+     variable; so you can find all such variables by searching for this
+     string.  ANSI C does not require declaring the argument types of
+     pointer-to-function types.
 
-     This function should only be used with a non-zero argument for
-     debugging purposes.
+   * Using `unprotoize' can easily introduce bugs.  If the program
+     relied on prototypes to bring about conversion of arguments, these
+     conversions will not take place in the program without prototypes.
+     One case in which you can be sure `unprotoize' is safe is when you
+     are removing prototypes that were made with `protoize'; if the
+     program worked before without any prototypes, it will work again
+     without them.
 
-`__builtin_frame_address (LEVEL)'
-     This function is similar to `__builtin_return_address', but it
-     returns the address of the function frame rather than the return
-     address of the function.  Calling `__builtin_frame_address' with a
-     value of `0' yields the frame address of the current function, a
-     value of `1' yields the frame address of the caller of the current
-     function, and so forth.
+     You can find all the places where this problem might occur by
+     compiling the program with the `-Wconversion' option.  It prints a
+     warning whenever an argument is converted.
 
-     The frame is the area on the stack which holds local variables and
-     saved registers.  The frame address is normally the address of the
-     first word pushed on to the stack by the function.  However, the
-     exact definition depends upon the processor and the calling
-     convention.  If the processor has a dedicated frame pointer
-     register, and the function has a frame, then
-     `__builtin_frame_address' will return the value of the frame
-     pointer register.
+   * Both conversion programs can be confused if there are macro calls
+     in and around the text to be converted.  In other words, the
+     standard syntax for a declaration or definition must not result
+     from expanding a macro.  This problem is inherent in the design of
+     C and cannot be fixed.  If only a few functions have confusing
+     macro calls, you can easily convert them manually.
 
-     The caveats that apply to `__builtin_return_address' apply to this
-     function as well.
+   * `protoize' cannot get the argument types for a function whose
+     definition was not actually compiled due to preprocessing
+     conditionals.  When this happens, `protoize' changes nothing in
+     regard to such a function.  `protoize' tries to detect such
+     instances and warn about them.
 
-
-File: gcc.info,  Node: Other Builtins,  Next: Redefining Typedefs,  Prev: Return Address,  Up: C Extensions
+     You can generally work around this problem by using `protoize' step
+     by step, each time specifying a different set of `-D' options for
+     compilation, until all of the functions have been converted.
+     There is no automatic way to verify that you have got them all,
+     however.
 
-Other built-in functions provided by GNU CC
-===========================================
+   * Confusion may result if there is an occasion to convert a function
+     declaration or definition in a region of source code where there
+     is more than one formal parameter list present.  Thus, attempts to
+     convert code containing multiple (conditionally compiled) versions
+     of a single function header (in the same vicinity) may not produce
+     the desired (or expected) results.
 
-   GNU CC provides a large number of built-in functions other than the
-ones mentioned above.  Some of these are for internal use in the
-processing of exceptions or variable-length argument lists and will not
-be documented here because they may change from time to time; we do not
-recommend general use of these functions.
+     If you plan on converting source files which contain such code, it
+     is recommended that you first make sure that each conditionally
+     compiled region of source code which contains an alternative
+     function header also contains at least one additional follower
+     token (past the final right parenthesis of the function header).
+     This should circumvent the problem.
 
-   The remaining functions are provided for optimization purposes.
+   * `unprotoize' can become confused when trying to convert a function
+     definition or declaration which contains a declaration for a
+     pointer-to-function formal argument which has the same name as the
+     function being defined or declared.  We recommand you avoid such
+     choices of formal parameter names.
 
-   GNU CC includes builtin versions of many of the functions in the
-standard C library.  These will always be treated as having the same
-meaning as the C library function even if you specify the
-`-fno-builtin' (*note C Dialect Options::.) option.  These functions
-correspond to the C library functions `abort', `abs', `alloca', `cos',
-`cosf', `cosl', `exit', `_exit', `fabs', `fabsf', `fabsl', `ffs',
-`labs', `memcmp', `memcpy', `memset', `sin', `sinf', `sinl', `sqrt',
-`sqrtf', `sqrtl', `strcmp', `strcpy', and `strlen'.
-
-`__builtin_constant_p (EXP)'
-     You can use the builtin function `__builtin_constant_p' to
-     determine if a value is known to be constant at compile-time and
-     hence that GNU CC can perform constant-folding on expressions
-     involving that value.  The argument of the function is the value
-     to test.  The function returns the integer 1 if the argument is
-     known to be a compile-time constant and 0 if it is not known to be
-     a compile-time constant.  A return of 0 does not indicate that the
-     value is *not* a constant, but merely that GNU CC cannot prove it
-     is a constant with the specified value of the `-O' option.
-
-     You would typically use this function in an embedded application
-     where memory was a critical resource.  If you have some complex
-     calculation, you may want it to be folded if it involves
-     constants, but need to call a function if it does not.  For
-     example:
-
-          #define Scale_Value(X)  \
-            (__builtin_constant_p (X) ? ((X) * SCALE + OFFSET) : Scale (X))
-
-     You may use this builtin function in either a macro or an inline
-     function.  However, if you use it in an inlined function and pass
-     an argument of the function as the argument to the builtin, GNU CC
-     will never return 1 when you call the inline function with a
-     string constant or constructor expression (*note Constructors::.)
-     and will not return 1 when you pass a constant numeric value to
-     the inline function unless you specify the `-O' option.
-
-`__builtin_expect(EXP, C)'
-     You may use `__builtin_expect' to provide the compiler with branch
-     prediction information.  In general, you should prefer to use
-     actual profile feedback for this (`-fprofile-arcs'), as
-     programmers are notoriously bad at predicting how their programs
-     actually perform.  However, there are applications in which this
-     data is hard to collect.
-
-     The return value is the value of EXP, which should be an integral
-     expression.  The value of C must be a compile-time constant.  The
-     semantics of the builtin are that it is expected that EXP == C.
-     For example:
-
-          if (__builtin_expect (x, 0))
-            foo ();
-
-     would indicate that we do not expect to call `foo', since we
-     expect `x' to be zero.  Since you are limited to integral
-     expressions for EXP, you should use constructions such as
-
-          if (__builtin_expect (ptr != NULL, 1))
-            error ();
-
-     when testing pointer or floating-point values.
+   * You might also want to correct some of the indentation by hand and
+     break long lines.  (The conversion programs don't write lines
+     longer than eighty characters in any case.)
 
 
-File: gcc.info,  Node: Redefining Typedefs,  Next: Deprecated Features,  Prev: Other Builtins,  Up: C Extensions
+File: gcc.info,  Node: Non-bugs,  Next: Warnings and Errors,  Prev: Protoize Caveats,  Up: Trouble
 
-Redefining typedef names
-========================
+Certain Changes We Don't Want to Make
+=====================================
 
-   GNU CC allows you to redefine a typedef name, as long as the previous
-type and the new type are the same.  ISO/ANSI does not allow typedefs
-to be redefined.
+   This section lists changes that people frequently request, but which
+we do not make because we think GNU CC is better without them.
 
-
-File: gcc.info,  Node: Deprecated Features,  Next: Backwards Compatibility,  Prev: Redefining Typedefs,  Up: C Extensions
+   * Checking the number and type of arguments to a function which has
+     an old-fashioned definition and no prototype.
 
-Deprecated Features
-===================
+     Such a feature would work only occasionally--only for calls that
+     appear in the same file as the called function, following the
+     definition.  The only way to check all calls reliably is to add a
+     prototype for the function.  But adding a prototype eliminates the
+     motivation for this feature.  So the feature is not worthwhile.
 
-   In the past, the GNU C++ compiler was extended to experiment with new
-features, at a time when the C++ language was still evolving. Now that
-the C++ standard is complete, some of those features are superseded by
-superior alternatives. Using the old features might cause a warning in
-some cases that the feature will be dropped in the future. In other
-cases, the feature might be gone already.
+   * Warning about using an expression whose type is signed as a shift
+     count.
 
-   While the list below is not exhaustive, it documents some of the
-options that are now deprecated:
+     Shift count operands are probably signed more often than unsigned.
+     Warning about this would cause far more annoyance than good.
 
-`-fexternal-templates'
-`-falt-external-templates'
-     These are two of the many ways for g++ to implement template
-     instantiation. *Note Template Instantiation::. The C++ standard
-     clearly defines how template definitions have to be organized
-     across implementation units. g++ has an implicit instantiation
-     mechanism that should work just fine for standard-conforming code.
+   * Warning about assigning a signed value to an unsigned variable.
 
-`-fstrict-prototype'
-`-fno-strict-prototype'
-     Previously it was possible to use an empty prototype parameter
-     list to indicate an unspecified number of parameters (like C),
-     rather than no parameters, as C++ demands. This feature has been
-     removed, except where it is required for backwards compatibility
-     *Note Backwards Compatibility::.
+     Such assignments must be very common; warning about them would
+     cause more annoyance than good.
 
-
-File: gcc.info,  Node: Backwards Compatibility,  Next: Unnamed Fields,  Prev: Deprecated Features,  Up: C Extensions
+   * Warning about unreachable code.
 
-Backwards Compatibility
-=======================
+     It's very common to have unreachable code in machine-generated
+     programs.  For example, this happens normally in some files of GNU
+     C itself.
 
-   Now that there is a definitive ISO standard C++, g++ has a
-specification to adhere to. The C++ language evolved over time, and
-features that used to be acceptable in previous drafts of the standard,
-such as the ARM, are no longer accepted. In order to allow compilation
-of C++ written to such drafts, g++ contains some backwards
-compatibilities. *All such backwards compatibility features are liable
-to disappear in future versions of g++.* They should be considered
-deprecated *Note Deprecated Features::.
+   * Warning when a non-void function value is ignored.
 
-`For scope'
-     If a variable is declared at for scope, it used to remain in scope
-     until the end of the scope which contained the for statement
-     (rather than just within the for scope). g++ retains this, but
-     issues a warning, if such a variable is accessed outside the for
-     scope.
+     Coming as I do from a Lisp background, I balk at the idea that
+     there is something dangerous about discarding a value.  There are
+     functions that return values which some callers may find useful;
+     it makes no sense to clutter the program with a cast to `void'
+     whenever the value isn't useful.
 
-`implicit C language'
-     Old C system header files did not contain an `extern "C" {...}'
-     scope to set the language. On such systems, all header files are
-     implicitly scoped inside a C language scope. Also, an empty
-     prototype `()' will be treated as an unspecified number of
-     arguments, rather than no arguments, as C++ demands.
+   * Assuming (for optimization) that the address of an external symbol
+     is never zero.
 
-
-File: gcc.info,  Node: Unnamed Fields,  Prev: Backwards Compatibility,  Up: C Extensions
+     This assumption is false on certain systems when `#pragma weak' is
+     used.
 
-Unnamed struct/union fields within structs/unions.
-==================================================
+   * Making `-fshort-enums' the default.
 
-   For compatibility with other compilers, GCC allows you to define a
-structure or union that contains, as fields, structures and unions
-without names.  For example:
+     This would cause storage layout to be incompatible with most other
+     C compilers.  And it doesn't seem very important, given that you
+     can get the same result in other ways.  The case where it matters
+     most is when the enumeration-valued object is inside a structure,
+     and in that case you can specify a field width explicitly.
 
-     struct {
-       int a;
-       union {
-         int b;
-         float c;
-       };
-       int d;
-     } foo;
+   * Making bitfields unsigned by default on particular machines where
+     "the ABI standard" says to do so.
 
-   In this example, the user would be able to access members of the
-unnamed union with code like `foo.b'.  Note that only unnamed structs
-and unions are allowed, you may not have, for example, an unnamed `int'.
+     The ANSI C standard leaves it up to the implementation whether a
+     bitfield declared plain `int' is signed or not.  This in effect
+     creates two alternative dialects of C.
 
-   You must never create such structures that cause ambiguous field
-definitions.  For example, this structure:
+     The GNU C compiler supports both dialects; you can specify the
+     signed dialect with `-fsigned-bitfields' and the unsigned dialect
+     with `-funsigned-bitfields'.  However, this leaves open the
+     question of which dialect to use by default.
 
-     struct {
-       int a;
-       struct {
-         int a;
-       };
-     } foo;
+     Currently, the preferred dialect makes plain bitfields signed,
+     because this is simplest.  Since `int' is the same as `signed int'
+     in every other context, it is cleanest for them to be the same in
+     bitfields as well.
 
-   It is ambiguous which `a' is being referred to with `foo.a'.  Such
-constructs are not supported and must be avoided.  In the future, such
-constructs may be detected and treated as compilation errors.
+     Some computer manufacturers have published Application Binary
+     Interface standards which specify that plain bitfields should be
+     unsigned.  It is a mistake, however, to say anything about this
+     issue in an ABI.  This is because the handling of plain bitfields
+     distinguishes two dialects of C.  Both dialects are meaningful on
+     every type of machine.  Whether a particular object file was
+     compiled using signed bitfields or unsigned is of no concern to
+     other object files, even if they access the same bitfields in the
+     same data structures.
 
-
-File: gcc.info,  Node: C++ Extensions,  Next: Gcov,  Prev: C Extensions,  Up: Top
+     A given program is written in one or the other of these two
+     dialects.  The program stands a chance to work on most any machine
+     if it is compiled with the proper dialect.  It is unlikely to work
+     at all if compiled with the wrong dialect.
 
-Extensions to the C++ Language
-******************************
+     Many users appreciate the GNU C compiler because it provides an
+     environment that is uniform across machines.  These users would be
+     inconvenienced if the compiler treated plain bitfields differently
+     on certain machines.
 
-   The GNU compiler provides these extensions to the C++ language (and
-you can also use most of the C language extensions in your C++
-programs).  If you want to write code that checks whether these
-features are available, you can test for the GNU compiler the same way
-as for C programs: check for a predefined macro `__GNUC__'.  You can
-also use `__GNUG__' to test specifically for GNU C++ (*note Standard
-Predefined Macros: (cpp.info)Standard Predefined.).
+     Occasionally users write programs intended only for a particular
+     machine type.  On these occasions, the users would benefit if the
+     GNU C compiler were to support by default the same dialect as the
+     other compilers on that machine.  But such applications are rare.
+     And users writing a program to run on more than one type of
+     machine cannot possibly benefit from this kind of compatibility.
 
-* Menu:
+     This is why GNU CC does and will treat plain bitfields in the same
+     fashion on all types of machines (by default).
 
-* Naming Results::      Giving a name to C++ function return values.
-* Min and Max::		C++ Minimum and maximum operators.
-* Volatiles::		What constitutes an access to a volatile object.
-* Restricted Pointers:: C99 restricted pointers and references.
-* C++ Interface::       You can use a single C++ header file for both
-                         declarations and definitions.
-* Template Instantiation:: Methods for ensuring that exactly one copy of
-                         each needed template instantiation is emitted.
-* Bound member functions:: You can extract a function pointer to the
-                        method denoted by a `->*' or `.*' expression.
+     There are some arguments for making bitfields unsigned by default
+     on all machines.  If, for example, this becomes a universal de
+     facto standard, it would make sense for GNU CC to go along with
+     it.  This is something to be considered in the future.
 
-
-File: gcc.info,  Node: Naming Results,  Next: Min and Max,  Up: C++ Extensions
+     (Of course, users strongly concerned about portability should
+     indicate explicitly in each bitfield whether it is signed or not.
+     In this way, they write programs which have the same meaning in
+     both C dialects.)
 
-Named Return Values in C++
-==========================
+   * Undefining `__STDC__' when `-ansi' is not used.
 
-   GNU C++ extends the function-definition syntax to allow you to
-specify a name for the result of a function outside the body of the
-definition, in C++ programs:
+     Currently, GNU CC defines `__STDC__' as long as you don't use
+     `-traditional'.  This provides good results in practice.
 
-     TYPE
-     FUNCTIONNAME (ARGS) return RESULTNAME;
-     {
-       ...
-       BODY
-       ...
-     }
+     Programmers normally use conditionals on `__STDC__' to ask whether
+     it is safe to use certain features of ANSI C, such as function
+     prototypes or ANSI token concatenation.  Since plain `gcc' supports
+     all the features of ANSI C, the correct answer to these questions
+     is "yes".
 
-   You can use this feature to avoid an extra constructor call when a
-function result has a class type.  For example, consider a function
-`m', declared as `X v = m ();', whose result is of class `X':
+     Some users try to use `__STDC__' to check for the availability of
+     certain library facilities.  This is actually incorrect usage in
+     an ANSI C program, because the ANSI C standard says that a
+     conforming freestanding implementation should define `__STDC__'
+     even though it does not have the library facilities.  `gcc -ansi
+     -pedantic' is a conforming freestanding implementation, and it is
+     therefore required to define `__STDC__', even though it does not
+     come with an ANSI C library.
 
-     X
-     m ()
-     {
-       X b;
-       b.a = 23;
-       return b;
-     }
+     Sometimes people say that defining `__STDC__' in a compiler that
+     does not completely conform to the ANSI C standard somehow
+     violates the standard.  This is illogical.  The standard is a
+     standard for compilers that claim to support ANSI C, such as `gcc
+     -ansi'--not for other compilers such as plain `gcc'.  Whatever the
+     ANSI C standard says is relevant to the design of plain `gcc'
+     without `-ansi' only for pragmatic reasons, not as a requirement.
 
-   Although `m' appears to have no arguments, in fact it has one
-implicit argument: the address of the return value.  At invocation, the
-address of enough space to hold `v' is sent in as the implicit argument.
-Then `b' is constructed and its `a' field is set to the value 23.
-Finally, a copy constructor (a constructor of the form `X(X&)') is
-applied to `b', with the (implicit) return value location as the
-target, so that `v' is now bound to the return value.
+     GNU CC normally defines `__STDC__' to be 1, and in addition
+     defines `__STRICT_ANSI__' if you specify the `-ansi' option.  On
+     some hosts, system include files use a different convention, where
+     `__STDC__' is normally 0, but is 1 if the user specifies strict
+     conformance to the C Standard.  GNU CC follows the host convention
+     when processing system include files, but when processing user
+     files it follows the usual GNU C convention.
 
-   But this is wasteful.  The local `b' is declared just to hold
-something that will be copied right out.  While a compiler that
-combined an "elision" algorithm with interprocedural data flow analysis
-could conceivably eliminate all of this, it is much more practical to
-allow you to assist the compiler in generating efficient code by
-manipulating the return value explicitly, thus avoiding the local
-variable and copy constructor altogether.
+   * Undefining `__STDC__' in C++.
 
-   Using the extended GNU C++ function-definition syntax, you can avoid
-the temporary allocation and copying by naming `r' as your return value
-at the outset, and assigning to its `a' field directly:
+     Programs written to compile with C++-to-C translators get the
+     value of `__STDC__' that goes with the C compiler that is
+     subsequently used.  These programs must test `__STDC__' to
+     determine what kind of C preprocessor that compiler uses: whether
+     they should concatenate tokens in the ANSI C fashion or in the
+     traditional fashion.
 
-     X
-     m () return r;
-     {
-       r.a = 23;
-     }
+     These programs work properly with GNU C++ if `__STDC__' is defined.
+     They would not work otherwise.
 
-The declaration of `r' is a standard, proper declaration, whose effects
-are executed *before* any of the body of `m'.
+     In addition, many header files are written to provide prototypes
+     in ANSI C but not in traditional C.  Many of these header files
+     can work without change in C++ provided `__STDC__' is defined.  If
+     `__STDC__' is not defined, they will all fail, and will all need
+     to be changed to test explicitly for C++ as well.
 
-   Functions of this type impose no additional restrictions; in
-particular, you can execute `return' statements, or return implicitly by
-reaching the end of the function body ("falling off the edge").  Cases
-like
+   * Deleting "empty" loops.
 
-     X
-     m () return r (23);
-     {
-       return;
-     }
+     GNU CC does not delete "empty" loops because the most likely reason
+     you would put one in a program is to have a delay.  Deleting them
+     will not make real programs run any faster, so it would be
+     pointless.
 
-(or even `X m () return r (23); { }') are unambiguous, since the return
-value `r' has been initialized in either case.  The following code may
-be hard to read, but also works predictably:
+     Historically, GNU CC has not deleted "empty" loops under the
+     assumption that the most likely reason you would put one in a
+     program is to have a delay, so deleting them will not make real
+     programs run any faster.
 
-     X
-     m () return r;
-     {
-       X b;
-       return b;
-     }
+     However, the rationale here is that optimization of a nonempty loop
+     cannot produce an empty one, which holds for C but is not always
+     the case for C++.
 
-   The return value slot denoted by `r' is initialized at the outset,
-but the statement `return b;' overrides this value.  The compiler deals
-with this by destroying `r' (calling the destructor if there is one, or
-doing nothing if there is not), and then reinitializing `r' with `b'.
+     Moreover, with `-funroll-loops' small "empty" loops are already
+     removed, so the current behavior is both sub-optimal and
+     inconsistent and will change in the future.
 
-   This extension is provided primarily to help people who use
-overloaded operators, where there is a great need to control not just
-the arguments, but the return values of functions.  For classes where
-the copy constructor incurs a heavy performance penalty (especially in
-the common case where there is a quick default constructor), this is a
-major savings.  The disadvantage of this extension is that you do not
-control when the default constructor for the return value is called: it
-is always called at the beginning.
+   * Making side effects happen in the same order as in some other
+     compiler.
+
+     It is never safe to depend on the order of evaluation of side
+     effects.  For example, a function call like this may very well
+     behave differently from one compiler to another:
+
+          void func (int, int);
+          
+          int i = 2;
+          func (i++, i++);
+
+     There is no guarantee (in either the C or the C++ standard language
+     definitions) that the increments will be evaluated in any
+     particular order.  Either increment might happen first.  `func'
+     might get the arguments `2, 3', or it might get `3, 2', or even
+     `2, 2'.
+
+   * Not allowing structures with volatile fields in registers.
+
+     Strictly speaking, there is no prohibition in the ANSI C standard
+     against allowing structures with volatile fields in registers, but
+     it does not seem to make any sense and is probably not what you
+     wanted to do.  So the compiler will give an error message in this
+     case.
 
 
-File: gcc.info,  Node: Min and Max,  Next: Volatiles,  Prev: Naming Results,  Up: C++ Extensions
+File: gcc.info,  Node: Warnings and Errors,  Prev: Non-bugs,  Up: Trouble
 
-Minimum and Maximum Operators in C++
-====================================
-
-   It is very convenient to have operators which return the "minimum"
-or the "maximum" of two arguments.  In GNU C++ (but not in GNU C),
-
-`A <? B'
-     is the "minimum", returning the smaller of the numeric values A
-     and B;
-
-`A >? B'
-     is the "maximum", returning the larger of the numeric values A and
-     B.
-
-   These operations are not primitive in ordinary C++, since you can
-use a macro to return the minimum of two things in C++, as in the
-following example.
-
-     #define MIN(X,Y) ((X) < (Y) ? : (X) : (Y))
-
-You might then use `int min = MIN (i, j);' to set MIN to the minimum
-value of variables I and J.
-
-   However, side effects in `X' or `Y' may cause unintended behavior.
-For example, `MIN (i++, j++)' will fail, incrementing the smaller
-counter twice.  A GNU C extension allows you to write safe macros that
-avoid this kind of problem (*note Naming an Expression's Type: Naming
-Types.).  However, writing `MIN' and `MAX' as macros also forces you to
-use function-call notation for a fundamental arithmetic operation.
-Using GNU C++ extensions, you can write `int min = i <? j;' instead.
-
-   Since `<?' and `>?' are built into the compiler, they properly
-handle expressions with side-effects;  `int min = i++ <? j++;' works
-correctly.
-
-
-File: gcc.info,  Node: Volatiles,  Next: Restricted Pointers,  Prev: Min and Max,  Up: C++ Extensions
-
-When is a Volatile Object Accessed?
+Warning Messages and Error Messages
 ===================================
 
-   Both the C and C++ standard have the concept of volatile objects.
-These are normally accessed by pointers and used for accessing
-hardware. The standards encourage compilers to refrain from
-optimizations concerning accesses to volatile objects that it might
-perform on non-volatile objects. The C standard leaves it
-implementation defined as to what constitutes a volatile access. The
-C++ standard omits to specify this, except to say that C++ should
-behave in a similar manner to C with respect to volatiles, where
-possible. The minimum either standard specifies is that at a sequence
-point all previous accesses to volatile objects have stabilized and no
-subsequent accesses have occurred. Thus an implementation is free to
-reorder and combine volatile accesses which occur between sequence
-points, but cannot do so for accesses across a sequence point. The use
-of volatiles does not allow you to violate the restriction on updating
-objects multiple times within a sequence point.
+   The GNU compiler can produce two kinds of diagnostics: errors and
+warnings.  Each kind has a different purpose:
 
-   In most expressions, it is intuitively obvious what is a read and
-what is a write. For instance
+     *Errors* report problems that make it impossible to compile your
+     program.  GNU CC reports errors with the source file name and line
+     number where the problem is apparent.
 
-     volatile int *dst = <somevalue>;
-     volatile int *src = <someothervalue>;
-     *dst = *src;
+     *Warnings* report other unusual conditions in your code that *may*
+     indicate a problem, although compilation can (and does) proceed.
+     Warning messages also report the source file name and line number,
+     but include the text `warning:' to distinguish them from error
+     messages.
 
-will cause a read of the volatile object pointed to by SRC and stores
-the value into the volatile object pointed to by DST. There is no
-guarantee that these reads and writes are atomic, especially for objects
-larger than `int'.
+   Warnings may indicate danger points where you should check to make
+sure that your program really does what you intend; or the use of
+obsolete features; or the use of nonstandard features of GNU C or C++.
+Many warnings are issued only if you ask for them, with one of the `-W'
+options (for instance, `-Wall' requests a variety of useful warnings).
 
-   Less obvious expressions are where something which looks like an
-access is used in a void context. An example would be,
+   GNU CC always tries to compile your program if possible; it never
+gratuitously rejects a program whose meaning is clear merely because
+(for instance) it fails to conform to a standard.  In some cases,
+however, the C and C++ standards specify that certain extensions are
+forbidden, and a diagnostic *must* be issued by a conforming compiler.
+The `-pedantic' option tells GNU CC to issue warnings in such cases;
+`-pedantic-errors' says to make them errors instead.  This does not
+mean that *all* non-ANSI constructs get warnings or errors.
 
-     volatile int *src = <somevalue>;
-     *src;
-
-   With C, such expressions are rvalues, and as rvalues cause a read of
-the object, gcc interprets this as a read of the volatile being pointed
-to. The C++ standard specifies that such expressions do not undergo
-lvalue to rvalue conversion, and that the type of the dereferenced
-object may be incomplete. The C++ standard does not specify explicitly
-that it is this lvalue to rvalue conversion which is responsible for
-causing an access. However, there is reason to believe that it is,
-because otherwise certain simple expressions become undefined. However,
-because it would surprise most programmers, g++ treats dereferencing a
-pointer to volatile object of complete type in a void context as a read
-of the object. When the object has incomplete type, g++ issues a
-warning.
-
-     struct S;
-     struct T {int m;};
-     volatile S *ptr1 = <somevalue>;
-     volatile T *ptr2 = <somevalue>;
-     *ptr1;
-     *ptr2;
-
-   In this example, a warning is issued for `*ptr1', and `*ptr2' causes
-a read of the object pointed to. If you wish to force an error on the
-first case, you must force a conversion to rvalue with, for instance a
-static cast, `static_cast<S>(*ptr1)'.
-
-   When using a reference to volatile, g++ does not treat equivalent
-expressions as accesses to volatiles, but instead issues a warning that
-no volatile is accessed. The rationale for this is that otherwise it
-becomes difficult to determine where volatile access occur, and not
-possible to ignore the return value from functions returning volatile
-references. Again, if you wish to force a read, cast the reference to
-an rvalue.
+   *Note Options to Request or Suppress Warnings: Warning Options, for
+more detail on these and related command-line options.
 
 
-File: gcc.info,  Node: Restricted Pointers,  Next: C++ Interface,  Prev: Volatiles,  Up: C++ Extensions
+File: gcc.info,  Node: Bugs,  Next: Service,  Prev: Trouble,  Up: Top
 
-Restricting Pointer Aliasing
-============================
+Reporting Bugs
+**************
 
-   As with gcc, g++ understands the C99 feature of restricted pointers,
-specified with the `__restrict__', or `__restrict' type qualifier.
-Because you cannot compile C++ by specifying the -std=c99 language
-flag, `restrict' is not a keyword in C++.
+   Your bug reports play an essential role in making GNU CC reliable.
 
-   In addition to allowing restricted pointers, you can specify
-restricted references, which indicate that the reference is not aliased
-in the local context.
+   When you encounter a problem, the first thing to do is to see if it
+is already known.  *Note Trouble::.  If it isn't known, then you should
+report the problem.
 
-     void fn (int *__restrict__ rptr, int &__restrict__ rref)
-     {
-       ...
-     }
+   Reporting a bug may help you by bringing a solution to your problem,
+or it may not.  (If it does not, look in the service directory; see
+*Note Service::.)  In any case, the principal function of a bug report
+is to help the entire community by making the next version of GNU CC
+work better.  Bug reports are your contribution to the maintenance of
+GNU CC.
 
-In the body of `fn', RPTR points to an unaliased integer and RREF
-refers to a (different) unaliased integer.
+   Since the maintainers are very overloaded, we cannot respond to every
+bug report.  However, if the bug has not been fixed, we are likely to
+send you a patch and ask you to tell us whether it works.
 
-   You may also specify whether a member function's THIS pointer is
-unaliased by using `__restrict__' as a member function qualifier.
-
-     void T::fn () __restrict__
-     {
-       ...
-     }
-
-Within the body of `T::fn', THIS will have the effective definition `T
-*__restrict__ const this'. Notice that the interpretation of a
-`__restrict__' member function qualifier is different to that of
-`const' or `volatile' qualifier, in that it is applied to the pointer
-rather than the object. This is consistent with other compilers which
-implement restricted pointers.
-
-   As with all outermost parameter qualifiers, `__restrict__' is
-ignored in function definition matching. This means you only need to
-specify `__restrict__' in a function definition, rather than in a
-function prototype as well.
-
-
-File: gcc.info,  Node: C++ Interface,  Next: Template Instantiation,  Prev: Restricted Pointers,  Up: C++ Extensions
-
-Declarations and Definitions in One Header
-==========================================
-
-   C++ object definitions can be quite complex.  In principle, your
-source code will need two kinds of things for each object that you use
-across more than one source file.  First, you need an "interface"
-specification, describing its structure with type declarations and
-function prototypes.  Second, you need the "implementation" itself.  It
-can be tedious to maintain a separate interface description in a header
-file, in parallel to the actual implementation.  It is also dangerous,
-since separate interface and implementation definitions may not remain
-parallel.
-
-   With GNU C++, you can use a single header file for both purposes.
-
-     *Warning:* The mechanism to specify this is in transition.  For the
-     nonce, you must use one of two `#pragma' commands; in a future
-     release of GNU C++, an alternative mechanism will make these
-     `#pragma' commands unnecessary.
-
-   The header file contains the full definitions, but is marked with
-`#pragma interface' in the source code.  This allows the compiler to
-use the header file only as an interface specification when ordinary
-source files incorporate it with `#include'.  In the single source file
-where the full implementation belongs, you can use either a naming
-convention or `#pragma implementation' to indicate this alternate use
-of the header file.
-
-`#pragma interface'
-`#pragma interface "SUBDIR/OBJECTS.h"'
-     Use this directive in *header files* that define object classes,
-     to save space in most of the object files that use those classes.
-     Normally, local copies of certain information (backup copies of
-     inline member functions, debugging information, and the internal
-     tables that implement virtual functions) must be kept in each
-     object file that includes class definitions.  You can use this
-     pragma to avoid such duplication.  When a header file containing
-     `#pragma interface' is included in a compilation, this auxiliary
-     information will not be generated (unless the main input source
-     file itself uses `#pragma implementation').  Instead, the object
-     files will contain references to be resolved at link time.
-
-     The second form of this directive is useful for the case where you
-     have multiple headers with the same name in different directories.
-     If you use this form, you must specify the same string to `#pragma
-     implementation'.
-
-`#pragma implementation'
-`#pragma implementation "OBJECTS.h"'
-     Use this pragma in a *main input file*, when you want full output
-     from included header files to be generated (and made globally
-     visible).  The included header file, in turn, should use `#pragma
-     interface'.  Backup copies of inline member functions, debugging
-     information, and the internal tables used to implement virtual
-     functions are all generated in implementation files.
-
-     If you use `#pragma implementation' with no argument, it applies to
-     an include file with the same basename(1) as your source file.
-     For example, in `allclass.cc', giving just `#pragma implementation'
-     by itself is equivalent to `#pragma implementation "allclass.h"'.
-
-     In versions of GNU C++ prior to 2.6.0 `allclass.h' was treated as
-     an implementation file whenever you would include it from
-     `allclass.cc' even if you never specified `#pragma
-     implementation'.  This was deemed to be more trouble than it was
-     worth, however, and disabled.
-
-     If you use an explicit `#pragma implementation', it must appear in
-     your source file *before* you include the affected header files.
-
-     Use the string argument if you want a single implementation file to
-     include code from multiple header files.  (You must also use
-     `#include' to include the header file; `#pragma implementation'
-     only specifies how to use the file--it doesn't actually include
-     it.)
-
-     There is no way to split up the contents of a single header file
-     into multiple implementation files.
-
-   `#pragma implementation' and `#pragma interface' also have an effect
-on function inlining.
-
-   If you define a class in a header file marked with `#pragma
-interface', the effect on a function defined in that class is similar to
-an explicit `extern' declaration--the compiler emits no code at all to
-define an independent version of the function.  Its definition is used
-only for inlining with its callers.
-
-   Conversely, when you include the same header file in a main source
-file that declares it as `#pragma implementation', the compiler emits
-code for the function itself; this defines a version of the function
-that can be found via pointers (or by callers compiled without
-inlining).  If all calls to the function can be inlined, you can avoid
-emitting the function by compiling with `-fno-implement-inlines'.  If
-any calls were not inlined, you will get linker errors.
-
-   ---------- Footnotes ----------
-
-   (1) A file's "basename" was the name stripped of all leading path
-information and of trailing suffixes, such as `.h' or `.C' or `.cc'.
-
-
-File: gcc.info,  Node: Template Instantiation,  Next: Bound member functions,  Prev: C++ Interface,  Up: C++ Extensions
-
-Where's the Template?
-=====================
-
-   C++ templates are the first language feature to require more
-intelligence from the environment than one usually finds on a UNIX
-system.  Somehow the compiler and linker have to make sure that each
-template instance occurs exactly once in the executable if it is needed,
-and not at all otherwise.  There are two basic approaches to this
-problem, which I will refer to as the Borland model and the Cfront
-model.
-
-Borland model
-     Borland C++ solved the template instantiation problem by adding
-     the code equivalent of common blocks to their linker; the compiler
-     emits template instances in each translation unit that uses them,
-     and the linker collapses them together.  The advantage of this
-     model is that the linker only has to consider the object files
-     themselves; there is no external complexity to worry about.  This
-     disadvantage is that compilation time is increased because the
-     template code is being compiled repeatedly.  Code written for this
-     model tends to include definitions of all templates in the header
-     file, since they must be seen to be instantiated.
-
-Cfront model
-     The AT&T C++ translator, Cfront, solved the template instantiation
-     problem by creating the notion of a template repository, an
-     automatically maintained place where template instances are
-     stored.  A more modern version of the repository works as follows:
-     As individual object files are built, the compiler places any
-     template definitions and instantiations encountered in the
-     repository.  At link time, the link wrapper adds in the objects in
-     the repository and compiles any needed instances that were not
-     previously emitted.  The advantages of this model are more optimal
-     compilation speed and the ability to use the system linker; to
-     implement the Borland model a compiler vendor also needs to
-     replace the linker.  The disadvantages are vastly increased
-     complexity, and thus potential for error; for some code this can be
-     just as transparent, but in practice it can been very difficult to
-     build multiple programs in one directory and one program in
-     multiple directories.  Code written for this model tends to
-     separate definitions of non-inline member templates into a
-     separate file, which should be compiled separately.
-
-   When used with GNU ld version 2.8 or later on an ELF system such as
-Linux/GNU or Solaris 2, or on Microsoft Windows, g++ supports the
-Borland model.  On other systems, g++ implements neither automatic
-model.
-
-   A future version of g++ will support a hybrid model whereby the
-compiler will emit any instantiations for which the template definition
-is included in the compile, and store template definitions and
-instantiation context information into the object file for the rest.
-The link wrapper will extract that information as necessary and invoke
-the compiler to produce the remaining instantiations.  The linker will
-then combine duplicate instantiations.
-
-   In the mean time, you have the following options for dealing with
-template instantiations:
-
-  1. Compile your template-using code with `-frepo'.  The compiler will
-     generate files with the extension `.rpo' listing all of the
-     template instantiations used in the corresponding object files
-     which could be instantiated there; the link wrapper, `collect2',
-     will then update the `.rpo' files to tell the compiler where to
-     place those instantiations and rebuild any affected object files.
-     The link-time overhead is negligible after the first pass, as the
-     compiler will continue to place the instantiations in the same
-     files.
-
-     This is your best option for application code written for the
-     Borland model, as it will just work.  Code written for the Cfront
-     model will need to be modified so that the template definitions
-     are available at one or more points of instantiation; usually this
-     is as simple as adding `#include <tmethods.cc>' to the end of each
-     template header.
-
-     For library code, if you want the library to provide all of the
-     template instantiations it needs, just try to link all of its
-     object files together; the link will fail, but cause the
-     instantiations to be generated as a side effect.  Be warned,
-     however, that this may cause conflicts if multiple libraries try
-     to provide the same instantiations.  For greater control, use
-     explicit instantiation as described in the next option.
-
-  2. Compile your code with `-fno-implicit-templates' to disable the
-     implicit generation of template instances, and explicitly
-     instantiate all the ones you use.  This approach requires more
-     knowledge of exactly which instances you need than do the others,
-     but it's less mysterious and allows greater control.  You can
-     scatter the explicit instantiations throughout your program,
-     perhaps putting them in the translation units where the instances
-     are used or the translation units that define the templates
-     themselves; you can put all of the explicit instantiations you
-     need into one big file; or you can create small files like
-
-          #include "Foo.h"
-          #include "Foo.cc"
-          
-          template class Foo<int>;
-          template ostream& operator <<
-                          (ostream&, const Foo<int>&);
-
-     for each of the instances you need, and create a template
-     instantiation library from those.
-
-     If you are using Cfront-model code, you can probably get away with
-     not using `-fno-implicit-templates' when compiling files that don't
-     `#include' the member template definitions.
-
-     If you use one big file to do the instantiations, you may want to
-     compile it without `-fno-implicit-templates' so you get all of the
-     instances required by your explicit instantiations (but not by any
-     other files) without having to specify them as well.
-
-     g++ has extended the template instantiation syntax outlined in the
-     Working Paper to allow forward declaration of explicit
-     instantiations (with `extern'), instantiation of the compiler
-     support data for a template class (i.e. the vtable) without
-     instantiating any of its members (with `inline'), and
-     instantiation of only the static data members of a template class,
-     without the support data or member functions (with (`static'):
-
-          extern template int max (int, int);
-          inline template class Foo<int>;
-          static template class Foo<int>;
-
-  3. Do nothing.  Pretend g++ does implement automatic instantiation
-     management.  Code written for the Borland model will work fine, but
-     each translation unit will contain instances of each of the
-     templates it uses.  In a large program, this can lead to an
-     unacceptable amount of code duplication.
-
-  4. Add `#pragma interface' to all files containing template
-     definitions.  For each of these files, add `#pragma implementation
-     "FILENAME"' to the top of some `.C' file which `#include's it.
-     Then compile everything with `-fexternal-templates'.  The
-     templates will then only be expanded in the translation unit which
-     implements them (i.e. has a `#pragma implementation' line for the
-     file where they live); all other files will use external
-     references.  If you're lucky, everything should work properly.  If
-     you get undefined symbol errors, you need to make sure that each
-     template instance which is used in the program is used in the file
-     which implements that template.  If you don't have any use for a
-     particular instance in that file, you can just instantiate it
-     explicitly, using the syntax from the latest C++ working paper:
-
-          template class A<int>;
-          template ostream& operator << (ostream&, const A<int>&);
-
-     This strategy will work with code written for either model.  If
-     you are using code written for the Cfront model, the file
-     containing a class template and the file containing its member
-     templates should be implemented in the same translation unit.
-
-     A slight variation on this approach is to instead use the flag
-     `-falt-external-templates'; this flag causes template instances to
-     be emitted in the translation unit that implements the header
-     where they are first instantiated, rather than the one which
-     implements the file where the templates are defined.  This header
-     must be the same in all translation units, or things are likely to
-     break.
-
-     *Note Declarations and Definitions in One Header: C++ Interface,
-     for more discussion of these pragmas.
-
-
-File: gcc.info,  Node: Bound member functions,  Prev: Template Instantiation,  Up: C++ Extensions
-
-Extracting the function pointer from a bound pointer to member function
-=======================================================================
-
-   In C++, pointer to member functions (PMFs) are implemented using a
-wide pointer of sorts to handle all the possible call mechanisms; the
-PMF needs to store information about how to adjust the `this' pointer,
-and if the function pointed to is virtual, where to find the vtable, and
-where in the vtable to look for the member function.  If you are using
-PMFs in an inner loop, you should really reconsider that decision.  If
-that is not an option, you can extract the pointer to the function that
-would be called for a given object/PMF pair and call it directly inside
-the inner loop, to save a bit of time.
-
-   Note that you will still be paying the penalty for the call through a
-function pointer; on most modern architectures, such a call defeats the
-branch prediction features of the CPU.  This is also true of normal
-virtual function calls.
-
-   The syntax for this extension is
-
-     extern A a;
-     extern int (A::*fp)();
-     typedef int (*fptr)(A *);
-     
-     fptr p = (fptr)(a.*fp);
-
-   For PMF constants (i.e. expressions of the form `&Klasse::Member'),
-no object is needed to obtain the address of the function. They can be
-converted to function pointers directly:
-
-     fptr p1 = (fptr)(&A::foo);
-
-   You must specify `-Wno-pmf-conversions' to use this extension.
-
-
-File: gcc.info,  Node: Gcov,  Next: Trouble,  Prev: C++ Extensions,  Up: Top
-
-`gcov': a Test Coverage Program
-*******************************
-
-   `gcov' is a tool you can use in conjunction with GNU CC to test code
-coverage in your programs.
-
-   This chapter describes version 1.5 of `gcov'.
+   In order for a bug report to serve its purpose, you must include the
+information that makes for fixing the bug.
 
 * Menu:
 
-* Gcov Intro::         	        Introduction to gcov.
-* Invoking Gcov::       	How to use gcov.
-* Gcov and Optimization::       Using gcov with GCC optimization.
-* Gcov Data Files::             The files used by gcov.
+* Criteria:  Bug Criteria.   Have you really found a bug?
+* Where: Bug Lists.	     Where to send your bug report.
+* Reporting: Bug Reporting.  How to report a bug effectively.
+* Patches: Sending Patches.  How to send a patch for GNU CC.
+* Known: Trouble.            Known problems.
+* Help: Service.             Where to ask for help.
 
 
-File: gcc.info,  Node: Gcov Intro,  Next: Invoking Gcov,  Up: Gcov
+File: gcc.info,  Node: Bug Criteria,  Next: Bug Lists,  Up: Bugs
 
-Introduction to `gcov'
-======================
+Have You Found a Bug?
+=====================
 
-   `gcov' is a test coverage program.  Use it in concert with GNU CC to
-analyze your programs to help create more efficient, faster running
-code.  You can use `gcov' as a profiling tool to help discover where
-your optimization efforts will best affect your code.  You can also use
-`gcov' along with the other profiling tool, `gprof', to assess which
-parts of your code use the greatest amount of computing time.
+   If you are not sure whether you have found a bug, here are some
+guidelines:
 
-   Profiling tools help you analyze your code's performance.  Using a
-profiler such as `gcov' or `gprof', you can find out some basic
-performance statistics, such as:
+   * If the compiler gets a fatal signal, for any input whatever, that
+     is a compiler bug.  Reliable compilers never crash.
 
-   * how often each line of code executes
+   * If the compiler produces invalid assembly code, for any input
+     whatever (except an `asm' statement), that is a compiler bug,
+     unless the compiler reports errors (not just warnings) which would
+     ordinarily prevent the assembler from being run.
 
-   * what lines of code are actually executed
+   * If the compiler produces valid assembly code that does not
+     correctly execute the input source code, that is a compiler bug.
 
-   * how much computing time each section of code uses
+     However, you must double-check to make sure, because you may have
+     run into an incompatibility between GNU C and traditional C (*note
+     Incompatibilities::.).  These incompatibilities might be considered
+     bugs, but they are inescapable consequences of valuable features.
 
-   Once you know these things about how your code works when compiled,
-you can look at each module to see which modules should be optimized.
-`gcov' helps you determine where to work on optimization.
+     Or you may have a program whose behavior is undefined, which
+     happened by chance to give the desired results with another C or
+     C++ compiler.
 
-   Software developers also use coverage testing in concert with
-testsuites, to make sure software is actually good enough for a release.
-Testsuites can verify that a program works as expected; a coverage
-program tests to see how much of the program is exercised by the
-testsuite.  Developers can then determine what kinds of test cases need
-to be added to the testsuites to create both better testing and a better
-final product.
+     For example, in many nonoptimizing compilers, you can write `x;'
+     at the end of a function instead of `return x;', with the same
+     results.  But the value of the function is undefined if `return'
+     is omitted; it is not a bug when GNU CC produces different results.
 
-   You should compile your code without optimization if you plan to use
-`gcov' because the optimization, by combining some lines of code into
-one function, may not give you as much information as you need to look
-for `hot spots' where the code is using a great deal of computer time.
-Likewise, because `gcov' accumulates statistics by line (at the lowest
-resolution), it works best with a programming style that places only
-one statement on each line.  If you use complicated macros that expand
-to loops or to other control structures, the statistics are less
-helpful--they only report on the line where the macro call appears.  If
-your complex macros behave like functions, you can replace them with
-inline functions to solve this problem.
+     Problems often result from expressions with two increment
+     operators, as in `f (*p++, *p++)'.  Your previous compiler might
+     have interpreted that expression the way you intended; GNU CC might
+     interpret it another way.  Neither compiler is wrong.  The bug is
+     in your code.
 
-   `gcov' creates a logfile called `SOURCEFILE.gcov' which indicates
-how many times each line of a source file `SOURCEFILE.c' has executed.
-You can use these logfiles along with `gprof' to aid in fine-tuning the
-performance of your programs.  `gprof' gives timing information you can
-use along with the information you get from `gcov'.
+     After you have localized the error to a single source line, it
+     should be easy to check for these things.  If your program is
+     correct and well defined, you have found a compiler bug.
 
-   `gcov' works only on code compiled with GNU CC.  It is not
-compatible with any other profiling or test coverage mechanism.
+   * If the compiler produces an error message for valid input, that is
+     a compiler bug.
 
-
-File: gcc.info,  Node: Invoking Gcov,  Next: Gcov and Optimization,  Prev: Gcov Intro,  Up: Gcov
+   * If the compiler does not produce an error message for invalid
+     input, that is a compiler bug.  However, you should note that your
+     idea of "invalid input" might be my idea of "an extension" or
+     "support for traditional practice".
 
-Invoking gcov
-=============
-
-     gcov [-b] [-c] [-v] [-n] [-l] [-f] [-o directory] SOURCEFILE
-
-`-b'
-     Write branch frequencies to the output file, and write branch
-     summary info to the standard output.  This option allows you to
-     see how often each branch in your program was taken.
-
-`-c'
-     Write branch frequencies as the number of branches taken, rather
-     than the percentage of branches taken.
-
-`-v'
-     Display the `gcov' version number (on the standard error stream).
-
-`-n'
-     Do not create the `gcov' output file.
-
-`-l'
-     Create long file names for included source files.  For example, if
-     the header file `x.h' contains code, and was included in the file
-     `a.c', then running `gcov' on the file `a.c' will produce an
-     output file called `a.c.x.h.gcov' instead of `x.h.gcov'.  This can
-     be useful if `x.h' is included in multiple source files.
-
-`-f'
-     Output summaries for each function in addition to the file level
-     summary.
-
-`-o'
-     The directory where the object files live.  Gcov will search for
-     `.bb', `.bbg', and `.da' files in this directory.
-
-   When using `gcov', you must first compile your program with two
-special GNU CC options: `-fprofile-arcs -ftest-coverage'.  This tells
-the compiler to generate additional information needed by gcov
-(basically a flow graph of the program) and also includes additional
-code in the object files for generating the extra profiling information
-needed by gcov.  These additional files are placed in the directory
-where the source code is located.
-
-   Running the program will cause profile output to be generated.  For
-each source file compiled with -fprofile-arcs, an accompanying `.da'
-file will be placed in the source directory.
-
-   Running `gcov' with your program's source file names as arguments
-will now produce a listing of the code along with frequency of execution
-for each line.  For example, if your program is called `tmp.c', this is
-what you see when you use the basic `gcov' facility:
-
-     $ gcc -fprofile-arcs -ftest-coverage tmp.c
-     $ a.out
-     $ gcov tmp.c
-      87.50% of 8 source lines executed in file tmp.c
-     Creating tmp.c.gcov.
-
-   The file `tmp.c.gcov' contains output from `gcov'.  Here is a sample:
-
-                     main()
-                     {
-                1      int i, total;
-     
-                1      total = 0;
-     
-               11      for (i = 0; i < 10; i++)
-               10        total += i;
-     
-                1      if (total != 45)
-           ######        printf ("Failure\n");
-                       else
-                1        printf ("Success\n");
-                1    }
-
-   When you use the `-b' option, your output looks like this:
-
-     $ gcov -b tmp.c
-      87.50% of 8 source lines executed in file tmp.c
-      80.00% of 5 branches executed in file tmp.c
-      80.00% of 5 branches taken at least once in file tmp.c
-      50.00% of 2 calls executed in file tmp.c
-     Creating tmp.c.gcov.
-
-   Here is a sample of a resulting `tmp.c.gcov' file:
-
-                     main()
-                     {
-                1      int i, total;
-     
-                1      total = 0;
-     
-               11      for (i = 0; i < 10; i++)
-     branch 0 taken = 91%
-     branch 1 taken = 100%
-     branch 2 taken = 100%
-               10        total += i;
-     
-                1      if (total != 45)
-     branch 0 taken = 100%
-           ######        printf ("Failure\n");
-     call 0 never executed
-     branch 1 never executed
-                       else
-                1        printf ("Success\n");
-     call 0 returns = 100%
-                1    }
-
-   For each basic block, a line is printed after the last line of the
-basic block describing the branch or call that ends the basic block.
-There can be multiple branches and calls listed for a single source
-line if there are multiple basic blocks that end on that line.  In this
-case, the branches and calls are each given a number.  There is no
-simple way to map these branches and calls back to source constructs.
-In general, though, the lowest numbered branch or call will correspond
-to the leftmost construct on the source line.
-
-   For a branch, if it was executed at least once, then a percentage
-indicating the number of times the branch was taken divided by the
-number of times the branch was executed will be printed.  Otherwise, the
-message "never executed" is printed.
-
-   For a call, if it was executed at least once, then a percentage
-indicating the number of times the call returned divided by the number
-of times the call was executed will be printed.  This will usually be
-100%, but may be less for functions call `exit' or `longjmp', and thus
-may not return everytime they are called.
-
-   The execution counts are cumulative.  If the example program were
-executed again without removing the `.da' file, the count for the
-number of times each line in the source was executed would be added to
-the results of the previous run(s).  This is potentially useful in
-several ways.  For example, it could be used to accumulate data over a
-number of program runs as part of a test verification suite, or to
-provide more accurate long-term information over a large number of
-program runs.
-
-   The data in the `.da' files is saved immediately before the program
-exits.  For each source file compiled with -fprofile-arcs, the profiling
-code first attempts to read in an existing `.da' file; if the file
-doesn't match the executable (differing number of basic block counts) it
-will ignore the contents of the file.  It then adds in the new execution
-counts and finally writes the data to the file.
+   * If you are an experienced user of C or C++ compilers, your
+     suggestions for improvement of GNU CC or GNU C++ are welcome in
+     any case.
 
 
-File: gcc.info,  Node: Gcov and Optimization,  Next: Gcov Data Files,  Prev: Invoking Gcov,  Up: Gcov
+File: gcc.info,  Node: Bug Lists,  Next: Bug Reporting,  Prev: Bug Criteria,  Up: Bugs
 
-Using `gcov' with GCC Optimization
-==================================
+Where to Report Bugs
+====================
 
-   If you plan to use `gcov' to help optimize your code, you must first
-compile your program with two special GNU CC options: `-fprofile-arcs
--ftest-coverage'.  Aside from that, you can use any other GNU CC
-options; but if you want to prove that every single line in your
-program was executed, you should not compile with optimization at the
-same time.  On some machines the optimizer can eliminate some simple
-code lines by combining them with other lines.  For example, code like
-this:
+   Send bug reports for GNU C to `egcs-bugs@cygnus.com'.
 
-     if (a != b)
-       c = 1;
-     else
-       c = 0;
+   Send bug reports for GNU C++ and the C++ runtime libraries to
+`egcs-bugs@cygnus.com'.
 
-can be compiled into one instruction on some machines.  In this case,
-there is no way for `gcov' to calculate separate execution counts for
-each line because there isn't separate code for each line.  Hence the
-`gcov' output looks like this if you compiled the program with
-optimization:
+   Often people think of posting bug reports to the newsgroup instead of
+mailing them.  This appears to work, but it has one problem which can be
+crucial: a newsgroup posting does not contain a mail path back to the
+sender.  Thus, if maintainers need more information, they may be unable
+to reach you.  For this reason, you should always send bug reports by
+mail to the proper mailing list.
 
-           100  if (a != b)
-           100    c = 1;
-           100  else
-           100    c = 0;
+   As a last resort, send bug reports on paper to:
 
-   The output shows that this block of code, combined by optimization,
-executed 100 times.  In one sense this result is correct, because there
-was only one instruction representing all four of these lines.  However,
-the output does not indicate how many times the result was 0 and how
-many times the result was 1.
+     GNU Compiler Bugs
+     Free Software Foundation
+     59 Temple Place - Suite 330
+     Boston, MA 02111-1307, USA
+
+
+File: gcc.info,  Node: Bug Reporting,  Next: Sending Patches,  Prev: Bug Lists,  Up: Bugs
+
+How to Report Bugs
+==================
+
+   The fundamental principle of reporting bugs usefully is this:
+*report all the facts*.  If you are not sure whether to state a fact or
+leave it out, state it!
+
+   Often people omit facts because they think they know what causes the
+problem and they conclude that some details don't matter.  Thus, you
+might assume that the name of the variable you use in an example does
+not matter.  Well, probably it doesn't, but one cannot be sure.
+Perhaps the bug is a stray memory reference which happens to fetch from
+the location where that name is stored in memory; perhaps, if the name
+were different, the contents of that location would fool the compiler
+into doing the right thing despite the bug.  Play it safe and give a
+specific, complete example.  That is the easiest thing for you to do,
+and the most helpful.
+
+   Keep in mind that the purpose of a bug report is to enable someone to
+fix the bug if it is not known.  It isn't very important what happens if
+the bug is already known.  Therefore, always write your bug reports on
+the assumption that the bug is not known.
+
+   Sometimes people give a few sketchy facts and ask, "Does this ring a
+bell?"  This cannot help us fix a bug, so it is basically useless.  We
+respond by asking for enough details to enable us to investigate.  You
+might as well expedite matters by sending them to begin with.
+
+   Try to make your bug report self-contained.  If we have to ask you
+for more information, it is best if you include all the previous
+information in your response, as well as the information that was
+missing.
+
+   Please report each bug in a separate message.  This makes it easier
+for us to track which bugs have been fixed and to forward your bugs
+reports to the appropriate maintainer.
+
+   If you include source code in your message, you can send it as clear
+text if it is small. If the message is larger, you may compress it using
+`gzip', `bzip2', or `pkzip'. Please be aware that sending compressed
+files needs an additional binary-safe mechanism such as `MIME' or
+`uuencode'. There is a 40k message soft limit on the
+`egcs-bugs@cygnus.com' mailing list at the time of this writing (August
+1998).  However, if you can't reduce a bug report to less than that,
+post it anyway; it will be manually approved as long as it is
+compressed. Don't think that posting a URL to the code is better, we do
+want to archive bug reports, and not all maintainers have good network
+connectivity to download large pieces of software when they need them;
+it's much easier for them to have them in their mailboxes.
+
+   To enable someone to investigate the bug, you should include all
+these things:
+
+   * The version of GNU CC.  You can get this by running it with the
+     `-v' option.
+
+     Without this, we won't know whether there is any point in looking
+     for the bug in the current version of GNU CC.
+
+   * A complete input file that will reproduce the bug.  If the bug is
+     in the C preprocessor, send a source file and any header files
+     that it requires.  If the bug is in the compiler proper (`cc1'),
+     send the preprocessor output generated by adding `-save-temps' to
+     the compilation command (*note Debugging Options::.).  When you do
+     this, use the same `-I', `-D' or `-U' options that you used in
+     actual compilation. Then send the INPUT.i or INPUT.ii files
+     generated.
+
+     A single statement is not enough of an example.  In order to
+     compile it, it must be embedded in a complete file of compiler
+     input; and the bug might depend on the details of how this is done.
+
+     Without a real example one can compile, all anyone can do about
+     your bug report is wish you luck.  It would be futile to try to
+     guess how to provoke the bug.  For example, bugs in register
+     allocation and reloading frequently depend on every little detail
+     of the function they happen in.
+
+     Even if the input file that fails comes from a GNU program, you
+     should still send the complete test case.  Don't ask the GNU CC
+     maintainers to do the extra work of obtaining the program in
+     question--they are all overworked as it is.  Also, the problem may
+     depend on what is in the header files on your system; it is
+     unreliable for the GNU CC maintainers to try the problem with the
+     header files available to them.  By sending CPP output, you can
+     eliminate this source of uncertainty and save us a certain
+     percentage of wild goose chases.
+
+   * The command arguments you gave GNU CC or GNU C++ to compile that
+     example and observe the bug.  For example, did you use `-O'?  To
+     guarantee you won't omit something important, list all the options.
+
+     If we were to try to guess the arguments, we would probably guess
+     wrong and then we would not encounter the bug.
+
+   * The type of machine you are using, and the operating system name
+     and version number.
+
+   * The operands you gave to the `configure' command when you installed
+     the compiler.
+
+   * A complete list of any modifications you have made to the compiler
+     source.  (We don't promise to investigate the bug unless it
+     happens in an unmodified compiler.  But if you've made
+     modifications and don't tell us, then you are sending us on a wild
+     goose chase.)
+
+     Be precise about these changes.  A description in English is not
+     enough--send a context diff for them.
+
+     Adding files of your own (such as a machine description for a
+     machine we don't support) is a modification of the compiler source.
+
+   * Details of any other deviations from the standard procedure for
+     installing GNU CC.
+
+   * A description of what behavior you observe that you believe is
+     incorrect.  For example, "The compiler gets a fatal signal," or,
+     "The assembler instruction at line 208 in the output is incorrect."
+
+     Of course, if the bug is that the compiler gets a fatal signal,
+     then one can't miss it.  But if the bug is incorrect output, the
+     maintainer might not notice unless it is glaringly wrong.  None of
+     us has time to study all the assembler code from a 50-line C
+     program just on the chance that one instruction might be wrong.
+     We need *you* to do this part!
+
+     Even if the problem you experience is a fatal signal, you should
+     still say so explicitly.  Suppose something strange is going on,
+     such as, your copy of the compiler is out of synch, or you have
+     encountered a bug in the C library on your system.  (This has
+     happened!)  Your copy might crash and the copy here would not.  If
+     you said to expect a crash, then when the compiler here fails to
+     crash, we would know that the bug was not happening.  If you don't
+     say to expect a crash, then we would not know whether the bug was
+     happening.  We would not be able to draw any conclusion from our
+     observations.
+
+     If the problem is a diagnostic when compiling GNU CC with some
+     other compiler, say whether it is a warning or an error.
+
+     Often the observed symptom is incorrect output when your program
+     is run.  Sad to say, this is not enough information unless the
+     program is short and simple.  None of us has time to study a large
+     program to figure out how it would work if compiled correctly,
+     much less which line of it was compiled wrong.  So you will have
+     to do that.  Tell us which source line it is, and what incorrect
+     result happens when that line is executed.  A person who
+     understands the program can find this as easily as finding a bug
+     in the program itself.
+
+   * If you send examples of assembler code output from GNU CC or GNU
+     C++, please use `-g' when you make them.  The debugging information
+     includes source line numbers which are essential for correlating
+     the output with the input.
+
+   * If you wish to mention something in the GNU CC source, refer to it
+     by context, not by line number.
+
+     The line numbers in the development sources don't match those in
+     your sources.  Your line numbers would convey no useful
+     information to the maintainers.
+
+   * Additional information from a debugger might enable someone to
+     find a problem on a machine which he does not have available.
+     However, you need to think when you collect this information if
+     you want it to have any chance of being useful.
+
+     For example, many people send just a backtrace, but that is never
+     useful by itself.  A simple backtrace with arguments conveys little
+     about GNU CC because the compiler is largely data-driven; the same
+     functions are called over and over for different RTL insns, doing
+     different things depending on the details of the insn.
+
+     Most of the arguments listed in the backtrace are useless because
+     they are pointers to RTL list structure.  The numeric values of the
+     pointers, which the debugger prints in the backtrace, have no
+     significance whatever; all that matters is the contents of the
+     objects they point to (and most of the contents are other such
+     pointers).
+
+     In addition, most compiler passes consist of one or more loops that
+     scan the RTL insn sequence.  The most vital piece of information
+     about such a loop--which insn it has reached--is usually in a
+     local variable, not in an argument.
+
+     What you need to provide in addition to a backtrace are the values
+     of the local variables for several stack frames up.  When a local
+     variable or an argument is an RTX, first print its value and then
+     use the GDB command `pr' to print the RTL expression that it points
+     to.  (If GDB doesn't run on your machine, use your debugger to call
+     the function `debug_rtx' with the RTX as an argument.)  In
+     general, whenever a variable is a pointer, its value is no use
+     without the data it points to.
+
+   Here are some things that are not necessary:
+
+   * A description of the envelope of the bug.
+
+     Often people who encounter a bug spend a lot of time investigating
+     which changes to the input file will make the bug go away and which
+     changes will not affect it.
+
+     This is often time consuming and not very useful, because the way
+     we will find the bug is by running a single example under the
+     debugger with breakpoints, not by pure deduction from a series of
+     examples.  You might as well save your time for something else.
+
+     Of course, if you can find a simpler example to report *instead* of
+     the original one, that is a convenience.  Errors in the output
+     will be easier to spot, running under the debugger will take less
+     time, etc.  Most GNU CC bugs involve just one function, so the
+     most straightforward way to simplify an example is to delete all
+     the function definitions except the one where the bug occurs.
+     Those earlier in the file may be replaced by external declarations
+     if the crucial function depends on them.  (Exception: inline
+     functions may affect compilation of functions defined later in the
+     file.)
+
+     However, simplification is not vital; if you don't want to do this,
+     report the bug anyway and send the entire test case you used.
+
+   * In particular, some people insert conditionals `#ifdef BUG' around
+     a statement which, if removed, makes the bug not happen.  These
+     are just clutter; we won't pay any attention to them anyway.
+     Besides, you should send us cpp output, and that can't have
+     conditionals.
+
+   * A patch for the bug.
+
+     A patch for the bug is useful if it is a good one.  But don't omit
+     the necessary information, such as the test case, on the
+     assumption that a patch is all we need.  We might see problems
+     with your patch and decide to fix the problem another way, or we
+     might not understand it at all.
+
+     Sometimes with a program as complicated as GNU CC it is very hard
+     to construct an example that will make the program follow a
+     certain path through the code.  If you don't send the example, we
+     won't be able to construct one, so we won't be able to verify that
+     the bug is fixed.
+
+     And if we can't understand what bug you are trying to fix, or why
+     your patch should be an improvement, we won't install it.  A test
+     case will help us to understand.
+
+     *Note Sending Patches::, for guidelines on how to make it easy for
+     us to understand and install your patches.
+
+   * A guess about what the bug is or what it depends on.
+
+     Such guesses are usually wrong.  Even I can't guess right about
+     such things without first using the debugger to find the facts.
+
+   * A core dump file.
+
+     We have no way of examining a core dump for your type of machine
+     unless we have an identical system--and if we do have one, we
+     should be able to reproduce the crash ourselves.
+
+
+File: gcc.info,  Node: Sending Patches,  Prev: Bug Reporting,  Up: Bugs
+
+Sending Patches for GNU CC
+==========================
+
+   If you would like to write bug fixes or improvements for the GNU C
+compiler, that is very helpful.  Send suggested fixes to the bug report
+mailing list, `egcs-bugs@cygnus.com'.
+
+   Please follow these guidelines so we can study your patches
+efficiently.  If you don't follow these guidelines, your information
+might still be useful, but using it will take extra work.  Maintaining
+GNU C is a lot of work in the best of circumstances, and we can't keep
+up unless you do your best to help.
+
+   * Send an explanation with your changes of what problem they fix or
+     what improvement they bring about.  For a bug fix, just include a
+     copy of the bug report, and explain why the change fixes the bug.
+
+     (Referring to a bug report is not as good as including it, because
+     then we will have to look it up, and we have probably already
+     deleted it if we've already fixed the bug.)
+
+   * Always include a proper bug report for the problem you think you
+     have fixed.  We need to convince ourselves that the change is
+     right before installing it.  Even if it is right, we might have
+     trouble judging it if we don't have a way to reproduce the problem.
+
+   * Include all the comments that are appropriate to help people
+     reading the source in the future understand why this change was
+     needed.
+
+   * Don't mix together changes made for different reasons.  Send them
+     *individually*.
+
+     If you make two changes for separate reasons, then we might not
+     want to install them both.  We might want to install just one.  If
+     you send them all jumbled together in a single set of diffs, we
+     have to do extra work to disentangle them--to figure out which
+     parts of the change serve which purpose.  If we don't have time
+     for this, we might have to ignore your changes entirely.
+
+     If you send each change as soon as you have written it, with its
+     own explanation, then the two changes never get tangled up, and we
+     can consider each one properly without any extra work to
+     disentangle them.
+
+     Ideally, each change you send should be impossible to subdivide
+     into parts that we might want to consider separately, because each
+     of its parts gets its motivation from the other parts.
+
+   * Send each change as soon as that change is finished.  Sometimes
+     people think they are helping us by accumulating many changes to
+     send them all together.  As explained above, this is absolutely
+     the worst thing you could do.
+
+     Since you should send each change separately, you might as well
+     send it right away.  That gives us the option of installing it
+     immediately if it is important.
+
+   * Use `diff -c' to make your diffs.  Diffs without context are hard
+     for us to install reliably.  More than that, they make it hard for
+     us to study the diffs to decide whether we want to install them.
+     Unidiff format is better than contextless diffs, but not as easy
+     to read as `-c' format.
+
+     If you have GNU diff, use `diff -cp', which shows the name of the
+     function that each change occurs in.
+
+   * Write the change log entries for your changes.  We get lots of
+     changes, and we don't have time to do all the change log writing
+     ourselves.
+
+     Read the `ChangeLog' file to see what sorts of information to put
+     in, and to learn the style that we use.  The purpose of the change
+     log is to show people where to find what was changed.  So you need
+     to be specific about what functions you changed; in large
+     functions, it's often helpful to indicate where within the
+     function the change was.
+
+     On the other hand, once you have shown people where to find the
+     change, you need not explain its purpose.  Thus, if you add a new
+     function, all you need to say about it is that it is new.  If you
+     feel that the purpose needs explaining, it probably does--but the
+     explanation will be much more useful if you put it in comments in
+     the code.
+
+     If you would like your name to appear in the header line for who
+     made the change, send us the header line.
+
+   * When you write the fix, keep in mind that we can't install a
+     change that would break other systems.
+
+     People often suggest fixing a problem by changing
+     machine-independent files such as `toplev.c' to do something
+     special that a particular system needs.  Sometimes it is totally
+     obvious that such changes would break GNU CC for almost all users.
+     We can't possibly make a change like that.  At best it might tell
+     us how to write another patch that would solve the problem
+     acceptably.
+
+     Sometimes people send fixes that *might* be an improvement in
+     general--but it is hard to be sure of this.  It's hard to install
+     such changes because we have to study them very carefully.  Of
+     course, a good explanation of the reasoning by which you concluded
+     the change was correct can help convince us.
+
+     The safest changes are changes to the configuration files for a
+     particular machine.  These are safe because they can't create new
+     bugs on other machines.
+
+     Please help us keep up with the workload by designing the patch in
+     a form that is good to install.
+
+
+File: gcc.info,  Node: Service,  Next: Contributing,  Prev: Bugs,  Up: Top
+
+How To Get Help with GNU CC
+***************************
+
+   If you need help installing, using or changing GNU CC, there are two
+ways to find it:
+
+   * Send a message to a suitable network mailing list.  First try
+     `egcs-bugs@cygnus.com', and if that brings no response, try
+     `egcs@cygnus.com'.
+
+   * Look in the service directory for someone who might help you for a
+     fee.  The service directory is found in the file named `SERVICE'
+     in the GNU CC distribution.
+
+
+File: gcc.info,  Node: Contributing,  Next: VMS,  Prev: Service,  Up: Top
+
+Contributing to GNU CC Development
+**********************************
+
+   If you would like to help pretest GNU CC releases to assure they work
+well, or if you would like to work on improving GNU CC, please contact
+the maintainers at `egcs@cygnus.com'.  A pretester should be willing to
+try to investigate bugs as well as report them.
+
+   If you'd like to work on improvements, please ask for suggested
+projects or suggest your own ideas.  If you have already written an
+improvement, please tell us about it.  If you have not yet started
+work, it is useful to contact `egcs@cygnus.com' before you start; the
+maintainers may be able to suggest ways to make your extension fit in
+better with the rest of GNU CC and with other development plans.
+
+
+File: gcc.info,  Node: VMS,  Next: Portability,  Prev: Contributing,  Up: Top
+
+Using GNU CC on VMS
+*******************
+
+   Here is how to use GNU CC on VMS.
+
+* Menu:
+
+* Include Files and VMS::  Where the preprocessor looks for the include files.
+* Global Declarations::    How to do globaldef, globalref and globalvalue with
+                           GNU CC.
+* VMS Misc::		   Misc information.
+
+
+File: gcc.info,  Node: Include Files and VMS,  Next: Global Declarations,  Up: VMS
+
+Include Files and VMS
+=====================
+
+   Due to the differences between the filesystems of Unix and VMS, GNU
+CC attempts to translate file names in `#include' into names that VMS
+will understand.  The basic strategy is to prepend a prefix to the
+specification of the include file, convert the whole filename to a VMS
+filename, and then try to open the file.  GNU CC tries various prefixes
+one by one until one of them succeeds:
+
+  1. The first prefix is the `GNU_CC_INCLUDE:' logical name: this is
+     where GNU C header files are traditionally stored.  If you wish to
+     store header files in non-standard locations, then you can assign
+     the logical `GNU_CC_INCLUDE' to be a search list, where each
+     element of the list is suitable for use with a rooted logical.
+
+  2. The next prefix tried is `SYS$SYSROOT:[SYSLIB.]'.  This is where
+     VAX-C header files are traditionally stored.
+
+  3. If the include file specification by itself is a valid VMS
+     filename, the preprocessor then uses this name with no prefix in
+     an attempt to open the include file.
+
+  4. If the file specification is not a valid VMS filename (i.e. does
+     not contain a device or a directory specifier, and contains a `/'
+     character), the preprocessor tries to convert it from Unix syntax
+     to VMS syntax.
+
+     Conversion works like this: the first directory name becomes a
+     device, and the rest of the directories are converted into
+     VMS-format directory names.  For example, the name `X11/foobar.h'
+     is translated to `X11:[000000]foobar.h' or `X11:foobar.h',
+     whichever one can be opened.  This strategy allows you to assign a
+     logical name to point to the actual location of the header files.
+
+  5. If none of these strategies succeeds, the `#include' fails.
+
+   Include directives of the form:
+
+     #include foobar
+
+are a common source of incompatibility between VAX-C and GNU CC.  VAX-C
+treats this much like a standard `#include <foobar.h>' directive.  That
+is incompatible with the ANSI C behavior implemented by GNU CC: to
+expand the name `foobar' as a macro.  Macro expansion should eventually
+yield one of the two standard formats for `#include':
+
+     #include "FILE"
+     #include <FILE>
+
+   If you have this problem, the best solution is to modify the source
+to convert the `#include' directives to one of the two standard forms.
+That will work with either compiler.  If you want a quick and dirty fix,
+define the file names as macros with the proper expansion, like this:
+
+     #define stdio <stdio.h>
+
+This will work, as long as the name doesn't conflict with anything else
+in the program.
+
+   Another source of incompatibility is that VAX-C assumes that:
+
+     #include "foobar"
+
+is actually asking for the file `foobar.h'.  GNU CC does not make this
+assumption, and instead takes what you ask for literally; it tries to
+read the file `foobar'.  The best way to avoid this problem is to
+always specify the desired file extension in your include directives.
+
+   GNU CC for VMS is distributed with a set of include files that is
+sufficient to compile most general purpose programs.  Even though the
+GNU CC distribution does not contain header files to define constants
+and structures for some VMS system-specific functions, there is no
+reason why you cannot use GNU CC with any of these functions.  You first
+may have to generate or create header files, either by using the public
+domain utility `UNSDL' (which can be found on a DECUS tape), or by
+extracting the relevant modules from one of the system macro libraries,
+and using an editor to construct a C header file.
+
+   A `#include' file name cannot contain a DECNET node name.  The
+preprocessor reports an I/O error if you attempt to use a node name,
+whether explicitly, or implicitly via a logical name.
 

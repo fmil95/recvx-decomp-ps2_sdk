@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>admo304</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo303.htm">[前]</A> <A HREF="admo305.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">Addressing Mode 3</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <A NAME="anchor2202633"></A><B>Register pre-indexed</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <B><FONT COLOR="#999999">アーキテクチャ</FONT></B></TD> 
+      <TD WIDTH="50%" HEIGHT="38">
+      <B>アーキテクチャv4 のみ</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">[Rn, +/- Rm]!</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>このアドレッシング・モードは、ベース・レジスタRnの値にインデックス・レジスタRmの値を加算するか、またはベース・レジスタRnの値からインデックス・レジスタRmの値を減算してアドレスを計算します。</P>
+  <P>命令で指定された条件がコンディション・コードのステータスと一致した場合、計算されたアドレスはベース・レジスタRnに書き戻されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1031629"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031631"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031633"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031635"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031637"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031639"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031641"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031643"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031645"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031647"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031649"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031651"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031653"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031655"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031657"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031659"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031661"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031663"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031665"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031667"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031669"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031671"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031673"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031675"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031677"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031679"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031681"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031683"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031685"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031687"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031689"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1031691"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1031693"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031701"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031703"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031705"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031707"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031709"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031711"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031713"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031715"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1031717"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1031725"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1031733"></A><BR>
+    SBZ</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031741"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031743"></A><BR>
+    S</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031745"></A><BR>
+    H</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1031747"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1031749"></A><BR>
+    Rm</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if U == 1 then
+        &lt;address&gt; = Rn + Rm
+else /* U == 0 */
+        &lt;address&gt; = Rn - Rm
+if ConditionPassed(&lt;cond&gt;) then
+        Rn = &lt;address&gt;</PRE>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Lビット：</B>ロード命令(L==1)とストア命令(L==0)を区別します。</P>
+  <P><B>Sビット：</B>符号付きハーフワード・アクセス(S==1)と符号なしハーフワード・アクセス(S==0)を区別します。</P>
+  <P><B>Hビット：</B>ハーフワード・アクセス(H==1)と符号付きバイト・アクセス(H==0)を区別します。</P>
+  <P><B>R15の使用：</B>レジスタRmまたはRnとしてR15を指定した場合、結果は予測できません。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo303.htm">[前]</A> <A HREF="admo305.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

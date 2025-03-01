@@ -1,0 +1,220 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+GS基本ライブラリ
+=================
+
+
+ 1 ライブラリ概要
+------------------
+
+
+  1.1 概要
+
+    libgraphはGraphics Synthesizer（GS）を制御するための基本的なライブラ
+    リです。
+    GSチップのバージョンによる差異を吸収するとともに、表示や描画に必要な
+    環境情報をGSに転送できる適切なデータ構造に整形する機能を持ちます。
+    libgraphの関数で生成したデータに適宜タグ情報を付加し、GIF経由でGSに転
+    送することによって、GSの表示機能・描画機能を制御することができます。
+    このほかlibgraphが提供する機能としては、Vsyncやデータ転送との同期制御、
+    GSローカルメモリ上でのダブルバッファリングのサポート、簡易版のイメー
+    ジデータ転送機能があります。
+
+  1.2 関連ファイル
+
+    libgraphに必要なファイルは次のとおりです。
+    
+    +------------------+----------+
+    |カテゴリ           ファイル名|
+    +                  +          +
+    |ライブラリファイル libgraph.a|
+    |ヘッダファイル     libgraph.h|
+    +------------------+----------+
+    
+
+  1.3 構造体一覧
+
+    libgraphの多くの関数は先に述べたように、構造体にデータをセットする関
+    数とそのデータに基づいてGSに対して設定を行う関数に分けて把握すること
+    ができます。構造体と関数の組み合わせを次に示します。
+    
+    +---------------+----------------------+-------------------+
+    |構造体          データをセットする関数 発行する関数       |
+    +               +                      +                   +
+    |sceGsDispEnv    sceGsSetDefDispEnv     sceGsPutDispEnv    |
+    |sceGsDrawEnv1   sceGsSetDefDrawEnv     sceGsPutDrawEnv    |
+    |sceGsDrawEnv2   sceGsSetDefDrawEnv2    sceGsPutDrawEnv    |
+    |sceGsTexEnv     sceGsSetDefTexEnv                         |
+    |sceGsTexEnv2    sceGsSetDefTexEnv2                        |
+    |sceGsAlphaEnv   sceGsSetDefAlphaEnv                       |
+    |sceGsAlphaEnv2  sceGsSetDefAlphaEnv2                      |
+    |sceGsClear      sceGsSetDefClear                          |
+    |sceGsClear      sceGsSetDefClear2                         |
+    |sceGsDrawEnv1   sceGsSetHalfOffset                        |
+    |sceGsDrawEnv2   sceGsSetHalfOffset2                       |
+    |sceGsDBuff      sceGsSetDefDBuff       sceGsSwapDBuff     |
+    |sceGsDBuffDc    sceGsSetDefDBuffDc     sceGsSwapDBuffDc   |
+    |sceGsLoadImage  sceGsSetDefLoadImage   sceGsExecLoadImage |
+    |sceGsStoreImage sceGsSetDefStoreImage  sceGsExecStoreImage|
+    +---------------+----------------------+-------------------+
+
+  1.4 サンプルプログラム
+
+    libgraphの関数は多くのサンプルプログラムで使用されています。たとえば
+    sce/ee/sample/basic3dを参照してください。
+
+ 2 使用上の注意
+----------------
+
+
+  2.1 初期化シーケンス例
+
+    libgraphを使用する場合、初期化やダブルバッファの切替え処理はほとんど
+    のプログラムで同じ手順を踏んで行うことになります。これらの典型的なプ
+    ログラム例を以下に示します。
+
+   (1) FRAMEモード時の初期化シーケンス
+
+      // DMACの初期化
+        sceDmaReset(1);
+      // VIF1, VU1, GIFの初期化
+        sceGsResetPath();
+      // GS, libgraphの初期化
+        sceGsResetGraph(0, SCE_GS_INTERLACE, SCE_GS_NTSC, SCE_GS_FRAME);
+      // 表示、描画環境の初期化
+        sceGsSetDefDBuff(&db, SCE_GS_PSMCT32, 640, 224, SCE_GS_ZGEQUAL,
+        	SCE_GS_PSMZ24, SCE_GS_CLEAR);
+    
+
+   (2) FRAMEモード時のダブルバッファ切り替え処理
+
+      // 描画終了同期
+        if(sceGsSyncPath(0, 0) != 0){
+        	// Error処理
+        }
+      // VSync同期
+        oddeven = !sceGsSyncV(0);
+      // 半ピクセルずらし
+        sceGsSetHalfOffset((frame&1)?(&db.draw1):(&db.draw0),
+        	2048, 2048, oddeven);
+        	FlushCache(WRITEBACK_DCACHE);
+      // ダブルバッファ切り替え
+        sceGsSwapDBuff(&db, frame);
+    
+
+   (3) FIELDモード時の初期化シーケンス
+
+      // DMACの初期化
+        sceDmaReset(1);
+      // VIF1, VU1, GIFの初期化
+        sceGsResetPath();
+      // GS, libgraphの初期化
+        sceGsResetGraph(0, SCE_GS_INTERLACE, SCE_GS_NTSC, SCE_GS_FIELD);
+      // 表示、描画環境の初期化
+        sceGsSetDefDBuff(&db, SCE_GS_PSMCT32, 640, 448,
+        	SCE_GS_ZGEQUAL, SCE_GS_PSMZ24, SCE_GS_CLEAR);
+    
+
+   (4) FIELDモード時のダブルバッファ切り替え
+
+        u_long	scandata[4] __attribute__((aligned(16))) = {
+        	SCE_GS_SET_TAG(1, 1, 0, 0, 0, 1), 0xe,
+        	0, SCE_GS_SCANMSK};
+      // 描画終了同期
+        if(sceGsSyncPath(0, 0) != 0){
+        	// Error処理
+        }
+      // VSync同期
+        oddeven = !sceGsSyncV(0);
+      // SCANMASK切り替え
+        scandata[2] = ((oddeven&1)?2:3);
+        DPUT_GIF_FIFO(*(u_long128 *)&scandata[0]);
+        DPUT_GIF_FIFO(*(u_long128 *)&scandata[2]);
+      // ダブルバッファ切り替え
+        sceGsSwapDBuff(&db, frame);
+
+  2.2 注意：DMA転送とキャッシュの整合性について
+
+    libgraphの多くの関数は、構造体変数のポインタを渡すとその構造体変数に
+    データをセットして返すしくみになっています。GIFtagやDMAtagを付加すれ
+    ばこの構造体変数をそのままGSへ転送できますが、セットしたデータがメモ
+    リに書き込まれてから転送が行われるように注意してください。つまり、構
+    造体変数がCached領域にあるときはデータキャッシュをフラッシュしてから
+    DMA転送を起動するようにしなければなりません。
+
+  2.3 制限：BGCOLORの設定について
+
+    GS特権レジスタのうち、BGCOLORレジスタに設定する値は０固定、つまり背景
+    色は黒とする制限が設けられています。これは、以下で説明するように、TV
+    モニタの機種によらず適切な表示を得るために必要な規定です。
+    TVモニタは、表示期間の前に黒レベルを決定する期間があり、この期間の入
+    力信号によって輝度の基準値を調整するしくみになっています。この期間の
+    長さがTVによって異なり、場合によっては表示期間の一部・背景色部分が含
+    まれることがあります。このような場合、背景色が黒でないと輝度の基準値
+    がずれてしまい、画面全体の明るさが他のTVで表示した場合と大きく異なる
+    （暗く表示される）結果になります。これを避けるため、BGCOLORレジスタに
+    は必ず0を指定してください。
+    また、GS特権レジスタのDISPLAYn.DXを0などの非常に小さな値に設定すると、
+    同様のしくみで黒レベルが影響を受けるおそれがあります。
+    DISPLAYn.DXに設定されるデフォルトの値はsceGsSetDefDispEnv関数の説明に
+    示されていますが、独自に設定する場合は536以上の値を設定してください。
+
+  2.4 PALモードへの対応
+
+    PALモードではTVモニタに関する基本的な設定を変更する必要があります。
+    ヘッダファイルeestruct.h中の次の箇所で「// #define GS_PAL_MODE」とコ
+    メントアウトされている１行を有効にすれば、SCE_GS_SET_DISPLAY / 
+    SCE_GS_SET_DISPLAY_INTERLACE / SCE_GS_SET_DISPLAY_NOINTERLACEマクロが
+    それぞれPALモード用の設定になります。
+    
+        #define SCE_GS_SET_DISPLAY	SCE_GS_SET_DISPLAY_INTERLACE
+        // #define GS_PAL_MODE　←ここを有効にする
+        #ifdef GS_PAL_MODE
+        // PAL, NOINTERLACE
+        (途中省略）
+        #endif  // GS_PAL_MODE
+    
+
+ 3 構造解説
+------------
+
+
+  3.1 参考資料
+
+    libgraphの処理内容を理解するための参考資料として、「GS User's Manual」
+    とともに「EE User's Manual」の5.「GIF:GSインタフェース」を参照してく
+    ださい。
+
+  3.2 ダブルバッファリング
+
+    libgraphはGSローカルメモリ上でのダブルバッファリングをサポートし、描
+    画途中の画像が表示されないようにしています。
+    ダブルバッファの設定はsceGsSetDefDBuff()またはsceGsSetDefDBuffDc()を
+    用いて行います。次の図は、sceGsSetDefDBuff()によって設定したダブルバ
+    ッファ（シングルコンテキスト用）を表しています。
+    
+    sceGsSwapDBuff()を呼び出すことによって、バッファの設定が入れ替わり、A
+     / B各領域の役割が入れ替わります。したがって、次のようにV-blank期間の
+    始めにバッファを入れ替え、前のフレームで描画した画像を表示している間
+    に次のフレームの画像をもうひとつのバッファに描く、という処理を行いま
+    す。
+
+  3.3 ハーフピクセルずらし処理
+
+    libgraphはインタレースモードに対応するため、描画バッファのオフセット
+    を1/2ピクセルずらして設定する機能を持っています。
+    インターレースモードでは、oddフレームとevenフレームが走査線間隔の1/2
+    だけ縦にずれて表示されることで、画面全体として448ラインの縦解像度を持
+    つしくみになっています。したがって、描画バッファモードがFRAMEモードの
+    場合、つまり両フレームの描画バッファが別になっている場合は、それぞれ
+    のバッファに1/2ピクセル分ずれた画像を描画すれば、448ラインの縦解像度
+    を得られることになります。
+    ずれた画像を描画するためには、プリミティブ座標からウィンドウ座標へ変
+    換する際のオフセットに差を持たせればよいので、sceGsSetHalfOffset() / 
+    sceGsSetHalfOffset2()では引数halfoffの指定によって、オフセットに1/2ピ
+    クセルに相当する8を加算することができるようになっています。
+    
+    

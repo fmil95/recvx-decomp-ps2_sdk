@@ -1,0 +1,388 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library  Release 1.5
+                     Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                        All Rights Reserved
+                                                                   Dec,1999
+                                   
+暫定サウンドライブラリ for EE 
+==============================
+
+  新サウンドライブラリについて
+-------------------------------
+    暫定サウンドライブラリは、PlayStation(1)用サウンドライブラリを
+    "PlayStation2"に移植したものです。サウンドチップ付き開発機のご提供が遅れた
+    ことから、過去の資産を継承して早期に開発を立ち上げていただくことを目的に
+    作成しました。
+
+    すでに、"PlayStaton2"に最適化した新サウンドライブラリ（libsdおよびCSL）が
+    リリースされています。今後は、機能強化は新ライブラリに対して行ない、暫定
+    ライブラリはバグFIXのみとなります。新オーサリングツール（JAM)も、新ライ
+    ブラリにのみ対応しています。宜しくご了承下さい
+
+
+  概要
+--------
+    librspu2はEmotion Engine上で動作するサウンドライブラリです。
+    SPU2はサブバスでIOPに接続されているため、EEからは直接は見えていませんが、
+    本ライブラリを使用すると、EE側だけでSPU2の制御や割り込みのハンドリング
+    を行うことができます。
+
+    ライブラリの本体（ドライバ）はIOP側で動作しているため、シーケンス再生の
+    ような重い処理の場合は、コマンドだけを発行してEE側は即座にリターンする、
+    ノンブロック処理も可能です。
+
+    librspu2は、再入可能（re-entrant）ではありません。異なるスレッドから非同
+    期にsceSpu2Remote()等を実行するのは避けてください。
+
+
+  関数
+---------
+===========================================================================
+sceSpu2RemoteInit	SPU2リモート環境の初期化
+===========================================================================
+
+[形式] 
+	int sceSpu2RemoteInit( void )
+
+[引数] 
+	なし
+
+[返値] 
+	正常終了時には 0。エラーがあった場合は -1
+
+[解説] 
+	SPUリモート環境の初期化を行います。内部でSpuInit()相当の処理も行っ
+	ています。ブロック関数です。
+
+===========================================================================
+sceSpu2Remote		SPU2コマンドのリモート実行
+===========================================================================
+
+[形式] 
+	int sceSpu2Remote( 
+		int is_block,
+		int command,
+		int arg,
+		...
+	)
+
+[引数] 
+	is_block  	IOP側の処理が終わるまでEE側をブロックするかどうか。
+			1ならブロック。0ならノンブロック
+	command		コマンド
+	arg		コマンドに対する引数。可変長。
+
+[返値] 
+	そのコマンドの処理に相当する返値。
+	ただしisBlockに 0 を指定した場合は常に 0
+
+[解説] 
+	commandによって、IOP上にあるlibspu,libsnd相当のライブラリをEEからリ
+	モートで実行します。
+	commandには、libsnd, libspuの関数名の頭に'r'を付けたものを指定します。
+	引数は可変長なので、そのコマンド（関数）に必要な数だけ指定してくださ
+	い。
+
+	例： sceSpuRemote( 0, rSsSetMVol, 0x1fff, 0x1fff )
+
+	sceSpuRemoteの返値が、そのコマンドの返値となります。ただしノンブロ
+	ックを指定した場合は常に0になります。
+	引数と返値の型は常にintなので、適宜キャストしてください。
+
+	ノンブロックを指定すると、IOP側の処理終了を待たずに関数からリターン
+	します。IOP側の処理の終了を知るには、終了コールバック関数を
+	sceSpu2RemoteCallBack()を用いて設定してください。
+	IOPの処理が終わらないうちに、次のコマンドを送ると誤動作することがあ
+	ります。
+
+===========================================================================
+sceSpu2RemoteCallBack	ノンブロック実行時の終了コールバックの設定
+===========================================================================
+
+[形式] 
+	sceSifEndFunc sceSpu2RemoteCallBack( sceSifEndFunc end_func );
+
+[引数] 
+	end_func	終了コールバック関数のアドレス
+
+[返値] 
+	直前に設定されていた終了コールバック関数のアドレス
+
+[解説] 
+	sceSpu2Remote()をノンブロックで実行した場合、ここで設定した関数が、
+	IOP側の処理が終了したときに、割り込みモードで実行されます。
+	ブロック実行の場合、またはend_funcにNULLを指定した場合は、コールバ
+	ック関数は実行されません。
+	ブロック関数です。
+
+===========================================================================
+sceSpu2CallbackInit	SPU2のコールバック環境の初期化
+===========================================================================
+
+[形式] 
+	int sceSpu2CallbackInit( int priority )
+
+[引数] 
+	priority	コールバック用に起動されるEEスレッドのプライオリティ
+			メインスレッドよりも高くする必要がある。
+
+[返値] 
+	コールバック用に起動されたEEスレッドのID。
+	エラーがあったときは負の値
+
+[解説] 
+	コールバック環境の初期化を行ないます。SPUの割り込みコールバックを使
+	う場合には一度実行してください。内部でEEスレッドを１つ起動します。
+	コールバックはスレッドモードで動作します（割り込みモードではない）。
+
+	ここで言うSPUの割り込みとは、DMA転送、IRQ割り込み、およびストリーミ
+	ング関数による割り込みのことです。sceSpu2Remote()のノンブロック実行
+	時の割り込みは、これらとは別扱いとします。
+
+	スレッドIDを返すので、不要になったときは、IDを参照してDeleteThread
+	等の後処理をしてください。
+	ブロック関数です。
+
+===========================================================================
+sceSpu2StreamEnvInit	ストリーミング環境属性構造体の初期化
+===========================================================================
+
+[形式] 
+	int sceSpu2StreamEnvInit( SpuStEnv *st )
+
+[引数] 
+	st	SPUストリーミング環境属性構造体へのポインタ
+
+[返値] 
+	正常終了時には 0。エラーがあった場合は -1
+
+[解説] 
+	ストリーミング環境属性構造体を初期化します。
+	内部でSpuStInit()相当の処理も行なっています。
+	ブロック関数です。
+
+===========================================================================
+sceSpu2StreamEnvSet	ストリーミング環境属性構造体の転送
+===========================================================================
+
+[形式] 
+	int sceSpu2StreamEnvSet( SpuStEnv *st )
+
+[引数] 
+	st	SPUストリーミング環境属性構造体へのポインタ
+
+[返値] 
+	正常終了時には 0。エラーがあった場合は -1
+
+[解説] 
+	EE上で設定したストリーミング環境属性構造体の内容をIOP側に転送します。
+	ノンブロック関数です。
+	転送するデータがキャッシュ上にあると、正しくIOPに転送されません。関数
+	の実行前にキャッシュをフラッシュ（ライトバック）するか、非キャッシュ
+	領域にデータを置くようにしてください。
+
+
+  コマンド一覧  
+----------------
+    sceSpu2Remoteのコマンドとして、以下のものを使用することができます。
+    各コマンドの機能については、現行PlayStationのドキュメントを参照してください。
+
+    rSpuSetCore		
+    rSpuSetCommonAttr	
+    rSpuSetVoiceAttr	
+    rSpuSetKey		
+    rSpuSetReverb	
+    rSpuClearReverbWorkArea	
+    rSpuSetReverbEndAddr	
+    rSpuSetReverbModeParam	
+    rSpuSetReverbModeDepth	
+    rSpuSetReverbVoice	
+    rSpuSetIRQ		
+    rSpuSetIRQAddr	
+    rSpuSetTransferMode		
+    rSpuSetTransferStartAddr	
+    rSpuWrite	
+    rSpuWrite0	
+    rSpuIsTransferCompleted	
+    rSpuQuit			
+    rSpuSetKeyOnWithAttr  	
+    rSpuSetEnv  		
+    rSpuGetReverbEndAddr  	
+    rSpuWritePartly  		
+    rSpuInitHot  		
+    rSpuIsReverbWorkAreaReserved	
+    rSpuMallocWithStartAddr	
+    rSpuRead			
+    rSpuReadDecodedData 	
+    rSpuReserveReverbWorkArea 	
+    rSpuSetMute			
+    rSpuSetNoiseClock		
+    rSpuSetNoiseVoice 		
+    rSpuStSetCore		
+    rSpuSetPitchLFOVoice 	
+    rSpuStGetStatus		
+    rSpuStGetVoiceStatus 	
+    rSpuInitMalloc		
+    rSpuMalloc			
+    rSpuStInit			
+    rSpuStQuit			
+    rSpuStTransfer		
+    rSpuGetCore			
+    rSpuGetIRQAddr		
+    rSpuGetCommonAttr		
+    rSpuGetReverbModeParam	
+    rSpuGetVoiceAttr		
+    rSpuFlush			
+    rSpuFree			
+    rSpuGetAllKeysStatus	
+    rSpuGetKeyStatus		
+    rSpuGetIRQ			
+    rSpuGetMute			
+    rSpuGetNoiseClock		
+    rSpuGetNoiseVoice		
+    rSpuGetPitchLFOVoice	
+    rSpuGetReverb		
+    rSpuGetReverbVoiceb		
+    rSpuGetTransferMode		
+    rSpuGetTransferStartAddr	
+    rSpuAutoDMAWrite		
+    rSpuAutoDMAStop		
+    rSpuAutoDMAGetStatus	
+    rSpuSetAutoDMAAttr
+    rSpuSetSerialInAttr
+    rSpuSetDigitalOut
+    rSsAllocateVoices  		
+    rSsBlockVoiceAllocation    	
+    rSsEnd			
+    rSsChannelMute   		
+    rSsGetActualProgFromProg    
+    rSsGetChannelMute    	
+    rSsGetCurrentPoint    	
+    rSsGetVoiceMask    		
+    rSsInit   			
+    rSsIsEos    		
+    rSsPitchFromNote    	
+    rSsPlayBack    		
+    rSsQueueKeyOn    		
+    rSsQueueReverb    		
+    rSsQuit			
+    rSsSetTableSize		
+    rSsSetTickMode		
+    rSsSepClose    		
+    rSsSepOpen 			
+    rSsSepPause			
+    rSsSepPlay 			
+    rSsSepReplay 		
+    rSsSepSetAccelerando 	
+    rSsSepSetCrescendo  	
+    rSsSepSetDecrescendo 	
+    rSsSepSetRitardando 	
+    rSsSepSetVol		
+    rSsSepStop 			
+    rSsSeqGetVol		
+    rSsSeqOpen			
+    rSsSeqPause 		
+    rSsSeqPlayPtoP 		
+    rSsSeqReplay 		
+    rSsSeqSetAccelerando 	
+    rSsSeqSetCrescendo 		
+    rSsSeqSetDecrescendo	
+    rSsSeqSetRitardando		
+    rSsSeqSetNext		
+    rSsSeqCalledTbyT		
+    rSsSeqClose			
+    rSsSeqPlay			
+    rSsSeqSetVol		
+    rSsSeqSkip 			
+    rSsSeqStop 			
+    rSsSetAutoKeyOffMode    	
+    rSsSetCurrentPoint		
+    rSsSetLoop    		
+    rSsSetMono   		
+    rSsSetMVol  		
+    rSsSetNext  		
+    rSsSetReservedVoice  	
+    rSsSetStereo    		
+    rSsSetTempo    		
+    rSsSetVoiceMask    		
+    rSsStart			
+    rSsStart2    		
+    rSsUnBlockVoiceAllocation   
+    rSsUtFlush    		
+    rSsUtGetVagAddr    		
+    rSsUtGetVagAddrFromTone    	
+    rSsUtGetVBaddrInSB    	
+    rSsVabClose			
+    rSsVabOpenHead		
+    rSsVabOpenHeadSticky 
+    rSsVabTransBodyPartly	
+    rSsVabTransCompleted	
+    rSsVabTransBody		
+    rSsVoiceCheck   		
+    rSsVoKeyOff    		
+    rSsVoKeyOn    		
+
+
+  特殊コマンド
+----------------
+
+　処理の効率化のため、以下のコマンドを追加しました。これはEE側専用で、IOP側
+に対応するAPIはありません。
+
+===========================================================================
+rSpuSetMultiVoiceAttr	複数のボイス属性構造体をまとめて設定する
+===========================================================================
+
+[引数] 
+	s_attr[]	ボイス属性構造体配列の先頭アドレス
+	num		ボイス属性構造体配列の個数
+
+[解説] 
+	ボイス属性構造体を配列にして、一括して設定します。IOP側と通信する頻
+	度が減るため、パフォーマンス向上が期待できます。
+	ここで指定する個数は、ボイス属性構造体配列を「EEから送る」個数です
+	。IOP側で受ける個数は、別途 rSpuSetMultiVoiceNum で設定しておく必要
+	があります。
+
+===========================================================================
+rSpuSetMultiVoiceNum	ボイス属性構造体配列の個数を設定する
+===========================================================================
+
+[引数] 
+	num		ボイス属性構造体配列の個数
+
+[解説] 
+	ここで指定する個数は、ボイス属性構造体配列を「IOP側で受ける」個数で
+	す。rSpuSetMultiVoiceAttrを実行する前に設定する必要がありますが、一
+	度設定すれば、次に別の値に設定するまで有効です。
+
+
+  SIF DMA転送に関する注意点
+-----------------------------
+
+    本ライブラリは、EE/IOP間の通信に、SIF DMA転送を使用しています。したがっ
+    て、DMA転送に関する一般的な注意事項を意識することが必要なケースがありま
+    す。
+
+    具体的には、引数に構造体のポインタを渡すコマンド、結果を構造体のポイン
+    タとして返すコマンド、および、ストリーミング環境属性構造体の転送の場合
+    です。
+
+    まず考慮するのはDMA転送のためのアライメントで、EE側は16byte, IOP側は4
+    byteになるようにしてください。コンパイラのattribute機能で設定できます。
+
+    次に考慮すべきなのは、メインメモリとキャッシュとの整合性です。IOP側は
+    DMA転送時のキャッシュとの整合性は保たれますが、EE側は保たれません。した
+    がって、例えばIOPからEEにDMAが行われた後で、EE上の同じキャッシュライン
+    上の他の変数にアクセスがあった場合、DMA転送した領域がつぶされてしまうと
+    いったことが起こります。そのようなことにならないように、メモリ配置を計
+    画してください。EEのキャッシュラインのサイズは64byteです。
+
+    ※サンプルコードは、これらのことに気をつけてコーディングしていますが、
+    rvoiceサンプルの s_attr の取り方は良くありませんでした。なぜなら、
+    rSpuGetVoiceAttrコマンドを実行する際、このアドレスがIOPからの転送先にな
+    るからです。auto変数として確保するのではなく、globalにしてアライメント
+    を取るようにしてください。rSpuGetCommonAttr を実行している所の処理を参
+    考にしてください。
+
+

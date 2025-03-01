@@ -1,0 +1,171 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *               Graphics Framework Sample Program
+ *                  
+ *              ---- Scene Viewer Version 0.30 ----
+ * 
+ *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                          Name : vu1baseo.vsm
+ *
+ *            Version   Date           Design      Log
+ *  --------------------------------------------------------------------
+ *            0.30      Apr,4,2000     thatake     Beta0
+ */
+
+; ---------------------------------------------------------------------
+;
+;
+;       vu1 micro code for basic sample
+;
+;
+;	VF01 - VF04 	: perspective + transformation matrix 
+;	VF05 - VF08 	: light color matrix
+;       VF09 - VF12     :  X light vector matrix(3 lighting vector + 1 ambient)
+;	VF20 		: source vertex
+;	VF21 		: source normal
+;	VF22 		: source st
+;	VF23 		: source color
+;
+;
+;	VI02 : pointer for gif tag / for XGKICK
+;	VI03 : pointer for vertex
+;	VI07 : store pointer for RGBAQ
+;	VI08 : store pointer for ST
+;	VI09 : store pointer for XYZF2
+;
+;       VI10 : counter for vertices
+;
+;
+; ---------------------------------------------------------------------
+
+	NOP	BAL VI15, MulMatrix_OPT20
+	NOP	NOP
+	NOP[E]	NOP
+	NOP	NOP
+
+START0_OPT20:
+	NOP 		XTOP VI01
+	NOP		ILW.x  VI12, 10(VI00)x 		; copy to VI12
+	NOP		ILWR.x VI10, (VI01)x 		; copy to VI10
+	NOP		IADDIU VI03, VI01, 4	; pointer for vertices
+	NOP		LQ VF21, 1(VI03)        ; load normal
+	NOP		IADDIU VI11, VI00, 0x7fff	; set mask
+	NOP		IAND VI10, VI11, VI10   ; counter for vertices.
+	NOP		IADD VI02, VI03, VI12   ; XGKICK pointer
+	MULAx.xyzw ACC, VF05, VF21x 	LQ VF20, 0(VI03)
+	MADDAy.xyzw ACC, VF06, VF21y 	IADDIU VI03, VI03, 4 ;
+	MADDz.xyzw VF13, VF07, VF21z	LQ VF21, 1(VI03) ;load (next)normal
+	MULAx.xyzw ACC, VF01, VF20x	LQ VF19, 0(VI01)   ; load gif tag
+	MADDAy.xyzw ACC, VF02, VF20y	IADDI VI07, VI02, -1;pointer forRGBAQ 
+	MADDAz.xyzw ACC, VF03, VF20z	IADDIU VI08, VI02, 1;pointer for ST 
+	MADDw.xyzw VF25, VF04, VF20w	LQ VF20, 0(VI03) ;load (next)vertex 
+	MAXx.xyzw VF13, VF13, VF00x	SQ VF19, 0(VI02)    ; store gif tag
+	NOP				IADDIU VI09, VI02, 3; pointer for XYZF2
+	NOP				LQ VF23, -2(VI03) ;load st
+	NOP				LQ VF22, -1(VI03) ;load color
+	MULAx.xyzw ACC, VF09, VF13x	NOP
+	MADDAy.xyzw ACC, VF10, VF13y	DIV Q, VF00w, VF25w
+	MADDAz.xyzw ACC, VF11, VF13z 	NOP
+	MADDw.xyzw VF14, VF12, VF00w 	NOP
+
+LOOP_OPT20:
+	MULAx.xyzw ACC, VF05, VF21x	IADDIU VI03, VI03, 4
+	MADDAy.xyzw ACC, VF06, VF21y 	IADDI VI10, VI10, -1 
+	MADDz.xyzw VF13, VF07, VF21z	LQ VF21, 1(VI03) ;load (next)normal
+	MUL.xyz VF22, VF22, VF14	IADDIU VI08, VI08, 3
+	MULq VF28, VF25, Q 		IADDIU VI07, VI07, 3
+	MULq.xyz VF27, VF23, Q		LQ VF23, -2(VI03) ;load st
+	MULAx.xyzw ACC, VF01, VF20x 	IADDIU VI09, VI09, 3
+	MINIi.xyz VF22, VF22, I		NOP
+	FTOI4 VF16, VF28	 	LOI 255.0
+	MADDAy.xyzw ACC, VF02, VF20y	SQ VF27, -3(VI08)
+	MADDAz.xyzw ACC, VF03, VF20z	NOP
+	MAXx.xyzw VF13, VF13, VF00x 	NOP
+	MADDw.xyzw VF25, VF04, VF20w	LQ VF20, 0(VI03)
+	FTOI0 VF26, VF22		LQ VF22, -1(VI03);load colorNOP
+	NOP				NOP
+	MULAx.xyzw ACC, VF09, VF13x	SQ VF16, -3(VI09)
+	MADDAy.xyzw ACC, VF10, VF13y	DIV Q, VF00w, VF25w
+	MADDAz.xyzw ACC, VF11, VF13z 	IBNE VI10, VI00, LOOP_OPT20
+	MADDw.xyzw VF14, VF12, VF00w 	SQ VF26, 0(VI07)
+	NOP				NOP
+	NOP				NOP
+	NOP 				XGKICK VI02
+	NOP[E]  			NOP   
+	NOP				NOP
+	NOP   				B START0_OPT20  
+	NOP				NOP      
+
+
+; -------------------------------------------------------------------
+;   MulMatrix 
+;      VI01 : address of source matrix
+;      VI02 : address of source matrix
+;      VI03 : address of destination matrix
+;
+
+MulMatrix_OPT20:
+	NOP                          	LQ VF17, 0(VI00);0 local_world
+        NOP                            	LQ VF09, 16(VI00);16world_screen
+        NOP                            	LQ VF10, 17(VI00);17
+        NOP                            	LQ VF11, 18(VI00);18
+        NOP                            	LQ VF12, 19(VI00);19
+; local_screen = world_screen * local_world
+        MULAx.xyzw ACC, VF09, VF17x     LQ VF18, 1(VI00);1
+        MADDAy.xyzw ACC, VF10, VF17y    LQ VF19, 2(VI00);2
+        MADDAz.xyzw ACC, VF11, VF17z    LQ VF20, 3(VI00);3
+        MADDw.xyzw VF01, VF12, VF17w    LQ VF21, 20(VI00);20world_clip
+        MULAx.xyzw ACC, VF09, VF18x     LQ VF22, 21(VI00);21
+        MADDAy.xyzw ACC, VF10, VF18y    LQ VF23, 22(VI00);22
+        MADDAz.xyzw ACC, VF11, VF18z    LQ VF24, 23(VI00);23
+        MADDw.xyzw VF02, VF12, VF18w    LQ VF25, 32(VI00);32light_vect
+        MULAx.xyzw ACC, VF09, VF19x     LQ VF26, 33(VI00);33
+        MADDAy.xyzw ACC, VF10, VF19y    LQ VF27, 34(VI00);34
+        MADDAz.xyzw ACC, VF11, VF19z    LQ VF28, 35(VI00);35
+        MADDw.xyzw VF03, VF12, VF19w    NOP
+        MULAx.xyzw ACC, VF09, VF20x     LQ VF17, 4(VI00);light_rot
+        MADDAy.xyzw ACC, VF10, VF20y    LQ VF18, 5(VI00);
+        MADDAz.xyzw ACC, VF11, VF20z    LQ VF19, 6(VI00);
+        MADDw.xyzw VF04, VF12, VF20w    LQ VF20, 7(VI00);
+; local_lightvect = light_vect * light_rot
+        MULAx.xyzw ACC, VF25, VF17x     SQ VF01, 68(VI00); store local_screen
+        MADDAy.xyzw ACC, VF26, VF17y    SQ VF02, 69(VI00);
+        MADDAz.xyzw ACC, VF27, VF17z    SQ VF03, 70(VI00);
+        MADDw.xyzw VF05, VF28, VF17w    SQ VF04, 71(VI00);
+        MULAx.xyzw ACC, VF25, VF18x     LQ VF09, 40(VI00);40light_color
+        MADDAy.xyzw ACC, VF26, VF18y    LQ VF10, 41(VI00);41
+        MADDAz.xyzw ACC, VF27, VF18z    LQ VF11, 42(VI00);42
+        MADDw.xyzw VF06, VF28, VF18w    LQ VF12, 43(VI00);43
+        MULAx.xyzw ACC, VF25, VF19x     NOP
+        MADDAy.xyzw ACC, VF26, VF19y    NOP
+        MADDAz.xyzw ACC, VF27, VF19z    NOP
+        MADDw.xyzw VF07, VF28, VF19w    MOVE  VF08, VF20
+;        MULAx.xyzw ACC, VF25, VF20x     NOP
+;        MADDAy.xyzw ACC, VF26, VF20y    NOP
+;        MADDAz.xyzw ACC, VF27, VF20z    NOP
+;        MADDw.xyzw VF08, VF28, VF20w    NOP;
+        NOP                            	SQ VF05, 76(VI00);store local_lvect
+        NOP                            	SQ VF06, 77(VI00);
+        NOP                            	SQ VF07, 78(VI00);
+        NOP                            	SQ VF08, 79(VI00);
+        NOP                            	NOP
+        NOP                            	JR VI15
+        NOP                            	NOP
+
+	
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                      Emotion Engine Library
@@ -50,14 +50,6 @@
 #define sceMcxDevRtc		0
 #define sceMcxDevMem		1
 #define sceMcxDevUifs		2
-
-#define sceMcxResSucceed	0
-#define sceMcxResNoDevice	(-12)
-
-#define sceMcxIniSucceed		0
-#define sceMcxIniErrKernel	(-101)
-#define sceMcxIniOldMcxserv	(-120)
-#define sceMcxIniOldMcxman	(-121)
 
 
 
@@ -111,15 +103,15 @@ extern "C" {
 
 int sceMcxInit(void);
 int sceMcxGetInfo(int, int, sceMcxTblInfo *);
-int sceMcxSetInfo(int, int, const sceMcxTblInfo *, unsigned);
+int sceMcxSetInfo(int, int, sceMcxTblInfo *, unsigned);
 int sceMcxGetMem(int, int, void *, unsigned, unsigned);
-int sceMcxSetMem(int, int, const void *, unsigned, unsigned);
+int sceMcxSetMem(int, int, void *, unsigned, unsigned);
 int sceMcxShowTrans(int, int, int, int);
 int sceMcxHideTrans(int, int);
-int sceMcxReadDev(int, int, int, const void *, unsigned, void *, unsigned);
-int sceMcxWriteDev(int, int, int, const void *, unsigned, const void *, unsigned);
+int sceMcxReadDev(int, int, int, void *, unsigned, void *, unsigned);
+int sceMcxWriteDev(int, int, int, void *, unsigned, void *, unsigned);
 int sceMcxGetUifs(int, int, sceMcxTblUifs *);
-int sceMcxSetUifs(int, int, const sceMcxTblUifs *);
+int sceMcxSetUifs(int, int, sceMcxTblUifs *);
 int sceMcxSetLed(int, int, int);
 int sceMcxChangeThreadPriority(int);
 int sceMcxSync(int, int *, int *);

@@ -33,8 +33,6 @@ SECTIONS
     *(.init)
      eprol  =  .;
     *(.text)
-    *(.text.*)
-    *(.gnu.linkonce.t*)
     *(.mips16.fn.*)
     *(.mips16.call.*)
     *(.rel.sdata)
@@ -42,49 +40,14 @@ SECTIONS
      etext  =  .;
      _etext  =  .;
   }
-  .ctors    :
-  {
-    /* gcc uses crtbegin.o to find the start of
-       the constructors, so we make sure it is
-       first.  Because this is a wildcard, it
-       doesn't matter if the user does not
-       actually link against crtbegin.o; the
-       linker won't look for a file to match a
-       wildcard.  The wildcard also means that it
-       doesn't matter which directory crtbegin.o
-       is in.  */
-
-    KEEP (*crtbegin.o(.ctors))
-
-    /* We don't want to include the .ctor section from
-       from the crtend.o file until after the sorted ctors.
-       The .ctor section from the crtend file contains the
-       end of ctors marker and it must be last */
-
-    KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
-    KEEP (*(SORT(.ctors.*)))
-    KEEP (*(.ctors))
-  }
-
-  .dtors    :
-  {
-    KEEP (*crtbegin.o(.dtors))
-    KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
-    KEEP (*(SORT(.dtors.*)))
-    KEEP (*(.dtors))
-  }
   . = .;
-  .rodata : {
+  .rdata : {
     *(.rdata)
-    *(.rodata)
-    *(.rodata.*)
-    *(.gnu.linkonce.r*)
   }
    _fdata = ALIGN(16);
   .data : {
     *(.data)
-    *(.data.*)
-    *(.gnu.linkonce.d*)
+    CONSTRUCTORS
   }
 
 /*
@@ -106,8 +69,6 @@ SECTIONS
   }
   .sdata : {
     *(.sdata)
-    *(.sdata.*)
-    *(.gnu.linkonce.s*)
   }
   . = ALIGN(4);
    edata  =  .;

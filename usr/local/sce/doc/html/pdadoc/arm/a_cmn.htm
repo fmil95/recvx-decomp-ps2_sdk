@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_cmn</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_cdp.htm">[前]</A> <A HREF="a_cmp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">CMN</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>データ処理</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アドレッシングモード</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アドレッシングモード１</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">CMN{&lt;cond&gt;} Rn, &lt;shifter_operand&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>CMN（Compare Negative）命令は、算術値と算術値の負数（イミディエイト値またはレジスタ値）を比較し、コンディション・コード・フラグをセットします。これに基づいて以降の命令を条件付きで実行できます。</P>
+  <P>CMNは&lt;shifter_operand&gt;の値をレジスタRnの値に加算（またはそれの負数値を減算して）比較を行い、（結果に基づいて）コンディション・コード・フラグを更新します。この比較は最初のオペランドから2番目のオペランドの負数値を減算したものです（2つのオペランドを加算するのと同じです）。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致する場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385788"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385790"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385792"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385794"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385796"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385798"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385800"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385802"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385804"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385806"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385808"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385810"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385812"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385814"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385816"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385818"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385820"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385822"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385824"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385826"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385828"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385830"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385832"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385834"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385836"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385838"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385840"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385842"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385844"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385846"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385848"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385850"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385852"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385860"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385862"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385864"></A><BR>
+    I</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385866"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385868"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385870"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385872"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385874"></A><BR>
+    1</TD> 
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385876"></A><BR>
+    Rn</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385884"></A><BR>
+    SBZ</TD>
+     
+    <TD COLSPAN="12" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385892"></A><BR>
+    shifter_operand</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        &lt;alu_out&gt; = Rn + &lt;shifter_operand&gt;
+        N Flag = &lt;alu_out&gt;[31]
+        Z Flag = if &lt;alu_out&gt; == 0 then 1 else 0
+        C Flag = CarryFrom(Rn + &lt;shifter_operand&gt;)
+        V Flag = OverflowFrom (Rn + &lt;shifter_operand&gt;)</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>シフタ・オペランド：</B>この命令のシフタ・オペランドは、セクション3.16以降の「アドレッシング・モード1」で説明しています。</P>
+  <P><B>Iビット：</B>ビット25を使用して、&lt;shifter_operand&gt;のイミディエイト形式とレジスタ形式を区別することができます。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_cdp.htm">[前]</A> <A HREF="a_cmp.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

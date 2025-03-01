@@ -1,0 +1,1164 @@
+<HTML>
+<HEAD>
+<TITLE> メモリーカード概要</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libmc.htm" SELECTED> メモリーカードライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+メモリーカード概要<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリの概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 ファイルシステムの概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> メモリーカードの互換性<BR></A><BR>
+    <A HREF="#Heading4_2_2"> ファイルシステムの特徴<BR></A><BR>
+    <A HREF="#Heading4_2_3"> クラスタ<BR></A><BR>
+    <A HREF="#Heading4_2_4"> ファイルエントリ<BR></A><BR>
+    <A HREF="#Heading4_2_5"> ファイル属性<BR></A><BR>
+    <A HREF="#Heading4_2_6"> 階層ディレクトリの構造<BR></A><BR>
+    <A HREF="#Heading4_2_7"> 所要容量の計算<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 ファイルの作成規定<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> エントリ名に使用できる文字<BR></A><BR>
+    <A HREF="#Heading4_3_2"> タイトルごとのディレクトリ<BR></A><BR>
+    <A HREF="#Heading4_3_3"> アイコンデータ<BR></A><BR>
+    <A HREF="#Heading4_3_4"> ユーザーデータ（"PlayStation 2"ファイル形式）<BR></A><BR>
+    <A HREF="#Heading4_3_5"> ユーザーデータ（"PlayStation"ファイル形式）<BR></A><BR>
+    <A HREF="#Heading4_3_6"> サブディレクトリ内の最大ファイル数<BR></A><BR>
+    <A HREF="#Heading4_3_7"> 標準的なファイル構成例<BR></A><BR>
+    <A HREF="#Heading4_3_8"> ファイルの削除<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 アイコン定義ファイル<BR></A>
+<P><A HREF="#Heading3_5">  5 アイコンファイル<BR></A>
+    <UL>
+    <A HREF="#Heading4_5_1"> ジオメトリ定義<BR></A><BR>
+    <A HREF="#Heading4_5_2"> MIMEアニメーション<BR></A><BR>
+    <A HREF="#Heading4_5_3"> シェーディング<BR></A><BR>
+    <A HREF="#Heading4_5_4"> テクスチャ<BR></A><BR>
+    <A HREF="#Heading4_5_5"> アンチエイリアシング<BR></A><BR>
+    <A HREF="#Heading4_5_6"> データ構造<BR></A><BR>
+    <A HREF="#Heading4_5_7"> モデル属性<BR></A><BR>
+    <A HREF="#Heading4_5_8"> 変換ツール<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_6">  6 メモリーカード使用手順の概略<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> 初期化（マルチタップを使わない場合）<BR></A><BR>
+    <A HREF="#Heading4_6_2"> 初期化（マルチタップを使う場合）<BR></A><BR>
+    <A HREF="#Heading4_6_3"> メモリーカードの差し込み確認<BR></A><BR>
+    <A HREF="#Heading4_6_4"> 空き容量のチェック<BR></A><BR>
+    <A HREF="#Heading4_6_5"> フォーマット処理<BR></A><BR>
+    <A HREF="#Heading4_6_6"> ファイル破損の判定と処置<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_7">  7 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_7_1"> RPC再入に関する注意<BR></A><BR>
+    <A HREF="#Heading4_7_2"> スレッドプライオリティの変更<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリの概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    EE上でメモリーカードを制御するためのライブラリとして、libmcが提供されています。<BR>
+    libmcはメモリーカードのハードウェアの違いを吸収し、メモリーカードを介してのデータアクセスを支援します。<BR>
+    メモリーカードへのアクセスはシリアル通信によって行われ、処理内容にもよりますが数フレーム～数十フレームの時間を要します。このため、libmcのほとんどの関数は非同期処理を行います。関数が呼び出されたときには処理の登録のみを行って直ちにリターンし、処理の終了確認・ステータスの取得は別途sceMcSync()を呼び出して行うしくみになっています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libmcに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libmc.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libmc.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">モジュールファイル</TD>
+<TD valign="TOP">sio2man.irx<BR>mtapman.irx（マルチタップ使用時のみ）<BR>mcserv.irx<BR>mcman.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libmcを使用するサンプルプログラムとして、次のものがあります。<BR>
+    ee/sample/mc/basic<BR>
+    メモリーカードライブラリの基本機能確認サンプル<BR>
+    ee/sample/mc/icon<BR>
+    3D アイコン生成のための Linux 上で動くツール<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>ファイルシステムの概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>メモリーカードの互換性</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"では従来のメモリーカードおよびポケットステーションに加えて、"PlayStation 2"専用メモリーカード(8MB)を扱うことができます。それぞれの互換性は次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>メモリーカード<BR>種別</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>PS2用ゲーム<BR>タイトル</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>メモリーカード<BR>ブラウザ<BR>(PS2本体)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>PS用ゲーム<BR>タイトル</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>メモリーカード<BR>管理画面<BR>(PS本体)</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">メモリーカード<BR>(PS2)</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">ポケット<BR>ステーション</TD>
+<TD valign="TOP">ポケットステ<BR>ーション対応<BR>アプリケーシ<BR>ョン保有時の<BR>みアクセス可</TD>
+<TD valign="TOP">PSファイル<BR>形式データの<BR>双方向コピー<BR>のみ可</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP">メモリーカード</TD>
+<TD valign="TOP"><DIV align=center>×</DIV></TD>
+<TD valign="TOP">PSファイル<BR>形式データの<BR>双方向コピー<BR>のみ可</TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+<TD valign="TOP"><DIV align=center>○</DIV></TD>
+</TR>
+</TABLE>
+<BR>
+    ※以下、"PlayStation 2"専用メモリーカード(8MB)をメモリーカード(PS2)と略記します。また、"PlayStation 2"専用メモリーカード(8MB)上に"PlayStation 2"専用ファイルとしてセーブする形式を「"PlayStation 2"ファイル形式」、"PlayStation"用データフォーマットでセーブする形式を「"PlayStation"ファイル形式」と呼びます。<BR>
+    <BR>
+    ポケットステーションへのアクセスは、ポケットステーション対応アプリケーションを保有しているときのみ許可されています。ポケットステーションの機能を"PlayStation 2"用ゲームタイトルから利用するためにはlibmcxを利用してください。<BR>
+    従来のメモリーカードへは、"PlayStation 2"用ゲームタイトルからデータのリード／ライトを行ってはいけません。<BR>
+    "PlayStation 2"本体の機能であるメモリーカードブラウザ画面では、従来のメモリーカードまたはポケットステーションとメモリーカード(PS2)との双方向で、"PlayStation"ファイル形式データをコピーすることができます。このようにしてメモリーカード(PS2)にコピーした"PlayStation"ファイル形式データには、"PlayStation 2"用ゲームタイトルからアクセスすることができます。<BR>
+    なお、"PlayStation 2"ファイル形式はメモリーカード(PS2)専用であり、"PlayStation 2"ファイル形式のデータファイルをメモリーカードブラウザ画面でポケットステーションまたは従来のメモリーカードにコピーすることはできません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>ファイルシステムの特徴</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカード(PS2)で採用している"PlayStation 2"専用メモリーカードファイルシステムの主な特徴は次のとおりです。<BR>
+<UL>
+         <LI> 階層ディレクトリをサポート<BR>
+         <LI> 1KB単位でのファイル管理<BR>
+         <LI> "PlayStation 2"ファイル形式データ、"PlayStation"ファイル形式データ（ポケットステーション用拡張ファイルヘッダ付）、"PlayStation"ファイル形式データ（メモリーカードファイルヘッダ付）に対応<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>クラスタ</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカード(PS2)上のファイルは、「クラスタ」を単位として管理されます。クラスタのサイズは1024byteで、1byteのデータも1024byteのデータも同じく１クラスタを使用することになります。データのバイト数からクラスタ数を求める計算式は次のとおりです。<BR>
+    <BR>
+    	クラスタ数＝（バイト数＋1023）/ 1024	（除算の余りは切り捨て）<BR>
+    <BR>
+    フォーマット直後の（空の）メモリーカード(PS2)は、8000クラスタの容量を持っています。"PlayStation 2"本体のメモリーカードブラウザ画面では「7998キロバイト」と表示されますが、これは、後で述べるディレクトリエントリ等の所要量を見込んで2クラスタ少ない値を表示する仕様となっているためです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>ファイルエントリ</B>
+</A>
+</H3>
+<blockquote>
+    各ファイルのファイル名や属性、作成日などの管理情報を記録したデータ構造をファイルエントリと呼びます。ファイルはメモリーカード上では、ファイルエントリとデータの実体とで構成されていることになります。次にファイル構造の概念図を示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mcn1.gif">
+<P>
+    <BR>
+</DIV>
+    ファイルエントリのうちユーザがアクセスできる部分は、sceMcGetDir()を用いて読み出すことができます。<BR>
+    ファイルエントリ自体のサイズは512byteで、2つごとに１クラスタを消費します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>ファイル属性</B>
+</A>
+</H3>
+<blockquote>
+    ファイルエントリには、ファイルの形式や読み書き許可などを表す16bitのファイル属性が記録されています。有効なビットは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>属性</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ビット位置</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>マクロ</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">読み出し許可</TD>
+<TD valign="TOP">bit 0</TD>
+<TD valign="TOP">sceMcFileAttrReadable</TD>
+</TR>
+<TR>
+<TD valign="TOP">書き込み許可</TD>
+<TD valign="TOP">bit 1</TD>
+<TD valign="TOP">sceFileAttrWriteable</TD>
+</TR>
+<TR>
+<TD valign="TOP">実行許可</TD>
+<TD valign="TOP">bit 2</TD>
+<TD valign="TOP">sceMcFileAttrExecutable</TD>
+</TR>
+<TR>
+<TD valign="TOP">コピー禁止</TD>
+<TD valign="TOP">bit 3</TD>
+<TD valign="TOP">sceMcFileAttrDupProhibit</TD>
+</TR>
+<TR>
+<TD valign="TOP">サブディレクトリ</TD>
+<TD valign="TOP">bit 5</TD>
+<TD valign="TOP">sceMcFileAttrSubdir</TD>
+</TR>
+<TR>
+<TD valign="TOP">保存完了</TD>
+<TD valign="TOP">bit 7</TD>
+<TD valign="TOP">sceMcFileAttrClosed</TD>
+</TR>
+<TR>
+<TD valign="TOP">PDAアプリケーション</TD>
+<TD valign="TOP">bit 11</TD>
+<TD valign="TOP">sceMcFileAttrPDAExec</TD>
+</TR>
+<TR>
+<TD valign="TOP">"PlayStation"形式</TD>
+<TD valign="TOP">bit 12</TD>
+<TD valign="TOP">sceMcFileAttrPS1</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    ファイル属性は、ファイル作成時にsceMcOpen()で指定するアクセスモードにしたがって自動的に生成されます。sceMcSetFileInfo()を用いると既存のファイルの属性を変更することも可能ですが、以下のような属性変更は、不都合を引き起こすおそれがあるため禁止されています。<BR>
+<UL>
+         <LI> 他のタイトルで作成されたファイルの属性を変更すること<BR>
+         <LI> サブディレクトリの読み出し許可・実行許可をオフにすること<BR>
+         <LI> サブディレクトリ内に書き込み許可属性がオンのファイルとオフのファイルを混在させること<BR>
+</UL>
+    <BR>
+    データを"PlayStation 2"本体のメモリーカードブラウザ画面で簡単にコピーされないようにしたい場合、サブディレクトリのコピー禁止属性をオンにしてください。これによりサブディレクトリ全体がブラウザ画面でコピーできなくなります。ブラウザ画面ではコピー禁止属性はサブディレクトリに対してしか効きませんので、サブディレクトリのコピー禁止属性をオフにしたままサブディレクトリ内のファイルそれぞれにコピー禁止属性を設定しても、コピー許可／禁止を振り分けることはできません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>階層ディレクトリの構造</B>
+</A>
+</H3>
+<blockquote>
+    階層ディレクトリ構造は、サブディレクトリ属性がセットされた「ファイル」によって実現されています。サブディレクトリ属性がセットされているファイルエントリ（特に区別してディレクトリエントリと呼びます）はサブディレクトリを表し、対応するデータ部分にはそのサブディレクトリに含まれるファイルのファイルエントリが順に記録されているという構造になっています。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/mcn2.gif">
+<P>
+    <BR>
+    なお、サブディレクトリがさらにサブディレクトリを含むという多層の階層ディレクトリ構造は、メモリーカード使用上の規定として禁じられています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>所要容量の計算</B>
+</A>
+</H3>
+<blockquote>
+    ファイルを作成するのに必要な容量は、以下のようにして計算することができます。<BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> ファイル個々の使用クラスタ数<BR>次の式により、作成するファイルのサイズを1024バイト単位に切り上げてクラスタ数を求める。<BR>	クラスタ数 ＝ （バイト数＋1023） / 1024　　余りは切り捨て<BR>
+         <LI VALUE= 2> ファイルエントリの使用クラスタ数<BR>次の式により、ファイルエントリに使用されるクラスタ数を求める。<BR>	クラスタ数 ＝ （作成するファイル数＋1） / 2　　余りは切り捨て<BR>
+         <LI VALUE= 3> ディレクトリエントリの使用クラスタ数<BR>新しくディレクトリを作成する場合、ディレクトリエントリに2クラスタが使用される。既存のディレクトリにファイルを追加する場合は0。<BR>
+    </OL>
+    上記(a)をファイルごとに求めて合計し、さらに(b),(c)を加えた値が、ファイルを作成するために必要な容量となります。"PlayStation 2"本体のメモリーカードブラウザ画面で表示されるファイルサイズは、ファイル本体のみのサイズを合計してからクラスタ単位に切り上げた値であり、所要クラスタ数より小さな値となりますので注意してください。<BR>
+    なお、メモリーカードの使用状況によっては、以前に削除されたファイルエントリ跡の領域を再使用できる場合があり、その場合は上記の計算で求めた所要クラスタ数を消費せずに済むこともあります。再使用できる領域がどれだけあるかはsceMcGetEntSpace()を用いて調べることができます。<BR>
+    日本版"PlayStation 2"のブラウザ画面で表示されるファイルサイズは、ファイル本体のみのサイズを合計した値ですので、実際に使用されているクラスタ数より小さな値となっています。一方海外版"PlayStation 2"のブラウザ画面では、実消費クラスタ数が表示されます。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>ファイルの作成規定</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    メモリーカード(PS2)にファイルを作成する際には、以下説明する規定に従ってください。<BR>
+    ポケットステーションにファイルを作成する場合については、libmcxのドキュメントを参照ください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>エントリ名に使用できる文字</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"専用メモリーカードファイルシステムにおいてディレクトリ名・ファイル名に使用可能な文字は、ASCIIコードで0x20～0x7eの範囲のうち、'*'（0x2a）、'/'（0x2f）、'?'（0x3f）を除いた文字です。<BR>
+    ディレクトリ名・ファイル名ともに、大文字と小文字は区別されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>タイトルごとのディレクトリ</B>
+</A>
+</H3>
+<blockquote>
+    まず、ルートディレクトリに"キーコード"＋"商品型番"＋"8文字以内の任意文字列"という形式のエントリ名でディレクトリを作成し、各タイトルに必要なデータはすべてこの中に収めてください。ルートディレクトリにデータファイルを置くことはできません。ディレクトリ名はたとえばBISLPS－00000xxxxxxxxのようになります。<BR>
+    キーコードは商品型番と次のように対応しています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>キーコード</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>商品型番</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対象</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">BI</TD>
+<TD valign="TOP">SLPS－xxxxx</TD>
+<TD valign="TOP">SCEI向けライセンスタイトル</TD>
+</TR>
+<TR>
+<TD valign="TOP">BA</TD>
+<TD valign="TOP">SLUS－xxxxx</TD>
+<TD valign="TOP">SCEA向けライセンスタイトル</TD>
+</TR>
+<TR>
+<TD valign="TOP">BE</TD>
+<TD valign="TOP">SLES－xxxxx</TD>
+<TD valign="TOP">SCEE向けライセンスタイトル</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    ポケットステーション用メモリーカード拡張ファイルヘッダ付の"PlayStation"形式データファイルを作成する場合は、商品型番5文字目の'－'（0x2d）を'P'（0x50）に置き換えたディレクトリ名としてください。<BR>
+    末尾の任意文字列は8文字以内で自由に設定してかまいません。ひとつのタイトルで複数のディレクトリを作成する場合は、この部分を使って区別するようにしてください。<BR>
+    ディレクトリ名の最後はnull(0x00)ターミネートしてください。<BR>
+    ルートに作成するディレクトリの数に制限はありません。一方、各タイトル用ディレクトリの中にサブディレクトリを作ることはできません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>アイコンデータ</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"ファイル形式では、メモリーカードブラウザ画面で各タイトルのシンボルとして表示される3Dアイコンのデータファイルを、各タイトルのディレクトリに用意しておく必要があります。アイコンデータは、通常次の4つを用意します。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>備考</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">アイコン管理用ファイル</TD>
+<TD valign="TOP">icon.sys</TD>
+<TD valign="TOP">内容は後述</TD>
+</TR>
+<TR>
+<TD valign="TOP">一覧表示用アイコンデータ</TD>
+<TD valign="TOP">（任意）</TD>
+<TD valign="TOP">必須</TD>
+</TR>
+<TR>
+<TD valign="TOP">コピー中表示用アイコンデータ</TD>
+<TD valign="TOP">（任意）</TD>
+<TD valign="TOP">兼用可</TD>
+</TR>
+<TR>
+<TD valign="TOP">削除中表示用アイコンデータ</TD>
+<TD valign="TOP">（任意）</TD>
+<TD valign="TOP">兼用可</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    icon.sys以外はファイル名を31文字以内で自由に決めることができ、icon.sys内で指定します。これらのアイコンデータファイルはそれぞれ別々に用意することもできますし、同じアイコンデータファイルを兼用することもできます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>ユーザーデータ（"PlayStation 2"ファイル形式）</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"ファイル形式では、ひとつのディレクトリに複数のゲームデータファイル等のユーザデータを保存することができます。そのうちのひとつはディレクトリ名と同じ名前でなければなりません。データファイル内部の形式・データフォーマットは任意です。すべてのファイル名は31文字以内でなければなりません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_5">
+<A HREF="#Heading3_3"> 3. </A>5 <B>ユーザーデータ（"PlayStation"ファイル形式）</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation"ファイル形式のゲームデータは、各タイトルのディレクトリに、ディレクトリ名と同じ名前のファイルひとつだけを保存することができます。<BR>
+    データファイル内部の形式・データフォーマットは、従来の"PlayStation"用ファイル形式に従ってください。<BR>
+    ポケットステーションまたはメモリーカードからメモリーカード(PS2)に"PlayStation"ファイル形式データをメモリカードブラウザを使用してコピーすると、この基準に従った形式のディレクトリとファイルが作られます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_6">
+<A HREF="#Heading3_3"> 3. </A>6 <B>サブディレクトリ内の最大ファイル数</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカード(PS2)にユーザーデータをセーブする際のファイルには、icon.sys、アイコンファイル、ディレクトリ名と同じ名前を持つファイル、その他データファイルがありますが、これらの合計が18ファイルを超えてはなりません。<BR>
+    つまり、ひとつのサブディレクトリ内のファイル数は18個以下に制限されます。アイコンファイルが3個の場合は以下の構成になります。<BR>
+    icon.sys					：1個<BR>
+    アイコンファイル				：3個<BR>
+    ディレクトリ名と同名のユーザデータ		：1個<BR>
+    その他のユーザデータ			：13個以内<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_7">
+<A HREF="#Heading3_3"> 3. </A>7 <B>標準的なファイル構成例</B>
+</A>
+</H3>
+<blockquote>
+    以上のことを総合すると、メモリーカード(PS2)上の標準的なファイル構成は次のようになります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mcn3.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_8">
+<A HREF="#Heading3_3"> 3. </A>8 <B>ファイルの削除</B>
+</A>
+</H3>
+<blockquote>
+    ファイルの削除に関して、次の点に注意してください。<BR>
+<UL>
+         <LI> "PlayStation 2"ファイル形式ではicon.sysおよびアイコンデータファイルが必須です。ユーザーデータを削除する際にはディレクトリごとすべて削除するか、ユーザーデータのみを削除してください。<BR>
+         <LI> "PlayStation"ファイル形式では、ディレクトリ名と同じ名前のユーザーデータが必ずひとつ存在しなければなりません。ユーザーデータを削除する際にはディレクトリごと削除してください。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>アイコン定義ファイル</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    アイコン定義ファイルは"PlayStation 2"のメモリーカードブラウザ画面でのアイコン表示を定義するファイルで、各タイトルディレクトリに必ず用意しておかなければなりません。ファイル名はicon.sysに固定で、他の名前は使用できません。<BR>
+    icon.sysの構造は以下のようになっています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc"><B>オフセット</B></TD>
+<TD bgcolor="#cccccc"><B>サイズ<BR>（バイト）</B></TD>
+<TD bgcolor="#cccccc"><B>名称</B></TD>
+<TD bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="top">0</TD>
+<TD valign="top">4</TD>
+<TD valign="top">ヘッダ</TD>
+<TD valign="top">'P','S','2','D'</TD>
+</TR>
+<TR>
+<TD valign="top">4</TD>
+<TD valign="top">2</TD>
+<TD valign="top">(reserved)</TD>
+<TD valign="top">0x0000</TD>
+</TR>
+<TR>
+<TD valign="top">6</TD>
+<TD valign="top">2</TD>
+<TD valign="top">タイトル名改行位置</TD>
+<TD valign="top">2行目の先頭になる文字の位置</TD>
+</TR>
+<TR>
+<TD valign="top">8</TD>
+<TD valign="top">4</TD>
+<TD valign="top">(reserved)</TD>
+<TD valign="top">0x00000000</TD>
+</TR>
+<TR>
+<TD valign="top">12</TD>
+<TD valign="top">4</TD>
+<TD valign="top">背景透過率</TD>
+<TD valign="top">0（透明）～ 0x80（不透明）</TD>
+</TR>
+<TR>
+<TD valign="top">16</TD>
+<TD valign="top">16<BR>16<BR>16<BR>16</TD>
+<TD valign="top">背景RGB・左上<BR>背景RGB・右上<BR>背景RGB・左下<BR>背景RGB・右下</TD>
+<TD valign="top">sceVu0IVECTOR、{r,g,b,-} の順、<BR>それぞれ0～0x80</TD>
+</TR>
+<TR>
+<TD valign="top">80</TD>
+<TD valign="top">16<BR>16<BR>16</TD>
+<TD valign="top">光源方向・光源１<BR>光源方向・光源２<BR>光源方向・光源３</TD>
+<TD valign="top">光源の方向ベクトル、<BR>sceVu0FVECTOR</TD>
+</TR>
+<TR>
+<TD valign="top">128</TD>
+<TD valign="top">16<BR>16<BR>16</TD>
+<TD valign="top">光源RGB・光源１<BR>光源RGB・光源２<BR>光源RGB・光源３</TD>
+<TD valign="top">sceVu0FVECTOR、{r,g,b,-} の順</TD>
+</TR>
+<TR>
+<TD valign="top">176</TD>
+<TD valign="top">16</TD>
+<TD valign="top">アンビエント</TD>
+<TD valign="top">sceVu0FVECTOR</TD>
+</TR>
+<TR>
+<TD valign="top">192</TD>
+<TD valign="top">68</TD>
+<TD valign="top">タイトル名</TD>
+<TD valign="top">SJIS全角文字の一部のみで32<BR>文字まで、末尾に'\0'</TD>
+</TR>
+<TR>
+<TD valign="top">260</TD>
+<TD valign="top">64</TD>
+<TD valign="top">一覧用アイコン<BR>ファイル名</TD>
+<TD valign="top">63文字まで、末尾に'\0'</TD>
+</TR>
+<TR>
+<TD valign="top">324</TD>
+<TD valign="top">64</TD>
+<TD valign="top">コピー時用アイコン<BR>ファイル名</TD>
+<TD valign="top">63文字まで、末尾に'\0'</TD>
+</TR>
+<TR>
+<TD valign="top">388</TD>
+<TD valign="top">64</TD>
+<TD valign="top">削除時用アイコン<BR>ファイル名</TD>
+<TD valign="top">63文字まで、末尾に'\0'</TD>
+</TR>
+<TR>
+<TD valign="top">452</TD>
+<TD valign="top">512</TD>
+<TD valign="top">(reserved)</TD>
+<TD valign="top">オール0</TD>
+</TR></TABLE>
+<BR>
+    <BR>
+<UL>
+         <LI> タイトル名改行位置：<BR>タイトル名を何文字目で改行するかを指定します。タイトルの表示は16文字×2行までで、0を指定した場合は16文字目で改行されます。海外版"PlayStation 2"のブラウザではワードラップ処理が行われ、0あるいは不正な値だった場合には、単語の区切りで改行が入ります。ただし画面の幅の制限上、有効でない場合もあります。16文字目の後で改行したければ、32を設定してください。<BR>
+         <LI> 背景透過率：<BR>このアイコンを選択したとき、背景のアイコン一覧が背景色を通り越して見える透過率を指定します。<BR>
+         <LI> 光源RGB、アンビエント：<BR>sceVu0LightColorMatrix() に渡され、ライトカラー行列の形で取り扱われます。<BR>
+         <LI> タイトル名：<BR>タイトル名を指定します。全角32文字までで、使用できる文字は非漢字および第一水準漢字のみ、ただし0x84bfから0x889eは使用できません。末尾に'\0'を必要とし、'\0'は文字数に含まれません。<BR>
+         <LI> 一覧用アイコンファイル名：<BR>メモリーカード中のファイル一覧を表示しているとき、および、このアイコンが選択されてひとつだけ大きく表示されるときに使用するアイコンデータのファイル名を指定します。末尾に'\0'が必要です。<BR>
+         <LI> コピー時用アイコン、削除時用アイコン：<BR>それぞれcopy, deleteが選択されたときに使用するアイコンデータのファイル名を指定します。末尾に'\0'が必要です。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>アイコンファイル</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    アイコンファイルは、アニメーション情報やテクスチャデータを含む、バイナリ形式の簡易な3次元オブジェクト定義ファイルです。"PlayStation 2"本体のメモリーカードブラウザ画面ではicon.sys中で指定されたアイコンファイルが読み込まれ、適宜配置されて描画されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_1">
+<A HREF="#Heading3_5"> 5. </A>1 <B>ジオメトリ定義</B>
+</A>
+</H3>
+<blockquote>
+    アイコンファイルでは、オブジェクトはすべて独立三角形として定義されます。トライアングルストリップやライン等のプリミティブはサポートされていません。1つのアイコンファイルで使用できる三角形数はアニメーションの設定によって異なり、以下に示すとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>MIMEキーシェイプ数</B></DIV></TD>
+<TD valign="TOP" bgcolor="#cccccc"><DIV align=center><B>最大三角形数</B></DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>1</DIV></TD>
+<TD valign="TOP"><DIV align=center>600</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>4</DIV></TD>
+<TD valign="TOP"><DIV align=center>500</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>6</DIV></TD>
+<TD valign="TOP"><DIV align=center>550</DIV></TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>8</DIV></TD>
+<TD valign="TOP"><DIV align=center>400</DIV></TD>
+</TR>
+</TABLE>
+</DIV><BR>
+
+     <H4>注意：キーシェイプ数２はサポートされていません。<BR></H4>
+
+    <BR>
+    モデルはx = －10.0～10.0, y=0.0～－20.0, z=－10.0～10.0の、一辺が20.0の立方体の中に収まるようにデザインしてください。これを超えると、画面に表示された際に隣のアイコンと干渉しあう恐れがあります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_2">
+<A HREF="#Heading3_5"> 5. </A>2 <B>MIMEアニメーション</B>
+</A>
+</H3>
+<blockquote>
+    アイコンファイルではMIMEによる頂点座標補間アニメーションがサポートされます。キーシェイプの個数は1、4、6、8個のいずれかを選択することができます。アニメーション処理は、フレーム毎に、それぞれのシェイプについてキーフレームから計算された重み付けを行ってモデルの形状を計算することによって行われます。<BR>
+    アニメーションを行わない静止したアイコンについても、キーフレームは必ず1つ指定しなければなりません。その場合は、シェイプ1個、1フレーム目、重み1.0としてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_3">
+<A HREF="#Heading3_5"> 5. </A>3 <B>シェーディング</B>
+</A>
+</H3>
+<blockquote>
+    アイコンのシェーディングは、三角形の各頂点に割り当てられた法線ベクトル、色、テクスチャ座標と、icon.sysによって定義された平行光源1～3、アンビエントによって計算されます。ライティングオフとすることはできません。また、αブレンディング、αテストの効果を用いることもできません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_4">
+<A HREF="#Heading3_5"> 5. </A>4 <B>テクスチャ</B>
+</A>
+</H3>
+<blockquote>
+    アイコンモデルには16bit（PSMCT16）、128×128テクセルのテクスチャを1枚貼り付けることができます。<BR>
+    テクスチャにはバイリニアフィルタが必ず適用されます。また、必ずポリゴンの色とモデュレートされます。テクスチャの色をそのまま出力する指定（DECAL）はできません。<BR>
+    テクスチャを貼るように指定すると、すべてのポリゴンに同じテクスチャが貼り付けられます。テクスチャを貼りたくないポリゴンがある場合は、各頂点のSTをすべて同じ値に指定して同一のテクセルを参照させるなどの方法を用いてください。<BR>
+    アイコンファイルのサイズを削減するため、ハーフワード単位のRun-Length符号化によってテクスチャを圧縮することができます（図柄によってはかえってサイズが大きくなる場合もあります）。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_5">
+<A HREF="#Heading3_5"> 5. </A>5 <B>アンチエイリアシング</B>
+</A>
+</H3>
+<blockquote>
+    アイコン描画の際には、GSによるAA1アンチエイリアシング効果を加える必要があります。アイコンは比較的小さな領域に描画されるので、アンチエイリアシングは非常に有効なためです。しかし、以下に述べるようないくつかの制限があります。この制限を参考にモデルやパラメータを調整してください。<BR>
+<UL>
+         <LI> 同じアイコンオブジェクト中の各ポリゴンについてはソーティングを行わないため、ポリゴン間でのアンチエイリアシングはかからない場合があります。<BR>
+         <LI> AA1をかけるためにバックフェイスクリップを行っていますが、このため、頂点順序からいって裏側になる面は見えません。これはAA1をかけない場合も同様ですので、ポリゴンの裏面も表示したい場合は、裏面に相当するポリゴンを別に定義してください。<BR>
+         <LI> 面が視線ベクトルに対して大きく傾いている場合、AA1によって膨らませるピクセルのz値の補間がうまくいかず、誤ったz値が求められて後ろ側にあるポリゴンが描画されてしまう場合があります。これを防ぐため、大きく傾いているポリゴンを描画の際に判定してクリップする処理が含まれています。実際には計算処理を軽くするために、スクリーン上のポリゴンの面積が小さい場合に、ポリゴンが傾いているとみなしています。この判定基準となる面積の閾値はアイコンファイル中（BFACE）で指定することができます。値が大きいほど、ポリゴンがクリップされます。1.0程度の値で試してみて、モデルの形状に応じて調整してください。0.0で通常のバックフェイスクリップになります。なお、モデル形状によっては、この問題は完全に除去できないことがあります。<BR>
+         <LI> 細長いポリゴンや、非常に微小なポリゴンはAA1による描画ごみを引き起こしやすいので、なるべく使用しないでください。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_6">
+<A HREF="#Heading3_5"> 5. </A>6 <B>データ構造</B>
+</A>
+</H3>
+<blockquote>
+    アイコンファイルのデータ構造は次のとおりです。<BR>
+    実際のファイルには各セクションがこの順番で詰めて格納されています。<BR>
+    モデルセクションでは頂点データの始めのほうから順に3頂点ずつで１個の三角形が表現されます。<BR>
+
+     <H4><B>バージョンヘッダ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Size(byte)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">VERSION</TD>
+<TD valign="TOP">4 [int]</TD>
+<TD valign="TOP">VERSION No = 0x0001 0000　　　　　　　　　　</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>モデルセクション</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Size(byte)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">NBSP<BR>ATTRIB<BR>BFACE<BR>NBVTX</TD>
+<TD valign="TOP">4 [int]<BR>4<BR>4 [float]<BR>4 [int]</TD>
+<TD valign="TOP">シェイプの個数  1, 4, 6, 8のいずれか　　　　　　　<BR>モデル属性（詳細後述）<BR>バックフェイスクリップの基準値（通常1.0）<BR>頂点数（3の倍数）</TD>
+</TR>
+<TR>
+<TD valign="TOP">VTX<BR>NORMAL<BR>ST<BR>COLOR</TD>
+<TD valign="TOP">8×NBSP<BR>8<BR>4<BR>4</TD>
+<TD valign="TOP">頂点１の頂点座標<BR>　　　　法線ベクトル<BR>　　　　テクスチャ座標<BR>　　　　頂点色</TD>
+</TR>
+<TR>
+<TD valign="TOP">VTX<BR>NORMAL<BR>ST<BR>COLOR</TD>
+<TD valign="TOP">8×NBSP<BR>8<BR>4<BR>4</TD>
+<TD valign="TOP">頂点2の頂点座標<BR>　　　　法線ベクトル<BR>　　　　テクスチャ座標<BR>　　　　頂点色</TD>
+</TR>
+<TR>
+<TD valign="TOP">----</TD>
+<TD valign="TOP">----</TD>
+<TD valign="TOP">NBVTX個まで繰り返し</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>アニメーションセクション</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Size(byte)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">NBSEQ</TD>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">シーケンスの個数（現在は1のみサポート）</TD>
+</TR>
+<TR>
+<TD valign="TOP">NBFRAME<BR>SPEED<BR>OFFSET<BR>NBKSP</TD>
+<TD valign="TOP">4 [int]<BR>4 [float]<BR>4 [int]<BR>4</TD>
+<TD valign="TOP">シーケンス１のフレーム長<BR>　　　　　　　再生スピード倍率<BR>　　　　　　　再生オフセット（フレーム番号）<BR>　　　　　　　シェイプ個数（最大8個）</TD>
+</TR>
+<TR>
+<TD valign="TOP">KSPID<BR>NBKF<BR>KEYS</TD>
+<TD valign="TOP">4<BR>4<BR>8×NBKF</TD>
+<TD valign="TOP">シェイプキー１のシェイプ番号<BR>　　　　　　　　　キーフレーム個数（最大10）<BR>　　　　　　　　　キーデータ（NBKF個：別表参照）</TD>
+</TR>
+<TR>
+<TD valign="TOP">KSPID<BR>NBKF<BR>KEYS</TD>
+<TD valign="TOP">4<BR>4<BR>8×NBKF</TD>
+<TD valign="TOP">シェイプキー2のシェイプ番号<BR>　　　　　　　　　キーフレーム個数（最大10）<BR>　　　　　　　　　キーデータ（NBKF個：別表参照）</TD>
+</TR>
+<TR>
+<TD valign="TOP">----</TD>
+<TD valign="TOP">----</TD>
+<TD valign="TOP">NBKSP個まで繰り返し</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>テクスチャセクション</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Size(byte)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SIZE</TD>
+<TD valign="TOP">4 [int]</TD>
+<TD valign="TOP">圧縮されたテクスチャのサイズ（非圧縮時はこの項目省略）</TD>
+</TR>
+<TR>
+<TD valign="TOP">TEX</TD>
+<TD valign="TOP">-</TD>
+<TD valign="TOP">テクスチャ（PSMCT16形式の128×128イメージ）</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+<UL>
+         <LI> VTX：頂点座標<BR>頂点座標は、(x, y, z)各要素を6:10の固定小数（2bytes）で表し2bytesのパディングを加えた8bytesを1組とし、NBSP（シェイプ個数）組で1個の頂点を表します。<BR>floatから6:10固定小数に変換するマクロが /usr/local/sce/ee/sample/mc/icon/iconconv ソース中にあります。<BR>
+         <LI> NORMAL：法線ベクトル<BR>法線ベクトルは、(x, y, z)各要素を4:12の固定小数（2bytes）で表し2bytesのパディングを加えた8bytesで表します。<BR>floatから4:12固定小数に変換するマクロが /usr/local/sce/ee/sample/mc/icon/iconconv ソース中にあります。<BR>
+         <LI> ST：テクスチャ座標<BR>テクスチャ座標は、(s, t)各要素を4:12の固定小数（2bytes）で表します。<BR>
+         <LI> COLOR：頂点色<BR>頂点色はr, g, b, a各1byteの4bytesで表します。ただしaの値は無視されます。<BR>
+         <LI> KEYS：キーデータ<BR>キーデータは次のように、キーとなるフレーム番号とそのフレームで当該シェイプ（対応するKSPIDで指定されるシェイプ）に与える重みを組にした8byteデータです。<BR>
+</UL>
+      <BLOCKQUOTE>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Size(byte)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">FRAME</TD>
+<TD valign="TOP">4 [float]</TD>
+<TD valign="TOP">キーフレームのフレーム番号　　　　　　　　　　　　</TD>
+</TR>
+<TR>
+<TD valign="TOP">WEIGHT</TD>
+<TD valign="TOP">4 [float]</TD>
+<TD valign="TOP">シェイプの重み</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_7">
+<A HREF="#Heading3_5"> 5. </A>7 <B>モデル属性</B>
+</A>
+</H3>
+<blockquote>
+    モデル属性ATTRIBは、次のように定義されています。<BR>
+
+     <H4><B>BIT ASSIGN</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD>31　</TD>
+<TD>03</TD>
+<TD>02</TD>
+<TD>01</TD>
+<TD>00</TD>
+</TR>
+<TR>
+<TD>　　　　　　　　　　　　　　　　　　　　　　　　　　　<BR><BR></TD>
+<TD>R<BR>L<BR>E</TD>
+<TD>T<BR>E<BR>X</TD>
+<TD>A<BR>N<BR>T<BR>I</TD>
+<TD>I<BR>I<BR>P</TD>
+</TR></TABLE>
+<BR>
+
+     <H4><B>FIELD</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Name</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Pos.</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>Contents</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">IIP</TD>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">シェーディング方式　　　　　　　　　　　　　　　　　　　　　　<BR>0 : flat shading<BR>1 : gouraud shading</TD>
+</TR>
+<TR>
+<TD valign="TOP">ANTI</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">アンチエイリアシング予約ビット。1固定。</TD>
+</TR>
+<TR>
+<TD valign="TOP">TEX</TD>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">テクスチャ貼り付けのon/off</TD>
+</TR>
+<TR>
+<TD valign="TOP">RLE</TD>
+<TD valign="TOP">3</TD>
+<TD valign="TOP">テクスチャ圧縮の有無<BR>0 : 非圧縮（PSMCT16 rawイメージ）<BR>1 : short word単位のRun-Length圧縮済み</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_8">
+<A HREF="#Heading3_5"> 5. </A>8 <B>変換ツール</B>
+</A>
+</H3>
+<blockquote>
+    アイコンファイルの作成をサポートするツールとして、必要なデータ列を記述したASCIIファイルからアイコンフォーマットのバイナリファイルに変換／逆変換するプログラムを用意してあります。Linux上で動作するもので、ソースコードが /usr/local/sce/ee/sample/mc/icon/iconconv に登録されています。<BR>
+    また、Run-Length符号化によるイメージデータの圧縮／展開を行うプログラムを用意してあります。同じくLinux上で動作するもので、ソースコードが /usr/local/sce/ee/sample/mc/icon/rle に登録されています。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>メモリーカード使用手順の概略</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下、プログラム上でメモリーカードを扱うときの処理手順を説明します。マルチタップに対応するかどうかによって初期化の処理が異なります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>初期化（マルチタップを使わない場合）</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> メモリーカード・ドライバ（IOPモジュール）のロード<BR>sceSifLoadModule()を用いて、sio2man.irx, mcman.irx ,mcserv.irxをこの順番でロードします。padman.irxはsio2man.irxより後であれば、mcman.irx, mcserv.irxより先にロードしても後にロードしてもかまいません。<BR>
+         <LI VALUE= 2> メモリーカード・ドライバの初期化<BR>sceMcInit()を呼び出します。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_2">
+<A HREF="#Heading3_6"> 6. </A>2 <B>初期化（マルチタップを使う場合）</B>
+</A>
+</H3>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> メモリーカード・ドライバ（IOPモジュール）のロード<BR>sceSifLoadModule()を用いて、sio2man.irx, mtapman.irx, mcman.irx ,mcserv.irxをこの順番でロードします。padman.irxはmtapman.irxの後であれば、mcman.irx, mcserv.irxより先にロードしても後にロードしてもかまいません。<BR>
+         <LI VALUE= 2> マルチタップ・ドライバの初期化<BR>sceMtapInit()を呼び出します。<BR>
+         <LI VALUE= 3> マルチタップスロット使用開始宣言<BR>sceMtapPortOpen(2または3) を呼び出して、それぞれ"PlayStation 2"本体のメモリーカード差込口1，2に対してマルチタップ経由でアクセスできるように宣言します。<BR>
+         <LI VALUE= 4> メモリーカード・ドライバの初期化<BR>sceMcInit()を呼び出します。<BR>
+         <LI VALUE= 5> マルチタップの接続確認<BR>sceMtapGetConnection(2 または 3) を呼び出して、マルチタップが接続されていることを確認します（初期化時だけでなく、随時確認することができます）。<BR>
+         <LI VALUE= 6> 使用可能スロット数の確認<BR>マルチタップが接続されていることがわかれば、sceMcGetSlotMax(0または1) を呼び出してマルチタップが装備している最大スロット数を調べます。libmcの各関数で受け付けられるスロット番号は0～(最大数－1) となります。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_3">
+<A HREF="#Heading3_6"> 6. </A>3 <B>メモリーカードの差し込み確認</B>
+</A>
+</H3>
+<blockquote>
+    初期化が終わったら、sceMcGetInfo()を呼び出して、メモリーカードが差し込まれていることを確認する必要があります。<BR>
+    この関数はほとんどのメモリーカード操作関数と同じく、関数呼び出しによって処理の登録のみ行い、sceMcSync()でポーリングして処理終了を待つしくみになっています。終了待ちの間、他のメモリーカード操作処理を登録することはできません。プログラムとしては以下のいずれかの形になります。<BR>
+
+     <H4><B>[同期待ち]</B></H4>
+
+    sceMcGetInfo(  ,  ,  ,  ,  );<BR>
+    sceMcSync(0,  ,  );<BR>
+
+     <H4><B>[非同期待ち]</B></H4>
+
+    sceMcGetInfo(  ,  ,  ,  ,  );<BR>
+    while(!sceMcSync(1,  ,  )) {<BR>
+    	/* 他の処理 */<BR>
+    }<BR>
+    <BR>
+    sceMcGetInfo(port, slot, type, free, format) において、type, free, formatのうち不要なパラメータを0にしておくと、処理完了までの時間が短くなります。<BR>
+    メモリーカードの差し込み確認が終わると、sceMcGetInfo()以外のメモリーカード操作関数が使用可能になります。使いかたはsceMcGetInfo()と同じで、それぞれの処理を登録してsceMcSync()で処理の完了を待つという組み合わせで呼び出します。<BR>
+    なお、プログラムの途中でメモリーカードが検出できなくなりエラーになった場合は、新たなメモリーカードが差し込まれるのを待たなくてはいけません。その場合はもう一度、上記の差し込み確認を行ってください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_4">
+<A HREF="#Heading3_6"> 6. </A>4 <B>空き容量のチェック</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカードにファイルを作成するタイトルでは、起動時に、差し込まれているメモリーカードに十分な空き容量があるかどうかをチェックしなければなりません。<BR>
+    ファイル作成に必要な容量を先に説明した方法で計算し、sceMcGetInfo()で得た空きクラスタ数と比較して判断してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_5">
+<A HREF="#Heading3_6"> 6. </A>5 <B>フォーマット処理</B>
+</A>
+</H3>
+<blockquote>
+    新しいメモリーカードは使用開始時にフォーマットを行う必要があります。sceMcGetInfo()によって未フォーマットとわかった場合は、その旨のメッセージを画面に表示しユーザの確認を求めたうえで、sceMcFormat()を用いてフォーマット処理を行ってください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_6">
+<A HREF="#Heading3_6"> 6. </A>6 <B>ファイル破損の判定と処置</B>
+</A>
+</H3>
+<blockquote>
+    書き込み処理の最中にメモリーカードが抜き取られるなど不測の事態によって、ファイルの内容が正しく記録されない場合や既存ファイルの内容が破壊される場合があります。ファイルの書き込みが正しく完了したかどうか、読み込んだファイルの内容が適切かどうか、適宜チェックし、ファイル破損対策を施してください。<BR>
+    書き込み完了の判定には、ファイル属性の保存完了（sceMcFileAttrClosed）を利用することができます。この属性は、sceMcWrite()でデータを書き出してsceMcClose()またはsceMcFlush()でメモリーカードに記録するという一連の書き込み処理がエラー無しに完了したことを表します。<BR>
+    ただし、リリース1.4.5以前のライブラリを使用して作成されたファイルや"PlayStation 2"本体のメモリーカードブラウザ画面でコピーされたファイルではこの保存完了属性はセットされませんので、既存ファイルの破損判定には利用できません。読み込んだファイル内容が破損していないかどうか判定するため、チェックサムを付加するなどの処理を組み込むようお勧めします。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_7">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 7 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_7_1">
+<A HREF="#Heading3_7"> 7. </A>1 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    libmcの関数はSIF RPCを内部で使用します。そのため、複数のスレッドで利用する場合はRPC再入を起さないように注意が必要です。RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_7_1_1">
+(1) <B>RPC WAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceMcInit()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_7_1_2">
+(2) <B>RPC NOWAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      sceMcInit()を除いて、libmcのすべての関数はsceSifBindRpc() / sceSifCallRpc()をNOWAIT実行します。RPC再入に注意するほか、割り込みハンドラ内では呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_7_1_3">
+(3) <B>RPCチェック関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifCheckStatRpc()を呼び出します。RPC再入に注意して使用してください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceMcSync()<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_7_2">
+<A HREF="#Heading3_7"> 7. </A>2 <B>スレッドプライオリティの変更</B>
+</A>
+</H3>
+<blockquote>
+    libmcのIOP側モジュールmcserve.irxのスレッドプライオリティは、デフォルトでは104になっています。必要に応じて、モジュールロード時にプライオリティを指定し、また、実行中に変更することができます。<BR>
+    モジュールロード時に指定するには、次のように、sceSifLoadModule()の第3引数で指定します。<BR>
+      <BLOCKQUOTE>
+      unsigned char *param = "thpri=100";<BR>
+      sceSifLoadModule( "host0:/usr/local/sce/iop/modules/mcserv.irx", strlen(param)+1, param);<BR>
+      </BLOCKQUOTE>
+    <BR>
+    実行中にプライオリティを変更するには、sceMcChangeThreadPrioriry()を呼び出します。詳しくは関数リファレンスを参照してください。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

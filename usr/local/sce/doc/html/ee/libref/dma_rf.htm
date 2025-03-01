@@ -1,0 +1,2848 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> DMA基本ライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>DMA基本ライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaChan>sceDmaChan </A><BR>
+</TD><TD> </TD>
+<TD>各チャネル固有の状態</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaEnv>sceDmaEnv </A><BR>
+</TD><TD> </TD>
+<TD>チャネル共通の状態</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmatag>sceDmatag </A><BR>
+</TD><TD> </TD>
+<TD>DMAtag</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddCall>sceDmaAddCall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddCont>sceDmaAddCont </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddDest>sceDmaAddDest </A><BR>
+</TD><TD> </TD>
+<TD>DESTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddDests>sceDmaAddDests </A><BR>
+</TD><TD> </TD>
+<TD>DESTSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddEnd>sceDmaAddEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddExpress>sceDmaAddExpress </A><BR>
+</TD><TD> </TD>
+<TD>優先転送の指定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddICall>sceDmaAddICall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddICont>sceDmaAddICont </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIDest>sceDmaAddIDest </A><BR>
+</TD><TD> </TD>
+<TD>IDESTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIDests>sceDmaAddIDests </A><BR>
+</TD><TD> </TD>
+<TD>IDESTSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIEnd>sceDmaAddIEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddINext>sceDmaAddINext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIRef>sceDmaAddIRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIRefe>sceDmaAddIRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIRefs>sceDmaAddIRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddIRet>sceDmaAddIRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddNext>sceDmaAddNext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddRef>sceDmaAddRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddRefe>sceDmaAddRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddRefs>sceDmaAddRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaAddRet>sceDmaAddRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaDebug>sceDmaDebug </A><BR>
+</TD><TD> </TD>
+<TD>デバッグモードの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaGetChan>sceDmaGetChan </A><BR>
+</TD><TD> </TD>
+<TD>チャネル構造体の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaGetEnv>sceDmaGetEnv </A><BR>
+</TD><TD> </TD>
+<TD>チャネル共通レジスタの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaGetNextTag>sceDmaGetNextTag </A><BR>
+</TD><TD> </TD>
+<TD>転送リストの次のタグを取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPause>sceDmaPause </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の一時停止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPutEnv>sceDmaPutEnv </A><BR>
+</TD><TD> </TD>
+<TD>チャネル共通レジスタの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPutStallAddr>sceDmaPutStallAddr </A><BR>
+</TD><TD> </TD>
+<TD>ストールアドレスの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaRecv>sceDmaRecv </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Destination Chain Mode）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaRecvI>sceDmaRecvI </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Interleave Mode, SPR→メモリ）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaRecvN>sceDmaRecvN </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Normal Mode, デバイス→メモリ）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaReset>sceDmaReset </A><BR>
+</TD><TD> </TD>
+<TD>DMACのリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaRestart>sceDmaRestart </A><BR>
+</TD><TD> </TD>
+<TD>一時停止したDMA転送の再開</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaSend>sceDmaSend </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Source Chain Mode）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaSendI>sceDmaSendI </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Interleave Mode, メモリ→SPR）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaSendN>sceDmaSendN </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の起動（Normal Mode, メモリ→デバイス）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaSync>sceDmaSync </A><BR>
+</TD><TD> </TD>
+<TD>DMA転送の終了待ち／状態検査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaWatch>sceDmaWatch </A><BR>
+</TD><TD> </TD>
+<TD>特定アドレスの転送待ち／状態検査</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceDmaChan>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaChan
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        各チャネル固有の状態
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	tD_CHCR	<I>chcr</I>;	u_int	p0[3];	// channel control
+	void	*<I>madr</I>;	u_int	p1[3];	// memory address
+	u_int	<I>qwc</I>;	u_int	p2[3];	// transfer count
+	sceDmaTag	*<I>tadr</I>;	u_int	p3[3];	// tag address
+	void	*<I>as0</I>;	u_int	p4[3];	// address stack
+	void	*<I>as1</I>;	u_int	p5[3];	// address stack
+	u_int	p6[4];			// pad
+	u_int	p7[4];			// pad
+	void	*<I>sadr</I>;	u_int	p8[3];	// spr address
+} <B>sceDmaChan</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>chcr</I>	チャネル制御		Dn_CHCR
+<I>madr</I>	転送メモリアドレス	Dn_MADR
+<I>qwc</I>	転送サイズ		Dn_QWC
+<I>tadr</I>	転送タグアドレス		Dn_TADR
+<I>as0</I>	アドレススタック０	Dn_ASR0
+<I>as1</I>	アドレススタック１	Dn_ASR1
+<I>sadr</I>	SPRアドレス		Dn_SADR
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    各チャネルに固有の状態を設定／取得するための構造体です。各メンバは、それぞれ右側に示したレジスタに対応します。 <BR>
+    sceDmaGetChan()関数で各チャネルに対応する構造体のアドレスを得ることができます。このアドレスは物理レジスタのアドレスですので、構造体の各メンバに値を設定するとただちにDMACのレジスタに反映されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャネル共通の状態
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	u_char	<I>sts</I>;		// stall source
+	u_char	<I>std</I>;		// stall drain
+	u_char	<I>mfd</I>;		// MFIFO drain
+	u_char	<I>rcycle</I>;		// release cycle
+	u_short	<I>express</I>;		// express channel mask
+	u_short	<I>notify</I>;		// notify channel mask
+	u_short	<I>sqwc</I>;		// Interleave skip qword count
+	u_short	<I>tqwc</I>;		// Interleave transfer qword count
+	void	*<I>rbadr</I>;		// MFIFO Ring buffer address
+	u_int	<I>rbmsk</I>;		// MFIFO Ring buffer mask
+} <B>sceDmaEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sts</I>	ストール制御のsource側チャネル			D_CTRL.STS
+<I>std</I>	ストール制御のdrain側チャネル			D_CTRL.STD
+<I>mfd</I>	MFIFOのdrain側チャネル				D_CTRL.MFD
+<I>rcycle</I>	release cycle					D_CTRL.RCYC
+<I>express</I>	優先チャネルの設定（LSB=CH0）			D_PCR.CDE
+<I>notify</I>	終了をCOP0へ送信するチャネルの指定（LSB=CH0）	D_PCR.CPC
+<I>sqwc</I>	インターリーブモードでのスキップワード数		D_SQWC.SQWC
+<I>tqwc</I>	インターリーブモードでの転送ワード数		D_SQWC.TQWC
+<I>rbadr</I>	MFIFOリングバッファの先頭アドレス		D_RBOR.ADDR
+<I>rbmsk</I>	MFIFOリングバッファのサイズマスク		D_RBSR.RMSK
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャネルにまたがって共通の状態を設定／取得するための構造体です。各メンバは、それぞれ右側に示したレジスタに対応します。 <BR>
+    PutDEnv()およびGetDenv()関数を用いて値を設定／取得できます。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmatag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmatag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMAtag
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct _sceDmaTag {
+	u_short	<I>qwc</I>;	// transfer count
+	u_char	<I>mark</I>;	// mark
+	u_char	<I>id</I>;	// tag ID
+	struct _sceDmaTag *<I>next</I>;	// next tag
+	u_int	p[2];	// padding
+} <B>sceDmaTag</B> __attribute__ ((aligned(16)));
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>qwc</I>	パケットサイズ
+<I>mark</I>	マーク値
+<I>id</I>	タグIDおよびフラグ
+<I>next</I>	ADDRフィールド
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMAtagを記述するための構造体です。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceDmaAddCall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddCall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddCall</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>ctag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCALLタグに書き込むサイズ情報
+<I>ctag</I>	生成したCALLタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、呼び出し先アドレス<I>ctag</I>・サイズ<I>qwc</I>を持つCALLタグを生成します。 <BR>
+    *<I>tag</I>は生成したCALLタグに続くタグ（＝<I>ctag</I>）を指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返値は、生成したCALLタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddCont>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddCont
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddCont</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTタグに書き込むサイズ情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つCNTタグ(Source Chain用)を生成します。 <BR>
+    *<I>tag</I>は生成したCNTタグに続くタグのアドレス(＝パケットボディの次のアドレス)を指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返値はCNTタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddDest>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddDest
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DESTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddDest</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTタグに書き込むサイズ情報
+<I>addr</I>	生成したCNTタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>を持つDestination Chain用のCNTタグを生成します。 <BR>
+    返り値は、生成したCNTタグによって転送されるデータのアドレスとなります。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddDests>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddDests
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DESTSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddDests</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTSタグに書き込むサイズ情報
+<I>addr</I>	生成したCNTSタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>を持つDestination Chain用のCNTSタグを生成します。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値は、生成したCNTSタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddEnd</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したENDタグに書き込むサイズ情報
+<I>addr</I>	転送先アドレス(Destination Chain用)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つENDタグを生成します。Destination Chain用のENDタグを生成する場合は、<I>addr</I>に転送先のメモリアドレスを指定してください。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値は、生成したENDタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddExpress>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddExpress
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        優先転送の指定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaAddExpress</B>(
+	sceDmatag *<I>tag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	対象のDMAtag
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    転送リストに登録されているDMAtagに優先転送属性を付加します。 <BR>
+    優先転送の詳細は「EE Use's Manual」でD_PCRレジスタの説明を参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddICall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddICall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddICall</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>ctag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCALLタグに書き込むサイズ情報
+<I>ctag</I>	生成したCALLタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、呼び出し先アドレス<I>ctag</I>・サイズ<I>qwc</I>を持つ割り込み発生付きCALLタグを生成します。 <BR>
+    *<I>tag</I>は生成したCALLタグに続くタグのアドレス（=<I>ctag</I>）を指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はCALLタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddICont>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddICont
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddICont</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTタグに書き込むサイズ情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つ割り込み発生付きCNTタグを生成します。 <BR>
+    *<I>tag</I>は生成したCNTタグに続くタグのアドレス（＝パケットボディの次のアドレス）を指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はCNTタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIDest>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIDest
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IDESTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIDest</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTタグに書き込むサイズ情報
+<I>addr</I>	生成したCNTタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>を持つDestination Chain用の割り込み発生付きCNTタグを生成します。 <BR>
+    返り値は、生成したCNTタグによって転送されるデータのアドレスとなります。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIDests>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIDests
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IDESTSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIDests</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したCNTSタグに書き込むサイズ情報
+<I>addr</I>	生成したCNTSタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>を持つDestination Chain用の割り込み発生付きCNTSタグを生成します。 <BR>
+    返り値は、生成したCNTSタグによって転送されるデータのアドレスとなります。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIEnd</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したENDタグに書き込むサイズ情報
+<I>addr</I>	転送先アドレス(Destination Chain用)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つ割り込み発生付きENDタグを生成します。Destination Chain用のENDタグを生成する場合は、<I>addr</I>に転送先のメモリアドレスを指定してください。返り値はENDタグによって転送されるデータのアドレスとなります。 <BR>
+    *<I>tag</I>はパケットボディの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddINext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddINext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddINext</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したNEXTタグに書き込むサイズ情報
+<I>addr</I>	生成したNEXTタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>を持つ割り込み発生付きNEXTタグを生成します。 <BR>
+    *<I>tag</I>は生成したNEXTタグに続くタグのアドレス（=<I>addr</I>）を指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はNEXTタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIRef</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFタグに書き込むサイズ情報
+<I>addr</I>	生成したREFタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照する割り込み発生付きREFタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はREFタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIRefe</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFEタグに書き込むサイズ情報
+<I>addr</I>	生成したREFEタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照する割り込み発生付きREFEタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFEタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はREFEタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIRefs</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFSタグに書き込むサイズ情報
+<I>addr</I>	生成したREFSタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照する割り込み発生付きREFSタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFSタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はREFSタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddIRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddIRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddIRet</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したRETタグに書き込むサイズ情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つ割り込み発生付きRETタグを生成します。 <BR>
+    *<I>tag</I>は生成したRETタグに続くタグのアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はRETタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddNext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddNext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddNext</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したNEXTタグに書き込むサイズ情報
+<I>addr</I>	生成したNEXTタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、タグアドレス<I>addr</I>サイズ<I>qwc</I>を持つNEXTタグを生成します。 <BR>
+    *<I>tag</I>は生成したNEXTタグに続くタグを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はNEXTタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddRef</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFタグに書き込むサイズ情報
+<I>addr</I>	生成したREFタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照するREFタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はREFタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddRefe</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFEタグに書き込むサイズ情報
+<I>addr</I>	生成したREFEタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照するREFEタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFEタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値は、生成されたREFEタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddRefs</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したREFSタグに書き込むサイズ情報
+<I>addr</I>	生成したREFSタグに書き込むアドレス情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレス（=<I>addr</I>）を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、アドレス<I>addr</I>・サイズ<I>qwc</I>のデータを参照するREFSタグを生成します。 <BR>
+    *<I>tag</I>は生成したREFSタグの次のアドレスを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値はREFSタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaAddRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaAddRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaAddRet</B>(
+	sceDmaTag **<I>tag</I>,
+	int <I>qwc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	タグポインタのアドレス
+<I>qwc</I>	生成したRETタグに書き込むサイズ情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットボディのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    *<I>tag</I>の指すメモリに、サイズ<I>qwc</I>を持つRETタグを生成します。 <BR>
+    *<I>tag</I>は生成したRETタグに続くタグを指すように更新されるので、続けて次のタグを生成することができます。 <BR>
+    返り値は、生成したRETタグによって転送されるデータのアドレスとなります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaDebug>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaDebug
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デバッグモードの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaDebug</B>(
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	デバッグモード
+	0 : デバッグOFF
+	1 : デバッグON
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前の<I>mode</I>の値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    デバッグモードを設定します。1を指定するとデバッグONとなり、libdmaの各関数で引数の整合性チェックが行われるようになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaGetChan>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaGetChan
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャネル構造体の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceDmaChan *<B>sceDmaGetChan</B>(
+	int <I>id</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>	チャネル番号
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャネル番号<I>id</I>に相当するsceDmaChan構造体のアドレスを返します。 <BR>
+    <I>id</I>の値が不正のときはエラーとして0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャネル番号<I>id</I>に相当するsceDmaChan構造体のアドレスを返します。このアドレスはメモリにマップされたDMACレジスタのアドレスそのものですので、返値をポインタとしてDMACのレジスタを直接読み書きすることができます。 <BR>
+    また、DMA転送の開始／中断を指示する際には、対象のDMAチャネルを指定するのに、チャネル番号でなくこの関数が返す値を使用します。 <BR>
+    <I>id</I>とDMAチャネルの対応は次のとおりです。 <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>id</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>DMAチャネル</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">VIF0</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">VIF1</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">GIF</TD>
+</TR>
+<TR>
+<TD valign="TOP">3</TD>
+<TD valign="TOP">fromIPU</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">toIPU</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">SIF0</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">SIF1</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">SIF2</TD>
+</TR>
+<TR>
+<TD valign="TOP">8</TD>
+<TD valign="TOP">fromSPR</TD>
+</TR>
+<TR>
+<TD valign="TOP">9</TD>
+<TD valign="TOP">toSPR</TD>
+</TR>
+</TABLE>
+<BR>
+        </BLOCKQUOTE>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>id</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>DMAチャネル</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">VIF0</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">VIF1</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">GIF</TD>
+</TR>
+<TR>
+<TD valign="TOP">3</TD>
+<TD valign="TOP">fromIPU</TD>
+</TR>
+<TR>
+<TD valign="TOP">4</TD>
+<TD valign="TOP">toIPU</TD>
+</TR>
+<TR>
+<TD valign="TOP">5</TD>
+<TD valign="TOP">SIF0</TD>
+</TR>
+<TR>
+<TD valign="TOP">6</TD>
+<TD valign="TOP">SIF1</TD>
+</TR>
+<TR>
+<TD valign="TOP">7</TD>
+<TD valign="TOP">SIF2</TD>
+</TR>
+<TR>
+<TD valign="TOP">8</TD>
+<TD valign="TOP">fromSPR</TD>
+</TR>
+<TR>
+<TD valign="TOP">9</TD>
+<TD valign="TOP">toSPR</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IPUおよびSIFでのデータ転送にはさまざまな注意が必要となるため、fromIPU/toIPUの制御はlibipuに、SIF0/SIF1/SIF2の制御はlibsifに、それぞれ委ねることが望ましいと言えます。 <BR>
+    メモリにマップされたレジスタへのアクセスはuncachedであり、通常の構造体のように使用すると処理速度の低下をきたすおそれもありますので注意してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaGetEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaGetEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャネル共通レジスタの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceDmaEnv *<B>sceDmaGetEnv</B>(
+	sceDmaEnv *<I>denv</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>denv</I>	レジスタの値を読み出す構造体のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>denv</I>を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMACのチャネル共通レジスタの値を読み出し、<I>denv</I>で指定された構造体に格納します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaGetNextTag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaGetNextTag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        転送リストの次のタグを取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceDmaTag *<B>sceDmaGetNextTag</B>(
+	sceDmaTag *<I>tag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tag</I>	転送リスト中のタグアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のタグアドレスを返します。<I>tag</I>が不正なタグを指している場合は0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>tag</I>に続いて転送されることになるDMAtagのアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPause>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPause
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の一時停止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaPause</B>(
+	sceDmaChan *<I>d</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	一時停止するDMAチャネル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    動作中だった場合は1、すでに停止中だった場合は0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定したチャネルのDMA転送を一時中断します。 <BR>
+    sceDmaRestart()関数で再開することができます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPutEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPutEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャネル共通レジスタの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaPutEnv</B>(
+	sceDmaEnv *<I>env</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>env</I>	レジスタに書き込む値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了のときは0、<I>env</I>の内容が不正のときは負の値を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>env</I>の内容をそれぞれ対応するDMACのレジスタに設定します。 <BR>
+    システムの安定性を優先するため、共通レジスタの内容はいったんメモリ上の構造体に設定値を用意しておき、この関数を用いて設定します。 <BR>
+    DMACのレジスタはスレッドの切り替えとは独立していますので、複数のスレッドが別個に設定を行うと資源の衝突を引き起こす危険があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPutStallAddr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPutStallAddr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ストールアドレスの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceDmaPutStallAddr</B>(
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>addr</I>	ストールするアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前のストールアドレスを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMAストールアドレスを表すD_STADRレジスタに<I>addr</I>の値を設定します。 <BR>
+    <I>addr</I>には通常正の値を指定しますが、-1を指定したときはストールアドレスの設定は行なわれず、現在設定されている値が返されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaRecv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaRecv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Destination Chain Mode）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaRecv</B>(
+	sceDmaChan *<I>d</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Destination Chain Modeで、デバイスからメモリへのDMA転送を起動します。 <BR>
+    転送先のメモリアドレスは、デバイス側からタグ情報によって指定されることになります。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaRecvI>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaRecvI
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Interleave Mode, SPR→メモリ）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaRecvI</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>addr</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル（fromSPR）
+<I>addr</I>	転送先のメモリアドレス
+<I>size</I>	転送するデータサイズ（qword）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Interleave Modeで、SPRからメモリへのDMA転送を起動します。<I>d</I>にはfromSPR（<I>id</I>=8）を指定する必要があります。 <BR>
+    転送元のSPRアドレスは<I>d</I>-&gt;<I>sadr</I>で、転送先となるメモリアドレスは<I>addr</I>で指定します。また、小矩形領域を表すパラメータを、あらかじめsceDmaEnv構造体の<I>sqwc</I>および<I>tqwc</I>を通じてDMACに設定しておく必要があります。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaRecvN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaRecvN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Normal Mode, デバイス→メモリ）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaRecvN</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>addr</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル
+<I>addr</I>	転送先のメモリアドレス
+<I>size</I>	転送するデータサイズ（qword）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Normal Modeで、デバイスからメモリへのDMA転送を起動します。転送先となるメモリアドレスは<I>addr</I>で、転送するデータサイズは<I>size</I>で指定します。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMACのリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaReset</B>(
+	int <I>mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>mode</I>	リセットモード
+	0 : disable
+	1 : enable
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前の<I>mode</I>の値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMACをリセットします。 <BR>
+    すべてのDMA転送の終了を待った後、すべての転送終了ハンドラをクリアし、DMACを初期化して、<I>mode</I>に従ってDMACをenable / disableします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaRestart>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaRestart
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        一時停止したDMA転送の再開
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaRestart</B>(
+	sceDmaChan *<I>d</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送再開するDMAチャネル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    停止中だった場合は0、すでに動作中だった場合は1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定したDMAチャネルの転送処理を再開します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaSend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaSend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Source Chain Mode）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaSend</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>tag</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル
+<I>tag</I>	転送リストの先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Source Chain ModeでメモリからデバイスへのDMA転送を起動します。転送するデータの先頭となるDMAtagを<I>tag</I>で、転送先のデバイス(DMAチャネル)を<I>d</I>で指定します。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaSendI>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaSendI
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Interleave Mode, メモリ→SPR）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaSendI</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>addr</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル（toSPRのみ）
+<I>addr</I>	転送データのアドレス
+<I>size</I>	転送データのサイズ（qword）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Interleave ModeでメモリからSPRへのDMA転送を起動します。<I>d</I>にはtoSPRチャネル（<I>id</I>=9）のチャネル構造体アドレスを指定する必要があります。 <BR>
+    また、転送元の小矩形領域を表すパラメータを、あらかじめsceDmaEnv構造体の<I>sqwc</I>および<I>tqwc</I>を通じてDMACに設定しておく必要があります。転送先となるSPRアドレスは<I>d</I>-&gt;<I>sadr</I>で指定します。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaSendN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaSendN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の起動（Normal Mode, メモリ→デバイス）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaSendN</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>addr</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	転送を行うDMAチャネル
+<I>addr</I>	転送開始アドレス
+<I>size</I>	転送するデータサイズ（qword）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Normal ModeでメモリからデバイスへのDMA転送を起動します。転送データの先頭アドレスを<I>addr</I>で、データサイズを<I>size</I>で指定します。 <BR>
+    関数内部での処理はDMA転送の起動のみであり、転送処理はバックグラウンドで行われます。また、キューイングは行われず、ただちに実行されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaSync>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaSync
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DMA転送の終了待ち／状態検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaSync</B>(
+	sceDmaChan *<I>d</I>,
+	int <I>mode</I>,
+	int <I>timeout</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	対象のDMAチャネル
+<I>mode</I>	ブロックモード
+	0 : ブロック
+	1 : ノンブロック
+<I>timeout</I>	最大待ち時間（Hsync単位）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DMAが動作中であれば1、終了していれば0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>d</I>で指定するチャネルのDMA転送の終了を検出します。 <BR>
+    <I>mode</I>に0を指定した場合はブロックモードとなり、DMA転送が終了するまで関数からリターンしません。<I>mode</I>に1を指定した場合はノンブロックモードとなり、状態を調べてすぐにリターンします。 <BR>
+    ブロックモードの場合、待ち時間が<I>timeout</I>で指定された水平同期カウント数を越えるとタイムアウトとなります（現在のバージョンではこの機能は実装されていません）。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaWatch>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaWatch
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        特定アドレスの転送待ち／状態検査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDmaWatch</B>(
+	sceDmaChan *<I>d</I>,
+	void *<I>addr</I>,
+	int <I>mode</I>,
+	int <I>timeout</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>d</I>	対象のDMAチャネル
+<I>addr</I>	検査対象のメモリアドレス
+<I>mode</I>	ブロックモード
+	0 : ブロック
+	1 : ノンブロック
+<I>timeout</I>	最大待ち時間（Hsync単位）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    転送済みであれば1、そうでなければ0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>d</I>で指定するチャネルで、アドレス<I>addr</I>のデータが転送済みかどうかを調べます。 <BR>
+    <I>mode</I>に0を指定した場合はブロックモードとなり、指定アドレスの転送が済むまで関数からリターンしません。<I>mode</I>に1を指定した場合はノンブロックモードとなり、状態を調べてすぐにリターンします。 <BR>
+    ブロックモードの場合、待ち時間が<I>timeout</I>で指定された水平同期カウント数を越えるとタイムアウトとなります（現在のバージョンではこの機能は実装されていません）。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

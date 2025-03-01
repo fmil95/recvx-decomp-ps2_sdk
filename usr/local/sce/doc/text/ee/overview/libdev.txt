@@ -1,0 +1,90 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+開発用デバッグ支援ライブラリ
+=============================
+
+
+ 1 ライブラリ概要
+------------------
+
+
+  1.1 概要
+
+    libdevは、開発時のデバッグを支援するライブラリです。
+    libdevを利用すると、EE内部の主要デバイス（VU0 / VU1 / VIF0 / VIF1 / 
+    GIF）の実行・停止を制御したり、それらの状態を取得したりすることができ
+    ます。また、"PlayStation 2"のモニタ画面を擬似コンソールとして、デバッ
+    グ用メッセージを出力することができます。
+
+  1.2 関連ファイル
+
+    libdevに関連するファイルは次のとおりです。
+    
+    +------------------+----------+
+    |カテゴリ           ファイル名|
+    +                  +          +
+    |ライブラリファイル libdev.a  |
+    |ヘッダファイル     devgif.h  |
+    |                   devvif0.h |
+    |                   devvif1.h |
+    |                   devvu0.h  |
+    |                   devvu1.h  |
+    |                   devfont.h |
+    +------------------+----------+
+    
+
+  1.3 関数一覧
+
+    libdevで定義されている関数群は、擬似コンソール関連の関数を除いて、あ
+    る機能の関数がデバイスごとに別々に用意されているという構成になってい
+    ます。機能と対象デバイスによって分類した関数一覧を次に示します。
+    
+
+   (1) VIF0 / VIF1 / GIFの制御
+
+    +------------------------+------------+------------+-------------+
+    |機能                     対VIF0       対VIF1       対GIF        |
+    +                        +            +            +             +
+    |リセット                 Vif0Reset    Vif1Reset    GifReset     |
+    |一時停止                 Vif0Pause    Vif1Pause    GifPause     |
+    |停止解除                 Vif0Continue Vif1Continue GifContinue  |
+    |全レジスタの読み出し     Vif0GetCnd   Vif1GetCnd   GifGetCnd    |
+    |FIFOへのデータ書き込み   Vif0PutFifo  Vif1PutFifo  GifPutFifo   |
+    |FIFOからのデータ読み出し ---          Vif1GetFifo  ---          |
+    |エラーマスクの設定       Vif0PutErr   Vif1PutErr   ---          |
+    |エラーマスクの取得       Vif0GetErr   Vif1GetErr   ---          |
+    |PATH3転送モードの設定    ---          ---          GifPutImtMode|
+    |PATH3転送モードの取得    ---          ---          GifGetImtMode|
+    |PATH3マスクの設定        ---          ---          GifPutP3msk  |
+    |PATH3マスク状態の取得    ---          ---          GifGetP3msk  |
+    +------------------------+------------+------------+-------------+
+    ※煩雑さを避けるため関数名先頭の「sceDev」を省略してあります。
+
+   (2) VU0 / VU1の制御
+
+    +--------------------------+-----------+-----------+
+    |機能                       対VU0       対VU1      |
+    +                          +           +           +
+    |リセット                   Vu0Reset    Vu1Reset   |
+    |一時停止（Force Break）    Vu0Pause    Vu1Pause   |
+    |停止解除                   Vu0Continue Vu1Continue|
+    |デバッグ機能の設定         Vu0PutDbit  Vu1PutDbit |
+    |デバッグ機能の設定         Vu0PutTbit  Vu1PutTbit |
+    |デバッグ機能の状態取得     Vu0GetDbit  Vu1GetDbit |
+    |デバッグ機能の状態取得     Vu0GetTbit  Vu1GetTbit |
+    |マイクロプログラムの再実行 Vu0Exec     Vu1Exec    |
+    |TPCレジスタの読み出し      Vu0GetTpc   Vu1GetTpc  |
+    |全レジスタの読み出し       Vu0GetCnd   Vu1GetCnd  |
+    |全レジスタへの書き込み     Vu0PutCnd   Vu1PutCnd  |
+    +--------------------------+-----------+-----------+
+    ※煩雑さを避けるため関数名先頭の「sceDev」を省略してあります。
+
+  1.4 参考資料
+
+    VU0 / VU1の制御については、『VU User's Manual』の3章および5章を参照し
+    てください。
+    VIF0 / VIF1については、『EE User's Manual』の4章を参照してください。
+    GIFについては、『EE User's Manual』の5章を参照してください。

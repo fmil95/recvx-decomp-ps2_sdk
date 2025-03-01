@@ -1,0 +1,426 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> 低レベルサウンドライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>低レベルサウンドライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSdCallBack>sceSdCallBack </A><BR>
+</TD><TD> </TD>
+<TD>ノンブロック実行時の終了コールバックの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSdRemote>sceSdRemote </A><BR>
+</TD><TD> </TD>
+<TD>libsdコマンドのリモート実行</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSdRemoteCallbackInit>sceSdRemoteCallbackInit </A><BR>
+</TD><TD> </TD>
+<TD>libsdのコールバック環境の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSdRemoteInit>sceSdRemoteInit </A><BR>
+</TD><TD> </TD>
+<TD>libsdリモート環境の初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSdTransToIOP>sceSdTransToIOP </A><BR>
+</TD><TD> </TD>
+<TD>EE 上のバッファを IOP メモリに転送</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+<A name=sceSdCallBack>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSdCallBack
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ノンブロック実行時の終了コールバックの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>sceSifEndFunc <B>sceSdCallBack</B>( 
+	sceSifEndFunc <I>end_func</I> 
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>end_func</I>		終了コールバック関数のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に設定されていた終了コールバック関数のアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSdRemote()をノンブロック実行するときのコールバック関数を設定します。コールバック関 <BR>
+    数は割り込みモードで実行されます。ブロック実行の場合、またはend_funcにNULLを指定 <BR>
+    した場合は、コールバック関数は実行されません。初期値はNULLです。 <BR>
+<BR>
+    ノンブロック処理はEEの効率化のために行なうわけですが、EEに終了コールバックをかける <BR>
+    ことは、コンテキストスイッチを起こすということであり、これもまた処理効率低下につながり <BR>
+    ます。最も効率が良いのは、ノンブロック処理して、IOP側の終了はコールバックではなくポ <BR>
+    ーリングで確認することです。バッチコマンドのSD_WRITE_EEやSD_RETURN_EEが利用 <BR>
+    できます。(libsdを参照） これらはIOP側からSIF DMA転送をするだけなので、EE側に割り込みは発生しません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コールバック関数end_funcは割り込みハンドラとして実行されるため、プログラミングに際していくつか特別な注意が必要です。割り込みハンドラの記述について、\overview\eekernelに注意事項が記載されていますので参照してください。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSdRemote>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSdRemote
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        libsdコマンドのリモート実行
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSdRemote</B>( 
+	int <I>is_block</I>,
+	int <I>command</I>,
+	int <I>arg</I>,
+	...
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>is_block  	</I>IOP側の処理が終わるまでEE側をブロックするかどうかを見る。
+		1ならブロック。0ならノンブロック
+<I>command	</I>コマンド
+<I>arg		</I>コマンドに対する引数。可変長。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    そのコマンドの処理に相当する返値。ただしisBlockに 0 を指定した場合は常に 0。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    commandによって、IOP上にあるlibsd.irxのAPIをEEからリモート実行します。 <BR>
+    commandには、libsdの関数の'sce'の代りに'r'を付けたものを指定します。詳細は <BR>
+    iop/include/sdrcmd.h を参照してください。引数は可変長なので、そのコマンド（関数）に必 <BR>
+    要な数だけ指定してください。 <BR>
+<BR>
+    <blockquote>
+    	例： sceSdRemote( 1, rSdSetParam, SD_CORE_0|SD_P_MVOLL , 0x3fff ); <BR>
+    </blockquote>
+<BR>
+    sceSdRemoteの返値が、そのコマンドの返値となります。ただしノンブロックを指定した場合 <BR>
+    は常に0になります。引数と返り値の型は常にintなので、適宜キャストしてください。 <BR>
+<BR>
+    ノンブロックを指定すると、IOP側の処理終了を待たずに関数からリターンします。IOP側の <BR>
+    処理の終了を知るには、終了コールバック関数をsceSdCallBack()を用いて設定してください。 <BR>
+    IOPの処理が終わらないうちに、次のコマンドを送ると誤動作することがあります。 <BR>
+<BR>
+    コマンドがrSdProcBatchとrSdProcBatchExの場合、パラメータのアドレスはIOP側のアド <BR>
+    レスです。別途、IOPに（またはIOPから）コマンド配列や返り値配列を転送する処理を行なってください。返り値配列の転送には、バッチコマンドのSD_RETURN_EEが利用できます <BR>
+    （libsd参照）。 <BR>
+<BR>
+     rSdSetEffectAttrとrSdGetEffectAttrに関しては、libsdrの内部で転送を行ないますので、パ <BR>
+    ラメータの構造体ポインタはEE上のアドレスをそのまま指定できます。libsdr概要の"転送データのメモリ配置について"も参照してください。 <BR>
+<BR>
+    コールバックを指定するコマンド、rSdSetTransCallback, rSdSetIRQCallback, rSdSetTransIntrHandler, rSdSetSpu2IntrHandler ともEE上の関数をコールバックとして指 <BR>
+    定でき、その関数がスレッドとして呼び出されます。ただし、前もってsceSdRemoteCallbackInit() を行なっておく必要があります。rSdSetTransIntrHandler, <BR>
+    rSdSetSpu2IntrHandler に渡すデータのポインタもEE上のアドレスです。 <BR>
+<BR>
+    コマンドがrSdChangeThreadPriority の場合、引数を２つ取り、順にIOP側で動作しているsdrdrv のメインスレッド、コールバックスレッドのプライオリティ値を指定します。 <BR>
+    デフォルトのスレッドプライオリティ値はどちらも24です。 <BR>
+    コールバックスレッドのプライオリティ値はメインスレッドのプライオリティ値に対して同じか大きい値（プライオリティとしては低い）でなければいけません。 <BR>
+    これらIOPスレッドプライオリティ値を変更する場合、他のモジュールのプライオリティに対して細心の注意を払う必要があります。そのため、安易にIOPスレッドプライオリティ値を変更する事はお勧めいたしません。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSdRemoteCallbackInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSdRemoteCallbackInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        libsdのコールバック環境の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSdRemoteCallbackInit</B>(
+	int <I>priority</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>priority</I>	コールバック用に起動されるEEスレッドのプライオリティ。
+	メインスレッドよりも高くする必要がある。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コールバック用に起動されたEEスレッドのID。エラーがあったときは負の値。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSdRemoteのコマンドで、割り込みコールバックを指定する場合（rSdSetTransCallback, <BR>
+    rSdSetIRQCallback）には、前もって１回だけ実行してください。IOP側のコールバック関数 <BR>
+    をEE側で受けるため、内部でスレッドを１つクリエイトします。したがって、コールバックは <BR>
+    割り込みモードではなく、スレッドモードで動作します。１つのコールバックが動作している最 <BR>
+    中に他のコールバックが呼び出された場合は、キューに入って前のコールバックが終了するまで <BR>
+    待ちます。 <BR>
+<BR>
+    スレッドIDを返すので、不要になったときはDeleteThread等の後処理をしてください。 <BR>
+<BR>
+    sceSdCallBack()で指定するコールバックは、sceSdRemote()のノンブロック実行に関するもの <BR>
+    で、ここで言うコマンドのコールバックとは別物ですので、このAPIによる初期化は必要あり <BR>
+    ません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSdRemoteInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSdRemoteInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        libsdリモート環境の初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSdRemoteInit</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了時には 0。エラーがあった場合は ?1が帰る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    libsdリモート環境の初期化を行います。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSdTransToIOP>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSdTransToIOP
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EE 上のバッファを IOP メモリに転送
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSdTransToIOP</B>(
+	void *<I>buff</I>,
+	u_int <I>sendAddr</I>,
+	u_int <I>size</I>,
+	u_int <I>isBlock</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>buff		</I>EE メモリ上の転送元位置
+<I>sendAddr	</I>IOP メモリ上の転送先位置
+<I>size		</I>サイズ
+<I>isBlock  	</I>IOP 側の処理が終わるまで EE 側をブロックするかどうか。
+		1 ならブロック。0 ならノンブロック
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了時には 0。エラーがあった場合は -1。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    EE メモリ上のデータを IOP メモリに転送します。 <BR>
+<BR>
+    <blockquote>
+    	 <BR>
+    </blockquote>
+    ノンブロックを指定すると、IOP側の処理終了を待たずに関数からリターンします。IOP側の <BR>
+    処理の終了を知るには、終了コールバック関数をsceSdCallBack()を用いて設定してください。 <BR>
+    IOPの処理が終わらないうちに、次のコマンドを送ると誤動作することがあります。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

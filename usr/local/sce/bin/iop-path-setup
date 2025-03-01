@@ -1,5 +1,5 @@
 #! /bin/sh -f
-# $Id: iop-path-setup.sh,v 1.7 2000/06/28 04:41:15 tei Exp $
+# $Id: iop-path-setup.sh,v 1.6 1999/09/02 09:34:46 tei Exp $
 #
 # iop-path-setup.sh --  IOP compiler path search and setup
 #
@@ -123,7 +123,6 @@ if [ "d$SCEDIR" = "d." ]; then
     SCEDIR=
 fi
 
-INSTDIR=`${GNUDIR}${CMDBASE}gcc --print-search-dirs | grep install: | sed -e 's/^install:[ ]*//'`
 echo "AR      = ${GNUDIR}${CMDBASE}ar"
 echo "AS      = ${GNUDIR}${CMDBASE}as"
 echo "CC      = ${GNUDIR}${CMDBASE}gcc"
@@ -145,4 +144,3 @@ if [ "$OBJTYPE" = "ELF" ]; then
 else
     echo "BIN2OBJ = ${SCEDIR}bin2ecoff"
 fi
-echo "GCCINSTDIR = ${INSTDIR}"

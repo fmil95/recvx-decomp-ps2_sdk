@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_cdp</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bx.htm">[前]</A> <A HREF="a_cmn.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">CDP</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>コプロセッサ</B></TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%" HEIGHT="47">
+      <H3><FONT COLOR="#999999">アーキテクチャ</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>アーキテクチャ v1ではサポートされない</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">CDP{&lt;cond&gt;} p&lt;cp_num&gt;, &lt;op_code_1&gt;,
+  CRd, CRn, CRm, &lt;opcode_2&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>CDP（Coprecessor Data Processing）命令は、&lt;cp#&gt;によって指定されたコプロセッサに、ARMレジスタとメモリから独立したオペレーションを実行するように指示します。命令を実行できることを示すコプロセッサがない場合、未定義命令例外が発生します。</P>
+  <P>CDPは、たとえば浮動小数点アクセラレータ・コプロセッサの浮動小数点乗算命令など、ARMレジスタやメイン・メモリの値を操作しないコプロセッサ命令を起動するのに使用します。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致する場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385660"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385662"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385664"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385666"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385668"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385670"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385672"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385674"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385676"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385678"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385680"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385682"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385684"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385686"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385688"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385690"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385692"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385694"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385696"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385698"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385700"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385702"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385704"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385706"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385708"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385710"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385712"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385714"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385716"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385718"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385720"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385722"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385724"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385732"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385734"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385736"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385738"></A><BR>
+    0</TD> 
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385740"></A><BR>
+    opcode_1</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385748"></A><BR>
+    CRn</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385756"></A><BR>
+    CRd</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385764"></A><BR>
+    cp_num</TD>
+     
+    <TD COLSPAN="3" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385772"></A><BR>
+    opcode_2</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385778"></A><BR>
+    0</TD> 
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385780"></A><BR>
+    CRm</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+        Coprocessor[&lt;cp_num&gt;] dependent operation</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>未定義の命令</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>コプロセッサ・フィールド：</B>命令ビット[31:24]、ビット[11:8]、およびビット[4]だけがARMアーキテクチャで定義されています。それ以外のフィールドは推奨事項であり、これに従えばARM
+  Development Systemに適合します。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bx.htm">[前]</A> <A HREF="a_cmn.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

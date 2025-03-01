@@ -1,0 +1,484 @@
+<HTML>
+<HEAD>
+<TITLE> USBドライバライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="usbd.htm" SELECTED> USBﾄﾞﾗｲﾊﾞﾗｲﾌﾞﾗﾘ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+USBドライバライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 参考資料<BR></A><BR>
+    <A HREF="#Heading4_1_4"> サンプルとUSBデバイスの互換性について<BR></A><BR>
+    <A HREF="#Heading4_1_5"> USBバスプロトコルアナライザについて<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 LDDの動作原理と作成上の注意点<BR></A>
+<P><A HREF="#Heading3_3">  3 制限事項および注意事項<BR></A>
+<P><A HREF="#Heading3_4">  4 USBDの起動オプション<BR></A>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    USBを扱うソフトウェアは一般に以下のような階層構造を持ちます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/usbdf1.gif">
+<P>
+    <B>図 1 階層構造</B>
+</DIV>
+    <BR>
+    IOP用の常駐ライブラリとして提供されるモジュールusbd.irxは、上記の階層のうちHCD, USBD, Hub Driverの3つの機能を持ち、通信先の機器に依存しない処理を受け持ちます（以下の説明では、この3つの機能を総称してUSBDと記述しています）。<BR>
+    マウスやマイクなどのUSB機器を扱いたい場合は、クラス依存の処理を行うLDDをユーザ側で作成する必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    USBドライバに関連するファイルは次のとおりです。USBドライバパッケージを単独でインストールする際には、これらのファイルを開発用コンピュータの/usr/local/sce以下にコピーしてください。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">usbd.ilb</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">usb.h<BR>usbd.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">モジュールファイル</TD>
+<TD valign="TOP">usbd.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    ※iop/install以下のファイルは、/usr/local/sce/iop/gcc/mipsel-scei-elfl以下にコピーする必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>参考資料</B>
+</A>
+</H3>
+<blockquote>
+    LDDの作成には、USBの仕様を理解しておくことが必要です。USB仕様一般に関しては以下を参照してください。<BR>
+      <BLOCKQUOTE>
+      http://www.usb.org/developers/docs.html<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>サンプルとUSBデバイスの互換性について</B>
+</A>
+</H3>
+<blockquote>
+    usbd を利用したサンプルには以下のものがあります。<BR>
+    <OL>
+         <LI VALUE= 1> sce/iop/sample/usb/usbmouse<BR>sce/ee/sample/usb/usbmouse<BR>マウスサンプルドライバです。<BR>
+         <LI VALUE= 2> sce/iop/sample/usb/usbkeybd<BR>sce/ee/sample/usb/usbkeybd<BR>キーボードサンプルドライバです。<BR>
+    </OL>
+    これらのドライバは、USBの標準仕様通りに実装されていますが、一部に正常に動作しないUSBデバイスが存在します。これは市販されているUSBデバイスの互換性は、第三者機関による審査を受けていないためです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>USBバスプロトコルアナライザについて</B>
+</A>
+</H3>
+<blockquote>
+    市販のUSBバスプロトコルアナライザを使うと、USBバスのプロトコルをトレース・解析することができます。<BR>
+    サンプルドライバをそのままご利用して頂く場合、特にアナライザを使用する必要はありませんが、<BR>
+    新規にドライバを作成（サンプルの改造も含む）したとき、作成したドライバがうまく動かないこともありますので、その際には、プロトコルアナライザによる解析を行ってください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>LDDの動作原理と作成上の注意点</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_1">
+(1) <B>LDD（Logical Device Driver）</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      LDDは、デバイスの種別あるいは機種毎に用意されるUSBデバイスドライバです。<BR>
+      LDDは、以下の３つの外部関数を必ず実装しています。これらの関数は、イベントが発生したとき、USBDによってコールされます。<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> Probe関数（USBバスに新しいデバイスが挿入されたとき、あるいはsceUsbdResisterLdd()が呼ばれたときにLDDと関連付けられていないデバイスが存在したときにコールされる）<BR>
+         <LI VALUE= 2> Attach関数（Probe関数の戻り値が「このデバイスはこのLDDの担当である」だったときコール）<BR>
+         <LI VALUE= 3> Detach関数（USBバス上に存在するデバイスが抜かれたときコール）<BR>
+    </OL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2">
+(2) <B>LDDの管理</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      USBDは、LDD管理構造体（sceUsbdLddOps）を使って、LDDの管理を行います。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/usbdf2.gif">
+<P>
+     <B>図 2 LDDの管理</B>
+</DIV>
+</BLOCKQUOTE>
+      <BLOCKQUOTE>
+      <BR>
+      図２は、sceUsbdResisterLdd()を使用して、すでに２つのLDDを登録した状態になっています。LDD管理構造体は、LDDと一対一に対応しています。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3">
+(3) <B>USBDとLDDの動作例</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      図２の状態で、USBバスにキーボードデバイスが挿入されたときの動作例を示します。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> 図２の状態で、USBバスにキーボードデバイスが挿入。<BR>
+         <LI VALUE= 2> USBDは、そのデバイスにアドレスを与える。<BR>
+         <LI VALUE= 3> USBDは、そのデバイスの静的ディスクリプタ（デバイス、コンフィギュレーション、インターフェース、エンドポイント）を取得する。取得された静的ディスクリプタは、「静的ディスクリプタバッファ」に保存される。<BR>
+         <LI VALUE= 4> 静的ディスクリプタの取得が正常に終了すると、USBDはLDD管理ツリーを先頭からたどって行く。<BR>
+         <LI VALUE= 5> 図2の場合、最初に存在するLDD管理構造体が、USBマウスなので、*probeポインタを参照して、USBマウスLDDのprobe関数をコールする。<BR>
+         <LI VALUE= 6> USBマウスLDDのprobe関数は、sceUsbdScanStaticDescriptor関数を使用して、「静的ディスクリプタバッファ」を参照する。そして、これが自分が担当するべきデバイスなのかどうかを判定する。<BR>このとき、挿入されたデバイスはキーボードなので、probe関数の戻り値は「このデバイスはこのLDDの担当ではない」となる。<BR>
+         <LI VALUE= 7> 「このデバイスはこのLDDの担当ではない」という戻り値を受け取ったUSBDは、さらにLDD管理ツリーをたどって、次にリンクされているLDD管理構造体を参照する。<BR>
+         <LI VALUE= 8> 次のLDD管理構造体は、USBキーボードLDDの管理構造体である。よって、USBDは、USBキーボードLDDのprobe関数をコールする。<BR>
+         <LI VALUE= 9> USBキーボードLDDのprobe関数は、sceUsbdScanStaticDescriptor()を使用して、「静的ディスクリプタバッファ」を参照して、これが自分が担当するべきデバイスなのかどうかを判定する。<BR>このとき、挿入されたデバイスはキーボードなので、probe関数の戻り値は「このデバイスはこのLDDの担当である」となる。<BR>
+         <LI VALUE= 10> 「このデバイスはこのLDDの担当である」という戻り値を受け取ったUSBDは、LDD管理構造体の*attachポインタを参照して、USBキーボードLDDのattach関数をコールする。<BR>
+         <LI VALUE= 11> USBキーボードLDDのattach関数は、このデバイスのためのプライベートデータを一つ確保する。プライベートデータは、デバイス毎に一つ必要（例えば、USBキーボードが３つ存在するとき、プライベートデータも３つ必要）。確保できれば、sceUsbdSetPrivateData()を使用して、このデバイスと関連付ける。<BR>
+         <LI VALUE= 12> USBキーボードLDDのattach関数は、sceUsbdScanStaticDescriptor()を使用して、「静的ディスクリプタバッファ」を参照して、通信に必要な情報（パケットサイズなど）を収集する。そして、収集した情報をプライベートデータに保存する。<BR>
+         <LI VALUE= 13> USBキーボードLDDのattach関数は、sceUsbdOpenPipe()あるいはsceUsbdOpenPipeAligned()を使用して、通信パイプをオープンする。<BR>
+         <LI VALUE= 14> USBキーボードLDDのattach関数は、sceUsbdTransferPipe()を使用して必要な通信を行う。<BR>
+         <LI VALUE= 15> (1)で挿入されたキーボードが、USBバスから引き抜かれる。<BR>
+         <LI VALUE= 16> USBDは、抜かれたデバイスに対応するLDD管理構造体の*detachポインタを参照して、そのデバイスを担当していたLDDのdetach関数をコールする。<BR>
+         <LI VALUE= 17> LDDのdetach関数は、終了処理（プライベートデータの解放）を行って戻る。<BR>
+         <LI VALUE= 18> USBDは、そのデバイスの通信パイプを閉じる。<BR>
+    </OL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_4">
+(4) <B>LDD作成上の注意点</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      LDDのUSBイベント関数（probe,attach,detach）及びコールバック関数（転送終了時に呼ばれる）は、図3のような仕組みで呼ばれます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/usbdf3.gif">
+<P>
+    <B>図 3 USBDがLDDの関数を呼ぶ仕組み</B>
+</DIV>
+</BLOCKQUOTE>
+      <BLOCKQUOTE>
+      <BR>
+      図３の「割込み処理用スレッド」と「転送終了後コールバック処理用スレッド」は、それぞれ一つだけ生成されます（バス上のデバイス数に関係無く）。<BR>
+      そのため、USBイベント関数あるいはコールバック関数で以下のような待ち処理等を行うと問題が生じます。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> DelayThread() 等による時間遅延<BR>
+         <LI VALUE= 2> 他のスレッドからのセマフォ、イベントフラグ、メッセージを待つ<BR>
+         <LI VALUE= 3> 特定の変数が変更されるのを while(var == 0) ; のように待つ (この処理は USBD に限らず問題があります)<BR>
+         <LI VALUE= 4> その他、待ち処理ではないが上記 (1),(2),(3) に処理時間のオーダが一致するような重い処理。<BR>
+    </OL>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    上記のような待ち処理を行うと、その待ち状態が解除されるまではUSBD 内のスレッドに戻らず、USBD のUSBイベント及びコールバック呼び出しが全て止まります。<BR>
+    <BR>
+    解除されれば再開はされますが、時間制限のあるデバイスの場合はデータの取りこぼし等が発生します。また、時間制限がなくとも例えばマウスポインタが一瞬動かなくなるなどの問題が生じます。<BR>
+    <BR>
+    USBD を使う際には USBイベント関数およびコールバック関数内では処理はごく短時間に終えて下さい。待ち処理は許されません。<BR>
+    待ち処理が必要な場合には以下のような方法を取って下さい。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> 待ち処理と次の転送要求を発行するためのスレッドを生成する。<BR>
+         <LI VALUE= 2> コールバック関数はイベントフラグのセットなどの処理のみにし、すぐに呼び出し元へ戻る。<BR>
+         <LI VALUE= 3> (1) のスレッドは (2) を待ち、必要な待ち処理を行った後に、次の転送要求を USBD に対して伝える。<BR>
+    </OL>
+    <BR>
+    ※(1)のスレッドの優先度は、USBDのスレッドの優先度よりも低くしてください。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>制限事項および注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_1">
+(1) <B>割り込み</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      USBDの各エントリ関数は、割り込みコンテキストからは呼び出せません。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2">
+(2) <B>パケットサイズが63,64バイトの際の注意事項</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      Interrupt / Control / Bulk転送の際には最大で4KBまでのデータ転送要求を指定できますが、実際の転送はパケットサイズに分割されて行われます。<BR>
+      ハードウェアの不具合によってパケットサイズが63,64バイトのときに起こる問題を回避するため、USBDは以下の条件をすべて満たすときには最大パケットサイズを62バイトに設定しています。<BR>
+      <BR>
+      </BLOCKQUOTE>
+<UL><UL>
+            <LI> Interrupt(OUT) / Control(IN/OUT) / Bulk(OUT)転送時<BR>
+            <LI> パケットサイズが63または64バイト（MaxPacketSizeが64）<BR>
+            <LI> ControlパイプまたはsceUsbdOpenPipe()によるパイプでの転送時<BR>
+</UL></UL>
+      <BLOCKQUOTE>
+      <BR>
+      大量のデータを上記の条件で転送する場合には、若干パフォーマンスが低下します。転送速度の向上、または64バイトごとの転送を必要とする場合はsceUsbdOpenPipeAligned()を使用してください。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3">
+(3) <B>Isochronous転送時の注意事項</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      Isochronous転送時に、IOP側でおよそ300サイクル以上の期間、メモリバスのバス権がブロックされてしまうと転送に失敗する場合があります。<BR>
+      このデータ転送失敗時に返されるエラーは、データIN転送（host←dev）の場合はBufferOverrun、データOUT転送（host→dev）の場合はBufferUnderrunとなります。<BR>
+      Isochronous転送時には、IOPでは以下のような処理を行わないようにしてください。<BR>
+      <BR>
+      </BLOCKQUOTE>
+<UL><UL>
+            <LI> 300サイクル以上にわたるDMA禁止<BR>
+            <LI> キャッシュフラッシュ処理<BR>
+            <LI> DMAC割り込みルーチン内での300サイクル以上の処理<BR>
+</UL></UL>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>USBDの起動オプション</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下にusbd.irxの起動オプションを示します。XXXおよびYYYはすべて10進数です。なお、起動オプションに不正な値を指定した場合の動作は保証しません。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>デフォルト値</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">dev=XXX</TD>
+<TD valign="TOP">デバイス数の上限</TD>
+<TD valign="TOP">32</TD>
+</TR>
+<TR>
+<TD valign="TOP">ed=XXX</TD>
+<TD valign="TOP">エンドポイント数の上限</TD>
+<TD valign="TOP">64</TD>
+</TR>
+<TR>
+<TD valign="TOP">gtd=XXX</TD>
+<TD valign="TOP">General Transfer Descriptor数の上限</TD>
+<TD valign="TOP">128</TD>
+</TR>
+<TR>
+<TD valign="TOP">itd=XXX</TD>
+<TD valign="TOP">Isochrnous Transfer Descriptor数の上限</TD>
+<TD valign="TOP">128</TD>
+</TR>
+<TR>
+<TD valign="TOP">ioreq=XXX</TD>
+<TD valign="TOP">I/O転送要求数の上限</TD>
+<TD valign="TOP">256</TD>
+</TR>
+<TR>
+<TD valign="TOP">conf=XXX</TD>
+<TD valign="TOP">デバイスごとの静的ディスクリプタバイト数</TD>
+<TD valign="TOP">512</TD>
+</TR>
+<TR>
+<TD valign="TOP">hub=XXX</TD>
+<TD valign="TOP">Root hub以外のHUBデバイス数</TD>
+<TD valign="TOP">8</TD>
+</TR>
+<TR>
+<TD valign="TOP">port=XXX</TD>
+<TD valign="TOP">HUBごとの最大ポート数</TD>
+<TD valign="TOP">8</TD>
+</TR>
+<TR>
+<TD valign="TOP">thpri=XXX,YYY</TD>
+<TD valign="TOP">USBDが生成する２つのスレッドの優先度</TD>
+<TD valign="TOP">30,36</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+
+     <H4><B>dev=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      USBDが同時に扱うデバイス数の上限値を指定します。このデバイス数にはroot hubデバイスも含みます。またデバイスが接続されていなくてもポートが存在するだけで1つのデバイス領域を消費します。たとえばHubを一切使用しない場合に必要なデバイス数は、root hubと2ポートで3となります。<BR>
+      128を越える値を指定してはいけません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ed=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      USBDが同時に扱うエンドポイント数の上限値を指定します。エンドポイント数にはコントロール・エンドポイントも含まれます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>gtd=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      Isochronous転送以外に使用されるTransfer Descriptor数の上限値を指定します。<BR>
+      データ転送がないControl転送では、1つの転送に2つのgtdを消費します。データ転送を含むControl転送では3つのgtdを消費します。Interrupt転送およびBulk転送では、1つの転送に常に1つのgtdを消費します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>itd=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      Isochornous転送時に使用されるTransfer Descriptor数の上限値を指定します。<BR>
+      Isochornous転送では1つの転送に常に1つのitdを消費します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>ioreq=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      sceUsbdTransferPipe()で同時に要求できる転送の最大数を指定します。ここで指定した数までは、前に要求した転送の終了を待たずに重ねて要求することができます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>conf=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      デバイスごとの静的ディスクリプタの総バイト数を指定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>hub=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      root hubを除くHUBデバイスの最大数を指定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>port=XXX</B></H4>
+
+      <BLOCKQUOTE>
+      各HUBの持つポート数の最大値を指定します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>thpri=XXX,YYY</B></H4>
+
+      <BLOCKQUOTE>
+      USBＤ生成するスレッドの優先度を指定します。<BR>
+       XXXは、割込み処理用スレッドの優先度。<BR>
+       YYYは、コールバック処理用スレッドの優先度。<BR>
+      ※ XXXの優先度は、YYYよりも高く（数値的に小さく）して下さい。<BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

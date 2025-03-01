@@ -1,0 +1,762 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                           CSL MIDIシーケンサ
+                          ===================
+
+    
+
+ 1 構造体
+==========
+
+=========================================================================
+sceMidiEnv                                                       [構造体]
+=========================================================================
+                                                        Sequence Data環境
+[構造]
+        typedef struct {
+        	unsigned int songNum;
+        	unsigned int midiNum;
+        	unsigned int position;
+        	unsigned int status;
+        	unsigned short outPort[sceMidiNumMidiCh];
+        	unsigned short excOutPort;
+        	unsigned int (*chMsgCallBack)(unsigned int,unsigned int);
+        	unsigned int chMsgCallBackPrivateData;
+        	Bool	(*metaMsgCallBack)(unsigned char,unsigned char*
+        				unsigned int,unsigned int);
+        	unsigned int	metaMsgCallBackPrivateData;
+        	Bool	(*excMsgCallBack)(unsigned char*,unsigned int,
+        				unsigned int);
+        	unsigned int	excMsgCallBackPrivateData;
+        	Bool	(*repeatCallBack)(sceMidiLoopInfo*,unsigned int);
+        	unsigned int	repeatCallBackPrivateData;
+        	unsigned char	system[sceMidiEnvSize];
+        } sceMidiEnv;
+        
+[メンバ]
+        songNum	現在演奏中もしくは選択されている SongChunk 番号
+        midiNum	現在演奏中もしくは選択されている MidiChunk 番号
+        position		Sequence Data の現在位置(単位は tick)
+        status			演奏状態
+        sceMidiStat_ready	初期化済 ビット
+        sceMidiStat_inPlay	演奏中 ビット
+        sceMidiStat_dataEnd	データエンド到達 ビット
+        sceMidiStat_noLoop	ループメッセージ無視 ビット
+        このビットを 1 にするとデータ中のループメッセージが無視され
+        ます。
+        outPort			チャンネル毎の出力ポート指定
+        			どのチャンネルをどのポートに出力するかを設定できます。
+        設定はビットマスクなので、１つのチャンネルを複数のポートに
+        出力できます。
+        excOutPort		エクスクルーシブの出力ポート。設定値はビットマスクで
+        す。
+        chMsgCallBack		チャンネルメッセージ用コールバック
+        chMsgCallBackPrivateData	チャンネルメッセージコールバック用データ
+        metaMsgCallBack			メタイベント用コールバック
+        metaMsgCallBackPrivateData	メタイベントコールバック用データ
+        excMsgCallBack			エクスクルーシブ用コールバック
+        excMsgCallBackPrivateData	エクスクルーシブコールバック用データ
+        repeatCallBack			ループ制御用コールバック
+        repeatCallBackPrivateData	ループ制御コールバック用データ
+        system				Sequencer Module の内部変数領域
+        
+[解説]
+        Sequence Data buffer毎に演奏状態等を管理するための環境バッファで
+        す。
+        
+
+=========================================================================
+sceMidiLoopInfo                                                  [構造体]
+=========================================================================
+                                          LOOP(Repeat) コールバック用情報
+[構造]
+        typedef struct {
+        	unsigned char type;
+        	unsigned char loopTimes;
+        	unsigned char loopCount;
+        	unsigned int loopId;
+        } sceMidiLoopInfo;
+        
+[メンバ]
+        type		LOOP(Repeat)の発生チャンクの種類
+        		sceMidiLoopInfoType_Midi:	Midi Chunk
+        		sceMidiLoopInfoType_Song:	Song Chunk
+        loopTimes	メッセージ中のループ回数（0の場合無限ループ）
+        loopCount	ループ回数（loopTimes == 0の場合不定）
+        loopId		ループの識別ID
+        
+[解説]
+        ループ制御用コールバックの引数に使われる構造体です。
+
+ 2 関数
+========
+
+
+=========================================================================
+chMsgCallBack                                                      [関数]
+=========================================================================
+                                   チャンネルメッセージ コールバック 仕様
+[形式]
+        unsigned int chMsgCallBack(
+        	unsigned int message,
+        	unsigned int private_data
+        )
+        
+[引数]
+        message		Sequence Command Message
+        			bit 0-7:	status
+        			bit 8-14:	1st data
+        			bit 16-22 :	2nd data
+        private_data	sceMidiEnv の chMsgCallBackPrivateData
+        
+[返り値]
+        送信する Sequence Command Message
+        
+[解説]
+        環境バッファに指定する、チャンネルメッセージの送信直前に呼出され
+        るコールバック関数の仕様です。
+        実際に送信されるメッセージはこの関数が返した値となります。ただし、
+        この関数がsceMidi_ChMsgNoDataを返した場合、メッセージの送信は行わ
+        れません。
+        
+
+=========================================================================
+excMsgCallBack                                                     [関数]
+=========================================================================
+                             エクスクルーシブメッセージ コールバック 仕様
+[形式]
+        Bool excMsgCallBack(
+        	unsigned char *exclusive_data,
+        	unsigned int data_length,
+        	unsigned int private_data
+        )
+        
+[引数]
+        exclusive_data	エクスクルーシブデータのアドレス
+        data_length	エクスクルーシブデータデータのバイト数
+        private_data	sceMidiEnv の excMsgCallBackPrivateData
+        
+[返り値]
+        True	エクスクルーシブメッセージを送信する
+        False	エクスクルーシブメッセージを送信しない
+        
+[解説]
+        環境バッファに指定する、エクスクルーシブメッセージの送信制御用コ
+        ールバック関数の仕様です。
+        
+
+=========================================================================
+metaMsgCallBack                                                    [関数]
+=========================================================================
+                                           メタイベント コールバック 仕様
+[形式]
+        Bool metaMsgCallBack(
+        	unsigned char meta_number,
+        	unsigned char *meta_data,
+        	unsigned int data_length,
+        	unsigned int private_data
+        )
+        
+[引数]
+        meta_number	メタ イベント番号
+        meta_data	メタ イベントデータのアドレス
+        data_length	メタ イベントデータのバイト数
+        private_data	sceMidiEnv の metaMsgCallBackPrivateData
+        
+[返り値]
+        True	Sequencer Module でこのメタイベントの処理を行なう
+        False	Sequencer Module でこのメタイベントの処理を行なわない
+        
+[解説]
+        環境バッファに指定する、メタイベントの処理制御用コールバック関数
+        の仕様です。
+        
+
+=========================================================================
+repeatCallBack                                                     [関数]
+=========================================================================
+                                             ループ制御 コールバック 仕様
+[形式]
+        Bool repeatCallBack(
+        	sceMidiLoopInfo *loop_information,
+        	unsigned int private_data
+        )
+        
+[引数]
+        loop_information	ループ情報
+        private_data		sceMidiEnv の repeatCallBackPrivateData
+        
+[返り値]
+        True	loop(repeat)を行なう
+        False	loop(repeat)を行なわない
+        
+[解説]
+        環境バッファに指定する、ループ制御用コールバック関数の仕様です。
+        
+
+=========================================================================
+sceMidi_ATick                                                      [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceMidi_ATick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        割り込みから定期的に呼出される処理です。
+        演奏中の環境を sceMidiEnv の tickInterval だけ演奏を進めます。
+        
+
+=========================================================================
+sceMidi_GetEnv                                                     [関数]
+=========================================================================
+                                                       環境アドレスの取得
+[形式]
+        sceMidiEnv *sceMidi_GetEnv(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        環境アドレス
+        
+[解説]
+        port_numberに対応する環境アドレスを取得します。
+        
+
+=========================================================================
+sceMidi_GetTempo                                                   [関数]
+=========================================================================
+                               相対、絶対テンポから演奏テンポを取得(MIDI)
+[形式]
+        unsigned int sceMidi_GetTempo(
+        	unsigned char a_tempo,
+        	unsigned short r_tempo
+        )
+        
+[引数]
+        a_tempo		絶対テンポ
+        r_tempo		相対テンポ
+        
+[返り値]
+        演奏テンポ
+        
+[解説]
+        絶対テンポと相対テンポから演奏テンポを取得します。
+        
+
+=========================================================================
+sceMidi_Init                                                       [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceMidi_Init(
+        	sceCslCtx *module_context,
+        	unsigned int interval
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        interval 	ATick() の呼び出し周期をマイクロ秒で表したもの
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        MIDI シーケンサ モジュールの内部環境の初期化を行ないます。
+        
+
+=========================================================================
+sceMidi_isDataEnd                                                  [関数]
+=========================================================================
+                                   環境の状態取得（データエンドかどうか）
+[形式]
+        unsigned int sceMidi_isDataEnd(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        0以外でデータの終わりに到達
+        
+[解説]
+        指定した環境がデータの終わりに到達しているかの問い合わせを行いま
+        す。
+        
+
+=========================================================================
+sceMidi_isInPlay                                                   [関数]
+=========================================================================
+                                         環境の状態取得（演奏中かどうか）
+[形式]
+        unsigned int sceMidi_isInPlay(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        0以外で演奏中
+        
+[解説]
+        指定した環境が演奏中であるか問い合わせます。
+        
+
+=========================================================================
+sceMidi_Load                                                       [関数]
+=========================================================================
+                                               シーケンスデータの読み込み
+[形式]
+        int sceMidi_Load(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        シーケンスデータの更新通知を行います。
+        指定する環境が演奏中の場合、その環境へのデータの変更およびsceMidi
+        _Load() 呼出しは禁止です。
+        
+
+=========================================================================
+sceMidi_MidiGetAbsoluteTempo                                       [関数]
+=========================================================================
+                                                   絶対テンポの取得(MIDI)
+[形式]
+        unsigned char sceMidi_MidiGetAbsoluteTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        絶対テンポ
+        
+[解説]
+        絶対テンポを取得します。
+
+=========================================================================
+sceMidi_MidiGetRelativeTempo                                       [関数]
+=========================================================================
+                                                   相対テンポの取得(MIDI)
+[形式]
+        unsigned short sceMidi_MidiGetRelativeTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        相対テンポ
+        
+[解説]
+        相対テンポを取得します。
+
+=========================================================================
+sceMidi_MidiPlaySwitch                                             [関数]
+=========================================================================
+                                                     演奏開始／停止(MIDI)
+[形式]
+        int sceMidi_MidiPlaySwitch(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	int command
+        )
+        
+[引数]
+        module_context			Module Context のアドレス
+        port_number			入力ポート番号
+        command	sceMidi_MidiPlayStop	演奏停止
+        sceMidi_MidiPlayStart		演奏開始
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        演奏の開始／停止を行います。
+        
+
+=========================================================================
+sceMidi_MidiSetAbsoluteTempo                                       [関数]
+=========================================================================
+                                                   絶対テンポの変更(MIDI)
+[形式]
+        int sceMidi_MidiSetAbsoluteTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char tempo
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        tempo		テンポ (20 -- 255)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        テンポの変更を行います。
+        テンポメタイベントと同等です。
+        
+
+=========================================================================
+sceMidi_MidiSetLocation                                            [関数]
+=========================================================================
+                                                     演奏位置の変更(MIDI)
+[形式]
+        int sceMidi_MidiSetLocation(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int position
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        position	シーケンスデータ内の位置(Tick)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        シーケンスデータ内の位置を変更します。
+        
+
+=========================================================================
+sceMidi_MidiSetRelativeTempo                                       [関数]
+=========================================================================
+                                                   相対テンポの変更(MIDI)
+[形式]
+        int sceMidi_MidiSetRelativeTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned short tempo
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        tempo		相対テンポ(sceMidi_RelativeTempoNoEffect で効果無し)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        相対テンポの設定を行います。
+        絶対テンポをa_tempo、相対テンポをr_tempoとした場合、演奏テンポtem
+        poは
+        	tempo = (a_tempo * r_tempo) / sceMidi_RelativeTempoNoEffect
+        となります。
+        
+
+=========================================================================
+sceMidi_MidiSetVolume                                              [関数]
+=========================================================================
+                                 チャンネルボリューム（相対）の変更(MIDI)
+[形式]
+        int sceMidi_MidiSetVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char ch,
+        	unsigned char vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        ch		チャンネル (0--15)
+        		256: マスターボリューム
+        vol		ボリューム(sceMidi_Volume0db で変化無し)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        チャンネルchの相対ボリュームを設定します。
+        チャンネルのボリュームをch_vol、マスターボリュームをm_vol、相対ボ
+        リュームをr_volとした場合、出力されるボリュームvolは、
+        	vol = (ch_vol * m_vol * r_vol) / (sceMidi_Volume0db*sceMidi_Volu
+        me0db)
+        となります。
+        
+
+=========================================================================
+sceMidi_MidiVolumeChange                                           [関数]
+=========================================================================
+                                         チャンネルボリュームの変更(MIDI)
+[形式]
+        int sceMidi_MidiVolumeChange(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char ch,
+        	unsigned char vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        ch		チャンネル (0--15)
+        		255 は、全てのチャンネルが指定されたものとする
+        vol		ボリューム(0--127)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        チャンネルchのボリュームを設定します。
+        シーケンスコマンドのボリュームと同等です。
+        
+
+=========================================================================
+sceMidi_SelectMidi                                                 [関数]
+=========================================================================
+                                    演奏対象となる Midi Blockを選択(MIDI)
+[形式]
+        int sceMidi_SelectMidi(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int midi_block_number
+        )
+        
+[引数]
+        module_context		Module Context のアドレス
+        port_number		入力ポート番号
+        midi_block_number	Midi Block 番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        演奏を行なうMidi Blockの選択を行います。
+        
+
+=========================================================================
+sceMidi_SelectSong                                                 [関数]
+=========================================================================
+                                    演奏対象となる Song Blockを選択(SONG)
+[形式]
+        int sceMidi_SelectSong(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int song_block_number
+        )
+        
+[引数]
+        module_context		Module Context のアドレス
+        port_number		入力ポート番号
+        song_block_number	Song Block 番号
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        演奏を行なうSong Blockの選択を行います。
+        
+
+=========================================================================
+sceMidi_SongPlaySwitch                                             [関数]
+=========================================================================
+                                                     演奏開始／停止(SONG)
+[形式]
+        int sceMidi_SongPlaySwitch(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	int command
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        command	sceMidi_SongPlayStop :	Songの演奏を中止
+        		sceMidi_SongPlayPause :	Songの演奏を一旦停止
+        		sceMidi_SongPlayStart :	Songの演奏開始
+        		sceMidi_SongPlayContinue :	Songの演奏開始
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        演奏の開始／停止／一旦停止を行います。
+        commandにsceMidi_SongPlayStartまたはsceMidi_SongPlayContinueを指
+        定した場合、Stop中もしくはSelect直後であれば、Songを先頭から演奏
+        します。Pause中であれば、その位置から演奏を再開します。
+
+=========================================================================
+sceMidi_SongSetAbsoluteTempo                                       [関数]
+=========================================================================
+                                                   絶対テンポの変更(SONG)
+[形式]
+        int sceMidi_SongSetAbsoluteTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char tempo
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        tempo		テンポ (20 -- 255)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        テンポの変更を行います。
+        ソングテンポメッセージと同等です。
+        
+
+=========================================================================
+sceMidi_SongSetLocation                                            [関数]
+=========================================================================
+                                               演奏位置の設定／変更(SONG)
+[形式]
+        int sceMidi_SongSetLocation(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned int position,
+        	unsigned int mode
+        )
+        
+[引数]
+        module_context		Module Context のアドレス
+        port_number		入力ポート番号
+        position		演奏位置
+        mode			動作モード
+        	sceMidi_SSL_Now :  直ちに演奏を中断し、positionに移動して演奏再開する
+        	sceMidi_SSL_Delay : 現在の演奏が終了するまで待ってから、positionに移動して演奏再開する
+        	sceMidi_SSL_WithPreCommand :
+        			   positionの1個手前のMIDI演奏開始コマンドから演奏開始（再開）する
+        	sceMidi_SSL_WithoutPreCommand:
+        			   positionで示されるMIDI演奏開始コマンドから演奏開始（再開）する
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        Song内の位置の設定／変更を行います。
+        positionは、移動先の位置がSong Block内の先頭から数えていくつめのM
+        IDI演奏開始コマンドにあたるかを指定します。先頭のMIDI演奏開始コマ
+        ンドを０として数えます。
+        modeは、4つの定数の適切な和をとって指定します。ただし、sceMidi_SS
+        L_NowとsceMidi_SSL_Delayを同時に指定することはできません。sceMidi
+        _SSL_WithPreCommandとsceMidi_SSL_WithoutPreCommandを同時に指定す
+        ることもできません。
+        sceMidi_SSL_Now / sceMidi_SSL_Delayは、位置を移動する前に現在演奏
+        中のSong Blockに関する処置を指定します。もし演奏停止中であれば、
+        どちらもsceMidi_SSL_Nowと同様にただちに位置を移動しますが、演奏再
+        開は行いません。
+        sceMidi_SSL_WithPreCommand / sceMidi_SSL_WithoutPreCommandは、移
+        動後に実行するMIDIコマンドに関する指定です。sceMidi_SSL_WithPreCo
+        mmandを指定した場合は、positionが示すMIDI演奏開始コマンドより1個
+        手前のMIDI演奏開始コマンドにさかのぼってMIDIコマンドが実行されま
+        す。ただし、さかのぼった範囲内にあるリピートコマンドは無視されま
+        す。
+        
+
+=========================================================================
+sceMidi_SongSetRelativeTempo                                       [関数]
+=========================================================================
+                                                   相対テンポの変更(SONG)
+[形式]
+        int sceMidi_SongSetRelativeTempo(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned short tempo
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        tempo		相対テンポ(sceMidi_RelativeTempoNoEffect で効果無し)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        相対テンポの設定を行います。
+        絶対テンポをa_tempo、相対テンポをr_tempoとした場合、演奏テンポtem
+        poは
+        	tempo = (a_tempo * r_tempo) / sceMidi_RelativeTempoNoEffect
+        となります。
+        
+
+=========================================================================
+sceMidi_SongSetVolume                                              [関数]
+=========================================================================
+                                           ボリューム（相対）の変更(SONG)
+[形式]
+        int sceMidi_SongSetVolume(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        vol		ボリューム(sceMidi_Volume0db で変化無し)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        ソングの相対ボリュームを設定します。
+        
+
+=========================================================================
+sceMidi_SongVolumeChange                                           [関数]
+=========================================================================
+                                                   ボリュームの変更(SONG)
+[形式]
+        int sceMidi_SongVolumeChange(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char vol
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        vol		ボリューム(0--128)
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        ボリュームの設定を行います。
+        ソングコマンドのボリュームと同等です。

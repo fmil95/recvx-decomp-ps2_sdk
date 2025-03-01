@@ -1,0 +1,43 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+TTYP Specification 
+====================
+
+
+ 1 概要
+--------
+
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである
+    TTYP について説明します。
+    
+    TTYP は、ターゲット上のプログラムの標準入出力データをターゲット ⇔ ホ
+    スト間で送受信を行うためのプロトコルで、プロトコル番号は以下のように
+    なります。
+    下記のプロトコルの総称を TTYP とします。
+    
+      IOP TTY: I0TTYP=0x0110 ... I9TTYP=0x0119
+       IKTTYP=0x011f
+      EE TTY: E0TTYP=0x0210 ... E9TTYP=0x0219
+       EKTTYP=0x021f
+
+  1.1 メッセージフォーマット
+
+    TTYP メッセージは、基本的な DECI2 ヘッダを使用して送信されます。
+    TTYP メッセージは、特別なヘッダを持ちません。以下のように 4 bytes の
+    予約領域とデータのみで構成されます。
+        図 1 TTYP メッセージ
+
+
+    Flush Request
+
+      通常の標準入出力データの場合は必ず 0 を指定してください。
+      
+      1 を指定すると、ターゲットから dsnetm に送られた標準出力パケットの
+      うち、まだアプリケーションに送信されていないパケットを削除します。
+      このときの DECI2 ヘッダの Destination フィールドには、'H' を指定し
+      てください。
+      ホストとのコネクションが確立されていない場合、ターゲットプログラム
+      の標準出力データはすべて失われます。

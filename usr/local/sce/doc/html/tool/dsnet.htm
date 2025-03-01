@@ -1,0 +1,675 @@
+<HTML>
+<HEAD>
+<TITLE> dsnet概要</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="dsnet.htm" SELECTED> dsnet概要
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+dsnet概要<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+<P><A HREF="#Heading3_2">  2 インストール<BR></A>
+<P><A HREF="#Heading3_3">  3 各クライアントの共通オプション<BR></A>
+<P><A HREF="#Heading3_4">  4 dsreset<BR></A>
+<P><A HREF="#Heading3_5">  5 dsedb - Debugger for EE<BR></A>
+<P><A HREF="#Heading3_6">  6 dsidb - Debugger for IOP<BR></A>
+<P><A HREF="#Heading3_7">  7 dsecons / dsicons<BR></A>
+<P><A HREF="#Heading3_8">  8 dsefilesv / dsifilesv<BR></A>
+<P><A HREF="#Heading3_9">  9 dsistart<BR></A>
+<P><A HREF="#Heading3_10">  10 dsilist<BR></A>
+<P><A HREF="#Heading3_11">  11 ブートパラメータ<BR></A>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsnetは、ターゲット（DTL-T10000）を操作する、デバッガ、ドライバ、マネージャなどのパッケージです。<BR>
+    <BR>
+    dsnetパッケージでは、ターゲットとのデータ転送を管理するdsnetmと、デバッガなどのクライアントプログラムで各種機能を実現しています。以下はdsnetm、クライアント、ターゲットの関連図です。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/dsnen1.gif">
+<P>
+    <BR>
+</DIV>
+    クライアントとdsnetmの間のやり取りはsocketを使用します。<BR>
+    dsnetmとターゲットの間はデバイスファイルを用いて直接やり取りします。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>インストール</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このパッケージが正しくインストールされていれば、以下のファイルが/usr/local/sce/bin以下にインストールされているはずです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><B>コマンド</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">mrp</TD>
+<TD valign="TOP">device driver loading script</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsnetm</TD>
+<TD valign="TOP">dsnet manager</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsmcons</TD>
+<TD valign="TOP">dsnet manager console</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsreset</TD>
+<TD valign="TOP">reset client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsstat</TD>
+<TD valign="TOP">status client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dskill</TD>
+<TD valign="TOP">kill client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dssim</TD>
+<TD valign="TOP">dsnet simulator</TD>
+</TR>
+<TR>
+<TD valign="TOP">dscomp</TD>
+<TD valign="TOP">Communication port console</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsedb</TD>
+<TD valign="TOP">EE debugger</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsecons</TD>
+<TD valign="TOP">EE console server</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsefilesv</TD>
+<TD valign="TOP">EE file server</TD>
+</TR>
+<TR>
+<TD valign="TOP">dseping</TD>
+<TD valign="TOP">EE ping client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsidb</TD>
+<TD valign="TOP">IOP debugger</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsicons</TD>
+<TD valign="TOP">IOP console server</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsifilesv</TD>
+<TD valign="TOP">IOP file server</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsiping</TD>
+<TD valign="TOP">IOP ping client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsflash</TD>
+<TD valign="TOP">flash ROM update script</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsistart</TD>
+<TD valign="TOP">IOP module start client</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsilist</TD>
+<TD valign="TOP">IOP module list client</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>各クライアントの共通オプション</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下は各クライアントプログラムに共通する -d オプションの説明です。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>-d オプション</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ホスト名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ポート番号</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;</TD>
+<TD valign="TOP">&lt;host&gt;</TD>
+<TD valign="TOP">8510</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[/&lt;port_offset&gt;]</TD>
+<TD valign="TOP">&lt;host&gt;</TD>
+<TD valign="TOP">8510 + &lt;port_offset&gt;</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[:&lt;port&gt;]</TD>
+<TD valign="TOP">&lt;host&gt;</TD>
+<TD valign="TOP">&lt;port&gt;</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d /&lt;port_offset&gt;</TD>
+<TD valign="TOP">default-host</TD>
+<TD valign="TOP">8510 + &lt;port_offset&gt;</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d :&lt;port&gt;</TD>
+<TD valign="TOP">default-host</TD>
+<TD valign="TOP">&lt;port&gt;</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[:+&lt;port_offset&gt;]※</TD>
+<TD valign="TOP">&lt;host&gt;</TD>
+<TD valign="TOP">8510 + &lt;port_offset&gt;</TD>
+</TR>
+<TR>
+<TD valign="TOP">-d :+&lt;port_offset&gt;※</TD>
+<TD valign="TOP">default-host</TD>
+<TD valign="TOP">8510 + &lt;port_offset&gt;</TD>
+</TR>
+</TABLE>
+<BR>
+      <BLOCKQUOTE>
+      ※以前のバージョンとの互換性を保つために指定可能になっています。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    -dオプションは、通信先となるdsnetmのホスト名およびポートの指定です。<BR>
+    -dオプションを指定しない場合にはクライアントプログラムを実行したマシンと同じマシン<BR>
+    （default-host）のデフォルトポート（8510）の指定となります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>dsreset</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsresetは、ターゲット全体をリセットするクライアントプログラムです。<BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsreset [-d &lt;host&gt;[:&lt;port&gt;]]<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>オプション</B></H4>
+
+      <BLOCKQUOTE>
+      共通オプション-dのみ。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>dsedb - Debugger for EE</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsedbは、EE用のソースレベルではなくインストラクションレベルのデバッガです。ターゲットからの標準入出力、ファイルアクセスにも対応しています。使いかたの詳細は「dsedb / dsidbコマンドリファレンス」を参照してください。<BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsedb [&lt;options&gt;] &lt;cmd&gt; [&lt;arg&gt;]...]<BR>
+      </BLOCKQUOTE>
+    <BR>
+      <BLOCKQUOTE>
+      dsedb run main.elf などのように、起動時にターゲットプログラムを指定して直接実行することも可能です。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>オプション</B></H4>
+
+      <BLOCKQUOTE>
+      dsedbの主なオプションを次に示します。コマンドリファレンス「6. dsedb のオプション詳細」も参照してください。<BR>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[:&lt;port&gt;]</TD>
+<TD valign="TOP">dsnetm のホスト、ポートの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-r</TD>
+<TD valign="TOP">起動時にターゲットを reset する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nr</TD>
+<TD valign="TOP">起動時にターゲットを reset しない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nx</TD>
+<TD valign="TOP">起動時に自動実行ファイルの実行をしない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-tex</TD>
+<TD valign="TOP">ターゲット実行制御の有効への上書き </TD>
+</TR>
+<TR>
+<TD valign="TOP">-ntex</TD>
+<TD valign="TOP">ターゲット実行制御の無効への上書き</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ebootp &lt;ebootp&gt;</TD>
+<TD valign="TOP">EE 用ブートパラメータの初期値指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ibootp &lt;ibootp&gt;</TD>
+<TD valign="TOP">IOP 用ブートパラメータの初期値指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nokbd</TD>
+<TD valign="TOP">&lt;arg&gt;... の指定時に keyboard を使わない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-noexit</TD>
+<TD valign="TOP">&lt;arg&gt;... の指定時にexitしない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ncmv</TD>
+<TD valign="TOP">manager の version をチェックしない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-p &lt;port&gt;</TD>
+<TD valign="TOP">リモートコンソールポートの指定</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>使用例</B></H4>
+
+      <BLOCKQUOTE>
+      通常は、次に示すようにdsedbを起動して対話的にデバッグを行います。<BR>
+      </BLOCKQUOTE>
+    <BR>
+      <BLOCKQUOTE>
+      $ dsedb -r			デバッガを起動<BR>
+         ...<BR>
+      dsedb S&gt; help			コマンドのヘルプ表示<BR>
+         ...<BR>
+      dsedb S&gt; pload main.elf		プログラムのロード<BR>
+         ...<BR>
+      dsedb S&gt; bp main			mainにブレークポイントを設定<BR>
+      dsedb S&gt; run			プログラムを実行<BR>
+         ...<BR>
+      at=00010000 v0=...<BR>
+         ...<BR>
+      dsedb S&gt; db 0x100000		0x1000000番地をダンプ<BR>
+         ...<BR>
+      dsedb S&gt; step			ステップ実行<BR>
+         ...<BR>
+      dsedb S&gt; cont			継続実行<BR>
+         ... ^C				CTRL-Cで強制中断<BR>
+      dsedb S&gt; dr			レジスタの表示<BR>
+      dsedb S&gt; reset			ターゲットをリセット<BR>
+      dsedb S&gt; quit			dsedbの終了<BR>
+      $<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>dsidb - Debugger for IOP</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsidbは、IOPをターゲットとするデバッガです。使いかたはdsedbとほぼ同じですが、EEとIOPの相違に基づいて、専用のコマンドや仕様の異なるコマンドがあります。<BR>
+    <BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsidb [&lt;options&gt;] &lt;cmd&gt; [&lt;arg&gt;]...]<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_7">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 7 <B>dsecons / dsicons</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsecons / dsiconsは、ターゲットプログラムのTTYP入出力の相手となるコンソールプログラムです。通常はdsedb / dsidbが、TTYP入出力もサポートしていますので、TTYP入出力を別のウィンドウに表示したい場合以外は使用する必要はありません。dsecons / dsiconsを使用しdsedb / dsidbでのTTYP入出力の扱いを禁止するには、dsedbのスタートアップファイル（~/.dsedbrcもしくは./.dsedbrc）、dsidbのスタートアップファイル（~/.dsidbrcもしくは./.dsidbrc）に以下の行を設定してください。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      option tty_mask=0<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsecons [-d &lt;host&gt;[:&lt;port&gt;]] [-e &lt;escape&gt;] -nokbd -ns [0-9k]...<BR>
+      dsicons [-d &lt;host&gt;[:&lt;port&gt;]] [-e &lt;escape&gt;] -nokbd -ns[0-9k]...<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>オプション</B></H4>
+
+      <BLOCKQUOTE>
+      TTYPはEE用とIOP用のそれぞれに11個ずつ、以下のプロトコルがあります。<BR>
+      <BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        E0TTYP, E1TTYP, ..., E9TTYP, EKTTYP<BR>
+        I0TTYP, I1TTYP, ..., I9TTYP, IKTTYP<BR>
+        </BLOCKQUOTE></UL>
+      <BLOCKQUOTE>
+      <BR>
+      引数 [0-9k]... は、このうちどのプロトコルを使用するかを指定するもので、次のように指定します。<BR>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>プロトコル</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">dsecons 1 2 3</TD>
+<TD valign="TOP">E1TTYP,E2TTYP,E3TTYP</TD>
+</TR>
+<TR>
+<TD valign="TOP">dsecons 1-3 k</TD>
+<TD valign="TOP">E1TTYP,E2TTYP,E3TTYP,EKTTYP</TD>
+</TR>
+</TABLE>
+<BR>
+      <BR>
+      dsecons / dsiconsは指定があれば指定されたプロトコルのみを、指定がなければ11個のプロトコルすべてを受信して、受信データを画面に表示します。<BR>
+      キー入力データは一番最初に指定されたプロトコルを使用してターゲットに送ります。指定がない場合にはE0TTYP（dsecons）, I0TTYP（dsicons）で送ります。<BR>
+      -nokbdオプションが指定されている場合には&lt;escape&gt;以外のキー入力はすべて無視します。<BR>
+      -nsオプションが指定されている場合にはRemote File Accessサーバからのエラーメッセージの表示を行いません。<BR>
+      -eオプションはエスケープキーの指定です。キー入力が&lt;escape&gt;の場合は終了しますが、それ以外はすべて標準入力としてターゲットプログラムに送ります。&lt;escape&gt; のデフォルトは CTRL-] （0x1d）です。&lt;escape&gt;にコントロールコードを指定するには「^」 を文字の前に付けて、たとえば「-e ^C」というように指定します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_8">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 8 <B>dsefilesv / dsifilesv</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsefilesv / dsifilesvはターゲットプログラムから送られてくるRemote File Access要求を処理するファイルサーバプログラムです。通常はdsedb / dsidbがRemote File Access要求を処理するので、Remote File Access時のカレントディレクトリをdsedb / dsidbのカレントディレクトリに依存しない固定の場所としたい場合以外には、使用する必要はありません。<BR>
+    dsefilesv / dsifilesvを使用する場合はdsedb / dsidbでのRemote File Access処理を禁止する必要があります。dsedbのスタートアップファイル（~/.dsedbrcもしくは ./.dsedbrc）、dsidbのスタートアップファイル（~/.dsidbrcもしくは ./.dsidbrc）に以下の行を設定してください。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      option file_priority=-1<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsefilesv [-d &lt;host&gt;[:&lt;port&gt;]] [-i][-c &lt;cmd&gt;][-t &lt;sec&gt;]<BR>
+      dsifilesv [-d &lt;host&gt;[:&lt;port&gt;]] [-i] [-c &lt;cmd&gt;][-t &lt;sec&gt;]<BR>
+      <BR>
+      -iオプションを指定しない限り、dsefilesv / dsifilesvはバックグラウンドで動作します。<BR>
+      dsefilesv / dsifilesvを終了するにはkillコマンドを使います。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>オプション</B></H4>
+
+    -c &lt;cmd&gt;オプションを指定すると、指定されたシェルコマンド（&lt;cmd&gt;）を実行し、以下の条件が揃った時にプログラムを終了します。<BR>
+    <BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> Remote File Accessによってオープンされたファイルがすべてクローズされている。<BR>
+         <LI VALUE= 2> シェルコマンド（&lt;cmd&gt;）が終了した。<BR>
+         <LI VALUE= 3> -t &lt;sec&gt;によって指定された秒数（デフォルトは1秒）の間、上記(a)の状態が続いている。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_9">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 9 <B>dsistart</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsistartはIOPのプログラムモジュールを実行開始します。<BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsistart [&lt;options&gt;] &lt;fname&gt; [&lt;arg&gt;...]<BR>
+      </BLOCKQUOTE>
+    <BR>
+    指定されたプログラムモジュール&lt;fname&gt;に指定引数&lt;arg&gt;...を渡して実行開始し、IOP側からRemovedもしくはResidentの終了報告が来るまで待ちます。<BR>
+
+     <H4><B>オプション</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[:&lt;port&gt;]</TD>
+<TD valign="TOP">dsnetmのホスト、ポートの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-v</TD>
+<TD valign="TOP">送受信パケットを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ncmv</TD>
+<TD valign="TOP">managerのversionをチェックしない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nt</TD>
+<TD valign="TOP">I[0-9K]TTYPを扱わない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-nf</TD>
+<TD valign="TOP">DRFP1を扱わない</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ns</TD>
+<TD valign="TOP">Remote File Accessサーバからのエラーを表示しない</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_10">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 10 <B>dsilist</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsilistは、IOPのメモリにロードされているプログラムモジュールの一覧を表示します。<BR>
+
+     <H4><B>実行方法</B></H4>
+
+      <BLOCKQUOTE>
+      dsilist [-d &lt;host&gt;[:&lt;port&gt;]] [-v] [-l] [-ncmv]<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>オプション</B></H4>
+
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">-d &lt;host&gt;[:&lt;port&gt;]</TD>
+<TD valign="TOP">dsnetmのホスト、ポートの指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">-v</TD>
+<TD valign="TOP">送受信パケットを表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-l</TD>
+<TD valign="TOP">long形式で表示する</TD>
+</TR>
+<TR>
+<TD valign="TOP">-ncmv</TD>
+<TD valign="TOP">managerのversionをチェックしない</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_11">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 11 <B>ブートパラメータ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    dsresetコマンド、およびdsedb / dsidbのresetコマンドはパラメータを２つとります。どちらも数値で、最初の数値がEEのブートパラメータ、２番目の数値がIOPのブートパラメータです。<BR>
+    <BR>
+    EEのブートパラメータは未定義のため、0を指定してください。<BR>
+    IOPのブートパラメータは３ビットで定義されており、その意味は以下のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>Bit</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">bit 0</TD>
+<TD valign="TOP">EEスタート（SIFの初期化）<BR>EEをスタートする（SIFを初期化する）<BR>EEをスタートしない（SIFを初期化しない）</TD>
+</TR>
+<TR>
+<TD valign="TOP">bit 1</TD>
+<TD valign="TOP">FILEIOサービス<BR>FILEIOサービスを行う<BR>FILEIOサービスを行わない</TD>
+</TR>
+<TR>
+<TD valign="TOP">bit 2</TD>
+<TD valign="TOP">Auto Load<BR>Auto Loadを行う<BR>Auto Loadを行わない</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    FILEIOサービスとは、EEからのファイル入出力リクエストに応えるためのIOP上のサービスプログラムです。またAuto Loadとは、容量不足などによりフラッシュROMに載らなかったIOPの機能モジュールをdsnetmが稼動しているマシンからロードする機能です。<BR>
+    <BR>
+    代表的な設定例を以下に示します。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>設定例</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>説明</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">% dsreset 0 0</TD>
+<TD valign="TOP">EE,IOPが同時に起動する</TD>
+</TR>
+<TR>
+<TD valign="TOP">% dsreset 0 7</TD>
+<TD valign="TOP">IOPのみが起動する（EEは起動しない）</TD>
+</TR>
+<TR>
+<TD valign="TOP">% dsreset 0 2</TD>
+<TD valign="TOP">FILEIOサービスが行われない</TD>
+</TR>
+<TR>
+<TD valign="TOP">% dsreset 0 4</TD>
+<TD valign="TOP">Auto Loadが行われない（スレッドマネージャと<BR>FILEIOプログラムがロードされない）</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

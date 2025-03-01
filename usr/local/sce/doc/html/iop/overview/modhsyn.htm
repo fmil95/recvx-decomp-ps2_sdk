@@ -1,0 +1,334 @@
+<HTML>
+<HEAD>
+<TITLE> CSLハードウェア・シンセサイザ(modhsyn)</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="modhsyn.htm" SELECTED> CSLハードウェア・シンセサイザ(modhsyn)
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSLハードウェア・シンセサイザ<BR>(modhsyn)<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+<P><A HREF="#Heading3_2">  2 利用方法<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> バッファ構造<BR></A><BR>
+    <A HREF="#Heading4_2_2"> バンクバイナリファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 機能概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 外部仕様<BR></A><BR>
+    <A HREF="#Heading4_3_2"> コントロールチェンジ・NRPN<BR></A><BR>
+    <A HREF="#Heading4_3_3"> デバッグサポート<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    modhsynは、CSL（Component Sound Library）に準拠して実装されている音源モジュールです。入力バッファのMIDI Streamデータを解釈し、バンクバイナリファイル（ *.bd, *.hd ）を音素データとして、SPU2で発音します。またデバッグ用の機能として、SPU2に対するアクセス履歴を取得する機能があります。<BR>
+    modhsynは、効果音制御用に定義された拡張MIDIメッセージに対応しています。拡張MIDIメッセージの詳細は「CSL概要」ドキュメントを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>利用方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>バッファ構造</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>Buffer Group 0：入力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2</TD>
+<TD valign="TOP">入力ポートN番の<BR>入力バッファ</TD>
+<TD valign="TOP">sceCslMidiStream<BR>void[ buffsize - sizeof<BR>(sceCslMidiStream) ]</TD>
+</TR>
+<TR>
+<TD valign="TOP">N*2+1</TD>
+<TD valign="TOP">入力ポートN番の環境</TD>
+<TD valign="TOP">sceHSynEnv</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/hsynn1.gif">
+<P>
+    入力バッファとその環境は必ず対で存在する必要があります。片方が欠けた場合は、初期化時にエラーとなるかその入力バッファが使用できなくなります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>バンクバイナリファイル</B>
+</A>
+</H3>
+<blockquote>
+    音素データとして使用するバンクバイナリファイルはSCE提供のツール（JAM）で作成することができます。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>機能概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>外部仕様</B>
+</A>
+</H3>
+<blockquote>
+    modhsynの音源モジュールとしての機能について、特にmodhsynに固有の機能としては以下のとおりです。<BR>
+    拡張MIDIメッセージについては「CSL概要」ドキュメントを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>コントロールチェンジ・NRPN</B>
+</A>
+</H3>
+<blockquote>
+    modhsynは、以下のコントロールチェンジに対応しています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>コントロール番号</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">#00</TD>
+<TD valign="TOP">Bank Select(MSB)</TD>
+</TR>
+<TR>
+<TD valign="TOP">#32</TD>
+<TD valign="TOP">Bank Select(LSB)</TD>
+</TR>
+<TR>
+<TD valign="TOP">#01</TD>
+<TD valign="TOP">Pitch Modulation Depth</TD>
+</TR>
+<TR>
+<TD valign="TOP">#02</TD>
+<TD valign="TOP">Amp Modulation Depth</TD>
+</TR>
+<TR>
+<TD valign="TOP">#07</TD>
+<TD valign="TOP">Channel Volume</TD>
+</TR>
+<TR>
+<TD valign="TOP">#10</TD>
+<TD valign="TOP">Pan</TD>
+</TR>
+<TR>
+<TD valign="TOP">#11</TD>
+<TD valign="TOP">Expression</TD>
+</TR>
+<TR>
+<TD valign="TOP">#64</TD>
+<TD valign="TOP">Damper Pedal</TD>
+</TR>
+</TABLE>
+<BR>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+    modhsynは、現在のところ以下のNRPNに対応しています。<BR>
+
+     <H4><B>リバーブタイプ設定</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>NRPN</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$63,$02</TD>
+<TD valign="TOP">リバーブタイプコマンド</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$00</TD>
+<TD valign="TOP">　　　　　　　・コア指定（Core0）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$10</TD>
+<TD valign="TOP">　　　　　　　・コア指定（Core1）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$00</TD>
+<TD valign="TOP">　　　　　　　：Off</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$01</TD>
+<TD valign="TOP">　　　　　　　：Room</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$02</TD>
+<TD valign="TOP">　　　　　　　：StudioA</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$03</TD>
+<TD valign="TOP">　　　　　　　：StudioB</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$04</TD>
+<TD valign="TOP">　　　　　　　：StudioC</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$05</TD>
+<TD valign="TOP">　　　　　　　：Hall</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$06</TD>
+<TD valign="TOP">　　　　　　　：Space</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$07</TD>
+<TD valign="TOP">　　　　　　　：Echo</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$08</TD>
+<TD valign="TOP">　　　　　　　：Delay</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$09</TD>
+<TD valign="TOP">　　　　　　　：Pipe</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>リバーブデプス等設定</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>NRPN</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$63,$03</TD>
+<TD valign="TOP">リバーブデプスコマンド</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$00</TD>
+<TD valign="TOP">リバーブデプス正相（Core0）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$01</TD>
+<TD valign="TOP">リバーブデプス逆相（Core0）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$02</TD>
+<TD valign="TOP">リバーブディレイ（Core0）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$03</TD>
+<TD valign="TOP">リバーブフィード（Core0）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$10</TD>
+<TD valign="TOP">リバーブデプス正相（Core1）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$11</TD>
+<TD valign="TOP">リバーブデプス逆相（Core1）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$12</TD>
+<TD valign="TOP">リバーブディレイ（Core1）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$62,$13</TD>
+<TD valign="TOP">リバーブフィード（Core1）</TD>
+</TR>
+<TR>
+<TD valign="TOP">$B0,$06,$nn</TD>
+<TD valign="TOP">　　　　パラメータ（$nn=$00～$7F）</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>デバッグサポート</B>
+</A>
+</H3>
+<blockquote>
+    int sceHSyn_SetDebugInfoBuffer ( sceHSyn_DebugInfo *debuginfo_buffer)を用いてデバッグ情報バッファを登録することにより、SPU2のアクセス履歴を取得することができます。<BR>
+    sceHSyn_DebugInfoは、リングバッファとして使用しています。sceHSyn_SdCallのargにはlibsd呼出し時の引数、retValには返り値が入ります。funcには、libsdの関数を表す番号が入り、function呼出し後、そのfunctionが終了するまでの間はfuncのsceHSyn_SdCall_inProcessビットが1になります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

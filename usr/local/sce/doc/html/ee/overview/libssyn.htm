@@ -1,0 +1,345 @@
+<HTML>
+<HEAD>
+<TITLE> CSLソフトウェア・シンセサイザ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libssyn.htm" SELECTED> CSLｿﾌﾄｳｪｱ･ｼﾝｾｻｲｻﾞ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+CSLソフトウェア・シンセサイザ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+<P><A HREF="#Heading3_2">  2 利用方法<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> バッファ構造<BR></A><BR>
+    <A HREF="#Heading4_2_2"> プログラム手順<BR></A><BR>
+    <A HREF="#Heading4_2_3"> MIDIメッセージフィルタコールバック<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 機能概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 受信MIDIメッセージ<BR></A><BR>
+    <A HREF="#Heading4_3_2"> 拡張MIDIメッセージ<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    libssynは、CSL（Component Sound Library）に準拠して実装されているソフトウェア音源ライブラリです。IOPのMIDI Stream dataをmodssyn（software synthesizer comunication module）経由で受け取り、EEメモリ上の音素データを用いてPCM Stream dataを出力します。また、IOPからのMIDI Stream dataによらず、EEアプリケーションからAPI呼び出しで与えられるMIDIメッセージ（EE MIDI stream）によって発音することもできます。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/ssynn1.gif">
+<P>
+    <BR>
+    入力は最大8ポート、出力は最大8ポートまで、入力ポート毎に独立した一個の音源として使用することができます（最大発音数は、各入力ポートに対して設定した上限発音数の合計です）。各入力ポートに対してそれぞれ16チャンネルのパートを持ちます。各パートはそれぞれ個別に4個の出力ポートを持ち、パートの出力ポートは、実際の出力ポートに自由にアサインが可能です。<BR>
+    libssynはIOP側モジュール（modssyn.irx）と対になって動作しますので、modssynのドキュメントも参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>利用方法</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>バッファ構造</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>Buffer Group 0：入力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">1～N</TD>
+<TD valign="TOP">入力ポートN番の入力バッファ</TD>
+<TD valign="TOP">sceSSynEnv</TD>
+</TR>
+</TABLE>
+<BR>
+
+     <H4><B>Buffer Group 1：出力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>バッファ内容</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">1～N</TD>
+<TD valign="TOP">出力ポートN番の出力バッファ</TD>
+<TD valign="TOP">sceCslPcmStream</TD>
+</TR>
+</TABLE>
+<BR>
+    ※ sceCslPcmStream自身とpcmbufで指されるバッファ領域は非キャッシュアクセスが行われるため、アライメント等に注意が必要です。<BR>
+
+     <H4><B>Buffer Group 2：EE MIDI Stream入力ポートグループ</B></H4>
+
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>BufCtx Index</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>内容</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>データ構造</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">１</TD>
+<TD valign="TOP">API呼び出しによって生成され<BR>たシーケンスデータ</TD>
+<TD valign="TOP">sceCslMidiStream<BR>void[ buffsize - sizeof<BR>    (sceCslMidiStream) ]</TD>
+</TR>
+</TABLE>
+<BR>
+    ※ sceCslMidiStreamのvalidsizeメンバが、バッファ中の有効データ数を表します。<BR>
+<P>
+<IMG SRC ="gif/ssynn2.gif">
+<P>
+    <BR>
+    EE MIDI Streamを使用する場合はバッファグループ２を使用します。EE MIDI Streamを使用しない場合は、buffGrpNum = 2としてください。<BR>
+    なお、入力ポートのsceCslBuffCtx.buffをNULLに設定すると、ATick処理でそのポートはスキップされることになります。特定のポートを一時的に発音させない場合などに利用できます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>プログラム手順</B>
+</A>
+</H3>
+<blockquote>
+    libssynを使用する際には、IOPとの通信を行なうため、以下の順序で初期化を行う必要があります。<BR>
+    <OL>
+         <LI VALUE= 1> sceSSyn_Init()を呼び出して音源ルーチンを初期化します。<BR>
+         <LI VALUE= 2> sceSSyn_RegisterRpc()を呼び出してSIF RPCサーバを登録します。<BR>
+         <LI VALUE= 3> sceSifLoadModule()を呼び出してIOP側モジュール（moddssyn.irx）を読み込みます。<BR>
+         <LI VALUE= 4> 音素データをEEメモリに読み込み、sceSSyn_PrepareParameter()を呼び出してアドレス解決し、sceSSyn_Load()を呼び出して登録します。<BR>
+    </OL>
+    IOP MIDI Streamを使用せず、EE MIDI Streamだけによって演奏する場合は、(2)(3)を行う必要はありません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>MIDIメッセージフィルタコールバック</B>
+</A>
+</H3>
+<blockquote>
+    libssynが出力するMIDIメッセージを随時変更できるように、以下のコールバックが用意されています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>トリガ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コールバック関数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>フィルタ機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">チャンネルメッセージ</TD>
+<TD valign="TOP">msg_callback</TD>
+<TD valign="TOP">メッセージの出力抑止</TD>
+</TR>
+<TR>
+<TD valign="TOP">エクスクルーシブメッセージ</TD>
+<TD valign="TOP">exc_callback</TD>
+<TD valign="TOP">メッセージの出力抑止</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    コールバック関数はsceSSynEnvに登録しておきます。シーケンスデータ中にトリガとなるメッセージ等が現れると、それぞれ対応するコールバック関数が呼び出されます。コールバック関数はパラメータとして渡されたメッセージ等を調べ、場合によってそのメッセージの出力を抑止することができます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>機能概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    libssynで実装されているソフトウェア音源の外部仕様を以下に示します。<BR>
+
+     <H4><B>Tone Generator（Wave Table読み出し部）：TG</B></H4>
+
+<UL>
+         <LI> Wave Dataは8/16bit, サンプリングレート22.05K / 44.1K / 48KのPCM wave dataで、読み出し開始位置、loop start / endをアドレス情報として持つ。<BR>ループは１個で、forward loopのみ指定可。forward loop以外を使用する場合、1 shotは無音のループを作成してforward loopとし、その他はforward loopに展開する。<BR>再生上限周波数は、ループサイズに依存する。<BR>
+         <LI> 読み出し開始位置はvelocity等でmodifyできる。<BR>
+         <LI> 鍵域 / velocityによって読み出す波形を切り替えることができる。同時に2 waveまで読み出し可能。<BR>
+         <LI> 専用ENVを持ち、pitchをmodifyできる。<BR>
+         <LI> LFOによりpitchをmodifyできる。<BR>
+         <LI> MIDI pitch bend messageにより、pitchをmodifyできる。<BR>
+         <LI> pitchに対して、key#によるkeyfollowを設定できる。<BR>
+         <LI> ポルタメントが使用できる。<BR>
+</UL>
+
+     <H4><B>Time Valiant Filter：TVF</B></H4>
+
+<UL>
+         <LI> 12db/oct.のLPF / BPF / HPFのうちひとつを選択して使用する。<BR>
+         <LI> cutoff Freq.とresonanse(1/Q)によって制御する。<BR>
+         <LI> 専用ENVを持ち、cuttoffをmodifyできる。<BR>
+         <LI> LFOによりcuttoffをmodifyできる。<BR>
+         <LI> cutoff Freq.に対して、key#によるkeyfollowを設定できる。<BR>
+</UL>
+
+     <H4><B>Time Valiant Amplifier：TVA</B></H4>
+
+<UL>
+         <LI> アッテネータとして動作。<BR>
+         <LI> 専用ENVを持ち、levelをmodifyできる。<BR>
+         <LI> LFOによりlevelをmodifyできる。<BR>
+         <LI> levelに対して、key#によるkeyfollowを設定できる。<BR>
+</UL>
+
+     <H4><B>Output Mixer：MIX</B></H4>
+
+<UL>
+         <LI> 最大8chの出力。16パート×4チャンネルの出力を、8chの出力ポートにアサインする。<BR>
+         <LI> ヴォイス毎にパンポットを設定できる。<BR>
+</UL>
+
+     <H4><B>Envelope Generator：ENV</B></H4>
+
+<UL>
+         <LI> ADSRのlevel 4点、time 3点によるエンベロープ制御。<BR>
+         <LI> timeは、時間（ミリ秒）で指定する。<BR>
+         <LI> levelの範囲は、TGおよびTVFは－1.0～1.0、TVAは0.0～1.0。TVAのReleaseの終点レベルは0固定。<BR>
+         <LI> levelおよびtimeは、それぞれvelocity,key#でmodifyできる。<BR>
+         <LI> 動作カーブは、<BR>TG:	読み出し周波数をセントでmodifyできる<BR>TVF:	cutoff Freq.をセントでmodifyできる<BR>TVA:	直線<BR>
+</UL>
+
+     <H4><B>Lo Frequency Oscillator：LFO</B></H4>
+
+<UL>
+         <LI> １ヴォイスについて２個のLFOを持つ。<BR>
+         <LI> サポート波形は、サイン／矩形波／三角波／鋸波／ノイズ。<BR>
+         <LI> 発信開始までのディレイを設定できる。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>受信MIDIメッセージ</B>
+</A>
+</H3>
+<blockquote>
+    libssynで実装されているソフトウェア音源が受信できるMIDIメッセージを次に示します。<BR>
+    <BR>
+    8n kk   		note off(velocity 無視)<BR>
+    9n kk vv		note on(velocity = 0: off)<BR>
+    Bn<BR>
+      <BLOCKQUOTE>
+      0x00,0x20  Bank Change<BR>
+      0x01       Moduration<BR>
+      0x05       Portament time<BR>
+      0x06,0x26  Data Entry<BR>
+      0x07       Volume<BR>
+      0x0a       Panpot<BR>
+      0x0b       Expression<BR>
+      0x40       hold1<BR>
+      0x41       portament<BR>
+      0x54       portament control<BR>
+      0x63,0x62  NRPN<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        0x01,0x08 ビブラート レイト<BR>
+        0x01,0x09 ビブラート デプス<BR>
+        0x01,0x0a ビブラート ディレイ<BR>
+        0x01,0x20 TVF カットオフ<BR>
+        (0x01,0x21 TVF レゾナンス)<BR>
+        0x01,0x63 TVF,TVA アタック タイム<BR>
+        0x01,0x64 TVF,TVA ディケイ タイム<BR>
+        0x01,0x65 TVF,TVA リリース タイム<BR>
+        0x18,rr   ドラム ピッチコース<BR>
+        0x1a,rr   ドラム TVA レベル<BR>
+        0x1c,rr   ドラム パンポット<BR>
+        </BLOCKQUOTE></UL>
+      <BLOCKQUOTE>
+      0x65,0x64  RPN<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        0x00,0x00 ピッチ ベンド センシティビティー<BR>
+        0x00,0x01 マスターファインチューニング<BR>
+        0x00,0x02 マスターコースチューニング<BR>
+        0x7f,0x7f NULL<BR>
+        0x78,0x00 all sound off<BR>
+        0x79,0x00 reset all controler<BR>
+        その他の Mode message は、all note off として認識<BR>
+        </BLOCKQUOTE></UL>
+    Cn pp           Program Change<BR>
+    Dn pp           Channel Pressure<BR>
+    En vv vv        Pitch Bend Change<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>拡張MIDIメッセージ</B>
+</A>
+</H3>
+<blockquote>
+    libssynで実装されているソフトウェア音源は、CSLで定めている拡張MIDIメッセージを受信することができます。拡張MIDIメッセージについては「CSL概要」ドキュメントを参照してください。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

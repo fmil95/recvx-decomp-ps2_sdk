@@ -1,7 +1,7 @@
 #
 #  IOP test program Makefile
 #
-#  $Id: makefile,v 1.10 2001/02/06 22:13:05 kaol Exp $
+#  $Id: makefile,v 1.9 2000/03/02 01:46:45 xokano Exp $
 #
 ifeq ($(wildcard PathDefs),)
 PathDefs:
@@ -11,8 +11,7 @@ else
 include PathDefs
 endif
 
-INCDIR  = -I../../../../common/include -I../../../include \
-	-I/usr/local/sce/common/include
+INCDIR  = -I/usr/local/sce/common/include
 
 #----------- rules --------------
 %.irx: %.o
@@ -20,7 +19,7 @@ INCDIR  = -I../../../../common/include -I../../../include \
 	-ilb=libsd.ilb -o $@
 
 #----------- customize section --------------
-CFLAGS   = $(INCDIR) -Wall -G 0
+CFLAGS   = $(INCDIR) -Wall -G 0 
 ASFLAGS  = $(INCDIR)
 LDLIBS   = 
 PROGNAME = main.irx

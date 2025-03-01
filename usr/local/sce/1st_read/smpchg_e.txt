@@ -1,0 +1,210 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+                                                               Aug. 2000
+
+
+                           Sample Changes and New Additions of Functions
+========================================================================
+Caution
+------------------------------------------------------------------------
+- Corrections have been made to names of register macros and values such as
+  field value in eestruct.h and eeregs.h.   Note that if these registers 
+  are used in the release 1.6.6 or earlier environment, a hang-up may occur.
+
+- A feature to change the thread priority has been added to modules
+  of the IOP, however, this feature is not yet supported in the samples of
+  this release.
+  
+- Samples for Graphics Framework consist of the data created from the
+  eS unified file format by using es2raw.  A difference between the 
+  versions of the Graphics Framework and es2raw may cause malfunctions
+  so ensure that you have appropriate versions.
+  
+  The Graphics Framework sample conforms to es2raw Version 0.4.5.  
+  Note that the data created by using es2raw version 0.4.0 or
+  earlier cannot be executed properly. 
+
+
+Sample Changes and Additions since Release 1.6.6
+========================================================================
+Additions
+------------------------------------------------------------------------
+- ee/sample/advanced/anti/aa1-feather
+  A sample program, that describes the antialiasing effect, has been
+  added.
+
+- ee/sample/advanced/anti/mountain
+  A sample program, that describes the effect of rewriting antialiasing 
+  lines, has been added.
+
+- ee/sample/advanced/anti/pcrtc-blend
+  A sample program, that describes the effect of antialiasing with the 
+  PCRTC merge circuit, has been added.
+
+- ee/sample/advanced/anti/refmap-448
+  A sample program for a specular illumination calculation and a 
+  reflection mapping (double resolution in v direction) has been added.
+
+- ee/sample/advanced/anti/refmap-4times
+  A sample program for a specular illumination calculation and a 
+  reflection mapping (antialiasing effect realized by displacing 
+  drawings from each other by sub-pixel) has been added.
+
+- ee/sample/advanced/anti/refmap-noAA
+  A sample program for a specular illumination calculation and a 
+  reflection mapping has been added. (A reference program of the normal 
+  double buffer (640x224 PSMCT32) without an antialiasing.)
+
+- ee/sample/advanced/anti/refmap-onepass-AAline
+  A sample program for a specular illumination calculation and a 
+  reflection mapping with an antialiasing by AA1 lines has been added.
+
+- ee/sample/advanced/anti/texmap-onepass-AAline
+  A sample program for a specular illumination calculation and a 
+  texture mapping with an antialiasing by AA1 lines has been added.
+
+  See the documents under the ee/sample/advanced/anti directory for
+  details.
+
+- ee/sample/kernel/priority
+  A sample program for a thread priority has been added.
+
+- ee/sample/kernel/rotate
+  A sample program for a thread-ready queue operation has been added.
+
+- ee/sample/kernel/semaphore
+  A sample program for thread operations using a VSync interrupt and
+  semaphores has been added.
+
+- ee/sample/kernel/vsync
+  A sample program for operations of threads and a VSyncStart interrupt
+  handler has been added. 
+
+- ee/sample/mcx/basic
+  A sample program for the use of PDA library features and for checking 
+  the response to function calls has been added.
+
+- ee/sample/scf
+  A sample program for obtaining the system setting information on 
+  the PlayStation 2 has been added.
+
+- iop/sample/usb/usbdesc
+  A sample program for dumping static descriptors of USB devices
+  has been added. 
+
+
+----------------------------------------------------------------------
+Sample Changes
+----------------------------------------------------------------------
+- ee/sample/ipu/ezmovie
+  As the ch-3 of the DMA was reset while it was being activated, there
+  was an error that DMA did not stop depending on the timing.  
+  This problem has been fixed.
+
+- ee/sample/mpeg/mpegvu1
+  In accordance with a change to the macro of GS_IMR register in this
+  release, the macro name in this sample has been changed from 
+  GS_IMR_FINISH_M to GS_IMR_FINISHMSK_M .
+
+- ee/sample/mpeg/mpegstr
+  The sample has been changed to support the vertical resolution of 512
+  lines for a PAL system.  Also, the program codes have been improved for
+  easy understanding.
+
+- iop/sample/sound/ezmidi:
+  Codes with * marks have been deleted due to the following reasons;
+    -  The DisableIntr() function was an unnecessary process since it 
+       was only for masking interrupts and not for interrupting the DMA
+       that is being transferred or waiting for the end of the transfer.
+    -  If the sceSifCallRpc() function was executed from the EE during
+       the mask period of INUM_DMA_10, the process was not returned to
+       the EE in some timings. 
+
+iop/sample/sound/ezmidi/midi_mu.c
+
+static int ATick(void)
+{
+     int oldstat;
+
+     while(1){
+          SleepThread();
+
+          //-- If a msin buffer is transferred from the EE,
+*         //   interrupts are disabled  
+          //   and the buffer is copied to msinBf_R. 
+          //   The hsyn module uses msinBf_R.
+          if ( ((sceCslMidiStream*)msinBf_T)->validsize != 0 ){
+*               DisableIntr( INUM_DMA_10 , &oldstat ); //-- Disables the DMA
+*						       //   interrupt by SIF
+              memcpy( msinBf_R, msinBf_T, MSIN_BUF_SIZE );
+              ((sceCslMidiStream*)msinBf_T)->validsize = 0;
+*             EnableIntr( INUM_DMA_10 ); //-- Enables the DMA
+*   					 //   interrupt by SIF
+          }
+
+- iop/sample/sound/ezbgm:
+  Codes with * marks have been deleted, and partial changes have
+  been made since using CpuDisableIntr()/CpuEnableIntr() was an 
+  inappropriate procedure.
+
+iop/sample/sound/ezbgm/bgm_play.c
+
+int _BgmPlay( int status )
+{
+	int i, ch, read_size, which;
+	int *addr, remain;
+
+	while ( 1 ){
+
+		//-- Waits for the termination of sound output in buffer
+		WaitSema(gSem);
+
+*		CpuDisableIntr();
+		//-- Which channel is the interrupt made from?
+		if( (gBgmIntr[0] == 1) && ( ch != 0 ) )  ch = 0;
+		else if( (gBgmIntr[1] == 1) && ( ch != 1 ) )  ch = 1;
+		else if( gBgmIntr[0] == 1 )  ch = 0;
+		else if( gBgmIntr[1] == 1 )  ch = 1;
+		else {
+*			CpuEnableIntr();
+			continue;}
+
+		gBgmIntr[ch] = 0;
+*		CpuEnableIntr();
+
+- iop/sample/sound/sqhard
+  The sample has been changed so that two SQ/HD/BD can be handled 
+  simultaneously.
+
+
+======================================================================
+Sample Improvements, Changes and Modifications From Release 1.6 to 2.0
+----------------------------------------------------------------------
+- ee/sample/graphics/framework
+  The following textures have become supported.
+      RGBA32,RGB24,RGBA16
+      CLUT IDTEX8,IDTEX4
+
+  The following range of texture size has become supported.
+	minimum 	maximum 
+	1x1		1024x1024
+
+  The following outputs have become supported.
+      Shared shape: 		   Share
+      Hierarchical structure:	   Hierarchy
+      Key frame animation (linear interpolation):   Animation 
+
+  In conjunction with the data format change, methods of data initialization
+  and data read have been modified.
+
+  It was unable to correctly display more than one identical shape in the
+  single model data which consists of multiple hierarchical structures.  
+  This problem has been fixed.
+
+- ee/sample/usb/usbmouse
+- iop/sample/usb/usbmouse
+  Data retrieval of the USB mouse sample driver (usbmouse.irx) partially 
+  failed and some data was left out.  This problem has been fixed.
+

@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -54,7 +54,7 @@ typedef struct {
 typedef struct {
 	sceSifCmdHdr	chdr;
 	void		*newaddr;
-} sceSifCmdCSData; 		/* System use */
+} sceSifCmdCSData;
 
 /* data structure for telling to set software register[0 - 31] */
 /* software register[0 - 7] used by system */
@@ -70,7 +70,8 @@ typedef struct {
 	int             size;
 	int             flag;
 	char            arg[80];
-} sceSifCmdResetData; 		/* System use */
+} sceSifCmdResetData;
+	
 
 /* */
 void sceSifInitCmd(void);
@@ -81,7 +82,7 @@ unsigned int sceSifGetSreg(int);
 unsigned int sceSifSetSreg(int,unsigned int);
 
 sceSifCmdData * sceSifSetCmdBuffer(sceSifCmdData *, int);
-sceSifCmdData * sceSifSetSysCmdBuffer(sceSifCmdData *, int); /* System use */
+sceSifCmdData * sceSifSetSysCmdBuffer(sceSifCmdData *, int);
 
 void sceSifAddCmdHandler(unsigned int,sceSifCmdHandler,void *);
 void sceSifRemoveCmdHandler(unsigned int);
@@ -89,7 +90,7 @@ void sceSifRemoveCmdHandler(unsigned int);
 unsigned int sceSifSendCmd(unsigned int,void *,int,void *, void *, int);
 unsigned int isceSifSendCmd(unsigned int,void *,int,void *, void *, int);
 
-void sceSifWriteBackDCache(const void *, int); /* EE only */
+void sceSifWriteBackDCache(void *, int); /* EE only */
 
 /* send mode */
 #define SIF_CMDM_INTR	0x01	/* called in no intr area */

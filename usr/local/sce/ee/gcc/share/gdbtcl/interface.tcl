@@ -1,16 +1,7 @@
-# Interface between GDB and Insight.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
+# Interface between Gdb and GdbTk.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
+#   Copyright (C) 1997, 1998 Cygnus Solutions
 
 # This variable is reserved for this module.  Ensure it is an array.
 global gdbtk_state
@@ -19,11 +10,6 @@ set gdbtk_state(busyCount) 0
 # This is run when a breakpoint changes.  The arguments are the
 # action, the breakpoint number, and the breakpoint info.
 define_hook gdb_breakpoint_change_hook
-
-# This is run when a `set' command successfully completes in gdb.  The
-# first argument is the gdb variable name (as a Tcl list).  The second
-# argument is the new value.
-define_hook gdb_set_hook
 
 ####################################################################
 #                                                                  #
@@ -93,8 +79,8 @@ proc gdbtk_tcl_preloop { } {
   # then we will have called pre_add_symbol, which would set us to busy,
   # but not the corresponding post_add_symbol.  Do this here just in case...
   after idle gdbtk_idle 
-  ManagedWin::startup
-
+  set src [ManagedWin::open SrcWin]
+  debug "In preloop, with src: \"$src\" & error: \"$::errorInfo\""
   SrcWin::point_to_main
   set msg ""
   catch {gdb_cmd "info files"} msg
@@ -102,8 +88,6 @@ proc gdbtk_tcl_preloop { } {
   if {[regexp {Symbols from "(.*)"\.} $line1 dummy name]} {
     set gdb_exe_name $name
   }
-
-  
   gdbtk_update
 }
 
@@ -156,11 +140,6 @@ proc gdbtk_update {} {
 proc gdbtk_idle {} {
   global gdb_running
 
-  # Put the unfiltered hook back in place, just in case
-  # somebody swapped it out, and then died before they
-  # could replace it.
-
-  gdb_restore_fputs
   set err [catch {run_hooks gdb_idle_hook} txt]
   if {$err} { 
     debug "gdbtk_idle 1 ERROR: $txt" 
@@ -213,7 +192,6 @@ proc gdbtk_quit_check {} {
 # ------------------------------------------------------------------
 proc gdbtk_quit {} {
   if {[gdbtk_quit_check]} {
-    ManagedWin::shutdown
     pref_save
     gdb_force_quit
   }
@@ -224,8 +202,7 @@ proc gdbtk_quit {} {
 #         before exiting.  Last chance to cleanup!
 # ------------------------------------------------------------------
 proc gdbtk_cleanup {} {
-   # This is a sign that it is too late to be doing updates, etc...
-   set ::gdb_shutting_down 1
+  # nothing to do right now.
 }
 
 # ------------------------------------------------------------------
@@ -336,9 +313,6 @@ proc gdbtk_tcl_ignorable_warning {class message} {
 # ------------------------------------------------------------------
 proc gdbtk_tcl_fputs {message} {
   global gdbtk_state
-  # Restore the fputs hook, in case anyone forgot to put it back...
-  gdb_restore_fputs
-
   if {$gdbtk_state(console) != ""} {
     $gdbtk_state(console) insert $message
   }
@@ -356,9 +330,6 @@ proc echo {args} {
 # ------------------------------------------------------------------
 proc gdbtk_tcl_fputs_error {message} {
   global gdbtk_state
-  # Restore the fputs hook, in case anyone forgot to put it back...
-  gdb_restore_fputs
-
   if {$gdbtk_state(console) != ""} {
     $gdbtk_state(console) einsert $message
     update
@@ -391,7 +362,7 @@ proc gdbtk_tcl_end_variable_annotation {} {
 # PROC: gdbtk_tcl_breakpoint -
 # ------------------------------------------------------------------
 proc gdbtk_tcl_breakpoint {action bpnum addr line file bp_type enabled thread} {
-#  debug "BREAKPOINT: $action $bpnum $addr $line $file $bp_type $enabled $thread "
+  debug "BREAKPOINT: $action $bpnum $addr $line $file $bp_type $enabled $thread "
   run_hooks gdb_breakpoint_change_hook $action $bpnum $addr $line $file $bp_type $enabled $thread
 }
 
@@ -407,7 +378,7 @@ proc gdbtk_tcl_tracepoint {action tpnum addr line file pass_count} {
 # PROC: gdbtk_tcl_trace_find_hook -
 # ------------------------------------------------------------------
 proc gdbtk_tcl_trace_find_hook {arg from_tty} {
-#  debug "Running trace find hook with $arg $from_tty"
+  debug "Running trace find hook with $arg $from_tty"
   run_hooks gdb_trace_find_hook $arg $from_tty
 }
 
@@ -426,7 +397,7 @@ proc gdbtk_tcl_trace_find_hook {arg from_tty} {
 # ------------------------------------------------------------------
 proc gdb_run_readline_command {command args} {
   global gdbtk_state
-#  debug "run readline_command $command $args"
+  debug "run readline_command $command $args"
   set gdbtk_state(readlineArgs) $args
   gdb_cmd $command
 }
@@ -436,7 +407,7 @@ proc gdb_run_readline_command {command args} {
 # ------------------------------------------------------------------
 proc gdbtk_tcl_readline_begin {message} {
   global gdbtk_state
-#  debug "readline begin"
+  debug "readline begin"
   set gdbtk_state(readline) 0
   if {$gdbtk_state(console) != ""} {
     $gdbtk_state(console) insert $message
@@ -448,19 +419,19 @@ proc gdbtk_tcl_readline_begin {message} {
 # ------------------------------------------------------------------
 proc gdbtk_tcl_readline {prompt} {
   global gdbtk_state
-#  debug "gdbtk_tcl_readline $prompt"
+  debug "gdbtk_tcl_readline $prompt"
   if {[info exists gdbtk_state(readlineArgs)]} {
     # Not interactive, so pop the list, and print element.
     set cmd [lvarpop gdbtk_state(readlineArgs)]
     command::insert_command $cmd
   } else {
     # Interactive.
-#    debug "interactive"
+    debug "interactive"
     set gdbtk_state(readline) 1
     $gdbtk_state(console) activate $prompt
     vwait gdbtk_state(readline_response)
     set cmd $gdbtk_state(readline_response)
-#    debug "got response: $cmd"
+    debug "got response: $cmd"
     unset gdbtk_state(readline_response)
     set gdbtk_state(readline) 0
   }
@@ -472,7 +443,7 @@ proc gdbtk_tcl_readline {prompt} {
 # ------------------------------------------------------------------
 proc gdbtk_tcl_readline_end {} {
   global gdbtk_state
-#  debug "readline_end"
+  debug "readline_end"
   catch {unset gdbtk_state(readlineArgs)}
   unset gdbtk_state(readlineActive)
   command::end_multi_line_input
@@ -646,50 +617,24 @@ proc gdbtk_tcl_file_changed {filename} {
 proc gdbtk_tcl_exec_file_display {filename} {
   global gdb_loaded gdb_running gdb_exe_name gdb_target_changed
 
+  set gdb_loaded 0
+  set gdb_running 0
+  set gdb_target_changed 1
+
   # DO NOT CALL set_exe here! 
-
-  # Clear out the GUI, don't do it if filename is "" so that
-  # you avoid distracting flashes in the source window.
-
-  if {$filename != ""} {
-    gdbtk_clear_file
-  }
-
   # set_exe calls file command with the filename in
   # quotes, so we need to strip them here.
   set gdb_exe_name [string trim $filename \']
 
-  SrcWin::point_to_main
-}
-
-# ------------------------------------------------------------------
-#  PROCEDURE: gdbtk_locate_main 
-#         This proc tries to locate a suitable main function from
-#         a list of names defined in the gdb/main_names preference; 
-#         returns the linespec (see below) if found, or a null string
-#         if not.
-#
-#  The return linespec looks like this:
-#  0: basename of the file
-#  1: function name
-#  2: full filename
-#  3: source line number
-#  4: address
-#  5: current PC - which will often be the same as address, but not when
-#  6: shared library name if the pc is in a shared lib
-#  we are browsing, or walking the stack.
-#
-# ------------------------------------------------------------------
-proc gdbtk_locate_main {} {
-  set main_names [pref get gdb/main_names]
-  debug "gdbtk_locate_main: Searching $main_names"
-  foreach main $main_names {
-    if {![catch {gdb_search functions $main -static 1}] \
-        && ![catch {gdb_loc $main} linespec]} {
-      return $linespec
-    }
+  # Reset the source windows to handle the new executable and
+  # try to find main (for cases when we load new symbols and then
+  # specify an exec file).
+  set srcs [ManagedWin::find SrcWin]
+  foreach w $srcs {
+    $w reset
   }
-  return {}
+
+  SrcWin::point_to_main
 }
 
 ##############################################
@@ -704,8 +649,10 @@ proc gdbtk_locate_main {} {
 proc set_exe_name {exe} {
   global gdb_exe_name gdb_exe_changed
   #debug "set_exe_name: exe=$exe  gdb_exe_name=$gdb_exe_name"
-  set gdb_exe_name $exe
-  set gdb_exe_changed 1    
+  if {$gdb_exe_name != $exe} {
+    set gdb_exe_name $exe
+    set gdb_exe_changed 1    
+  }
 }
 
 
@@ -714,10 +661,11 @@ proc set_exe_name {exe} {
 # ------------------------------------------------------------------ 
 proc set_exe {} {
   global gdb_exe_name gdb_exe_changed gdb_target_changed gdb_loaded file_done
-#  debug "gdb_exe_changed=$gdb_exe_changed gdb_exe_name=$gdb_exe_name"
+  debug "set_exe gdb_exe_changed=$gdb_exe_changed gdb_exe_name=$gdb_exe_name"
   if {$gdb_exe_changed} {
     set gdb_exe_changed 0
     if {$gdb_exe_name == ""} { return }
+    gdb_clear_file
     set err [catch {gdb_cmd "file '$gdb_exe_name'" 1} msg]
     if {$err} {
       debug "set_exe ERROR: $msg"
@@ -748,10 +696,9 @@ proc set_exe {} {
 
 # ------------------------------------------------------------------
 #  _open_file - open a file dialog to select a file for debugging.
-#  If filename is not "", then open this file.
 # ------------------------------------------------------------------
 
-proc _open_file {{file ""}} {
+proc _open_file {} {
   global gdb_running gdb_downloading tcl_platform
   
   if {$gdb_running || $gdb_downloading} {
@@ -766,32 +713,22 @@ proc _open_file {{file ""}} {
     }
   }
 
-  if {[string compare $file ""] == 0} {
-    set curFocus [focus]
-    
-    # Make sure that this is really a modal dialog...
-    # FIXME: Add a disable_all to ide_grab_support.
-    
-    ide_grab_support disable_except {}
-    
-    set file [tk_getOpenFile -parent . -title "Load New Executable"]
-  
-    ide_grab_support enable_all
-    
-    # If no one had the focus before, leave it that way (since I
-    # am not sure how this could happen...  Also, the vwait in 
-    # tk_getOpenFile could have allowed the curFocus window to actually
-    # be destroyed, so make sure it is still around.
-    
-    if {$curFocus != "" && [winfo exists $curFocus]} {
-      raise [winfo toplevel $curFocus]
-      focus $curFocus
-    }
-  } elseif {![file exists $file]} {
-    tk_messageBox -message "File \"$file\" does not exist"
-    return 0
+  set curFocus [focus]
+
+  # Make sure that this is really a modal dialog...
+  # FIXME: Add a disable_all to ide_grab_support.
+
+  ide_grab_support disable_except {}
+  set file [tk_getOpenFile -parent . -title "Load New Executable"]
+  ide_grab_support enable_all
+
+  # If no one had the focus before, leave it that way (since I
+  # am not sure how this could happen...
+
+  if {$curFocus != ""} {
+    raise [winfo toplevel $curFocus]
+    focus $curFocus
   }
-    
 
   if {$file == ""} {
     return 0
@@ -803,11 +740,8 @@ proc _open_file {{file ""}} {
     set file [ide_cygwin_path to_posix $file]
   }
   
-  catch {gdb_cmd "cd $root"}
-
-  # Clear out gdb's internal state, so that it will allow us
-  # (the gui) to ask the user questions.
   gdb_clear_file
+  catch {gdb_cmd "cd $root"}
 
   # The gui needs to set this...
   set_exe_name $file
@@ -825,82 +759,73 @@ proc _open_file {{file ""}} {
 # ------------------------------------------------------------------
 # PROC: set_target_name - Update the target name.  
 #
-# This function will prompt for a new target and update
-# all variables.
-#
-# If $prompt is 0 it will just update gdb_target_cmd from gdb_target.
+# If $prompt is 0, no dialog is displayed and the target command is 
+# created from preferences.
 #
 # RETURN:
 #     1 if successful, 
 #     0 if the not (the user canceled the target selection dialog)
 # ------------------------------------------------------------------
-proc set_target_name {{prompt 1}} {
+proc set_target_name {targ {prompt 1}} {
   global gdb_target_name gdb_target_changed gdb_exe_changed
   global gdb_target_cmd gdb_pretty_name
-#  debug
-  set cmd_tmp $gdb_target_cmd
-  set name_tmp $gdb_target_name
 
-#  debug "gdb_target_name=$gdb_target_name; name_tmp=$name_tmp"
   if {$prompt} {
+    set cmd_tmp $gdb_target_cmd
+    set name_tmp $gdb_target_name
     set win [ManagedWin::open TargetSelection -exportcancel 1 -center \
 	       -transient]
-    # need to call update here so the target selection dialog can take over
-    update idletasks
-  }
 
-#  debug "gdb_target_name=$gdb_target_name"
-  if {$gdb_target_name == "CANCEL"} {
+    if {$gdb_target_name == "CANCEL"} {
+      set gdb_target_cmd $cmd_tmp
+      set gdb_target_name $name_tmp
+      return 0
+    }
+    vwait gdb_target_name
+    set target $gdb_target_name
+    set targ [TargetSelection::getname $target cmd]
     set gdb_target_cmd $cmd_tmp
-    set gdb_target_name $name_tmp
-    return 0
-  }
-  set target $gdb_target_name
-  set targ [TargetSelection::getname $target cmd]
-  set gdb_target_cmd $cmd_tmp
-  set gdb_pretty_name [TargetSelection::getname $target pretty-name]
-
-#  debug "target=$target pretty_name=$gdb_pretty_name"
-  set targ_opts ""
-  switch -regexp -- $gdb_target_name {
-    deci2 {
-      set hostname [pref getd gdb/load/$target-hostname]
-      if {$hostname == ""} {
-        set hostname [pref get gdb/load/default-hostname]
+    set gdb_pretty_name [TargetSelection::getname $target pretty-name]
+    
+    set targ_opts ""
+    switch -regexp -- $gdb_target_name {
+      deci2 {
+        set hostname [pref getd gdb/load/$target-hostname]
+        if {$hostname == ""} {
+          set hostname [pref get gdb/load/default-hostname]
+        }
+        set targ [lrep $targ "deci2X" $hostname]
       }
-      set targ [lrep $targ "deci2X" $hostname]
+      sim|ice {
+	set targ $gdb_target_name
+	set targ_opts [pref getd gdb/load/${gdb_target_name}-opts]
+      }     
+      default {
+	set port [pref getd gdb/load/$target-port]
+	if {$port == ""} {
+	  set port [pref get gdb/load/default-port]
+	}
+	set portnum [pref getd gdb/load/$target-portname]
+	if {$portnum == ""} {
+	  set portnum [pref get gdb/load/default-portname]
+	}
+	set hostname [pref getd gdb/load/$target-hostname]
+	if {$hostname == ""} {
+	  set hostname [pref get gdb/load/default-hostname]
+	}
+	# replace "com1" with the real port name
+	set targ [lrep $targ "com1" $port]
+	# replace "tcpX" with hostname:portnum
+	set targ [lrep $targ "tcpX" ${hostname}:${portnum}]
+      }
     }
-    sim|ice {
-      set targ $gdb_target_name
-      set targ_opts [pref getd gdb/load/${gdb_target_name}-opts]
+    
+    #debug "set_target_name: $targ gdb_target_cmd=$gdb_target_cmd"
+    if {$gdb_target_cmd != $targ || $gdb_target_changed} {
+      set gdb_target_changed 1
+      set gdb_target_cmd "$targ $targ_opts"
     }
-    default {
-      set port [pref getd gdb/load/$target-port]
-      if {$port == ""} {
-	set port [pref get gdb/load/default-port]
-      }
-      set portnum [pref getd gdb/load/$target-portname]
-      if {$portnum == ""} {
-	set portnum [pref get gdb/load/default-portname]
-      }
-      set hostname [pref getd gdb/load/$target-hostname]
-      if {$hostname == ""} {
-	set hostname [pref get gdb/load/default-hostname]
-      }
-      # replace "com1" with the real port name
-      set targ [lrep $targ "com1" $port]
-      # replace "tcpX" with hostname:portnum
-      set targ [lrep $targ "tcpX" ${hostname}:${portnum}]
-      # replace "ethX" with hostname
-      set targ [lrep $targ "ethX" e=${hostname}]
-    }
-  }
-  
-#  debug "targ=$targ gdb_target_cmd=$gdb_target_cmd"
-  if {$gdb_target_cmd != $targ || $gdb_target_changed} {
-    set gdb_target_changed 1
-    set gdb_target_cmd "$targ $targ_opts"
-  }
+  }  
   return 1
 }
 
@@ -909,23 +834,13 @@ proc set_target_name {{prompt 1}} {
 # ------------------------------------------------------------------
 proc set_target {} {
   global gdb_target_cmd gdb_target_changed gdb_pretty_name gdb_target_name
-#  debug "gdb_target_changed=$gdb_target_changed gdb_target_cmd=\"$gdb_target_cmd\""
-#  debug "gdb_target_name=$gdb_target_name"
-  if {$gdb_target_cmd == "" && ![TargetSelection::native_debugging]} {
-    if {$gdb_target_name == ""} {
-      set prompt 1
-
-      # get the default
-      #set gdb_target_name [pref getd gdb/load/target]
-    } else {
-      set prompt 0
-    }
-    if {![set_target_name $prompt]} {
-      set gdb_target_name ""
-      return CANCELED
+  debug "set_target \"$gdb_target_changed\" \"$gdb_target_cmd\""
+  if {$gdb_target_cmd == ""} {
+    if {![set_target_name ""]} {
+      return 2
     }
   }
-
+  
   if {$gdb_target_changed} {
     set srcWin [lindex [ManagedWin::find SrcWin] 0]
 
@@ -938,7 +853,7 @@ proc set_target {} {
 
     if {$err} {
       if {[string first "Program not killed" $msg] != -1} {
-	return CANCELED
+	return 2
       }
       update
       set dialog_title "GDB"
@@ -947,7 +862,7 @@ proc set_target {} {
 	-modal task -message "$msg\n\n$debugger_name cannot connect to the target board\
 using [lindex $gdb_target_cmd 1].\nVerify that the board is securely connected and, if\
 necessary,\nmodify the port setting with the debugger preferences."
-      return ERROR
+      return 0
     }
     
     if {![catch {pref get gdb/load/$gdb_target_name-after_attaching} aa] && $aa != ""} {
@@ -956,9 +871,9 @@ necessary,\nmodify the port setting with the debugger preferences."
       }
     }
     set gdb_target_changed 0
-    return TARGET_CHANGED
+    return 1
   }
-  return TARGET_UNCHANGED
+  return 3
 }
 
 # ------------------------------------------------------------------
@@ -970,54 +885,87 @@ necessary,\nmodify the port setting with the debugger preferences."
 proc run_executable { {auto_start 1} } {
   global gdb_loaded gdb_downloading gdb_target_name
   global gdb_exe_changed gdb_target_changed gdb_program_has_run
-  global gdb_running gdb_exe_name
+  global gdb_loaded
 
-#  debug "auto_start=$auto_start gdb_target_name=$gdb_target_name"
+  debug "run_executable $auto_start $gdb_target_name"
 
-  set gdb_running_saved $gdb_running
-  set gdb_running 0
-
-  # No executable was specified.  Prompt the user for one.
-  if {$gdb_exe_name == ""} {
-    if {[_open_file]} {
-      run_executable $auto_start
-      return
-    } else {
-      # The user canceled the load of a new executable.
-      return
+  # This is a hack.  If the target is "sim" the opts are appended
+  # to the target command. Otherwise they are assumed to be command line
+  # args.  What about simulators that accept command line args?
+  if {$gdb_target_name != "sim"} {
+    # set args
+    set gdb_args [pref getd gdb/load/$gdb_target_name-opts]
+    if { $gdb_args != ""} {
+      debug "set args $gdb_args"
+      catch {gdb_cmd "set args $gdb_args"}
     }
   }
 
   if {$gdb_downloading} { return }
   if {[pref get gdb/control_target]} {
     # Breakpoint mode
+
     set_exe
 
     # Attach
-    if {$gdb_target_name == "" || [pref get gdb/src/run_attach]} {
-      if {[gdbtk_attach_remote] == "ATTACH_CANCELED"} {
-	return
+    if {[pref get gdb/src/run_attach]} {
+      debug "Attaching...."
+      while {1} {
+	switch [set_target] {
+	  0 {
+	    # target command failed, ask for a new target name
+	      debug "run_executable 1"
+	      if {![set_target_name ""]} {
+	      # canceled again
+	      catch {gdb_cmd "delete $bp_at_main"}
+	      catch {gdb_cmd "delete $bp_at_exit"}
+	      debug "run_executable 2"
+	      return
+	    }
+	  }
+	  1 {
+	    # success -- target changed
+	      debug "run_executable 3"
+	    set gdb_loaded 0
+	    break 
+	  }
+	  2 {
+	    # command cancelled by user
+	      debug "run_executable 4"
+	    catch {gdb_cmd "delete $bp_at_main"}
+	    catch {gdb_cmd "delete $bp_at_exit"}
+	    return
+	  }
+
+	  3 {
+	      # success -- target NOT changed (i.e., rerun)
+	      break
+	  }
+	}
       }
     }
 
     # Download
-    if {[pref get gdb/src/run_load] && $gdb_target_name != "exec"} {
+    if {[pref get gdb/src/run_load]} {
       debug "Downloading..."
-      set gdb_loaded 0
-      
+      # If we have a new run request and the executable or target has changed
+      # then we need to download the new executable to the new target.
+      if {$gdb_exe_changed || $gdb_target_changed} {
+	set gdb_loaded 0
+      }
+      debug "run_executable: gdb_loaded=$gdb_loaded"
+      set saved_loaded $gdb_loaded
       # if the app has not been downloaded or the app has already
       # started, we need to redownload before running
       if {!$gdb_loaded} {
 	if {[Download::download_it]} {
 	  # user cancelled the command
-#	  debug "user cancelled the command $gdb_running"
-	  set gdb_loaded 0
+	  set gdb_loaded $saved_loaded
 	  gdbtk_update
 	  gdbtk_idle
 	}
 	if {!$gdb_loaded} {
 	  # The user cancelled the download after it started
-#	  debug "User cancelled the download after it started $gdb_running"
 	  gdbtk_update
 	  gdbtk_idle
 	  return
@@ -1033,13 +981,9 @@ proc run_executable { {auto_start 1} } {
     }
       
     if {[pref get gdb/load/main]} {
-      set main "main"
-      if {[set linespec [gdbtk_locate_main]] != ""} {
-        set main [lindex $linespec 1]
-      }
-      debug "Setting new BP at $main"
-      catch {gdb_cmd "clear $main"}
-      catch {gdb_cmd "break $main"}
+      debug "Setting new BP at main"
+      catch {gdb_cmd "clear main"}
+      catch {gdb_cmd "break main"}
     }
 
     # set BP at user-specified function
@@ -1050,59 +994,33 @@ proc run_executable { {auto_start 1} } {
 	catch {gdb_cmd "break $bp"}
       }
     }
-
-    # This is a hack.  If the target is "sim" the opts are appended
-    # to the target command. Otherwise they are assumed to be command line
-    # args.  What about simulators that accept command line args?
-    if {$gdb_target_name != "sim"} {
-      # set args
-      set gdb_args [pref getd gdb/load/$gdb_target_name-opts]
-      if { $gdb_args != ""} {
-	debug "set args $gdb_args"
-	catch {gdb_cmd "set args $gdb_args"}
-      }
-    }
-
-    # 
+    
     # Run
-
-    if {$auto_start} {
-      if {[pref get gdb/src/run_run]} {
-	debug "Runnning target..."
-	set run run
-      } else {
-	debug "Continuing target..."
-	set run cont
-      }
-      if {$gdb_target_name == "exec"} {
-	set run run
-      }
-      if {[catch {gdb_immediate $run} msg]} {
-	dbug W "msg=$msg"
-	gdbtk_idle
-	if {[string match "*help target*" $msg]} {
-	  set_target_name
-	  run_executable $auto_start
-	  return
+    if {[pref get gdb/src/run_run] || [pref get gdb/src/run_cont]} {
+      if {$auto_start} {
+	if {[pref get gdb/src/run_run]} {
+	  debug "Runnning target..."
+	  set run run
+	} else {
+	  debug "Continuing target..."
+	  set run cont
 	}
+	if {$gdb_target_name == "exec"} {
+	  set run run
+	}
+	catch {gdb_immediate $run} msg
 	if {[string match "No executable*" $msg]} {
 	  # No executable was specified.  Prompt the user for one.
+	  gdbtk_idle
 	  if {[_open_file]} {
 	    run_executable $auto_start
-	  } else {
-	    debug "CANCELLED"
-	  }
+	  } else {debug "CANCELLED"}
 	  return
 	}
-	set gdb_running $gdb_running_saved
       } else {
-	debug RUNNING
-	set gdb_running 1
+	SrcWin::point_to_main
       }
-    } else {
-      SrcWin::point_to_main
     }
-
     gdbtk_update
     gdbtk_idle
   } elseif {[pref get gdb/mode]} {
@@ -1111,236 +1029,6 @@ proc run_executable { {auto_start 1} } {
     tstart
   }
   return
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_attach_remote - attach to the target
-#        This proc returns the following status messages:
-#
-#        ATTACH_ERROR: An error occurred connecting to target.
-#        ATTACH_CANCELED: The attach was canceled.
-#        ATTACH_TARGET_CHANGED: Successfully attached, target changed.
-#        ATTACH_TARGET_UNCHANGED: Successfully attached, target unchanged.
-#        UNKNOWN: An unknown error occurred.
-# ------------------------------------------------------------------
-proc gdbtk_attach_remote {} {
-  global gdb_loaded
-
-  debug "Attaching...."
-  set r UNKNOWN
-  while {1} {
-
-    switch [set_target] {
-
-      ERROR {
-	# target command failed, ask for a new target name
-	if {![set_target_name]} {
-	  # canceled again
-	  set r ATTACH_ERROR
-	  break
-	}
-      }
-
-      TARGET_CHANGED {
-	# success -- target changed
-	set gdb_loaded 0
-	set r ATTACH_TARGET_CHANGED
-	break
-      }
-
-      CANCELED {
-	# command cancelled by user
-	set r ATTACH_CANCELED
-	break
-      }
-
-      TARGET_UNCHANGED {
-	# success -- target NOT changed (i.e., rerun)
-	set r ATTACH_TARGET_UNCHANGED
-	break
-      }
-    }
-  }
-
-#  debug "Attach returning: \"$r\""
-  return $r
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_step - step the target
-# ------------------------------------------------------------------
-proc gdbtk_step {} {
-  catch {gdb_immediate step}
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_next
-# ------------------------------------------------------------------
-proc gdbtk_next {} {
-  catch {gdb_immediate next}
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_finish
-# ------------------------------------------------------------------
-proc gdbtk_finish {} {
-  catch {gdb_immediate finish}
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_continue
-# ------------------------------------------------------------------
-proc gdbtk_continue {} {
-  catch {gdb_immediate continue}
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_stepi
-# ------------------------------------------------------------------
-proc gdbtk_stepi {} {
-  catch {gdb_immediate stepi}
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_nexti
-# ------------------------------------------------------------------
-proc gdbtk_nexti {} {
-  catch {gdb_immediate nexti}
-}
-
-  # ------------------------------------------------------------------
-#  PROC: gdbtk_attached
-# ------------------------------------------------------------------
-#
-# This is called AFTER gdb has successfully done an attach.  Use it to 
-# bring the GUI up to a current state...
-proc gdbtk_attached {} {
-  gdbtk_update
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_detached
-# ------------------------------------------------------------------
-#
-# This is called AFTER gdb has successfully done an detach.  Use it to 
-# bring the GUI up to a current state...
-proc gdbtk_detached {} {
-  if {!$::gdb_shutting_down} {
-    run_hooks gdb_no_inferior_hook
-  }
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_stop
-# ------------------------------------------------------------------
-#
-# The stop button is tricky. In order to use the stop button,
-# the debugger must be able to keep gui alive while target_wait is
-# blocking (so that the user can interrupt or detach from it).
-# 
-# The best solution for this is to capture gdb deep down where it
-# can block. For _any_ target board, this will be in either
-# serial or socket code. These places call ui_loop_hook to 
-# keep us alive. For native unix, we use an interval timer.
-# Simulators either call ui_loop_hook directly (older sims, at least)
-# or they call gdb's os_poll_quit callback, where we insert a call
-# to ui_loop_hook. Some targets (like v850ice and windows native)
-# require a call to ui_loop_hook directly in target_wait. See comments
-# before gdb_stop and x_event to find out more about how this is accomplished.
-#
-# The stop button's behavior:
-# Pressing the stop button should attempt to stop the target. If, after
-# some time (like 3 seconds), gdb fails to fall out of target_wait (i.e.,
-# the gui's idle hooks are run), then open a dialog asking the user if
-# he'd like to detach.
-proc gdbtk_stop {} {
-  global _gdbtk_stop
-
-  if {$_gdbtk_stop(timer) == ""} {
-    add_hook gdb_idle_hook gdbtk_stop_idle_callback
-    set _gdbtk_stop(timer) [after 3000 gdbtk_detach]
-    catch {gdb_stop}
-  }
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_stop_idle_callback
-# ------------------------------------------------------------------
-# This callback normally does nothing. When the stop button has
-# been pressed, though, and gdb has successfully stopped the target,
-# this callback will clean up after gdbtk_stop, removing the "Detach"
-# dialog (if it's open) and gettingg rid of any outstanding timers
-# and hooks.
-proc gdbtk_stop_idle_callback {} {
-  global _gdbtk_stop gdbtk_state
-
-  # Check if the dialog asking if user wants to detach is open
-  # and unpost it if it exists.
-  if {$_gdbtk_stop(msg) != ""} {
-    set ans [list answer $_gdbtk_stop(msg)]
-    set gdbtk_state($ans) no
-  }
-
-  if {$_gdbtk_stop(timer) != ""} {
-    # Cancel the timer callback
-    after cancel $_gdbtk_stop(timer)
-    set _gdbtk_stop(timer) ""
-    catch {remove_hook gdb_idle_hook gdbtk_stop_idle_callback}
-  }
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_detach
-# ------------------------------------------------------------------
-# This proc is installed as a timer event when the stop button
-# is pressed. If target_wait doesn't return (we were unable to stop
-# the target), then this proc is called.
-#
-# Open a dialog box asking if the user would like to detach. If so,
-# try to detach. If not, do nothing and go away.
-proc gdbtk_detach {} {
-  global _gdbtk_stop
-
-  set _gdbtk_stop(msg) "No response from target. Detach from target\n(and stop debugging it)?"
-  if {[gdbtk_tcl_query  $_gdbtk_stop(msg) no]} {
-    catch {gdb_stop detach}
-  }
-
-  set _gdbtk_stop(timer) ""
-  set _gdbtk_stop(msg) ""
-  remove_hook gdb_idle_hook gdbtk_stop_idle_callback
-}
-
-# ------------------------------------------------------------------
-#  PROC: gdbtk_run
-# ------------------------------------------------------------------
-proc gdbtk_run {} {
-  run_executable
-}
-
-# ------------------------------------------------------------------
-# PROC:  gdbtk_attach_native: attach to a running target
-# ------------------------------------------------------------------
-proc gdbtk_attach_native {} {
-    ManagedWin::open_dlg AttachDlg ;#-transient
-
-    debug "ManagedWin got [AttachDlg::last_button] [AttachDlg::pid]"
-
-    if {[AttachDlg::last_button]} {
-	set pid [AttachDlg::pid]
-	set symbol_file [AttachDlg::symbol_file]
-	if {![_open_file $symbol_file]} {
-	    ManagedWin::open WarningDlg -transient \
-		    -message "Could not load symbols from $symbol_file."
-	    return
-	}
-	
-	if {[catch {gdb_cmd "attach $pid"} result]} {
-	    ManagedWin::open WarningDlg -transient \
-		    -message [list "Could not attach to $pid:\n$result"]
-	    return
-	}
-    }
 }
 
 # ------------------------------------------------------------------
@@ -1353,7 +1041,7 @@ proc set_baud {} {
   if {$baud == ""} {
     set baud [pref get gdb/load/baud]
   }
-#  debug "setting baud to $baud"
+  debug "setting baud to $baud"
   catch {gdb_cmd "set remotebaud $baud"}
 }
 
@@ -1365,6 +1053,49 @@ proc do_state_hook {varname ind op} {
 }
 
 # ------------------------------------------------------------------
+# PROC: connect -
+# ------------------------------------------------------------------
+proc connect {{async 0}} {
+    global gdb_loaded file_done gdb_running
+    debug "in connect"
+    gdbtk_busy
+    set result [set_target]
+    debug "result is $result"
+    switch $result {
+     0 {
+       gdbtk_idle
+       set gdb_target_changed 1
+       return 0
+       }
+     1 {
+       set gdb_loaded 1
+       if {[pref get gdb/load/check] && $file_done} {
+             set err [catch {gdb_cmd "compare-sections"} errTxt]
+             if {$err} {
+               tk_messageBox -title "Error" -message $errTxt -icon error \
+                -type ok
+             }
+       }
+       gdbtk_idle
+       tk_messageBox -title "GDB" -message "Successfully connected" \
+	 -icon info -type ok
+       return 1
+       } 
+     2 {
+        # cancelled by user
+        gdbtk_idle
+        tk_messageBox -title "GDB" -message "Connection Cancelled" -icon info \
+         -type ok
+        return 0
+       }
+      3 {
+        gdbtk_idle
+	return 1
+      }
+    }     
+ }
+
+# ------------------------------------------------------------------
 # PROC: disconnect -
 # ------------------------------------------------------------------
 proc disconnect {{async 0}} {
@@ -1373,9 +1104,7 @@ proc disconnect {{async 0}} {
    # force a new target command to do something
    set gdb_loaded 0
    set gdb_target_changed 1
-   set gdb_running 0
-   gdbtk_idle
-   gdbtk_update
+   set gdb_running 0 
  }
 
 # ------------------------------------------------------------------
@@ -1414,128 +1143,3 @@ proc source_file {} {
     gdb_cmd "source $file_name"
   }
 }
-
-
-# -----------------------------------------------------------------------------
-# NAME:		gdbtk_signal
-#
-# SYNOPSIS:	gdbtk_signal {name longname}
-#
-# DESC:		This procedure is called from GDB when a signal	
-#		is generated, for example, a SIGSEGV.
-#
-# ARGS:		name - The name of the signal, as returned by
-#			target_signal_to_name().
-#		longname - A description of the signal.
-# -----------------------------------------------------------------------------
-proc gdbtk_signal {name {longname ""}} {
-  dbug W "caught signal $name $longname"
-  set longname
-  set message "Program received signal $name, $longname"
-  set srcs [ManagedWin::find SrcWin]
-  foreach w $srcs {
-    $w set_status $message
-  }
-  gdbtk_tcl_ignorable_warning signal $message
-  update idletasks
-}
-
-# Hook for clearing out executable state. Widgets should register a callback
-# for this hook if they have anything that may need cleaning if the user
-# requests to re-load an executable.
-define_hook gdb_clear_file_hook
-
-# -----------------------------------------------------------------------------
-# NAME:       gdbtk_clear_file
-#
-# SYNOPSIS:   gdbtk_clear_file
-#
-# DESC:       This procedure is called when the user requests a new exec
-#             file load. It runs the gdb_clear_file_hook, which tells
-#             all widgets to clear state. It CANNOT call gdb_clear_file,
-#             since this hook runs AFTER we load a new exec file (i.e.,
-#             gdb_clear_file would clear the file name).
-#
-# ARGS:       none
-# -----------------------------------------------------------------------------
-proc gdbtk_clear_file {} {
-  global gdb_target_name
-
-  dbug W "GDBTK_CLEAR_FILE"
-  # Give widgets a chance to clean up
-  run_hooks gdb_clear_file_hook
-
-  # Save the target name in case the user has already selected a
-  # target. No need to force the user to select it again.
-  set old_target $gdb_target_name
-
-  # Finally, reset our state
-  initialize_gdbtk
-
-  set gdb_target_name $old_target
-}
-
-# ------------------------------------------------------------------
-#  PROC: intialize_gdbtk - (re)initialize gdbtk's state
-# ------------------------------------------------------------------
-proc initialize_gdbtk {} {
-  global gdb_exe_changed gdb_target_changed gdb_running gdb_downloading \
-    gdb_loaded gdb_program_has_run file_done gdb_pretty_name gdb_exec \
-    gdb_target_cmd download_dialog gdb_pretty_name gdb_exe_name _gdbtk_stop \
-    gdb_target_name gdb_target_changed gdbtk_state gdb_kod_cmd gdb_shutting_down
-
-  # initialize state variables
-  set gdb_exe_changed 0
-  set gdb_target_changed 0
-  set gdb_running 0
-  set gdb_downloading 0
-  set gdb_loaded 0
-  set gdb_program_has_run 0
-  set file_done 0
-  set gdb_pretty_name {}
-  set gdb_exec {}
-  set gdb_target_cmd ""
-  set gdb_running 0
-  set gdb_shutting_down 0
-
-  set download_dialog ""
-
-  # gdb_pretty_name is the name of the GDB target as it should be
-  # displayed to the user.
-  set gdb_pretty_name ""
-
-  # gdb_exe_name is the name of the executable we are debugging.  
-  set gdb_exe_name ""
-
-  # Initialize readline
-  if {![info exists gdbtk_state(readline)]} {
-    # Only do this once...
-    set gdbtk_state(readline) 0
-    set gdbtk_state(console) ""
-  }
-
-  # check for existence of a kod command and get it's name and
-  # text for menu entry
-  set gdb_kod_cmd ""
-  set msg ""
-  if {![catch {gdb_cmd "show os"} msg] && ($msg != "")} {
-    set line1 [string range $msg 0 [expr [string first \n $msg] -1]]
-    if {[regexp -- \"(.*)\" $line1 dummy cmd]} {
-      set gdb_kod_cmd $cmd
-    }
-  }
-#  debug "kod_cmd=$gdb_kod_cmd"
-
-  # setup stop button
-  set _gdbtk_stop(timer) ""
-  set _gdbtk_stop(msg) ""
-
-  # gdb_target_name is the name of the GDB target; that is, the argument
-  # to the GDB target command.
-  set gdb_target_name ""
-
-  # By setting gdb_target_changed, we force a target dialog
-  # to be displayed on the first "run"
-  set gdb_target_changed 1
-}
-

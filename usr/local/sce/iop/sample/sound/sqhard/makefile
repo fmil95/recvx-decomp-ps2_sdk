@@ -1,7 +1,7 @@
 #
 #  IOP test program Makefile
 #
-#  $Id: makefile,v 1.12 2001/03/06 10:12:00 xokano Exp $
+#  $Id: makefile,v 1.11 2000/07/28 14:11:30 kaol Exp $
 #
 ifeq ($(wildcard PathDefs),)
 PathDefs:
@@ -31,12 +31,12 @@ clean:
 run: all
 	dsifilesv -c "\
 	dsreset 0 2 ;\
-	dsidb bload /usr/local/sce/data/sound/seq/sakana.sq 101000;\
-	dsidb bload /usr/local/sce/data/sound/wave/sakana.hd 120000;\
-        dsidb bload /usr/local/sce/data/sound/wave/sakana.bd 130000;\
-	dsidb bload /usr/local/sce/data/sound/seq/overload.sq 104000;\
-	dsidb bload /usr/local/sce/data/sound/wave/overload.hd 128000;\
-        dsidb bload /usr/local/sce/data/sound/wave/overload.bd 190000;\
+	dsidb bload sakana.sq 101000;\
+	dsidb bload sakana.hd 120000;\
+        dsidb bload sakana.bd 130000;\
+	dsidb bload overload.sq 104000;\
+	dsidb bload overload.hd 128000;\
+        dsidb bload overload.bd 190000;\
 	dsistart ../../../modules/libsd.irx ;\
 	dsistart ../../../modules/modhsyn.irx ;\
 	dsistart ../../../modules/modmidi.irx ;\

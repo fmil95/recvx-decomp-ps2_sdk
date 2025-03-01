@@ -1,23 +1,20 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
 */
-/* 
+/*
  *             I/O Processor Library Sample Program
- * 
+ *
  *                         - CD/DVD -
- * 
+ *
  *      Copyright (C) 2000 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
- * 
- * 
+ *
+ *
  */
 
 #include <stdio.h>
 #include <kernel.h>
-#include <sys/types.h>
 #include <sys/file.h>
-#include <sys/mount.h>
-#include <sys/ioctl.h>
 #include <string.h>
 #include <libsd.h>
 #include <libcdvd.h>
@@ -36,15 +33,14 @@
 
 #define MEDIA_CD
 
-// ストリーミングバッファ
+//	ストリーミングバッファ
 unsigned char  ring_buf[2048 * 80] __attribute__((aligned (16)));
-// ストレートPCM用バッファ
+//	ストレートPCM用バッファ
 unsigned char  sbuf[TOTAL_BUFF_SIZE] __attribute__((aligned (16)));
 
 int my_main(int arg);
 int gSem = 0;
 
-/* my_main()関数スレッドを作成するための関数 */
 int start( int argc, char *argv[] )
 {
         struct ThreadParam param;
@@ -65,53 +61,43 @@ int start( int argc, char *argv[] )
         }
 }
 
-/* 転送割り込みハンドラ */
-int IntFunc0(int channel, void* data )
+static int IntFunc0( void* common )
 {
         iSignalSema( gSem );
-        // --割り込みを再度許可するのに必要
-        //return 1;  
-        return 0;  
+        return 1;  //--割り込みを再度許可するのに必要
 }
 
-/* メイン処理関数 */
 int my_main(int arg)
 {
-	int	cnt0, ret, file_sec, rfds;
- 	u_int   err, which, *buf_addr, size;
+	int	cnt0, ret, start_st, file_sec, read_sector;
+ 	u_int   err, which, *buf_addr;
         struct SemaParam sem;
-	sceCdStmInit starg;
-	u_char argp[80],resp[16];
-        char filename[80]= "cdrom0:\\M_STEREO.INT;1";
+
+	sceCdlFILE fp;
+        sceCdRMode mode;
+        char filename[80]= "\\M_STEREO.INT;1";
 
 	printf("sample start.\n");
 
-        printf(" sceSdInit\n");
+	printf(" sceSdInit\n");
         sceSdInit(0);
-
-        /* 標準入出力のみを使用するのでsceCdInit()関数の呼出しは必要
-            ありません                                                  */
-        printf(" Drive Ready Wait\n");
-        *((int *)argp)= 0;
-        devctl("cdrom0:", CDIOC_DISKRDY, argp, 4, resp, 4);
-
-        printf(" Media Mode Set\n");
+	printf(" sceCdInit\n");
+	sceCdInit(SCECdINIT);
 #ifdef MEDIA_CD
-        *((int *)argp)= SCECdCD;
+	sceCdMmode(SCECdCD);
 #else
-        *((int *)argp)= SCECdDVD;
+	sceCdMmode(SCECdDVD);
 #endif
-        devctl("cdrom0:", CDIOC_MMODE, argp, 4, NULL, 0);
+	printf(" sceCdStInit\n");
+        sceCdStInit(80,5,(u_int)ring_buf);
+	printf(" sceCdDiskReady\n");
+	sceCdDiskReady(0);
 
-        starg.bufmax= 80;
-        starg.bankmax= 5;
-        starg.iop_bufaddr= (u_int)ring_buf;
-        devctl("cdrom0:", CDIOC_STREAMINIT, (void *)&starg,
-                                sizeof(sceCdStmInit), NULL, 0);
-
-        printf(" Drive Ready Wait\n");
-        *((int *)argp)= 0;
-        devctl("cdrom0:", CDIOC_DISKRDY, argp, 4, resp, 4);
+        //-- 割り込み環境の初期化を行っておく。
+        CpuEnableIntr();
+        EnableIntr( INUM_DMA_4 );
+        EnableIntr( INUM_DMA_7 );
+        EnableIntr( INUM_SPU );
 
         /* セマフォ作成 */
 	sem.initCount = 0;
@@ -119,33 +105,34 @@ int my_main(int arg)
         sem.attr = AT_THFIFO;
         gSem= CreateSema(&sem);
 
-        sceSdSetTransIntrHandler( 0, IntFunc0, NULL);
+        sceSdSetTransCallback( 0, IntFunc0 );
 
-        /* 標準入出力関数でファイルを読む (ストリーム) */
-	printf("open Filename: %s\n",filename);
-        rfds= open(filename, SCE_CdSTREAM);
-	if(rfds < 0){
-	    printf("open fail :%d\n",rfds);
-            return(-1);
+        /* ライブラリ関数でファイルを読む */
+	printf("Search Filename: %s\n",filename);
+	ret= sceCdSearchFile(&fp, filename);
+			/* ファイルの格納位置を検索する */
+	if(!ret){
+		printf("sceCdSearchFile fail :%d\n",ret);
+                return(-1);
 	}
-	size= lseek(rfds, 0, SEEK_END);
-        if (size < 0) {
-            printf("lseek() fails (%s): %d\n", filename, size);
-            close(rfds);
-            return(-1);
-    	}
-	ret = lseek(rfds, 0, SEEK_SET);
-	if (ret < 0) {
-            printf("lseek() fails (%s)\n", filename);
-            close(rfds);
-            return(-1);
-    	}
-	file_sec= size / 2048; if(size % 2048) file_sec++;
 
-        ret= read(rfds, (u_int *)sbuf, 2048 * READ_SECTOR * 2);
-	devctl("cdrom0:", CDIOC_GETERROR, NULL, 0, &err, 4);
-        if(err || (ret < 0)){
-                printf("read %d Disk error code= 0x%08x\n",ret, err);
+	sceCdDiskReady(0);
+	
+        /* ストリーム関数でファイルを読む */
+        mode.trycount= 0;
+                        /* エラー発生時は２５５回リトライする。 */
+        mode.spindlctrl= SCECdSpinNom;
+                        /* エラー発生時は回転速度を落してリード             */
+        mode.datapattern= SCECdSecS2048;
+			/* ストリーマはデータサイズ２０４８byteのみサポート */
+
+	file_sec= fp.size / 2048; if(fp.size % 2048) file_sec++;
+	start_st= fp.lsn;
+	sceCdStStart(start_st , &mode);
+
+        read_sector= sceCdStRead(READ_SECTOR * 2,(u_int *)sbuf, STMBLK, &err);
+        if(err){
+                printf("Disk error code= 0x%08x\n", err);
         }
 
 	/* ボリュームを設定する。*/
@@ -157,25 +144,23 @@ int my_main(int arg)
         sceSdSetParam( 0 | SD_P_BVOLR , 0x3fff );
 
 	/* データの転送の設定を行う */
-        sceSdBlockTrans( 0, SD_TRANS_MODE_WRITE|SD_BLOCK_LOOP,
+        sceSdBlockTrans( 0, SD_TRANS_MODE_WRITE|SD_BLOCK_MEM_DRY|SD_BLOCK_LOOP,
 						 sbuf, TOTAL_BUFF_SIZE );
 
 	for(cnt0= READ_SECTOR * 2; cnt0 < file_sec; cnt0+= READ_SECTOR){
 
-                // -- バッファの発音終了待ち
-                WaitSema(gSem); 
+                WaitSema(gSem); //-- バッファの発音終了待ち
                 which = 1 - (sceSdBlockTransStatus( 0, 0 ) >> 24);
 		buf_addr= (u_int *)(sbuf + (which * BUFF_SIZE));
-        	ret= read(rfds, buf_addr, 2048 * READ_SECTOR);
-		devctl("cdrom0:", CDIOC_GETERROR, NULL, 0, &err, 4);
-        	if(err || (ret < 0)){
-                	printf("read %d Disk error code= 0x%08x\n", ret, err);
+        	read_sector= sceCdStRead(READ_SECTOR, buf_addr, STMBLK, &err);
+        	if(err){
+                     printf("Disk error code= 0x%08x\n", err);
         	}
         }
         sceSdSetParam( 0 | SD_P_BVOLL , 0 );
         sceSdSetParam( 0 | SD_P_BVOLR , 0 );
 	sceSdBlockTrans( 0, SD_TRANS_MODE_STOP, NULL, 0 );
-	close(rfds);
+	sceCdStStop();
 
         printf("sample end.\n");
         return(0);

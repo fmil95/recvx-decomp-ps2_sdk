@@ -1,0 +1,196 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+                                                               Aug. 2000
+
+                                            サンプルの変更，新規追加機能
+========================================================================
+注意事項
+------------------------------------------------------------------------
+- eestruct.h、eeregs.hにおいて、レジスタマクロの名称、値等の誤記を
+  修正しました。
+  1.6.6までの環境において、該当するレジスタマクロを使用されていた場合、
+  動かなくなる可能性があります。ご注意ください。
+ 
+- iop側のモジュールにおいて、スレッドのプライオリティを変更する機能を
+  追加しましたが、今回のサンプルではまだ対応しておりません。
+
+- Graphics Framework サンプルでは、es2rawを用いてeS中間ファイル
+  フォーマットから生成されたデータを使用しています。
+  互いの仕様変更が大きく影響しますので、双方のバージョンには気を
+  つけてください。
+  Graphics Framework サンプル は、es2raw Version 0.4.5 に 対応しています。
+  es2raw Version 0.4.0 以前で作成したデータでは正常に実行できませんので
+  ご注意下さい。
+
+
+Release1.6.6以降のサンプルの新規追加・変更
+========================================================================
+新規追加
+------------------------------------------------------------------------
+- ee/sample/advanced/anti/aa1-feather
+  アンチエイリアシング効果とその使い方をしめすサンプルプログラムを追加し
+  ました。
+
+- ee/sample/advanced/anti/mountain
+  アンチエイリアシングライン上書きによるアンチエイリアシング効果とその
+  使い方をしめすサンプルプログラムを追加しました。
+
+- ee/sample/advanced/anti/pcrtc-blend
+  PCRTCのマージ回路によるアンチエイリアシング効果とその使い方をしめす
+  サンプルプログラムを追加しました。
+
+- ee/sample/advanced/anti/refmap-448
+  スペキュラーのある照度計算、リフレクションマッピングを行うサンプル
+  プログラムを追加しました。（Ｖ方向倍解像度）
+
+- ee/sample/advanced/anti/refmap-4times
+  スペキュラーのある照度計算、リフレクションマッピングを行うサンプルプログ
+  ラムを追加しました。（サブピクセルずらしによるアンチエイリアシング）
+
+- ee/sample/advanced/anti/refmap-noAA
+  スペキュラーのある照度計算、リフレクションマッピングを行うサンプル
+  プログラムを追加しました。（通常のダブルバッファ（640x224 PSMCT32）で、
+  アンチエイリアシング無しのリファレンスプログラム）
+
+- ee/sample/advanced/anti/refmap-onepass-AAline
+  スペキュラーのある照度計算、リフレクションマッピングを行うサンプルに、
+  AA1 LINE によるアンチエイリアシング機能を付加したプログラムを追加しま
+  した。
+
+- ee/sample/advanced/anti/texmap-onepass-AAline
+  スペキュラーのある照度計算、テクスチャマッピングを行うサンプルに、AA1 
+  LINE によるアンチエイリアシング機能を付加したプログラムを追加しました。
+
+  詳細については ee/sample/advanced/anti 以下のドキュメントを参照下さい。
+
+- ee/sample/kernel/priority
+  スレッド優先度を理解するためのサンプルプログラムを追加しました。
+
+- ee/sample/kernel/rotate
+  スレッドレディキューの動作を理解するためのサンプルプログラムを追加しま
+  した。
+
+- ee/sample/kernel/semaphore
+  VSync割り込みとセマフォを使ってスレッドの動作を制御するサンプルプロ
+  グラムを追加しました。
+
+- ee/sample/kernel/vsync
+  スレッドとVSyncStart割り込みハンドラの動作を理解するためのサンプル
+  プログラムを追加しました。
+
+- ee/sample/mcx/basic
+  PDAライブラリ機能の使い方や関数呼び出しに対する反応を確認するための
+  サンプルプログラムを追加しました。
+
+- ee/sample/scf
+  "PlayStation 2"上のシステム設定に設定されている情報を取得するサンプル
+  プログラムを追加しました。
+
+- iop/sample/usb/usbdesc
+　USBデバイスの静的ディスクリプタをダンプするサンプルプログラムを
+  追加しました。
+
+
+------------------------------------------------------------------------
+サンプルの変更点
+------------------------------------------------------------------------
+- ee/sample/ipu/ezmovie
+  Ch3 の DMA を起動中に Ch3 DMA のレジスタを再設定していた為、タイミングに
+  よってはDMAが停止しなくなるという不具合を修正しました。
+
+- ee/sample/mpeg/mpegvu1
+  今回のリリースより GS_IMR レジスタのマクロ名が変更されたため、サンプルで
+  使用されている GS_IMR_FINISH_M マクロ名を GS_IMR_FINISHMSK_M に
+  変更しました。
+
+- ee/sample/mpeg/mpegstr
+  プログラムコードを改善し、理解しやすいサンプルコードに変更しました。
+  PAL用縦解像度512 まで対応したサンプルに変更しました。
+
+- iop/sample/sound/ezmidi:
+  以下の理由により * 部分のコードを削除しました。
+    - DisableIntr() は割り込みをマスクするだけであり、転送途中の DMA を中断
+　    したり、転送終了を待つことはなく、必要のない処理であること
+    - INUM_DMA_10 のマスク期間内に EE からの sceSifCallRpc() が実行されると、
+　    タイミングによっては EE に処理が戻らない場合があること
+
+iop/sample/sound/ezmidi/midi_mu.c
+
+static int ATick(void)
+{
+     int oldstat;
+
+     while(1){
+          SleepThread();
+
+          //-- EEからmsinバッファが送られてきたならば、
+*         //   割り込み禁止にして
+          //   msinBf_Rにコピーする。hsynモジュールはmsinBf_Rを使う。
+          if ( ((sceCslMidiStream*)msinBf_T)->validsize != 0 ){
+*               DisableIntr( INUM_DMA_10 , &oldstat ); //-- SIFのDMA割り込み禁止
+               memcpy( msinBf_R, msinBf_T, MSIN_BUF_SIZE );
+               ((sceCslMidiStream*)msinBf_T)->validsize = 0;
+*               EnableIntr( INUM_DMA_10 ); //-- SIFのDMA割り込み許可
+          }
+
+- iop/sample/sound/ezbgm:
+  以下の理由により * 部分のコードを削除し、一部改変しました。
+    - CpuDisableIntr()/CpuEnableIntr()をここで使用するのは作法として適切で
+　    はなかったため。
+
+iop/sample/sound/ezbgm/bgm_play.c
+
+int _BgmPlay( int status )
+{
+	int i, ch, read_size, which;
+	int *addr, remain;
+
+	while ( 1 ){
+
+		//-- バッファの発音終了待ち
+		WaitSema(gSem);
+
+*		CpuDisableIntr();
+		//-- どちらのチャンネルからの割り込みか
+		if( (gBgmIntr[0] == 1) && ( ch != 0 ) )  ch = 0;
+		else if( (gBgmIntr[1] == 1) && ( ch != 1 ) )  ch = 1;
+		else if( gBgmIntr[0] == 1 )  ch = 0;
+		else if( gBgmIntr[1] == 1 )  ch = 1;
+		else {
+*			CpuEnableIntr();
+			continue;}
+
+		gBgmIntr[ch] = 0;
+*		CpuEnableIntr();
+
+- iop/sample/sound/sqhard
+  2 つの SQ/HD/BD を同時に扱えるサンプルに変更しました。
+
+
+========================================================================
+Release1.6以降の臨時リリースでのサンプルの改良,変更,修正
+------------------------------------------------------------------------
+ee/sample/graphics/framework
+  以下のテクスチャに対応しました。
+      RGBA32, RGB24, RGBA16
+      CLUT IDTEX8, IDTEX4
+
+  テクスチャサイズが最小1x1から最大1024x1024に対応しました。
+
+  以下の情報が出力できるようになりました。
+      共有形状  Share
+      階層構造  Hierarchy
+      キーフレームアニメーション(リニア補間)   Animation 
+
+  データフォーマットの変更に伴いデータの初期化・読み込みを修正しました。
+
+  複数の階層構造を持つモデルデータにおいて、同一形状のデータが
+  複数存在する場合、正しく表示できないという不具合を修正しました。
+
+- ee/sample/usb/usbmouse
+- iop/sample/usb/usbmouse
+  USB マウスサンプルドライバ（usbmouse.irx）のデータを取りこぼすことが
+  あるという不具合を修正しました。
+

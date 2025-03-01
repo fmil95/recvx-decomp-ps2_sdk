@@ -1,0 +1,221 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+ILOADP(DECI2 IOP Load Protocol) Specification
+==============================================
+
+
+ 1 概要
+--------
+
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである
+    ILOADP について説明します。
+    ILOADP は、IOP 上のロードマネージャをコントロールするためのプロトコル
+    で、プロトコル番号は、0x0150 です。
+
+  1.1 メッセージフォーマット
+
+    ILOADP メッセージは、基本的な DECI2 ヘッダを使用して送信されます。
+    DECI2 ヘッダに続いて、以下の ILOADP ヘッダが続き、さらに必要に応じて
+    データが追加されます。
+
+    Cmd Code
+
+      コマンドとリプライの種類を表し、以下の5種類のコマンドと対応するリプ
+      ライがあります。
+      
+      ILOADP_CMD_START	(0),  ILOADP_CMD_STARTR	(1)
+      ILOADP_CMD_REMOVE	(2),  ILOADP_CMD_REMOVER	(3)
+      ILOADP_CMD_LIST	(4),  ILOADP_CMD_LISTR	(5)
+      ILOADP_CMD_INFO	(6),  ILOADP_CMD_INFOR	(7)
+      ILOADP_CMD_WATCH	(8),  ILOADP_CMD_WATCHR	(9)
+      
+      また、IOP から HOST への以下の通知があります。
+      
+      ILOADP_CMD_REPORT	(16)
+      
+    いくつかのコマンドの戻り値には、以下のフォーマットのモジュール情報が
+    つくことがあります。
+
+ 2 メッセージ
+--------------
+
+
+  2.1 ILOADP_CMD_START
+
+    モジュールのロードと実行には、ILOADP_CMD_START と ILOADP_CMD_STARTR 
+    を使います。
+    
+    ILOADP_CMD_STARTコマンドは、 ILOADP ヘッダを以下のように設定してモジ
+    ュールのロードと実行を指示します。
+    
+      Cmd	= ILOADP_CMD_START
+      Stamp	= 任意の値 (IOP はこの値を関知しません)
+      Action	= 以下の bit flag
+      	  #define ILOADP_ACT_LOAD	0x01  モジュールのロードを要求。
+      	  #define ILOADP_ACT_START	0x02  ロードしたモジュールのスタートを
+      要求。
+      	  #define ILOADP_ACT_INFO	0x04  ILOADP_CMD_START リプライ時に
+      					     モジュール情報を付加することを要求。
+      	  #define ILOADP_ACT_WATCH	0x08  ロードしたモジュールを監視(Watch)
+       
+      					      することを要求。
+      					     (後述の ILOADP_CMD_WATCH コマン
+      					     ド参照)
+      modle_id = 実行するモジュールの ID (ILOADP_ACT_START の場合)
+      その他のフィールドは0
+      
+    Action に ILOADP_ACT_LOAD を指定した場合は、ILOADP ヘッダ に続いて、
+    ロードするファイルの名を表す null ターミネートされた文字列を続けます。
+    
+    Action に ILOADP_ACT_START を指定した場合は、ILOADP ヘッダおよびファ
+    イル名に続いて、各引数文字列が続きます。各引数はすべて null ターミネ
+    ートされた文字列です。
+    
+    ILOADP_ACT_START を単独で指定したときにもファイル名文字列はつけてくだ
+    さい。
+    このときは、ファイル名はダミーでもかまいません。
+    Action に ILOADP_ACT_WATCH を指定した場合、モジュールのロード／スター
+    ト時にモジュールを監視対象にします。
+    したがって、ILOADP_STAT_LOADED と ILOADP_STAT_RUNNING のステータスが
+    報告されることはありません。
+    
+    ファイル名と引数の文字列の合計の最大サイズは各文字列最後の null 
+    character も含めて 160byte です。
+    
+    ILOADP_ACT_LOAD と ILOADP_ACT_START の指定可能な組合わせは以下のとお
+    りです。
+    
+      ILOADP_ACT_LOAD | ILOADP_ACT_START
+      ILOADP_ACT_LOAD
+      ILOADP_ACT_START
+    
+    ロードが完了した時点で、ILOADP_CMD_STARTR リプライが返ります。
+    ILOADP_CMD_STARTRリプライの、ILOADP ヘッダに以下の情報が返ってきます。
+      
+      Cmd	= ILOADP_CMD_STARTR
+      Action	= コマンドに指定されたものと同じ値
+      Stamp	= コマンドに指定されたものと同じ値
+      Result	= 結果コード
+      	  #define ILOADP_RESULT_OK         0  正常終了
+      	  #define ILOADP_RESULT_LINKERR  １  リンク失敗
+      	  #define ILOADP_RESULT_NOMEM   2  メモリ不足
+      	  #define ILOADP_RESULT_OBJERR   3  オブジェクトファイルの形式が不
+      正
+      	  #define ILOADP_RESULT_NOMOD   4  指定されたモジュールが見つから
+      ない
+      	  #define ILOADP_RESULT_ILLCMD   5  コマンドの指定が不正
+      						(action に ILOADP_ACT_LOAD 
+      						もILOADP_ACT_STARTも無い等)
+      	  #define ILOADP_RESULT_BUSY     6  load 中に次の load コマンドが
+      来た
+      	  #define ILOADP_RESULT_NOFILE   7  ファイルが見つからない
+      	  #define ILOADP_RESULT_FILERR   8  ファイルの読み込みエラーが生じ
+      た
+      	  #define ILOADP_RESULT_MEMINUSE  9  指定したアドレスはすでに使用
+      中
+      Module_ID = ロードされたモジュールに付けられた ID 番号
+      
+      また、Action に ILOADP_ACT_INFO が指定されていると、ILOADP ヘッダに
+      続いてモジュール情報がつきます。
+    
+    ILOADP_CMD_STARTR リプライの送出後、ILOADP_ACT_START が指定されていれ
+    ば、モジュールの実行が開始されます。
+
+  2.2 ILOADP_CMD_REMOVE
+
+    現状未定義。
+
+  2.3 ILOADP_CMD_LIST
+
+    IOP上に存在するモジュールＩＤの一覧の取得を指示します。
+    
+    ILOADP_CMD_LISTコマンドは、 ILOADP ヘッダ を以下のように設定します。
+    
+      Cmd	= ILOADP_CMD_LIST
+      Stamp	= 任意の値
+      その他のフィールドは 0
+    
+    ILOADP_CMD_LISTRリプライの、ILOADP ヘッダ に以下の情報が返ってきます。
+    
+      Cmd	= ILOADP_CMD_LISTR
+      Stamp	= コマンドに指定されたものと同じ値
+      Result	= 結果コード
+      	  #define ILOADP_RESULT_OK   0  正常終了
+      
+    ILOADP ヘッダ に引き続いて、現存するモジュールの全ID が返ってきます。
+
+  2.4 ILOADP_CMD_INFO
+
+    特定のモジュールに関する情報を取得します。
+    
+    ILOADP_CMD_INFOコマンドは、 ILOADP ヘッダ を以下のように設定します。
+    
+      Cmd 	= ILOADP_CMD_INFO
+      Stamp	= 任意の値
+      Module_ID = 情報を取得したいモジュールのID
+      その他のフィールドは 0
+    
+    ILOADP_CMD_INFORリプライの、ILOADP ヘッダ に以下の情報が返ってきます。
+    
+      Cmd	= ILOADP_CMD_INFO
+      Stamp	= コマンドに指定されたものと同じ値
+      Module_ID = コマンドに指定されたものと同じ値
+      Result	= 結果コード
+      	  #define ILOADP_RESULT_OK        0  正常終了
+      	  #define ILOADP_RESULT_NOMOD   4  指定されたモジュールが見つから
+      ない
+      
+      ILOADP ヘッダ に続いてモジュール情報がつきます。
+
+  2.5 ILOADP_CMD_WATCH
+
+    モジュールの状態の変化の監視を要求します。
+    状態の変化は、後述の Module Status Report メッセージで通知されます。
+    
+    ILOADP_CMD_WATCH コマンドは、 ILOADP ヘッダ を以下のように設定します。
+    
+      Cmd	= ILOADP_CMD_WATCH
+      Stamp	= 任意の値
+      Module_ID = 状態変化を監視するモジュールのID
+      Action	= 以下のどちらか
+      	  ILOADP_ACT_WATCH_START	(1)  監視開始
+      	  ILOADP_ACT_WATCH_END	(0)  監視終了
+      その他のフィールドは 0
+      
+    ILOADP_CMD_WATCHR リプライの、ILOADP ヘッダ に以下の情報が返ってきま
+    す
+      
+      Cmd	= ILOADP_CMD_WATCHR
+      Stamp	= コマンドに指定されたものと同じ値
+      Module_ID = コマンドに指定されたものと同じ値
+      Action	= コマンドに指定されたものと同じ値
+      Result	= 結果コード
+      	  #define ILOADP_RESULT_OK	  0  正常終了
+      	  #define ILOADP_RESULT_NOMOD 4  指定されたモジュールが見つからな
+      い
+      
+    監視開始を指定した場合は、ILOADP_CMD_WATCHR リプライに引き続いて、モ
+    ジュールの現状をレポートする Module Status Report メッセージが返って
+    きます。
+
+  2.6 ILOADP_CMD_REPORT
+
+    以下の書式で、Module の状態の変化がレポートされます。
+    
+      Cmd	= ILOADP_CMD_REPORT
+      Module_ID = 状態の変化したモジュールの ID
+      Stamp	= つねに 0
+      Result	= モジュールの状態
+      	  #define ILOADP_STAT_LOADED  1  未実行
+      					   load のみで start が指示されていな
+      					   い状態
+      	  #define ILOADP_STAT_RUNNING 2  実行中
+      	  #define ILOADP_STAT_DONE_REMOVE  3  実行終了、メモリから削除
+      	  #define ILOADP_STAT_DONE_RESIDENT 4  実行終了、メモリに常駐
+    
+    ILOADP ヘッダ に続いて モジュールのエントリ関数の戻り値が１ワードつづ
+    き result が 3 または 4 のときのみ意味を持ち、モジュールのエントリ関
+    数の戻り値が入ります。その他の場合は 0 が返ります。

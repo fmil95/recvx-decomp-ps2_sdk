@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<TITLE> 開発用デバッグ支援ライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libdev.htm" SELECTED> 開発用デバッグ支援ライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+開発用デバッグ支援ライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 関数一覧<BR></A><BR>
+    <A HREF="#Heading4_1_4"> 参考資料<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libdevは、開発時のデバッグを支援するライブラリです。<BR>
+    libdevを利用すると、EE内部の主要デバイス（VU0 / VU1 / VIF0 / VIF1 / GIF）の実行・停止を制御したり、それらの状態を取得したりすることができます。また、"PlayStation 2"のモニタ画面を擬似コンソールとして、デバッグ用メッセージを出力することができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libdevに関連するファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libdev.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">devgif.h<BR>devvif0.h<BR>devvif1.h<BR>devvu0.h<BR>devvu1.h<BR>devfont.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>関数一覧</B>
+</A>
+</H3>
+<blockquote>
+    libdevで定義されている関数群は、擬似コンソール関連の関数を除いて、ある機能の関数がデバイスごとに別々に用意されているという構成になっています。機能と対象デバイスによって分類した関数一覧を次に示します。<BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1">
+(1) <B>VIF0 / VIF1 / GIFの制御</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対VIF0</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対VIF1</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対GIF</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">リセット</TD>
+<TD valign="TOP">Vif0Reset</TD>
+<TD valign="TOP">Vif1Reset</TD>
+<TD valign="TOP">GifReset</TD>
+</TR>
+<TR>
+<TD valign="TOP">一時停止</TD>
+<TD valign="TOP">Vif0Pause</TD>
+<TD valign="TOP">Vif1Pause</TD>
+<TD valign="TOP">GifPause</TD>
+</TR>
+<TR>
+<TD valign="TOP">停止解除</TD>
+<TD valign="TOP">Vif0Continue</TD>
+<TD valign="TOP">Vif1Continue</TD>
+<TD valign="TOP">GifContinue</TD>
+</TR>
+<TR>
+<TD valign="TOP">全レジスタの読み出し</TD>
+<TD valign="TOP">Vif0GetCnd</TD>
+<TD valign="TOP">Vif1GetCnd</TD>
+<TD valign="TOP">GifGetCnd</TD>
+</TR>
+<TR>
+<TD valign="TOP">FIFOへのデータ書き込み</TD>
+<TD valign="TOP">Vif0PutFifo</TD>
+<TD valign="TOP">Vif1PutFifo</TD>
+<TD valign="TOP">GifPutFifo</TD>
+</TR>
+<TR>
+<TD valign="TOP">FIFOからのデータ読み出し</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">Vif1GetFifo</TD>
+<TD valign="TOP">---</TD>
+</TR>
+<TR>
+<TD valign="TOP">エラーマスクの設定</TD>
+<TD valign="TOP">Vif0PutErr</TD>
+<TD valign="TOP">Vif1PutErr</TD>
+<TD valign="TOP">---</TD>
+</TR>
+<TR>
+<TD valign="TOP">エラーマスクの取得</TD>
+<TD valign="TOP">Vif0GetErr</TD>
+<TD valign="TOP">Vif1GetErr</TD>
+<TD valign="TOP">---</TD>
+</TR>
+<TR>
+<TD valign="TOP">PATH3転送モードの設定</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">GifPutImtMode</TD>
+</TR>
+<TR>
+<TD valign="TOP">PATH3転送モードの取得</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">GifGetImtMode</TD>
+</TR>
+<TR>
+<TD valign="TOP">PATH3マスクの設定</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">GifPutP3msk</TD>
+</TR>
+<TR>
+<TD valign="TOP">PATH3マスク状態の取得</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">GifGetP3msk</TD>
+</TR>
+</TABLE>
+<BR>
+    ※煩雑さを避けるため関数名先頭の「sceDev」を省略してあります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_2">
+(2) <B>VU0 / VU1の制御</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対VU0</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>対VU1</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">リセット</TD>
+<TD valign="TOP">Vu0Reset</TD>
+<TD valign="TOP">Vu1Reset</TD>
+</TR>
+<TR>
+<TD valign="TOP">一時停止（Force Break）</TD>
+<TD valign="TOP">Vu0Pause</TD>
+<TD valign="TOP">Vu1Pause</TD>
+</TR>
+<TR>
+<TD valign="TOP">停止解除</TD>
+<TD valign="TOP">Vu0Continue</TD>
+<TD valign="TOP">Vu1Continue</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバッグ機能の設定</TD>
+<TD valign="TOP">Vu0PutDbit</TD>
+<TD valign="TOP">Vu1PutDbit</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバッグ機能の設定</TD>
+<TD valign="TOP">Vu0PutTbit</TD>
+<TD valign="TOP">Vu1PutTbit</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバッグ機能の状態取得</TD>
+<TD valign="TOP">Vu0GetDbit</TD>
+<TD valign="TOP">Vu1GetDbit</TD>
+</TR>
+<TR>
+<TD valign="TOP">デバッグ機能の状態取得</TD>
+<TD valign="TOP">Vu0GetTbit</TD>
+<TD valign="TOP">Vu1GetTbit</TD>
+</TR>
+<TR>
+<TD valign="TOP">マイクロプログラムの再実行</TD>
+<TD valign="TOP">Vu0Exec</TD>
+<TD valign="TOP">Vu1Exec</TD>
+</TR>
+<TR>
+<TD valign="TOP">TPCレジスタの読み出し</TD>
+<TD valign="TOP">Vu0GetTpc</TD>
+<TD valign="TOP">Vu1GetTpc</TD>
+</TR>
+<TR>
+<TD valign="TOP">全レジスタの読み出し</TD>
+<TD valign="TOP">Vu0GetCnd</TD>
+<TD valign="TOP">Vu1GetCnd</TD>
+</TR>
+<TR>
+<TD valign="TOP">全レジスタへの書き込み</TD>
+<TD valign="TOP">Vu0PutCnd</TD>
+<TD valign="TOP">Vu1PutCnd</TD>
+</TR>
+</TABLE>
+<BR>
+    ※煩雑さを避けるため関数名先頭の「sceDev」を省略してあります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>参考資料</B>
+</A>
+</H3>
+<blockquote>
+    VU0 / VU1の制御については、『VU User's Manual』の3章および5章を参照してください。<BR>
+    VIF0 / VIF1については、『EE User's Manual』の4章を参照してください。<BR>
+    GIFについては、『EE User's Manual』の5章を参照してください。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

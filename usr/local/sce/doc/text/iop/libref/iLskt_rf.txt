@@ -1,0 +1,392 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                           ソケットライブラリ
+                          ===================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceILsock_addr                                                   [構造体]
+=========================================================================
+                                                                         
+[構造]
+        typedef unsigned int sceILsock_addr_t;
+        typedef unsigned short sceILsock_port_t;
+        
+        struct sceILsock_addr {
+        	unsigned char	sock_len;
+        	unsigned char	sock _family;
+        	sceILsock_port_t	sock _port;
+        	struct	eui64 {
+        		sceILsock_addr_t	eui64_hi;
+        		sceILsock_addr_t	eui64_lo;
+        	} sock_addr;
+        	char	sock_zero [4];
+        };
+        
+[メンバ]
+        sock _len	  アドレス構造体サイズ
+           sizeof(struct sceILsock_addr)
+        sock _family  アドレスファミリー
+           SCEILSOCK_AF のみが指定可能。
+        sock _port    ポート番号
+           0 から 1024 までの値はシステムサービス用途等に予約される。
+           SCEILSOCK_PORT_ANONMIN から SCEILSOCK_PORT _ANONMAX までの
+           値は、システムによって一時的に使用される。
+        sock _addr　ノードユーニークID (64bit)
+           SCEILSOCK_ADDR_ANY_HI, SCEILSOCK_ADDR_ANY_LO:自分自身のノード
+        　ユーニークIDを意味する。
+           SCEILSOCK_ADDR_BROADCAST_HI, SCEILSOCK_ADDR_BROADCAST_LO:
+           送信においてブロードキャストを意味する。
+        2バイト以上のメンバはいずれも network byte order (big-endian) で
+        設定しなければならない。
+
+ 2 関数
+========
+
+
+=========================================================================
+sceILsockBind                                                      [関数]
+=========================================================================
+                                                                         
+[形式]
+        enum sceILsockErrorCode sceILsockBind(
+        	int sock,
+        	struct sceILsock_addr *name,
+        	int namelen
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        name		アドレス構造体へのポインタ。
+        namelen		アドレス構造体のサイズ。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_OK
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_REQUEST
+        
+[解説]
+        socketにアドレスを割り当てる。これにより、他のソケットからこのア
+        ドレスへ送信された
+        データグラムを受信することが出来るようになる。
+        また、送信時にはこのアドレスが送信元アドレスとして使われるように
+        なる。
+         ・sock_port に 0 が指定された場合
+           SCEILSOCK_PORT_ANONMIN から SCEILSOCK_PORT_ANONMAX までの間で
+           使われていない port 番号が探され、その値が指定されたものとして
+           扱われる。
+         ・sceILsockBind() が省略された場合
+           sceILsockSend()/sceILsockSendTo() の呼びだし毎にSCEILSOCK_PORT
+           _ANONMIN から SCEILSOCK_PORT_ANONMAX までの間で、使われていな
+           い port 番号が探され、送信元 port 番号として使われる。
+         ・指定された port 番号が既に使われている場合エラーとなる。
+        
+        尚、sceILsockBindと sceILsockConnect はどちらが先でも差はない。
+        sock_addr には SCEILSOCK_ADDR_ANY_HI/LO または
+        自分自身の eui64 のみ指定できる。
+        前者は自分自身の eui64 として解釈される。
+        
+
+=========================================================================
+sceILsockClose                                                     [関数]
+=========================================================================
+                                                                         
+[形式]
+        enum sceILsockErrorCode sceILsockClose(
+        	int sock
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_OK
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_INVALID_ID
+        
+[解説]
+        通信用 socket を閉じ、資源を解放する。
+        
+
+=========================================================================
+sceILsockConnect                                                   [関数]
+=========================================================================
+                                                                         
+[形式]
+        enum sceILsockErrorCode sceILsockConnect(
+        	int sock,
+        	struct sceILsock_addr *name,
+        	int namelen
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        name		名前構造体へのポインタ。内部でコピーされる。
+        namelen		名前構造体のサイズ。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_OK
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_ARGUMENT
+        SCE1394ERR_...
+        KE_...
+        
+[解説]
+        sceILsockSend() によってこの socket から送られるデータグラムの送
+        り先、また sceILsockRecv() でこの socket が受取るデータグラムの送
+        り元のアドレスを設定する。
+        name の sock_family に SCEILSOCK_AF_UNSPEC が指定された場合、conn
+        ect 状態が解除される。
+        
+
+=========================================================================
+sceILsockInit                                                      [関数]
+=========================================================================
+                                                                         
+[形式]
+        enum sceILsockErrorCode sceILsockInit(
+        	int maxsock,
+        	int maxsize
+        );
+        
+[引数]
+        maxsock		同時にオープンできるソケット数。
+        maxsize		扱うデータグラムの最大サイズ(バイト)
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_OK
+        SCEILSOCKERR_NO_MEMORY
+        SCE1394ERR_...
+        KE_...
+[解説]
+        ソケットドライバを初期化する。
+        ドライバで使用するメモリを確保し、イベントフラグ等を作成する。
+        二回目以降の呼出しは何もせず SCEILSOCKERR_OK を返す。
+        maxsizeに0を指定した場合は、SCEILSOCK_MAX_PAYLOAD_SIZE_DEFAULT(=4
+        4)を指定したものと見なされる。
+        負の場合は、SCEILSOCK_MAX_PAYLOAD_SIZE(=492)を指定したものと見な
+        される。
+
+=========================================================================
+sceILsockOpen                                                      [関数]
+=========================================================================
+                                                                         
+[形式]
+        int sceILsockOpen(
+        	int domain,
+        	int type,
+        	int protocol
+        );
+        
+[引数]
+        domain	通信ドメイン
+           SCEILSOCK_PF のみが指定可能。
+        type	通信セマンティクス
+           SCEILSOCK_DGRAM のみが指定可能。
+           データグラムの最大サイズは sceILsockInit()で指定した値。
+           順序、到達性等は保証されないが、データ化けの無いことは保証され
+        る
+           (これはグローバルなネットワークでのはなし。家庭内ネットワーク
+        なら、実際上は順序、
+           到達性共に保証されると考えて良い）
+        protocol	プロトコル番号
+           0 のみが指定可能。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_NO_MEMORY
+        SCEILSOCKERR_RESOURCE_UNAVAILABLE
+        SCEILSOCKERR_INVALID_ARGUMENT
+        SCE1394ERR_...
+        KE_...
+        
+[解説]
+        通信用 socket を作成し、ディスクリプタ(>=0)を返す。
+        ディスクリプタに対する操作は再入可能ではないため、複数のスレッド
+        間でディスクリプタの同じソケットを共有することは出来ない。
+        共有する必要がある場合には排他的に操作しなければならない。
+        単一のスレッドで送信と受信がsocketを共有することは構わない。
+        
+
+=========================================================================
+sceILsockRecv                                                      [関数]
+=========================================================================
+                                                                         
+[形式]
+        int sceILsockRecv(
+        	int sock,
+        	char *buf,
+        	int len,
+        	int flags
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        buff		転送先バッファの先頭アドレス。
+        len		転送先バッファのバイト数。
+        flags		0 を指定する。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_NO_MEMORY
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_ARGUMENT
+        KE_...
+        
+[解説]
+        socket に受信したデータグラムを取出し、そのバイト数を返す。
+        sceILsockConnect() 済の場合、対象アドレスからのみ受信する。
+        バッファに入り切らない部分は捨てられる。
+        受信したデータのバイト並びは変換されない。
+        受信済のデータが無い場合、受信するまでブロックする。
+
+=========================================================================
+sceILsockRecvFrom                                                  [関数]
+=========================================================================
+                                                                         
+[形式]
+        int sceILsockRecvFrom(
+        	int sock,
+        	char *buf,
+        	int len,
+        	int flags,
+        	struct sceILsock_addr *from,
+        	int *fromlen
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        buff		転送先バッファの先頭アドレス。
+        len		転送先バッファのバイト数。
+        flags		0 を指定する。
+        from		相手アドレスバッファの先頭アドレス。
+        fromlen		アドレスバッファのバイト数を指定する変数のアドレス。
+        		戻り時には受信アドレスの有効バイト数が返る。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_NO_MEMORY
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_ARGUMENT
+        KE_...
+        
+[解説]
+        受信したデータグラムとその送信元アドレスを取出し、転送バイト数を
+        返す。
+        sceILsockConnect() 済の場合、対象アドレスからのみ受信する。
+        バッファに入り切らない部分は捨てられる。
+        受信したデータのバイト並びは変換されない。
+        受信済のデータが無い場合、受信するまでブロックする。
+        
+
+=========================================================================
+sceILsockReset                                                     [関数]
+=========================================================================
+                                                                         
+[形式]
+        void sceILsockReset(void);
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+[解説]
+        ソケットドライバを使用不可にする。
+        ドライバで使用していたメモリやイベントフラグ等を解放する。
+        オープンされているソケットはクローズされる。
+        
+
+=========================================================================
+sceILsockSend                                                      [関数]
+=========================================================================
+                                                                         
+[形式]
+        int sceILsockSend(
+        	int sock,
+        	char *buf,
+        	int len,
+        	int flags
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        buff		送信するデータグラムバッファの先頭アドレス。
+        len		送信するデータグラムのバイト数。
+        flags		0 を指定する。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_NO_MEMORY
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_ARGUMENT
+        SCEILSOCKERR_INVALID_REQUEST
+        SCEILSOCKERR_INVALID_SIZE
+        SCEILSOCKERR_NO_SUCH_NODE
+        SCE1394ERR_...
+        KE_...
+        
+[解説]
+        sceILsockConnect() 済の socket からデータグラムを送信し、送信した
+        バイト数を返す。
+        送信すべきデータはnetwork byte orderのバイト並びとして解釈される。
+        ブロードキャストの場合、送信途中で bus-reset が発生するとエラーを
+        返す。
+        ack_data_errorやack_busyを検出した場合、32回までリトライする。
+        
+
+=========================================================================
+sceILsockSendTo                                                    [関数]
+=========================================================================
+                                                                         
+[形式]
+        int sceILsockSendTo(
+        	int sock,
+        	char *buf,
+        	int len,
+        	int flags,
+        	struct sceILsock_addr *to,
+        	int tolen
+        );
+        
+[引数]
+        sock		sceILsockOpen() で得たディスクリプタ。
+        buff		送信するデータグラムの先頭アドレス。
+        len		送信するデータグラムのバイト数。
+        flags		0 を指定する。
+        to		相手アドレス構造体のアドレス。
+        tolen		アドレス構造体バイト数。
+        
+[返り値]
+        次のいずれかの値を返す。
+        SCEILSOCKERR_NOT_INITIALIZED
+        SCEILSOCKERR_NO_MEMORY
+        SCEILSOCKERR_INVALID_ID
+        SCEILSOCKERR_INVALID_ARGUMENT
+        SCEILSOCKERR_INVALID_REQUEST
+        SCEILSOCKERR_INVALID_SIZE
+        SCEILSOCKERR_NO_SUCH_NODE
+        SCE1394ERR_...
+        KE_...
+[解説]
+        相手アドレスを指定して socket からデータグラムを送信し、送信した
+        バイト数を返す。
+        送信すべきデータはnetwork byte orderのバイト並びとして解釈される。
+        ブロードキャストの場合、送信途中で bus-reset が発生するとエラーを
+        返す。
+        ack_data_errorやack_busyを検出した場合、32回までリトライする。

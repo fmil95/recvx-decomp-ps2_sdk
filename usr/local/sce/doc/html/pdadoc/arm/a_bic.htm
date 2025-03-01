@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm_bic</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bbl.htm">[前]</A> <A HREF="a_bx.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">BIC</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <B>データ処理</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">BIC{&lt;cond&gt;}{S} Rd, Rn, &lt;shifter_operand&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>BIC（Bit Clear）命令は、レジスタRnの値と&lt;shifter_operand&gt;の値の補数をビット単位でANDをとり、結果をデスティネーション・レジスタRdにストアします。オプションにより、（結果に基づいて）コンディション・コード・フラグが更新されます。</P>
+  <P>BICはレジスタの選択されたビットをクリアするのに使用できます。各ビットに対して、1と指定されたビットはクリアされ、0と指定されたビットは変化しません。</P>
+  <P>この命令は、命令で指定された条件がコンディション・コードのステータスと一致する場合にのみ実行されます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1385404"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385406"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385408"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385410"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385412"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385414"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385416"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385418"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385420"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385422"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385424"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385426"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385428"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385430"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385432"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385434"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385436"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385438"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385440"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385442"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385444"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385446"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385448"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385450"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385452"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385454"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385456"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385458"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385460"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385462"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385464"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1385466"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385468"></A><BR>
+    cond</TD>
+     
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385476"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385478"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385480"></A><BR>
+    I</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385482"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385484"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385486"></A><BR>
+    1</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385488"></A><BR>
+    0</TD> 
+    <TD VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385490"></A><BR>
+    S</TD> 
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385492"></A><BR>
+    Rn</TD>
+     
+    <TD COLSPAN="4" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385500"></A><BR>
+    Rd</TD>
+     
+    <TD COLSPAN="12" VALIGN="TOP" ALIGN="CENTER">
+    <A NAME="1385508"></A><BR>
+    shifter_operand</TD>
+     
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if ConditionPassed(&lt;cond&gt;) then
+         Rd = Rn AND NOT &lt;shifter_operand&gt;
+        if S == 1 and Rd == R15 then
+                CPSR = SPSR
+         else if S == 1 then
+                N Flag = Rd[31]
+                Z Flag = if Rd == 0 then 1 else 0
+                C Flag = &lt;shifter_carry_out&gt;
+                V Flag = unaffected</PRE>
+</BLOCKQUOTE>
+
+<H4>例外</H4>
+
+<BLOCKQUOTE>
+  <P>なし</P>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>コンディション・コード<BR>
+  Sはコンディション・コード・フラグN、Z、Cを更新します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>シフタ・オペランド：</B>この命令のシフタ・オペランドは、セクション3.16以降の「アドレッシング・モード1」で説明しています。</P>
+  <P><B>R15への書き込み：</B>RdがR15で、命令のSフラグがセットされていない場合、オペレーションの結果はPCに置かれます。RdがR15で、Sフラグがセットされている場合、オペレーションの結果はPCに置かれ、現在のモードに対応するSPSRはCPSRに転送されます。これによって、PCとCPSRの両方をアトミックにリストアする状態変化を実現できます。この形式の命令は、ユーザ・モードおよびシステム・モードでは予測不能です。</P>
+  <P><B>Iビット：</B>ビット25を使用して、&lt;shifter_operand&gt;のイミディエイト形式とレジスタ形式を区別することができます。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="a_bbl.htm">[前]</A> <A HREF="a_bx.htm">[次]</A> <A HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

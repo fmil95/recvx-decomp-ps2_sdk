@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1067 +36,788 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Complex,  Next: Hex Floats,  Prev: Long Long,  Up: C Extensions
+File: gcc.info,  Node: C++ Interface,  Next: Template Instantiation,  Prev: Destructors and Goto,  Up: C++ Extensions
 
-Complex Numbers
-===============
+Declarations and Definitions in One Header
+==========================================
 
-   GNU C supports complex data types.  You can declare both complex
-integer types and complex floating types, using the keyword
-`__complex__'.
+   C++ object definitions can be quite complex.  In principle, your
+source code will need two kinds of things for each object that you use
+across more than one source file.  First, you need an "interface"
+specification, describing its structure with type declarations and
+function prototypes.  Second, you need the "implementation" itself.  It
+can be tedious to maintain a separate interface description in a header
+file, in parallel to the actual implementation.  It is also dangerous,
+since separate interface and implementation definitions may not remain
+parallel.
 
-   For example, `__complex__ double x;' declares `x' as a variable
-whose real part and imaginary part are both of type `double'.
-`__complex__ short int y;' declares `y' to have real and imaginary
-parts of type `short int'; this is not likely to be useful, but it
-shows that the set of complex types is complete.
+   With GNU C++, you can use a single header file for both purposes.
 
-   To write a constant with a complex data type, use the suffix `i' or
-`j' (either one; they are equivalent).  For example, `2.5fi' has type
-`__complex__ float' and `3i' has type `__complex__ int'.  Such a
-constant always has a pure imaginary value, but you can form any
-complex value you like by adding one to a real constant.
+     *Warning:* The mechanism to specify this is in transition.  For the
+     nonce, you must use one of two `#pragma' commands; in a future
+     release of GNU C++, an alternative mechanism will make these
+     `#pragma' commands unnecessary.
 
-   To extract the real part of a complex-valued expression EXP, write
-`__real__ EXP'.  Likewise, use `__imag__' to extract the imaginary part.
+   The header file contains the full definitions, but is marked with
+`#pragma interface' in the source code.  This allows the compiler to
+use the header file only as an interface specification when ordinary
+source files incorporate it with `#include'.  In the single source file
+where the full implementation belongs, you can use either a naming
+convention or `#pragma implementation' to indicate this alternate use
+of the header file.
 
-   The operator `~' performs complex conjugation when used on a value
-with a complex type.
+`#pragma interface'
+`#pragma interface "SUBDIR/OBJECTS.h"'
+     Use this directive in *header files* that define object classes,
+     to save space in most of the object files that use those classes.
+     Normally, local copies of certain information (backup copies of
+     inline member functions, debugging information, and the internal
+     tables that implement virtual functions) must be kept in each
+     object file that includes class definitions.  You can use this
+     pragma to avoid such duplication.  When a header file containing
+     `#pragma interface' is included in a compilation, this auxiliary
+     information will not be generated (unless the main input source
+     file itself uses `#pragma implementation').  Instead, the object
+     files will contain references to be resolved at link time.
 
-   GNU CC can allocate complex automatic variables in a noncontiguous
-fashion; it's even possible for the real part to be in a register while
-the imaginary part is on the stack (or vice-versa).  None of the
-supported debugging info formats has a way to represent noncontiguous
-allocation like this, so GNU CC describes a noncontiguous complex
-variable as if it were two separate variables of noncomplex type.  If
-the variable's actual name is `foo', the two fictitious variables are
-named `foo$real' and `foo$imag'.  You can examine and set these two
-fictitious variables with your debugger.
+     The second form of this directive is useful for the case where you
+     have multiple headers with the same name in different directories.
+     If you use this form, you must specify the same string to `#pragma
+     implementation'.
 
-   A future version of GDB will know how to recognize such pairs and
-treat them as a single variable with a complex type.
+`#pragma implementation'
+`#pragma implementation "OBJECTS.h"'
+     Use this pragma in a *main input file*, when you want full output
+     from included header files to be generated (and made globally
+     visible).  The included header file, in turn, should use `#pragma
+     interface'.  Backup copies of inline member functions, debugging
+     information, and the internal tables used to implement virtual
+     functions are all generated in implementation files.
+
+     If you use `#pragma implementation' with no argument, it applies to
+     an include file with the same basename(1) as your source file.
+     For example, in `allclass.cc', giving just `#pragma implementation'
+     by itself is equivalent to `#pragma implementation "allclass.h"'.
+
+     In versions of GNU C++ prior to 2.6.0 `allclass.h' was treated as
+     an implementation file whenever you would include it from
+     `allclass.cc' even if you never specified `#pragma
+     implementation'.  This was deemed to be more trouble than it was
+     worth, however, and disabled.
+
+     If you use an explicit `#pragma implementation', it must appear in
+     your source file *before* you include the affected header files.
+
+     Use the string argument if you want a single implementation file to
+     include code from multiple header files.  (You must also use
+     `#include' to include the header file; `#pragma implementation'
+     only specifies how to use the file--it doesn't actually include
+     it.)
+
+     There is no way to split up the contents of a single header file
+     into multiple implementation files.
+
+   `#pragma implementation' and `#pragma interface' also have an effect
+on function inlining.
+
+   If you define a class in a header file marked with `#pragma
+interface', the effect on a function defined in that class is similar to
+an explicit `extern' declaration--the compiler emits no code at all to
+define an independent version of the function.  Its definition is used
+only for inlining with its callers.
+
+   Conversely, when you include the same header file in a main source
+file that declares it as `#pragma implementation', the compiler emits
+code for the function itself; this defines a version of the function
+that can be found via pointers (or by callers compiled without
+inlining).  If all calls to the function can be inlined, you can avoid
+emitting the function by compiling with `-fno-implement-inlines'.  If
+any calls were not inlined, you will get linker errors.
+
+   ---------- Footnotes ----------
+
+   (1) A file's "basename" was the name stripped of all leading path
+information and of trailing suffixes, such as `.h' or `.C' or `.cc'.
 
 
-File: gcc.info,  Node: Hex Floats,  Next: Zero Length,  Prev: Complex,  Up: C Extensions
+File: gcc.info,  Node: Template Instantiation,  Next: Bound member functions,  Prev: C++ Interface,  Up: C++ Extensions
 
-Hex Floats
-==========
-
-   GNU CC recognizes floating-point numbers written not only in the
-usual decimal notation, such as `1.55e1', but also numbers such as
-`0x1.fp3' written in hexadecimal format.  In that format the `0x' hex
-introducer and the `p' or `P' exponent field are mandatory.  The
-exponent is a decimal number that indicates the power of 2 by which the
-significand part will be multiplied.  Thus `0x1.f' is 1 15/16, `p3'
-multiplies it by 8, and the value of `0x1.fp3' is the same as `1.55e1'.
-
-   Unlike for floating-point numbers in the decimal notation the
-exponent is always required in the hexadecimal notation.  Otherwise the
-compiler would not be able to resolve the ambiguity of, e.g., `0x1.f'.
-This could mean `1.0f' or `1.9375' since `f' is also the extension for
-floating-point constants of type `float'.
-
-
-File: gcc.info,  Node: Zero Length,  Next: Variable Length,  Prev: Hex Floats,  Up: C Extensions
-
-Arrays of Length Zero
+Where's the Template?
 =====================
 
-   Zero-length arrays are allowed in GNU C.  They are very useful as
-the last element of a structure which is really a header for a
-variable-length object:
+   C++ templates are the first language feature to require more
+intelligence from the environment than one usually finds on a UNIX
+system.  Somehow the compiler and linker have to make sure that each
+template instance occurs exactly once in the executable if it is needed,
+and not at all otherwise.  There are two basic approaches to this
+problem, which I will refer to as the Borland model and the Cfront
+model.
 
-     struct line {
-       int length;
-       char contents[0];
-     };
+Borland model
+     Borland C++ solved the template instantiation problem by adding
+     the code equivalent of common blocks to their linker; the compiler
+     emits template instances in each translation unit that uses them,
+     and the linker collapses them together.  The advantage of this
+     model is that the linker only has to consider the object files
+     themselves; there is no external complexity to worry about.  This
+     disadvantage is that compilation time is increased because the
+     template code is being compiled repeatedly.  Code written for this
+     model tends to include definitions of all templates in the header
+     file, since they must be seen to be instantiated.
+
+Cfront model
+     The AT&T C++ translator, Cfront, solved the template instantiation
+     problem by creating the notion of a template repository, an
+     automatically maintained place where template instances are
+     stored.  A more modern version of the repository works as follows:
+     As individual object files are built, the compiler places any
+     template definitions and instantiations encountered in the
+     repository.  At link time, the link wrapper adds in the objects in
+     the repository and compiles any needed instances that were not
+     previously emitted.  The advantages of this model are more optimal
+     compilation speed and the ability to use the system linker; to
+     implement the Borland model a compiler vendor also needs to
+     replace the linker.  The disadvantages are vastly increased
+     complexity, and thus potential for error; for some code this can be
+     just as transparent, but in practice it can been very difficult to
+     build multiple programs in one directory and one program in
+     multiple directories.  Code written for this model tends to
+     separate definitions of non-inline member templates into a
+     separate file, which should be compiled separately.
+
+   When used with GNU ld version 2.8 or later on an ELF system such as
+Linux/GNU or Solaris 2, or on Microsoft Windows, g++ supports the
+Borland model.  On other systems, g++ implements neither automatic
+model.
+
+   A future version of g++ will support a hybrid model whereby the
+compiler will emit any instantiations for which the template definition
+is included in the compile, and store template definitions and
+instantiation context information into the object file for the rest.
+The link wrapper will extract that information as necessary and invoke
+the compiler to produce the remaining instantiations.  The linker will
+then combine duplicate instantiations.
+
+   In the mean time, you have the following options for dealing with
+template instantiations:
+
+  1. Compile your template-using code with `-frepo'.  The compiler will
+     generate files with the extension `.rpo' listing all of the
+     template instantiations used in the corresponding object files
+     which could be instantiated there; the link wrapper, `collect2',
+     will then update the `.rpo' files to tell the compiler where to
+     place those instantiations and rebuild any affected object files.
+     The link-time overhead is negligible after the first pass, as the
+     compiler will continue to place the instantiations in the same
+     files.
+
+     This is your best option for application code written for the
+     Borland model, as it will just work.  Code written for the Cfront
+     model will need to be modified so that the template definitions
+     are available at one or more points of instantiation; usually this
+     is as simple as adding `#include <tmethods.cc>' to the end of each
+     template header.
+
+     For library code, if you want the library to provide all of the
+     template instantiations it needs, just try to link all of its
+     object files together; the link will fail, but cause the
+     instantiations to be generated as a side effect.  Be warned,
+     however, that this may cause conflicts if multiple libraries try
+     to provide the same instantiations.  For greater control, use
+     explicit instantiation as described in the next option.
+
+  2. Compile your code with `-fno-implicit-templates' to disable the
+     implicit generation of template instances, and explicitly
+     instantiate all the ones you use.  This approach requires more
+     knowledge of exactly which instances you need than do the others,
+     but it's less mysterious and allows greater control.  You can
+     scatter the explicit instantiations throughout your program,
+     perhaps putting them in the translation units where the instances
+     are used or the translation units that define the templates
+     themselves; you can put all of the explicit instantiations you
+     need into one big file; or you can create small files like
+
+          #include "Foo.h"
+          #include "Foo.cc"
+          
+          template class Foo<int>;
+          template ostream& operator <<
+                          (ostream&, const Foo<int>&);
+
+     for each of the instances you need, and create a template
+     instantiation library from those.
+
+     If you are using Cfront-model code, you can probably get away with
+     not using `-fno-implicit-templates' when compiling files that don't
+     `#include' the member template definitions.
+
+     If you use one big file to do the instantiations, you may want to
+     compile it without `-fno-implicit-templates' so you get all of the
+     instances required by your explicit instantiations (but not by any
+     other files) without having to specify them as well.
+
+     g++ has extended the template instantiation syntax outlined in the
+     Working Paper to allow forward declaration of explicit
+     instantiations and instantiation of the compiler support data for
+     a template class (i.e. the vtable) without instantiating any of
+     its members:
+
+          extern template int max (int, int);
+          inline template class Foo<int>;
+
+  3. Do nothing.  Pretend g++ does implement automatic instantiation
+     management.  Code written for the Borland model will work fine, but
+     each translation unit will contain instances of each of the
+     templates it uses.  In a large program, this can lead to an
+     unacceptable amount of code duplication.
+
+  4. Add `#pragma interface' to all files containing template
+     definitions.  For each of these files, add `#pragma implementation
+     "FILENAME"' to the top of some `.C' file which `#include's it.
+     Then compile everything with `-fexternal-templates'.  The
+     templates will then only be expanded in the translation unit which
+     implements them (i.e. has a `#pragma implementation' line for the
+     file where they live); all other files will use external
+     references.  If you're lucky, everything should work properly.  If
+     you get undefined symbol errors, you need to make sure that each
+     template instance which is used in the program is used in the file
+     which implements that template.  If you don't have any use for a
+     particular instance in that file, you can just instantiate it
+     explicitly, using the syntax from the latest C++ working paper:
+
+          template class A<int>;
+          template ostream& operator << (ostream&, const A<int>&);
+
+     This strategy will work with code written for either model.  If
+     you are using code written for the Cfront model, the file
+     containing a class template and the file containing its member
+     templates should be implemented in the same translation unit.
+
+     A slight variation on this approach is to instead use the flag
+     `-falt-external-templates'; this flag causes template instances to
+     be emitted in the translation unit that implements the header
+     where they are first instantiated, rather than the one which
+     implements the file where the templates are defined.  This header
+     must be the same in all translation units, or things are likely to
+     break.
+
+     *Note Declarations and Definitions in One Header: C++ Interface,
+     for more discussion of these pragmas.
+
+
+File: gcc.info,  Node: Bound member functions,  Next: C++ Signatures,  Prev: Template Instantiation,  Up: C++ Extensions
+
+Extracting the function pointer from a bound pointer to member function
+=======================================================================
+
+   In C++, pointer to member functions (PMFs) are implemented using a
+wide pointer of sorts to handle all the possible call mechanisms; the
+PMF needs to store information about how to adjust the `this' pointer,
+and if the function pointed to is virtual, where to find the vtable, and
+where in the vtable to look for the member function.  If you are using
+PMFs in an inner loop, you should really reconsider that decision.  If
+that is not an option, you can extract the pointer to the function that
+would be called for a given object/PMF pair and call it directly inside
+the inner loop, to save a bit of time.
+
+   Note that you will still be paying the penalty for the call through a
+function pointer; on most modern architectures, such a call defeats the
+branch prediction features of the CPU.  This is also true of normal
+virtual function calls.
+
+   The syntax for this extension is
+
+     extern A a;
+     extern int (A::*fp)();
+     typedef int (*fptr)(A *);
      
-     {
-       struct line *thisline = (struct line *)
-         malloc (sizeof (struct line) + this_length);
-       thisline->length = this_length;
-     }
+     fptr p = (fptr)(a.*fp);
 
-   In standard C, you would have to give `contents' a length of 1, which
-means either you waste space or complicate the argument to `malloc'.
+   You must specify `-Wno-pmf-conversions' to use this extension.
 
 
-File: gcc.info,  Node: Variable Length,  Next: Macro Varargs,  Prev: Zero Length,  Up: C Extensions
+File: gcc.info,  Node: C++ Signatures,  Prev: Bound member functions,  Up: C++ Extensions
 
-Arrays of Variable Length
-=========================
-
-   Variable-length automatic arrays are allowed in GNU C.  These arrays
-are declared like any other automatic arrays, but with a length that is
-not a constant expression.  The storage is allocated at the point of
-declaration and deallocated when the brace-level is exited.  For
-example:
-
-     FILE *
-     concat_fopen (char *s1, char *s2, char *mode)
-     {
-       char str[strlen (s1) + strlen (s2) + 1];
-       strcpy (str, s1);
-       strcat (str, s2);
-       return fopen (str, mode);
-     }
-
-   Jumping or breaking out of the scope of the array name deallocates
-the storage.  Jumping into the scope is not allowed; you get an error
-message for it.
-
-   You can use the function `alloca' to get an effect much like
-variable-length arrays.  The function `alloca' is available in many
-other C implementations (but not in all).  On the other hand,
-variable-length arrays are more elegant.
-
-   There are other differences between these two methods.  Space
-allocated with `alloca' exists until the containing *function* returns.
-The space for a variable-length array is deallocated as soon as the
-array name's scope ends.  (If you use both variable-length arrays and
-`alloca' in the same function, deallocation of a variable-length array
-will also deallocate anything more recently allocated with `alloca'.)
-
-   You can also use variable-length arrays as arguments to functions:
-
-     struct entry
-     tester (int len, char data[len][len])
-     {
-       ...
-     }
-
-   The length of an array is computed once when the storage is allocated
-and is remembered for the scope of the array in case you access it with
-`sizeof'.
-
-   If you want to pass the array first and the length afterward, you can
-use a forward declaration in the parameter list--another GNU extension.
-
-     struct entry
-     tester (int len; char data[len][len], int len)
-     {
-       ...
-     }
-
-   The `int len' before the semicolon is a "parameter forward
-declaration", and it serves the purpose of making the name `len' known
-when the declaration of `data' is parsed.
-
-   You can write any number of such parameter forward declarations in
-the parameter list.  They can be separated by commas or semicolons, but
-the last one must end with a semicolon, which is followed by the "real"
-parameter declarations.  Each forward declaration must match a "real"
-declaration in parameter name and data type.
-
-
-File: gcc.info,  Node: Macro Varargs,  Next: Subscripting,  Prev: Variable Length,  Up: C Extensions
-
-Macros with Variable Numbers of Arguments
-=========================================
-
-   In GNU C, a macro can accept a variable number of arguments, much as
-a function can.  The syntax for defining the macro looks much like that
-used for a function.  Here is an example:
-
-     #define eprintf(format, args...)  \
-      fprintf (stderr, format , ## args)
-
-   Here `args' is a "rest argument": it takes in zero or more
-arguments, as many as the call contains.  All of them plus the commas
-between them form the value of `args', which is substituted into the
-macro body where `args' is used.  Thus, we have this expansion:
-
-     eprintf ("%s:%d: ", input_file_name, line_number)
-     ==>
-     fprintf (stderr, "%s:%d: " , input_file_name, line_number)
-
-Note that the comma after the string constant comes from the definition
-of `eprintf', whereas the last comma comes from the value of `args'.
-
-   The reason for using `##' is to handle the case when `args' matches
-no arguments at all.  In this case, `args' has an empty value.  In this
-case, the second comma in the definition becomes an embarrassment: if
-it got through to the expansion of the macro, we would get something
-like this:
-
-     fprintf (stderr, "success!\n" , )
-
-which is invalid C syntax.  `##' gets rid of the comma, so we get the
-following instead:
-
-     fprintf (stderr, "success!\n")
-
-   This is a special feature of the GNU C preprocessor: `##' before a
-rest argument that is empty discards the preceding sequence of
-non-whitespace characters from the macro definition.  (If another macro
-argument precedes, none of it is discarded.)
-
-   It might be better to discard the last preprocessor token instead of
-the last preceding sequence of non-whitespace characters; in fact, we
-may someday change this feature to do so.  We advise you to write the
-macro definition so that the preceding sequence of non-whitespace
-characters is just a single token, so that the meaning will not change
-if we change the definition of this feature.
-
-
-File: gcc.info,  Node: Subscripting,  Next: Pointer Arith,  Prev: Macro Varargs,  Up: C Extensions
-
-Non-Lvalue Arrays May Have Subscripts
-=====================================
-
-   Subscripting is allowed on arrays that are not lvalues, even though
-the unary `&' operator is not.  For example, this is valid in GNU C
-though not valid in other C dialects:
-
-     struct foo {int a[4];};
-     
-     struct foo f();
-     
-     bar (int index)
-     {
-       return f().a[index];
-     }
-
-
-File: gcc.info,  Node: Pointer Arith,  Next: Initializers,  Prev: Subscripting,  Up: C Extensions
-
-Arithmetic on `void'- and Function-Pointers
-===========================================
-
-   In GNU C, addition and subtraction operations are supported on
-pointers to `void' and on pointers to functions.  This is done by
-treating the size of a `void' or of a function as 1.
-
-   A consequence of this is that `sizeof' is also allowed on `void' and
-on function types, and returns 1.
-
-   The option `-Wpointer-arith' requests a warning if these extensions
-are used.
-
-
-File: gcc.info,  Node: Initializers,  Next: Constructors,  Prev: Pointer Arith,  Up: C Extensions
-
-Non-Constant Initializers
-=========================
-
-   As in standard C++, the elements of an aggregate initializer for an
-automatic variable are not required to be constant expressions in GNU C.
-Here is an example of an initializer with run-time varying elements:
-
-     foo (float f, float g)
-     {
-       float beat_freqs[2] = { f-g, f+g };
-       ...
-     }
-
-
-File: gcc.info,  Node: Constructors,  Next: Labeled Elements,  Prev: Initializers,  Up: C Extensions
-
-Constructor Expressions
-=======================
-
-   GNU C supports constructor expressions.  A constructor looks like a
-cast containing an initializer.  Its value is an object of the type
-specified in the cast, containing the elements specified in the
-initializer.
-
-   Usually, the specified type is a structure.  Assume that `struct
-foo' and `structure' are declared as shown:
-
-     struct foo {int a; char b[2];} structure;
-
-Here is an example of constructing a `struct foo' with a constructor:
-
-     structure = ((struct foo) {x + y, 'a', 0});
-
-This is equivalent to writing the following:
-
-     {
-       struct foo temp = {x + y, 'a', 0};
-       structure = temp;
-     }
-
-   You can also construct an array.  If all the elements of the
-constructor are (made up of) simple constant expressions, suitable for
-use in initializers, then the constructor is an lvalue and can be
-coerced to a pointer to its first element, as shown here:
-
-     char **foo = (char *[]) { "x", "y", "z" };
-
-   Array constructors whose elements are not simple constants are not
-very useful, because the constructor is not an lvalue.  There are only
-two valid ways to use it: to subscript it, or initialize an array
-variable with it.  The former is probably slower than a `switch'
-statement, while the latter does the same thing an ordinary C
-initializer would do.  Here is an example of subscripting an array
-constructor:
-
-     output = ((int[]) { 2, x, 28 }) [input];
-
-   Constructor expressions for scalar types and union types are is also
-allowed, but then the constructor expression is equivalent to a cast.
-
-
-File: gcc.info,  Node: Labeled Elements,  Next: Cast to Union,  Prev: Constructors,  Up: C Extensions
-
-Labeled Elements in Initializers
-================================
-
-   Standard C requires the elements of an initializer to appear in a
-fixed order, the same as the order of the elements in the array or
-structure being initialized.
-
-   In GNU C you can give the elements in any order, specifying the array
-indices or structure field names they apply to.  This extension is not
-implemented in GNU C++.
-
-   To specify an array index, write `[INDEX]' or `[INDEX] =' before the
-element value.  For example,
-
-     int a[6] = { [4] 29, [2] = 15 };
-
-is equivalent to
-
-     int a[6] = { 0, 0, 15, 0, 29, 0 };
-
-The index values must be constant expressions, even if the array being
-initialized is automatic.
-
-   To initialize a range of elements to the same value, write `[FIRST
-... LAST] = VALUE'.  For example,
-
-     int widths[] = { [0 ... 9] = 1, [10 ... 99] = 2, [100] = 3 };
-
-Note that the length of the array is the highest value specified plus
-one.
-
-   In a structure initializer, specify the name of a field to initialize
-with `FIELDNAME:' before the element value.  For example, given the
-following structure,
-
-     struct point { int x, y; };
-
-the following initialization
-
-     struct point p = { y: yvalue, x: xvalue };
-
-is equivalent to
-
-     struct point p = { xvalue, yvalue };
-
-   Another syntax which has the same meaning is `.FIELDNAME ='., as
-shown here:
-
-     struct point p = { .y = yvalue, .x = xvalue };
-
-   You can also use an element label (with either the colon syntax or
-the period-equal syntax) when initializing a union, to specify which
-element of the union should be used.  For example,
-
-     union foo { int i; double d; };
-     
-     union foo f = { d: 4 };
-
-will convert 4 to a `double' to store it in the union using the second
-element.  By contrast, casting 4 to type `union foo' would store it
-into the union as the integer `i', since it is an integer.  (*Note Cast
-to Union::.)
-
-   You can combine this technique of naming elements with ordinary C
-initialization of successive elements.  Each initializer element that
-does not have a label applies to the next consecutive element of the
-array or structure.  For example,
-
-     int a[6] = { [1] = v1, v2, [4] = v4 };
-
-is equivalent to
-
-     int a[6] = { 0, v1, v2, 0, v4, 0 };
-
-   Labeling the elements of an array initializer is especially useful
-when the indices are characters or belong to an `enum' type.  For
-example:
-
-     int whitespace[256]
-       = { [' '] = 1, ['\t'] = 1, ['\h'] = 1,
-           ['\f'] = 1, ['\n'] = 1, ['\r'] = 1 };
-
-
-File: gcc.info,  Node: Case Ranges,  Next: Function Attributes,  Prev: Cast to Union,  Up: C Extensions
-
-Case Ranges
-===========
-
-   You can specify a range of consecutive values in a single `case'
-label, like this:
-
-     case LOW ... HIGH:
-
-This has the same effect as the proper number of individual `case'
-labels, one for each integer value from LOW to HIGH, inclusive.
-
-   This feature is especially useful for ranges of ASCII character
-codes:
-
-     case 'A' ... 'Z':
-
-   *Be careful:* Write spaces around the `...', for otherwise it may be
-parsed wrong when you use it with integer values.  For example, write
-this:
-
-     case 1 ... 5:
-
-rather than this:
-
-     case 1...5:
-
-
-File: gcc.info,  Node: Cast to Union,  Next: Case Ranges,  Prev: Labeled Elements,  Up: C Extensions
-
-Cast to a Union Type
-====================
-
-   A cast to union type is similar to other casts, except that the type
-specified is a union type.  You can specify the type either with `union
-TAG' or with a typedef name.  A cast to union is actually a constructor
-though, not a cast, and hence does not yield an lvalue like normal
-casts.  (*Note Constructors::.)
-
-   The types that may be cast to the union type are those of the members
-of the union.  Thus, given the following union and variables:
-
-     union foo { int i; double d; };
-     int x;
-     double y;
-
-both `x' and `y' can be cast to type `union' foo.
-
-   Using the cast as the right-hand side of an assignment to a variable
-of union type is equivalent to storing in a member of the union:
-
-     union foo u;
-     ...
-     u = (union foo) x  ==  u.i = x
-     u = (union foo) y  ==  u.d = y
-
-   You can also use the union cast as a function argument:
-
-     void hack (union foo);
-     ...
-     hack ((union foo) x);
-
-
-File: gcc.info,  Node: Function Attributes,  Next: Function Prototypes,  Prev: Case Ranges,  Up: C Extensions
-
-Declaring Attributes of Functions
+Type Abstraction using Signatures
 =================================
 
-   In GNU C, you declare certain things about functions called in your
-program which help the compiler optimize function calls and check your
-code more carefully.
-
-   The keyword `__attribute__' allows you to specify special attributes
-when making a declaration.  This keyword is followed by an attribute
-specification inside double parentheses.  Ten attributes, `noreturn',
-`const', `format', `no_instrument_function', `section', `constructor',
-`destructor', `unused', `weak' and `malloc' are currently defined for
-functions.  Other attributes, including `section' are supported for
-variables declarations (*note Variable Attributes::.) and for types
-(*note Type Attributes::.).
-
-   You may also specify attributes with `__' preceding and following
-each keyword.  This allows you to use them in header files without
-being concerned about a possible macro of the same name.  For example,
-you may use `__noreturn__' instead of `noreturn'.
-
-`noreturn'
-     A few standard library functions, such as `abort' and `exit',
-     cannot return.  GNU CC knows this automatically.  Some programs
-     define their own functions that never return.  You can declare them
-     `noreturn' to tell the compiler this fact.  For example,
-
-          void fatal () __attribute__ ((noreturn));
-          
-          void
-          fatal (...)
-          {
-            ... /* Print error message. */ ...
-            exit (1);
-          }
-
-     The `noreturn' keyword tells the compiler to assume that `fatal'
-     cannot return.  It can then optimize without regard to what would
-     happen if `fatal' ever did return.  This makes slightly better
-     code.  More importantly, it helps avoid spurious warnings of
-     uninitialized variables.
-
-     Do not assume that registers saved by the calling function are
-     restored before calling the `noreturn' function.
-
-     It does not make sense for a `noreturn' function to have a return
-     type other than `void'.
-
-     The attribute `noreturn' is not implemented in GNU C versions
-     earlier than 2.5.  An alternative way to declare that a function
-     does not return, which works in the current version and in some
-     older versions, is as follows:
-
-          typedef void voidfn ();
-          
-          volatile voidfn fatal;
-
-`pure'
-     Many functions have no effects except the return value and their
-     return value depends only on the parameters and/or global
-     variables.  Such a function can be subject to common subexpression
-     elimination and loop optimization just as an arithmetic operator
-     would be.  These functions should be declared with the attribute
-     `pure'.  For example,
-
-          int square (int) __attribute__ ((pure));
-
-     says that the hypothetical function `square' is safe to call fewer
-     times than the program says.
-
-     Some of common examples of pure functions are `strlen' or `memcmp'.
-     Interesting non-pure functions are functions with infinite loops
-     or those depending on volatile memory or other system resource,
-     that may change between two consecutive calls (such as `feof' in a
-     multithreading environment).
-
-     The attribute `pure' is not implemented in GNU C versions earlier
-     than 2.96.
-
-`const'
-     Many functions do not examine any values except their arguments,
-     and have no effects except the return value.  Basically this is
-     just slightly more strict class than the "pure" attribute above,
-     since function is not allowed to read global memory.
-
-     Note that a function that has pointer arguments and examines the
-     data pointed to must *not* be declared `const'.  Likewise, a
-     function that calls a non-`const' function usually must not be
-     `const'.  It does not make sense for a `const' function to return
-     `void'.
-
-     The attribute `const' is not implemented in GNU C versions earlier
-     than 2.5.  An alternative way to declare that a function has no
-     side effects, which works in the current version and in some older
-     versions, is as follows:
-
-          typedef int intfn ();
-          
-          extern const intfn square;
-
-     This approach does not work in GNU C++ from 2.6.0 on, since the
-     language specifies that the `const' must be attached to the return
-     value.
-
-`format (ARCHETYPE, STRING-INDEX, FIRST-TO-CHECK)'
-     The `format' attribute specifies that a function takes `printf',
-     `scanf', or `strftime' style arguments which should be type-checked
-     against a format string.  For example, the declaration:
-
-          extern int
-          my_printf (void *my_object, const char *my_format, ...)
-                __attribute__ ((format (printf, 2, 3)));
-
-     causes the compiler to check the arguments in calls to `my_printf'
-     for consistency with the `printf' style format string argument
-     `my_format'.
-
-     The parameter ARCHETYPE determines how the format string is
-     interpreted, and should be either `printf', `scanf', or
-     `strftime'.  The parameter STRING-INDEX specifies which argument
-     is the format string argument (starting from 1), while
-     FIRST-TO-CHECK is the number of the first argument to check
-     against the format string.  For functions where the arguments are
-     not available to be checked (such as `vprintf'), specify the third
-     parameter as zero.  In this case the compiler only checks the
-     format string for consistency.
-
-     In the example above, the format string (`my_format') is the second
-     argument of the function `my_print', and the arguments to check
-     start with the third argument, so the correct parameters for the
-     format attribute are 2 and 3.
-
-     The `format' attribute allows you to identify your own functions
-     which take format strings as arguments, so that GNU CC can check
-     the calls to these functions for errors.  The compiler always
-     checks formats for the ANSI library functions `printf', `fprintf',
-     `sprintf', `scanf', `fscanf', `sscanf', `strftime', `vprintf',
-     `vfprintf' and `vsprintf' whenever such warnings are requested
-     (using `-Wformat'), so there is no need to modify the header file
-     `stdio.h'.
-
-`format_arg (STRING-INDEX)'
-     The `format_arg' attribute specifies that a function takes
-     `printf' or `scanf' style arguments, modifies it (for example, to
-     translate it into another language), and passes it to a `printf'
-     or `scanf' style function.  For example, the declaration:
-
-          extern char *
-          my_dgettext (char *my_domain, const char *my_format)
-                __attribute__ ((format_arg (2)));
-
-     causes the compiler to check the arguments in calls to
-     `my_dgettext' whose result is passed to a `printf', `scanf', or
-     `strftime' type function for consistency with the `printf' style
-     format string argument `my_format'.
-
-     The parameter STRING-INDEX specifies which argument is the format
-     string argument (starting from 1).
-
-     The `format-arg' attribute allows you to identify your own
-     functions which modify format strings, so that GNU CC can check the
-     calls to `printf', `scanf', or `strftime' function whose operands
-     are a call to one of your own function.  The compiler always
-     treats `gettext', `dgettext', and `dcgettext' in this manner.
-
-`no_instrument_function'
-     If `-finstrument-functions' is given, profiling function calls will
-     be generated at entry and exit of most user-compiled functions.
-     Functions with this attribute will not be so instrumented.
-
-`section ("section-name")'
-     Normally, the compiler places the code it generates in the `text'
-     section.  Sometimes, however, you need additional sections, or you
-     need certain particular functions to appear in special sections.
-     The `section' attribute specifies that a function lives in a
-     particular section.  For example, the declaration:
-
-          extern void foobar (void) __attribute__ ((section ("bar")));
-
-     puts the function `foobar' in the `bar' section.
-
-     Some file formats do not support arbitrary sections so the
-     `section' attribute is not available on all platforms.  If you
-     need to map the entire contents of a module to a particular
-     section, consider using the facilities of the linker instead.
-
-`constructor'
-`destructor'
-     The `constructor' attribute causes the function to be called
-     automatically before execution enters `main ()'.  Similarly, the
-     `destructor' attribute causes the function to be called
-     automatically after `main ()' has completed or `exit ()' has been
-     called.  Functions with these attributes are useful for
-     initializing data that will be used implicitly during the
-     execution of the program.
-
-     These attributes are not currently implemented for Objective C.
-
-`unused'
-     This attribute, attached to a function, means that the function is
-     meant to be possibly unused.  GNU CC will not produce a warning
-     for this function.  GNU C++ does not currently support this
-     attribute as definitions without parameters are valid in C++.
-
-`weak'
-     The `weak' attribute causes the declaration to be emitted as a weak
-     symbol rather than a global.  This is primarily useful in defining
-     library functions which can be overridden in user code, though it
-     can also be used with non-function declarations.  Weak symbols are
-     supported for ELF targets, and also for a.out targets when using
-     the GNU assembler and linker.
-
-`malloc'
-     The `malloc' attribute is used to tell the compiler that a function
-     may be treated as if it were the malloc function.  The compiler
-     assumes that calls to malloc result in a pointers that cannot
-     alias anything.  This will often improve optimization.
-
-`alias ("target")'
-     The `alias' attribute causes the declaration to be emitted as an
-     alias for another symbol, which must be specified.  For instance,
-
-          void __f () { /* do something */; }
-          void f () __attribute__ ((weak, alias ("__f")));
-
-     declares `f' to be a weak alias for `__f'.  In C++, the mangled
-     name for the target must be used.
-
-     Not all target machines support this attribute.
-
-`no_check_memory_usage'
-     The `no_check_memory_usage' attribute causes GNU CC to omit checks
-     of memory references when it generates code for that function.
-     Normally if you specify `-fcheck-memory-usage' (see *note Code Gen
-     Options::.), GNU CC generates calls to support routines before
-     most memory accesses to permit support code to record usage and
-     detect uses of uninitialized or unallocated storage.  Since GNU CC
-     cannot handle `asm' statements properly they are not allowed in
-     such functions.  If you declare a function with this attribute,
-     GNU CC will not generate memory checking code for that function,
-     permitting the use of `asm' statements without having to compile
-     that function with different options.  This also allows you to
-     write support routines of your own if you wish, without getting
-     infinite recursion if they get compiled with
-     `-fcheck-memory-usage'.
-
-`regparm (NUMBER)'
-     On the Intel 386, the `regparm' attribute causes the compiler to
-     pass up to NUMBER integer arguments in registers EAX, EDX, and ECX
-     instead of on the stack.  Functions that take a variable number of
-     arguments will continue to be passed all of their arguments on the
-     stack.
-
-`stdcall'
-     On the Intel 386, the `stdcall' attribute causes the compiler to
-     assume that the called function will pop off the stack space used
-     to pass arguments, unless it takes a variable number of arguments.
-
-     The PowerPC compiler for Windows NT currently ignores the `stdcall'
-     attribute.
-
-`cdecl'
-     On the Intel 386, the `cdecl' attribute causes the compiler to
-     assume that the calling function will pop off the stack space used
-     to pass arguments.  This is useful to override the effects of the
-     `-mrtd' switch.
-
-     The PowerPC compiler for Windows NT currently ignores the `cdecl'
-     attribute.
-
-`longcall'
-     On the RS/6000 and PowerPC, the `longcall' attribute causes the
-     compiler to always call the function via a pointer, so that
-     functions which reside further than 64 megabytes (67,108,864
-     bytes) from the current location can be called.
-
-`long_call/short_call'
-     This attribute allows to specify how to call a particular function
-     on ARM.  Both attributes override the `-mlong-calls' (*note ARM
-     Options::.)  command line switch and `#pragma long_calls'
-     settings.  The `long_call' attribute causes the compiler to always
-     call the function by first loading its address into a register and
-     then using the contents of that register.   The `short_call'
-     attribute always places the offset to the function from the call
-     site into the `BL' instruction directly.
-
-`dllimport'
-     On the PowerPC running Windows NT, the `dllimport' attribute causes
-     the compiler to call the function via a global pointer to the
-     function pointer that is set up by the Windows NT dll library.
-     The pointer name is formed by combining `__imp_' and the function
-     name.
-
-`dllexport'
-     On the PowerPC running Windows NT, the `dllexport' attribute causes
-     the compiler to provide a global pointer to the function pointer,
-     so that it can be called with the `dllimport' attribute.  The
-     pointer name is formed by combining `__imp_' and the function name.
-
-`exception (EXCEPT-FUNC [, EXCEPT-ARG])'
-     On the PowerPC running Windows NT, the `exception' attribute causes
-     the compiler to modify the structured exception table entry it
-     emits for the declared function.  The string or identifier
-     EXCEPT-FUNC is placed in the third entry of the structured
-     exception table.  It represents a function, which is called by the
-     exception handling mechanism if an exception occurs.  If it was
-     specified, the string or identifier EXCEPT-ARG is placed in the
-     fourth entry of the structured exception table.
-
-`function_vector'
-     Use this option on the H8/300 and H8/300H to indicate that the
-     specified function should be called through the function vector.
-     Calling a function through the function vector will reduce code
-     size, however; the function vector has a limited size (maximum 128
-     entries on the H8/300 and 64 entries on the H8/300H) and shares
-     space with the interrupt vector.
-
-     You must use GAS and GLD from GNU binutils version 2.7 or later for
-     this option to work correctly.
-
-`interrupt_handler'
-     Use this option on the H8/300 and H8/300H to indicate that the
-     specified function is an interrupt handler.  The compiler will
-     generate function entry and exit sequences suitable for use in an
-     interrupt handler when this attribute is present.
-
-`eightbit_data'
-     Use this option on the H8/300 and H8/300H to indicate that the
-     specified variable should be placed into the eight bit data
-     section.  The compiler will generate more efficient code for
-     certain operations on data in the eight bit data area.  Note the
-     eight bit data area is limited to 256 bytes of data.
-
-     You must use GAS and GLD from GNU binutils version 2.7 or later for
-     this option to work correctly.
-
-`tiny_data'
-     Use this option on the H8/300H to indicate that the specified
-     variable should be placed into the tiny data section.  The
-     compiler will generate more efficient code for loads and stores on
-     data in the tiny data section.  Note the tiny data area is limited
-     to slightly under 32kbytes of data.
-
-`interrupt'
-     Use this option on the M32R/D to indicate that the specified
-     function is an interrupt handler.  The compiler will generate
-     function entry and exit sequences suitable for use in an interrupt
-     handler when this attribute is present.
-
-     Interrupt handler functions on the AVR processors Use this option
-     on the AVR to indicate that the specified function is an interrupt
-     handler.  The compiler will generate function entry and exit
-     sequences suitable for use in an interrupt handler when this
-     attribute is present. Interrupts will be enabled inside function.
-
-`signal'
-     Use this option on the AVR to indicate that the specified function
-     is an signal handler.  The compiler will generate function entry
-     and exit sequences suitable for use in an signal handler when this
-     attribute is present. Interrupts will be disabled inside function.
-
-`naked'
-     Use this option on the AVR to indicate that the specified function
-     don't have a prologue/epilogue.  The compiler don't generate
-     function entry and exit sequences.
-
-`model (MODEL-NAME)'
-     Use this attribute on the M32R/D to set the addressability of an
-     object, and the code generated for a function.  The identifier
-     MODEL-NAME is one of `small', `medium', or `large', representing
-     each of the code models.
-
-     Small model objects live in the lower 16MB of memory (so that their
-     addresses can be loaded with the `ld24' instruction), and are
-     callable with the `bl' instruction.
-
-     Medium model objects may live anywhere in the 32 bit address space
-     (the compiler will generate `seth/add3' instructions to load their
-     addresses), and are callable with the `bl' instruction.
-
-     Large model objects may live anywhere in the 32 bit address space
-     (the compiler will generate `seth/add3' instructions to load their
-     addresses), and may not be reachable with the `bl' instruction
-     (the compiler will generate the much slower `seth/add3/jl'
-     instruction sequence).
-
-`register_precision(REGISTER, PRECISION)'
-     Use this attribute on the mips 5900 to specify the mode PRECISION
-     for a particular register REGISTER. This lets you request the
-     width in bits of the register to be saved to the stack.
-
-     Multiple `register_precision' attributes may be specified in a
-     single attribute clause.
-
-          int
-          gamma (char *alpha, char *beta)
-                __attribute__ ((register_precision ($s7, 128),
-                                register_precision ($s6, 128)));
-
-`naked'
-     This attribute specifies that the indicated function should have
-     neither a funciton entry sequence nor a funciton exit sequence
-     built for it by the compiler.  It is then the programmer's
-     responsibility to provide any necessary prologue and epilogue code.
-
-`interfacearm'
-     The presence of this attribute atteched to a function indicates
-     that the compiler should generate an ARM mode entry sequence for
-     the function (despite the fact that the rest of the function is
-     encoded using Thumb instructions) and that the function must
-     return using the BX instruction, to ensure that the caller is
-     returned to in the correct mode.
-
-`sda'
-     Use this option on the V850 to indicate that the specified variable
-     should be placed into the small data area.  The compiler will
-     generate more efficient code for loads and stores on data in this
-     area section.  Note the small data area is limited to 64kbytes of
-     data.  The area is pointed to by the GP register (register 4):
-
-          int __attribute__((sda)) variable;
-
-`tda'
-     Use this option on the V850 to indicate that the specified variable
-     should be placed into the tiny data area.  The compiler will
-     generate more efficient code for loads and stores on data in this
-     area section.  Note the tiny data area is limited to slightly
-     under 256 bytes of data.  The area is pointed to by the EP
-     register (register 30) and typically points to fast, internal RAM:
-
-          int __attribute__((tda)) variable;
-
-`zda'
-     Use this option on the V850 to indicate that the specified variable
-     should be placed into the zero data area.  The compiler will
-     generate more efficient code for loads and stores on data in this
-     area section.  Note the zero data area is limited to slightly
-     under 64kbytes of data, and is located starting at address 0.
-     Typically this area includes some of the V850's Special Function
-     Registers:
-
-          int __attribute__((zda)) variable;
-
-   You can specify multiple attributes in a declaration by separating
-them by commas within the double parentheses or by immediately
-following an attribute declaration with another attribute declaration.
-
-   Some people object to the `__attribute__' feature, suggesting that
-ANSI C's `#pragma' should be used instead.  There are two reasons for
-not doing this.
-
-  1. It is impossible to generate `#pragma' commands from a macro.
-
-  2. There is no telling what the same `#pragma' might mean in another
-     compiler.
-
-   These two reasons apply to almost any application that might be
-proposed for `#pragma'.  It is basically a mistake to use `#pragma' for
-*anything*.
-
-
-File: gcc.info,  Node: Function Prototypes,  Next: Interrupt Functions,  Prev: Function Attributes,  Up: C Extensions
-
-Prototypes and Old-Style Function Definitions
-=============================================
-
-   GNU C extends ANSI C to allow a function prototype to override a
-later old-style non-prototype definition.  Consider the following
-example:
-
-     /* Use prototypes unless the compiler is old-fashioned.  */
-     #ifdef __STDC__
-     #define P(x) x
-     #else
-     #define P(x) ()
-     #endif
-     
-     /* Prototype function declaration.  */
-     int isroot P((uid_t));
-     
-     /* Old-style function definition.  */
-     int
-     isroot (x)   /* ??? lossage here ??? */
-          uid_t x;
+   In GNU C++, you can use the keyword `signature' to define a
+completely abstract class interface as a datatype.  You can connect this
+abstraction with actual classes using signature pointers.  If you want
+to use signatures, run the GNU compiler with the `-fhandle-signatures'
+command-line option.  (With this option, the compiler reserves a second
+keyword `sigof' as well, for a future extension.)
+
+   Roughly, signatures are type abstractions or interfaces of classes.
+Some other languages have similar facilities.  C++ signatures are
+related to ML's signatures, Haskell's type classes, definition modules
+in Modula-2, interface modules in Modula-3, abstract types in Emerald,
+type modules in Trellis/Owl, categories in Scratchpad II, and types in
+POOL-I.  For a more detailed discussion of signatures, see `Signatures:
+A Language Extension for Improving Type Abstraction and Subtype
+Polymorphism in C++' by Gerald Baumgartner and Vincent F. Russo (Tech
+report CSD-TR-95-051, Dept. of Computer Sciences, Purdue University,
+August 1995, a slightly improved version appeared in
+*Software--Practice & Experience*, 25(8), pp. 863-889, August 1995).
+You can get the tech report by anonymous FTP from `ftp.cs.purdue.edu'
+in `pub/gb/Signature-design.ps.gz'.
+
+   Syntactically, a signature declaration is a collection of member
+function declarations and nested type declarations.  For example, this
+signature declaration defines a new abstract type `S' with member
+functions `int foo ()' and `int bar (int)':
+
+     signature S
      {
-       return x == 0;
-     }
+       int foo ();
+       int bar (int);
+     };
 
-   Suppose the type `uid_t' happens to be `short'.  ANSI C does not
-allow this example, because subword arguments in old-style
-non-prototype definitions are promoted.  Therefore in this example the
-function definition's argument is really an `int', which does not match
-the prototype argument type of `short'.
+   Since signature types do not include implementation definitions, you
+cannot write an instance of a signature directly.  Instead, you can
+define a pointer to any class that contains the required interfaces as a
+"signature pointer".  Such a class "implements" the signature type.
 
-   This restriction of ANSI C makes it hard to write code that is
-portable to traditional C compilers, because the programmer does not
-know whether the `uid_t' type is `short', `int', or `long'.  Therefore,
-in cases like these GNU C allows a prototype to override a later
-old-style definition.  More precisely, in GNU C, a function prototype
-argument type overrides the argument type specified by a later
-old-style definition if the former type is the same as the latter type
-before promotion.  Thus in GNU C the above example is equivalent to the
-following:
+   To use a class as an implementation of `S', you must ensure that the
+class has public member functions `int foo ()' and `int bar (int)'.
+The class can have other member functions as well, public or not; as
+long as it offers what's declared in the signature, it is suitable as
+an implementation of that signature type.
 
-     int isroot (uid_t);
-     
-     int
-     isroot (uid_t x)
+   For example, suppose that `C' is a class that meets the requirements
+of signature `S' (`C' "conforms to" `S').  Then
+
+     C obj;
+     S * p = &obj;
+
+defines a signature pointer `p' and initializes it to point to an
+object of type `C'.  The member function call `int i = p->foo ();'
+executes `obj.foo ()'.
+
+   Abstract virtual classes provide somewhat similar facilities in
+standard C++.  There are two main advantages to using signatures
+instead:
+
+  1. Subtyping becomes independent from inheritance.  A class or
+     signature type `T' is a subtype of a signature type `S'
+     independent of any inheritance hierarchy as long as all the member
+     functions declared in `S' are also found in `T'.  So you can
+     define a subtype hierarchy that is completely independent from any
+     inheritance (implementation) hierarchy, instead of being forced to
+     use types that mirror the class inheritance hierarchy.
+
+  2. Signatures allow you to work with existing class hierarchies as
+     implementations of a signature type.  If those class hierarchies
+     are only available in compiled form, you're out of luck with
+     abstract virtual classes, since an abstract virtual class cannot
+     be retrofitted on top of existing class hierarchies.  So you would
+     be required to write interface classes as subtypes of the abstract
+     virtual class.
+
+   There is one more detail about signatures.  A signature declaration
+can contain member function *definitions* as well as member function
+declarations.  A signature member function with a full definition is
+called a *default implementation*; classes need not contain that
+particular interface in order to conform.  For example, a class `C' can
+conform to the signature
+
+     signature T
      {
-       return x == 0;
-     }
+       int f (int);
+       int f0 () { return f (0); };
+     };
 
-   GNU C++ does not support old-style function definitions, so this
-extension is irrelevant.
-
-
-File: gcc.info,  Node: Interrupt Functions,  Next: C++ Comments,  Prev: Function Prototypes,  Up: C Extensions
-
-Compiling Functions for Interrupt Calls
-=======================================
-
-   When compiling code for certain platforms (currently the Hitachi
-H8/300 and the Tandem ST-2000), you can instruct `{No Value For "GCC"}'
-that certain functions are meant to be called from hardware interrupts.
-
-   To mark a function as callable from interrupt, include the line
-`#pragma interrupt' somewhere before the beginning of the function's
-definition.  (For maximum readability, you might place it immediately
-before the definition of the appropriate function.)  `#pragma
-interrupt' will affect only the next function defined; if you want to
-define more than one function with this property, include `#pragma
-interrupt' before each of them.
-
-   When you define a function with `#pragma interrupt', `{No Value For
-"GCC"}' alters its usual calling convention, to provide the right
-environment when the function is called from an interrupt.  *Such
-functions cannot be called in the usual way from your program*.
-
-   You must use other facilities to actually associate these functions
-with particular interrupts; `{No Value For "GCC"}' can only compile
-them in the appropriate way.
+whether or not `C' implements the member function `int f0 ()'.  If you
+define `C::f0', that definition takes precedence; otherwise, the
+default implementation `S::f0' applies.
 
 
-File: gcc.info,  Node: C++ Comments,  Next: Dollar Signs,  Prev: Interrupt Functions,  Up: C Extensions
+File: gcc.info,  Node: Gcov,  Next: Trouble,  Prev: C++ Extensions,  Up: Top
 
-C++ Style Comments
-==================
+`gcov': a Test Coverage Program
+*******************************
 
-   In GNU C, you may use C++ style comments, which start with `//' and
-continue until the end of the line.  Many other C implementations allow
-such comments, and they are likely to be in a future C standard.
-However, C++ style comments are not recognized if you specify `-ansi'
-or `-traditional', since they are incompatible with traditional
-constructs like `dividend//*comment*/divisor'.
+   `gcov' is a tool you can use in conjunction with GNU CC to test code
+coverage in your programs.
+
+   This chapter describes version 1.5 of `gcov'.
+
+* Menu:
+
+* Gcov Intro::         	        Introduction to gcov.
+* Invoking Gcov::       	How to use gcov.
+* Gcov and Optimization::       Using gcov with GCC optimization.
+* Gcov Data Files::             The files used by gcov.
 
 
-File: gcc.info,  Node: Dollar Signs,  Next: Character Escapes,  Prev: C++ Comments,  Up: C Extensions
+File: gcc.info,  Node: Gcov Intro,  Next: Invoking Gcov,  Up: Gcov
 
-Dollar Signs in Identifier Names
+Introduction to `gcov'
+======================
+
+   `gcov' is a test coverage program.  Use it in concert with GNU CC to
+analyze your programs to help create more efficient, faster running
+code.  You can use `gcov' as a profiling tool to help discover where
+your optimization efforts will best affect your code.  You can also use
+`gcov' along with the other profiling tool, `gprof', to assess which
+parts of your code use the greatest amount of computing time.
+
+   Profiling tools help you analyze your code's performance.  Using a
+profiler such as `gcov' or `gprof', you can find out some basic
+performance statistics, such as:
+
+   * how often each line of code executes
+
+   * what lines of code are actually executed
+
+   * how much computing time each section of code uses
+
+   Once you know these things about how your code works when compiled,
+you can look at each module to see which modules should be optimized.
+`gcov' helps you determine where to work on optimization.
+
+   Software developers also use coverage testing in concert with
+testsuites, to make sure software is actually good enough for a release.
+Testsuites can verify that a program works as expected; a coverage
+program tests to see how much of the program is exercised by the
+testsuite.  Developers can then determine what kinds of test cases need
+to be added to the testsuites to create both better testing and a better
+final product.
+
+   You should compile your code without optimization if you plan to use
+`gcov' because the optimization, by combining some lines of code into
+one function, may not give you as much information as you need to look
+for `hot spots' where the code is using a great deal of computer time.
+Likewise, because `gcov' accumulates statistics by line (at the lowest
+resolution), it works best with a programming style that places only
+one statement on each line.  If you use complicated macros that expand
+to loops or to other control structures, the statistics are less
+helpful--they only report on the line where the macro call appears.  If
+your complex macros behave like functions, you can replace them with
+inline functions to solve this problem.
+
+   `gcov' creates a logfile called `SOURCEFILE.gcov' which indicates
+how many times each line of a source file `SOURCEFILE.c' has executed.
+You can use these logfiles along with `gprof' to aid in fine-tuning the
+performance of your programs.  `gprof' gives timing information you can
+use along with the information you get from `gcov'.
+
+   `gcov' works only on code compiled with GNU CC.  It is not
+compatible with any other profiling or test coverage mechanism.
+
+
+File: gcc.info,  Node: Invoking Gcov,  Next: Gcov and Optimization,  Prev: Gcov Intro,  Up: Gcov
+
+Invoking gcov
+=============
+
+     gcov [-b] [-v] [-n] [-l] [-f] [-o directory] SOURCEFILE
+
+`-b'
+     Write branch frequencies to the output file, and write branch
+     summary info to the standard output.  This option allows you to
+     see how often each branch in your program was taken.
+
+`-v'
+     Display the `gcov' version number (on the standard error stream).
+
+`-n'
+     Do not create the `gcov' output file.
+
+`-l'
+     Create long file names for included source files.  For example, if
+     the header file `x.h' contains code, and was included in the file
+     `a.c', then running `gcov' on the file `a.c' will produce an
+     output file called `a.c.x.h.gcov' instead of `x.h.gcov'.  This can
+     be useful if `x.h' is included in multiple source files.
+
+`-f'
+     Output summaries for each function in addition to the file level
+     summary.
+
+`-o'
+     The directory where the object files live.  Gcov will search for
+     `.bb', `.bbg', and `.da' files in this directory.
+
+   When using `gcov', you must first compile your program with two
+special GNU CC options: `-fprofile-arcs -ftest-coverage'.  This tells
+the compiler to generate additional information needed by gcov
+(basically a flow graph of the program) and also includes additional
+code in the object files for generating the extra profiling information
+needed by gcov.  These additional files are placed in the directory
+where the source code is located.
+
+   Running the program will cause profile output to be generated.  For
+each source file compiled with -fprofile-arcs, an accompanying `.da'
+file will be placed in the source directory.
+
+   Running `gcov' with your program's source file names as arguments
+will now produce a listing of the code along with frequency of execution
+for each line.  For example, if your program is called `tmp.c', this is
+what you see when you use the basic `gcov' facility:
+
+     $ gcc -fprofile-arcs -ftest-coverage tmp.c
+     $ a.out
+     $ gcov tmp.c
+      87.50% of 8 source lines executed in file tmp.c
+     Creating tmp.c.gcov.
+
+   The file `tmp.c.gcov' contains output from `gcov'.  Here is a sample:
+
+                     main()
+                     {
+                1      int i, total;
+     
+                1      total = 0;
+     
+               11      for (i = 0; i < 10; i++)
+               10        total += i;
+     
+                1      if (total != 45)
+           ######        printf ("Failure\n");
+                       else
+                1        printf ("Success\n");
+                1    }
+
+   When you use the `-b' option, your output looks like this:
+
+     $ gcov -b tmp.c
+      87.50% of 8 source lines executed in file tmp.c
+      80.00% of 5 branches executed in file tmp.c
+      80.00% of 5 branches taken at least once in file tmp.c
+      50.00% of 2 calls executed in file tmp.c
+     Creating tmp.c.gcov.
+
+   Here is a sample of a resulting `tmp.c.gcov' file:
+
+                     main()
+                     {
+                1      int i, total;
+     
+                1      total = 0;
+     
+               11      for (i = 0; i < 10; i++)
+     branch 0 taken = 91%
+     branch 1 taken = 100%
+     branch 2 taken = 100%
+               10        total += i;
+     
+                1      if (total != 45)
+     branch 0 taken = 100%
+           ######        printf ("Failure\n");
+     call 0 never executed
+     branch 1 never executed
+                       else
+                1        printf ("Success\n");
+     call 0 returns = 100%
+                1    }
+
+   For each basic block, a line is printed after the last line of the
+basic block describing the branch or call that ends the basic block.
+There can be multiple branches and calls listed for a single source
+line if there are multiple basic blocks that end on that line.  In this
+case, the branches and calls are each given a number.  There is no
+simple way to map these branches and calls back to source constructs.
+In general, though, the lowest numbered branch or call will correspond
+to the leftmost construct on the source line.
+
+   For a branch, if it was executed at least once, then a percentage
+indicating the number of times the branch was taken divided by the
+number of times the branch was executed will be printed.  Otherwise, the
+message "never executed" is printed.
+
+   For a call, if it was executed at least once, then a percentage
+indicating the number of times the call returned divided by the number
+of times the call was executed will be printed.  This will usually be
+100%, but may be less for functions call `exit' or `longjmp', and thus
+may not return everytime they are called.
+
+   The execution counts are cumulative.  If the example program were
+executed again without removing the `.da' file, the count for the
+number of times each line in the source was executed would be added to
+the results of the previous run(s).  This is potentially useful in
+several ways.  For example, it could be used to accumulate data over a
+number of program runs as part of a test verification suite, or to
+provide more accurate long-term information over a large number of
+program runs.
+
+   The data in the `.da' files is saved immediately before the program
+exits.  For each source file compiled with -fprofile-arcs, the profiling
+code first attempts to read in an existing `.da' file; if the file
+doesn't match the executable (differing number of basic block counts) it
+will ignore the contents of the file.  It then adds in the new execution
+counts and finally writes the data to the file.
+
+
+File: gcc.info,  Node: Gcov and Optimization,  Next: Gcov Data Files,  Prev: Invoking Gcov,  Up: Gcov
+
+Using `gcov' with GCC Optimization
+==================================
+
+   If you plan to use `gcov' to help optimize your code, you must first
+compile your program with two special GNU CC options: `-fprofile-arcs
+-ftest-coverage'.  Aside from that, you can use any other GNU CC
+options; but if you want to prove that every single line in your
+program was executed, you should not compile with optimization at the
+same time.  On some machines the optimizer can eliminate some simple
+code lines by combining them with other lines.  For example, code like
+this:
+
+     if (a != b)
+       c = 1;
+     else
+       c = 0;
+
+can be compiled into one instruction on some machines.  In this case,
+there is no way for `gcov' to calculate separate execution counts for
+each line because there isn't separate code for each line.  Hence the
+`gcov' output looks like this if you compiled the program with
+optimization:
+
+           100  if (a != b)
+           100    c = 1;
+           100  else
+           100    c = 0;
+
+   The output shows that this block of code, combined by optimization,
+executed 100 times.  In one sense this result is correct, because there
+was only one instruction representing all four of these lines.  However,
+the output does not indicate how many times the result was 0 and how
+many times the result was 1.
+
+
+File: gcc.info,  Node: Gcov Data Files,  Prev: Gcov and Optimization,  Up: Gcov
+
+Brief description of `gcov' data files
+======================================
+
+   `gcov' uses three files for doing profiling.  The names of these
+files are derived from the original *source* file by substituting the
+file suffix with either `.bb', `.bbg', or `.da'.  All of these files
+are placed in the same directory as the source file, and contain data
+stored in a platform-independent method.
+
+   The `.bb' and `.bbg' files are generated when the source file is
+compiled with the GNU CC `-ftest-coverage' option.  The `.bb' file
+contains a list of source files (including headers), functions within
+those files, and line numbers corresponding to each basic block in the
+source file.
+
+   The `.bb' file format consists of several lists of 4-byte integers
+which correspond to the line numbers of each basic block in the file.
+Each list is terminated by a line number of 0.  A line number of -1 is
+used to designate that the source file name (padded to a 4-byte
+boundary and followed by another -1) follows.  In addition, a line
+number of -2 is used to designate that the name of a function (also
+padded to a 4-byte boundary and followed by a -2) follows.
+
+   The `.bbg' file is used to reconstruct the program flow graph for
+the source file.  It contains a list of the program flow arcs (possible
+branches taken from one basic block to another) for each function which,
+in combination with the `.bb' file, enables gcov to reconstruct the
+program flow.
+
+   In the `.bbg' file, the format is:
+             number of basic blocks for function #0 (4-byte number)
+             total number of arcs for function #0 (4-byte number)
+             count of arcs in basic block #0 (4-byte number)
+             destination basic block of arc #0 (4-byte number)
+             flag bits (4-byte number)
+             destination basic block of arc #1 (4-byte number)
+             flag bits (4-byte number)
+             ...
+             destination basic block of arc #N (4-byte number)
+             flag bits (4-byte number)
+             count of arcs in basic block #1 (4-byte number)
+             destination basic block of arc #0 (4-byte number)
+             flag bits (4-byte number)
+             ...
+
+   A -1 (stored as a 4-byte number) is used to separate each function's
+list of basic blocks, and to verify that the file has been read
+correctly.
+
+   The `.da' file is generated when a program containing object files
+built with the GNU CC `-fprofile-arcs' option is executed.  A separate
+`.da' file is created for each source file compiled with this option,
+and the name of the `.da' file is stored as an absolute pathname in the
+resulting object file.  This path name is derived from the source file
+name by substituting a `.da' suffix.
+
+   The format of the `.da' file is fairly simple.  The first 8-byte
+number is the number of counts in the file, followed by the counts
+(stored as 8-byte numbers).  Each count corresponds to the number of
+times each arc in the program is executed.  The counts are cumulative;
+each time the program is executed, it attemps to combine the existing
+`.da' files with the new counts for this invocation of the program.  It
+ignores the contents of any `.da' files whose number of arcs doesn't
+correspond to the current program, and merely overwrites them instead.
+
+   All three of these files use the functions in `gcov-io.h' to store
+integers; the functions in this header provide a machine-independent
+mechanism for storing and retrieving data from a stream.
+
+
+File: gcc.info,  Node: Trouble,  Next: Bugs,  Prev: Gcov,  Up: Top
+
+Known Causes of Trouble with GNU CC
+***********************************
+
+   This section describes known problems that affect users of GNU CC.
+Most of these are not GNU CC bugs per se--if they were, we would fix
+them.  But the result for a user may be like the result of a bug.
+
+   Some of these problems are due to bugs in other software, some are
+missing features that are too much work to add, and some are places
+where people's opinions differ as to what is best.
+
+* Menu:
+
+* Actual Bugs::		      Bugs we will fix later.
+* Installation Problems::     Problems that manifest when you install GNU CC.
+* Cross-Compiler Problems::   Common problems of cross compiling with GNU CC.
+* Interoperation::      Problems using GNU CC with other compilers,
+			   and with certain linkers, assemblers and debuggers.
+* External Bugs::	Problems compiling certain programs.
+* Incompatibilities::   GNU CC is incompatible with traditional C.
+* Fixed Headers::       GNU C uses corrected versions of system header files.
+                           This is necessary, but doesn't always work smoothly.
+* Standard Libraries::  GNU C uses the system C library, which might not be
+                           compliant with the ISO/ANSI C standard.
+* Disappointments::     Regrettable things we can't change, but not quite bugs.
+* C++ Misunderstandings::     Common misunderstandings with GNU C++.
+* Protoize Caveats::    Things to watch out for when using `protoize'.
+* Non-bugs::		Things we think are right, but some others disagree.
+* Warnings and Errors:: Which problems in your code get warnings,
+                         and which get errors.
+
+
+File: gcc.info,  Node: Actual Bugs,  Next: Installation Problems,  Up: Trouble
+
+Actual Bugs We Haven't Fixed Yet
 ================================
 
-   In GNU C, you may normally use dollar signs in identifier names.
-This is because many traditional C implementations allow such
-identifiers.  However, dollar signs in identifiers are not supported on
-a few target machines, typically because the target assembler does not
-allow them.
+   * The `fixincludes' script interacts badly with automounters; if the
+     directory of system header files is automounted, it tends to be
+     unmounted while `fixincludes' is running.  This would seem to be a
+     bug in the automounter.  We don't know any good way to work around
+     it.
 
-
-File: gcc.info,  Node: Character Escapes,  Next: Variable Attributes,  Prev: Dollar Signs,  Up: C Extensions
+   * The `fixproto' script will sometimes add prototypes for the
+     `sigsetjmp' and `siglongjmp' functions that reference the
+     `jmp_buf' type before that type is defined.  To work around this,
+     edit the offending file and place the typedef in front of the
+     prototypes.
 
-The Character <ESC> in Constants
-================================
+   * There are several obscure case of mis-using struct, union, and
+     enum tags that are not detected as errors by the compiler.
 
-   You can use the sequence `\e' in a string or character constant to
-stand for the ASCII character <ESC>.
+   * When `-pedantic-errors' is specified, GNU C will incorrectly give
+     an error message when a function name is specified in an expression
+     involving the comma operator.
 
-
-File: gcc.info,  Node: Alignment,  Next: Inline,  Prev: Type Attributes,  Up: C Extensions
-
-Inquiring on Alignment of Types or Variables
-============================================
-
-   The keyword `__alignof__' allows you to inquire about how an object
-is aligned, or the minimum alignment usually required by a type.  Its
-syntax is just like `sizeof'.
-
-   For example, if the target machine requires a `double' value to be
-aligned on an 8-byte boundary, then `__alignof__ (double)' is 8.  This
-is true on many RISC machines.  On more traditional machine designs,
-`__alignof__ (double)' is 4 or even 2.
-
-   Some machines never actually require alignment; they allow reference
-to any data type even at an odd addresses.  For these machines,
-`__alignof__' reports the *recommended* alignment of a type.
-
-   When the operand of `__alignof__' is an lvalue rather than a type,
-the value is the largest alignment that the lvalue is known to have.
-It may have this alignment as a result of its data type, or because it
-is part of a structure and inherits alignment from that structure.  For
-example, after this declaration:
-
-     struct foo { int x; char y; } foo1;
-
-the value of `__alignof__ (foo1.y)' is probably 2 or 4, the same as
-`__alignof__ (int)', even though the data type of `foo1.y' does not
-itself demand any alignment.
-
-   It is an error to ask for the alignment of an incomplete type.
-
-   A related feature which lets you specify the alignment of an object
-is `__attribute__ ((aligned (ALIGNMENT)))'; see the following section.
+   * Loop unrolling doesn't work properly for certain C++ programs.
+     This is a bug in the C++ front end.  It sometimes emits incorrect
+     debug info, and the loop unrolling code is unable to recover from
+     this error.
 

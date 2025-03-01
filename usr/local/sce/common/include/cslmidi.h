@@ -1,21 +1,27 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
- * Emotion Engine / I/O Processor Common Header
+ *                     I/O Processor Library
+ *                          Version 0.60
+ *                           Shift-JIS
  *
- * Copyright (C) 1998-1999,2001 Sony Computer Entertainment Inc.
- * All Rights Reserved.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                       All Rights Reserved.
  *
- * cslmidi.h
- *	Component Sound Library MIDI Stream
+ *                            cslmidi.h
+ *                Component Sound Library MIDI Stream
+ *
+ *     Version   Date          Design     Log
+ *  --------------------------------------------------------------------
+ *     0.60      Oct.12.1999   katayama   first checked in.
  */
 #ifndef _cslmidi_h_
 #define _cslmidi_h_
 typedef struct {
-	unsigned int	buffsize;	/* include Header size	*/
-	unsigned int	validsize;	/* valid data size	*/
-	unsigned char	data[0];	/* data max is data[buffsize] */
+	u_int	buffsize;	// include Header size
+	u_int	validsize;	// valid data size
+	u_char	data[0];	// data max is data[buffsize]
 } sceCslMidiStream;
 /**** MIDI Special Messages ****/
 #define sceCslMidiHsStatusEx1		0xf9
@@ -26,4 +32,4 @@ typedef struct {
 #define sceCslMidiHsCmdNoteCtrl		0x10
 #define sceCslMidiHsCtrlAllKey		(1<<4)
 #define sceCslMidiHsKIdAll			0x7f
-#endif /* !_cslmidi_h_ */
+#endif //!_cslmidi_h_

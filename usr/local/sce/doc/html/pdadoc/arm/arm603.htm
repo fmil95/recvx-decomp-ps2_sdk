@@ -1,0 +1,752 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm603</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm602.htm">[前]</A> <A HREF="arm604.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>6.3 <A NAME="anchor462725"></A>命令セットの概要</H3>
+
+<BLOCKQUOTE>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877586"></A></TD>
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877588"></A><B>15</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877590"></A><B>14</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877592"></A><B>13</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877594"></A><B>12</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877596"></A><B>11</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877598"></A><B>10</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877600"></A><B>9</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877602"></A><B>8</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877604"></A><B>7</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877606"></A><B>6</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877608"></A><B>5</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877610"></A><B>4</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877612"></A><B>3</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877614"></A><B>2</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877616"></A><B>1</B></TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877618"></A><B>0</B></TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877620"></A>イミディエイトによるシフト</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877622"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877624"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877626"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+      <A NAME="877628"></A>opcode</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+      <A NAME="877632"></A>immediate</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877642"></A>Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877648"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877654"></A>加算/減算レジスタ</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877656"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877658"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877660"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877662"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877664"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877666"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877668"></A>op</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877670"></A>Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877676"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877682"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877688"></A>加算/減算イミディエイト</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877690"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877692"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877694"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877696"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877698"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877700"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877702"></A>op</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877704"></A>immediate</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877710"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877716"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877722"></A>加算/減算/比較イミディエイト</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877724"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877726"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877728"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+      <A NAME="877730"></A>opcode</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877734"></A>Rd|Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="877740"></A>immediate</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877756"></A>データ処理レジスタ</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877758"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877760"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877762"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877764"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877766"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877768"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+      <A NAME="877770"></A>opcode</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877778"></A>Rm|Rs</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877784"></A>Rd|Rn</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877790"></A>スペシャル・データ処理</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877792"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877794"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877796"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877798"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877800"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877802"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="2">
+      <A NAME="877804"></A>opcode</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877808"></A>H1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877810"></A>H2</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877812"></A>Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877818"></A>Rd|Rn</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877824"></A>リテラル・プールからのロード</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877826"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877828"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877830"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877832"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877834"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877836"></A>Rd</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="877842"></A>PC-relative offset</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877858"></A>ロード/ストア・ワード/バイト・レジスタ</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877860"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877862"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877864"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877866"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877868"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877870"></A>B</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877872"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877874"></A>Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877880"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877886"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877892"></A>ロード/ストア符号付きバイト/ハーフワード・レジスタ</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877894"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877896"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877898"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877900"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877902"></A>H</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877904"></A>S</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877906"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877908"></A>Rm</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877914"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877920"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877926"></A>ロード/ストア・ワード/バイト・イミディエイト</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877928"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877930"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877932"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877934"></A>B</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877936"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+      <A NAME="877938"></A>immediate</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877948"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877954"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877960"></A>ロード/ストア・ハーフワード・イミディエイト</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877962"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877964"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877966"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877968"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877970"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="5">
+      <A NAME="877972"></A>immediate</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877982"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="877988"></A>Rd</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="877994"></A>スタックへの/からのロード/ストア</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877996"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="877998"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878000"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878002"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878004"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="878006"></A>Rd</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878012"></A>SP-relative offset</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878028"></A>SPまたはPCへの/からの加算/減算</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878030"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878032"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878034"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878036"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878038"></A>SP</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="878040"></A>Rd</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878046"></A>immediate</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878062"></A>スタック・ポインタ調整</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878064"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878066"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878068"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878070"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878072"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878074"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878076"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878078"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878080"></A>opc</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="7">
+      <A NAME="878082"></A>immediate</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="879112"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879223"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879225"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879227"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879229"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879122"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879124"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879126"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879128"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879252"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879254"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879256"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879258"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879260"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879262"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879264"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879144"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="879146"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879231"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879233"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879235"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879237"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879156"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879158"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879160"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879162"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879266"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879268"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879270"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879272"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879274"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879276"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879278"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879178"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="879180"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879239"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879241"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879243"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879245"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879190"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879192"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879194"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879196"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879280"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879282"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879284"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879286"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879288"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879290"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879292"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879212"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878096"></A>プッシュ/ポップ・レジスタ・リス</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878098"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878100"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878102"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878104"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878106"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878108"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878110"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878112"></A>R</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878114"></A>register_list</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="879296"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879298"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879300"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879302"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879304"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879306"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879308"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879310"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879312"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879314"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879316"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879318"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879320"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879322"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879324"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879326"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="879328"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878130"></A>ロード/ストア・マルチプル</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878132"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878134"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878136"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878138"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878140"></A>L</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="3">
+      <A NAME="878142"></A>Rn</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878148"></A>register_list</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878164"></A>条件付き分岐</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878166"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878168"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878170"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878172"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+      <A NAME="878174"></A>cond</TD>
+       
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878182"></A>offset</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878577"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878579"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878581"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878583"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878585"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878587"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878589"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878591"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878593"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878595"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878597"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878599"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878601"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878603"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878605"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878607"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878609"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878198"></A>ソフトウェア割り込み</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878200"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878202"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878204"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878206"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878208"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878210"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878212"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878214"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="8">
+      <A NAME="878216"></A>SWI number</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878232"></A>無条件分岐</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878234"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878236"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878238"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878240"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878242"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="11">
+      <A NAME="878244"></A>offset</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878266"></A>未定義命令</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878268"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878270"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878272"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878274"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878276"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878278"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878280"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878282"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878284"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878286"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878288"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878290"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878292"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878294"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878296"></A>x</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878298"></A>x</TD> 
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878300"></A>BLプリフィックス</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878302"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878304"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878306"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878308"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878310"></A>0</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="11">
+      <A NAME="878312"></A>offset</TD>
+       
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">
+      <A NAME="878334"></A>BL</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878336"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878338"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878340"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878342"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP">
+      <A NAME="878344"></A>1</TD> 
+      <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="11">
+      <A NAME="878346"></A>offset</TD>
+       
+    </TR>
+  </TABLE></P>
+  <P ALIGN=RIGHT><FONT SIZE="-1">図6-1：Thumb命令セット（拡張）</FONT></P>
+</BLOCKQUOTE>
+
+<P><BR>
+<HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm600.htm">[章目次]</A>
+<A HREF="arm602.htm">[前]</A> <A HREF="arm604.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

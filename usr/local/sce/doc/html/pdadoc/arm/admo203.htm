@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>admo203</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo202.htm">[前]</A> <A HREF="admo204.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">Addressing Mode 2</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <A NAME="anchor2257513"></A><B>Scaled register offsets</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">[Rn, +/-Rm, LSL #&lt;shift_imm&gt;]<BR>
+  [Rn, +/-Rm, LSR #&lt;shift_imm&gt;]<BR>
+  </FONT><A NAME="anchor2361846"></A><FONT COLOR="#009999">[Rn,
+  +/-Rm, ASR #&lt;shift_imm&gt;]<BR>
+  [Rn, +/-Rm, ROR #&lt;shift_imm&gt;]<BR>
+  [Rn, +/-Rm, RRX]</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>これらのアドレッシング・モードは、バイトより大きな値を持つ配列の1要素へのアクセスに使用します。</P>
+  <P>ベース・レジスタRnの値にインデックス・レジスタRmの値をシフトまたはローテートした値を加算するか、またはその値を減算することによってアドレスを計算します。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1101638"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101640"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101642"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101644"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101646"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101648"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101650"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101652"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101654"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101656"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101658"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101660"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101662"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101664"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101666"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101668"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101670"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101672"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101674"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101676"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101678"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101680"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101682"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101684"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101686"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101688"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101690"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101692"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101694"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101696"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101698"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1101700"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1101702"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101710"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101712"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101714"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101716"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101718"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101720"></A><BR>
+    B</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101722"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101724"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1101726"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1101734"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="5">
+    <P><CENTER><A NAME="1101742"></A><BR>
+    shift_imm</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="2">
+    <P><CENTER><A NAME="1101752"></A><BR>
+    shift</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1101756"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1101758"></A><BR>
+    Rm</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>case &lt;shift&gt; of
+        0b00 /* LSL */
+                &lt;index&gt; = Rm Logical_Shift_Left &lt;shift_imm&gt;
+        0b01 /* LSR */
+                if &lt;shift_imm&gt; == 0 then /* LSR #32 */
+                        &lt;index&gt; = 0
+                else
+                        &lt;index&gt; = Rm Logical_Shift_Right &lt;shift_imm&gt;
+         0b10 /* ASR */
+                if &lt;shift_imm&gt; == 0 then /* ASR #32 */
+                         if Rm[31] == 1 then
+                                 &lt;index&gt; = 0xffffffff
+                         else
+                                 &lt;index&gt; = 0
+                else
+                         &lt;index&gt; = Rm Arithmetic_Shift_Right &lt;shift_imm&gt;
+        0b11 /* ROR or RRX */
+                if &lt;shift_imm&gt; == 0 then /* RRX */
+                         &lt;index&gt; = (C Flag Logical_Shift_Left 31)
+                                           OR (Rm Logical_Shift_Right 1)
+                 else /* ROR */
+                         &lt;index&gt; = Rm Rotate_Right &lt;shift_imm&gt;
+endcase
+if U == 1 then
+        &lt;address&gt; = Rn + &lt;index&gt;
+else /* U == 0 */
+         &lt;address&gt; = Rn - &lt;index&gt;</PRE>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Bビット：</B>符号なしバイト・アクセス（B==1）とワード・アクセス（B==0）を区別します。</P>
+  <P><B>Lビット：</B>ロード(L==1)命令とストア(L==0)命令を区別します。</P>
+  <P><B>R15の使用：</B>レジスタRnとしてR15を指定した場合、使用される値は命令のアドレスに8を加算した値です。レジスタRmとしてR15を指定した場合、結果は予測できません。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo202.htm">[前]</A> <A HREF="admo204.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

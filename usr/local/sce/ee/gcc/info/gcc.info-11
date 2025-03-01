@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1154 +36,1068 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Cross Runtime,  Next: Build Cross,  Prev: Cross Headers,  Up: Cross-Compiler
+File: gcc.info,  Node: Type Attributes,  Next: Alignment,  Prev: Variable Attributes,  Up: C Extensions
 
-`libgcc.a' and Cross-Compilers
-------------------------------
+Specifying Attributes of Types
+==============================
 
-   Code compiled by GNU CC uses certain runtime support functions
-implicitly.  Some of these functions can be compiled successfully with
-GNU CC itself, but a few cannot be.  These problem functions are in the
-source file `libgcc1.c'; the library made from them is called
-`libgcc1.a'.
+   The keyword `__attribute__' allows you to specify special attributes
+of `struct' and `union' types when you define such types.  This keyword
+is followed by an attribute specification inside double parentheses.
+Three attributes are currently defined for types: `aligned', `packed',
+and `transparent_union'.  Other attributes are defined for functions
+(*note Function Attributes::.) and for variables (*note Variable
+Attributes::.).
 
-   When you build a native compiler, these functions are compiled with
-some other compiler-the one that you use for bootstrapping GNU CC.
-Presumably it knows how to open code these operations, or else knows how
-to call the run-time emulation facilities that the machine comes with.
-But this approach doesn't work for building a cross-compiler.  The
-compiler that you use for building knows about the host system, not the
-target system.
+   You may also specify any one of these attributes with `__' preceding
+and following its keyword.  This allows you to use these attributes in
+header files without being concerned about a possible macro of the same
+name.  For example, you may use `__aligned__' instead of `aligned'.
 
-   So, when you build a cross-compiler you have to supply a suitable
-library `libgcc1.a' that does the job it is expected to do.
+   You may specify the `aligned' and `transparent_union' attributes
+either in a `typedef' declaration or just past the closing curly brace
+of a complete enum, struct or union type *definition* and the `packed'
+attribute only past the closing brace of a definition.
 
-   To compile `libgcc1.c' with the cross-compiler itself does not work.
-The functions in this file are supposed to implement arithmetic
-operations that GNU CC does not know how to open code for your target
-machine.  If these functions are compiled with GNU CC itself, they will
-compile into infinite recursion.
+   You may also specify attributes between the enum, struct or union
+tag and the name of the type rather than after the closing brace.
 
-   On any given target, most of these functions are not needed.  If GNU
-CC can open code an arithmetic operation, it will not call these
-functions to perform the operation.  It is possible that on your target
-machine, none of these functions is needed.  If so, you can supply an
-empty library as `libgcc1.a'.
+`aligned (ALIGNMENT)'
+     This attribute specifies a minimum alignment (in bytes) for
+     variables of the specified type.  For example, the declarations:
 
-   Many targets need library support only for multiplication and
-division.  If you are linking with a library that contains functions for
-multiplication and division, you can tell GNU CC to call them directly
-by defining the macros `MULSI3_LIBCALL', and the like.  These macros
-need to be defined in the target description macro file.  For some
-targets, they are defined already.  This may be sufficient to avoid the
-need for libgcc1.a; if so, you can supply an empty library.
+          struct S { short f[3]; } __attribute__ ((aligned (8)));
+          typedef int more_aligned_int __attribute__ ((aligned (8)));
 
-   Some targets do not have floating point instructions; they need other
-functions in `libgcc1.a', which do floating arithmetic.  Recent
-versions of GNU CC have a file which emulates floating point.  With a
-certain amount of work, you should be able to construct a floating
-point emulator that can be used as `libgcc1.a'.  Perhaps future
-versions will contain code to do this automatically and conveniently.
-That depends on whether someone wants to implement it.
+     force the compiler to insure (as far as it can) that each variable
+     whose type is `struct S' or `more_aligned_int' will be allocated
+     and aligned *at least* on a 8-byte boundary.  On a Sparc, having
+     all variables of type `struct S' aligned to 8-byte boundaries
+     allows the compiler to use the `ldd' and `std' (doubleword load and
+     store) instructions when copying one variable of type `struct S' to
+     another, thus improving run-time efficiency.
 
-   Some embedded targets come with all the necessary `libgcc1.a'
-routines written in C or assembler.  These targets build `libgcc1.a'
-automatically and you do not need to do anything special for them.
-Other embedded targets do not need any `libgcc1.a' routines since all
-the necessary operations are supported by the hardware.
+     Note that the alignment of any given `struct' or `union' type is
+     required by the ANSI C standard to be at least a perfect multiple
+     of the lowest common multiple of the alignments of all of the
+     members of the `struct' or `union' in question.  This means that
+     you *can* effectively adjust the alignment of a `struct' or `union'
+     type by attaching an `aligned' attribute to any one of the members
+     of such a type, but the notation illustrated in the example above
+     is a more obvious, intuitive, and readable way to request the
+     compiler to adjust the alignment of an entire `struct' or `union'
+     type.
 
-   If your target system has another C compiler, you can configure GNU
-CC as a native compiler on that machine, build just `libgcc1.a' with
-`make libgcc1.a' on that machine, and use the resulting file with the
-cross-compiler.  To do this, execute the following on the target
-machine:
+     As in the preceding example, you can explicitly specify the
+     alignment (in bytes) that you wish the compiler to use for a given
+     `struct' or `union' type.  Alternatively, you can leave out the
+     alignment factor and just ask the compiler to align a type to the
+     maximum useful alignment for the target machine you are compiling
+     for.  For example, you could write:
 
-     cd TARGET-BUILD-DIR
-     ./configure --host=sparc --target=sun3
-     make libgcc1.a
+          struct S { short f[3]; } __attribute__ ((aligned));
 
-And then this on the host machine:
+     Whenever you leave out the alignment factor in an `aligned'
+     attribute specification, the compiler automatically sets the
+     alignment for the type to the largest alignment which is ever used
+     for any data type on the target machine you are compiling for.
+     Doing this can often make copy operations more efficient, because
+     the compiler can use whatever instructions copy the biggest chunks
+     of memory when performing copies to or from the variables which
+     have types that you have aligned this way.
 
-     ftp TARGET-MACHINE
-     binary
-     cd TARGET-BUILD-DIR
-     get libgcc1.a
-     quit
+     In the example above, if the size of each `short' is 2 bytes, then
+     the size of the entire `struct S' type is 6 bytes.  The smallest
+     power of two which is greater than or equal to that is 8, so the
+     compiler sets the alignment for the entire `struct S' type to 8
+     bytes.
 
-   Another way to provide the functions you need in `libgcc1.a' is to
-define the appropriate `perform_...' macros for those functions.  If
-these definitions do not use the C arithmetic operators that they are
-meant to implement, you should be able to compile them with the
-cross-compiler you are building.  (If these definitions already exist
-for your target file, then you are all set.)
+     Note that although you can ask the compiler to select a
+     time-efficient alignment for a given type and then declare only
+     individual stand-alone objects of that type, the compiler's
+     ability to select a time-efficient alignment is primarily useful
+     only when you plan to create arrays of variables having the
+     relevant (efficiently aligned) type.  If you declare or use arrays
+     of variables of an efficiently-aligned type, then it is likely
+     that your program will also be doing pointer arithmetic (or
+     subscripting, which amounts to the same thing) on pointers to the
+     relevant type, and the code that the compiler generates for these
+     pointer arithmetic operations will often be more efficient for
+     efficiently-aligned types than for other types.
 
-   To build `libgcc1.a' using the perform macros, use
-`LIBGCC1=libgcc1.a OLDCC=./xgcc' when building the compiler.
-Otherwise, you should place your replacement library under the name
-`libgcc1.a' in the directory in which you will build the
-cross-compiler, before you run `make'.
+     The `aligned' attribute can only increase the alignment; but you
+     can decrease it by specifying `packed' as well.  See below.
 
-
-File: gcc.info,  Node: Cross Headers,  Next: Cross Runtime,  Prev: Tools and Libraries,  Up: Cross-Compiler
+     Note that the effectiveness of `aligned' attributes may be limited
+     by inherent limitations in your linker.  On many systems, the
+     linker is only able to arrange for variables to be aligned up to a
+     certain maximum alignment.  (For some linkers, the maximum
+     supported alignment may be very very small.)  If your linker is
+     only able to align variables up to a maximum of 8 byte alignment,
+     then specifying `aligned(16)' in an `__attribute__' will still
+     only provide you with 8 byte alignment.  See your linker
+     documentation for further information.
 
-Cross-Compilers and Header Files
---------------------------------
+`packed'
+     This attribute, attached to an `enum', `struct', or `union' type
+     definition, specified that the minimum required memory be used to
+     represent the type.
 
-   If you are cross-compiling a standalone program or a program for an
-embedded system, then you may not need any header files except the few
-that are part of GNU CC (and those of your program).  However, if you
-intend to link your program with a standard C library such as `libc.a',
-then you probably need to compile with the header files that go with
-the library you use.
+     Specifying this attribute for `struct' and `union' types is
+     equivalent to specifying the `packed' attribute on each of the
+     structure or union members.  Specifying the `-fshort-enums' flag
+     on the line is equivalent to specifying the `packed' attribute on
+     all `enum' definitions.
 
-   The GNU C compiler does not come with these files, because (1) they
-are system-specific, and (2) they belong in a C library, not in a
-compiler.
+     You may only specify this attribute after a closing curly brace on
+     an `enum' definition, not in a `typedef' declaration, unless that
+     declaration also contains the definition of the `enum'.
 
-   If the GNU C library supports your target machine, then you can get
-the header files from there (assuming you actually use the GNU library
-when you link your program).
+`transparent_union'
+     This attribute, attached to a `union' type definition, indicates
+     that any function parameter having that union type causes calls to
+     that function to be treated in a special way.
 
-   If your target machine comes with a C compiler, it probably comes
-with suitable header files also.  If you make these files accessible
-from the host machine, the cross-compiler can use them also.
+     First, the argument corresponding to a transparent union type can
+     be of any type in the union; no cast is required.  Also, if the
+     union contains a pointer type, the corresponding argument can be a
+     null pointer constant or a void pointer expression; and if the
+     union contains a void pointer type, the corresponding argument can
+     be any pointer expression.  If the union member type is a pointer,
+     qualifiers like `const' on the referenced type must be respected,
+     just as with normal pointer conversions.
 
-   Otherwise, you're on your own in finding header files to use when
-cross-compiling.
+     Second, the argument is passed to the function using the calling
+     conventions of first member of the transparent union, not the
+     calling conventions of the union itself.  All members of the union
+     must have the same machine representation; this is necessary for
+     this argument passing to work properly.
 
-   When you have found suitable header files, put them in the directory
-`/usr/local/TARGET/include', before building the cross compiler.  Then
-installation will run fixincludes properly and install the corrected
-versions of the header files where the compiler will use them.
+     Transparent unions are designed for library functions that have
+     multiple interfaces for compatibility reasons.  For example,
+     suppose the `wait' function must accept either a value of type
+     `int *' to comply with Posix, or a value of type `union wait *' to
+     comply with the 4.1BSD interface.  If `wait''s parameter were
+     `void *', `wait' would accept both kinds of arguments, but it
+     would also accept any other pointer type and this would make
+     argument type checking less useful.  Instead, `<sys/wait.h>' might
+     define the interface as follows:
 
-   Provide the header files before you build the cross-compiler, because
-the build stage actually runs the cross-compiler to produce parts of
-`libgcc.a'.  (These are the parts that *can* be compiled with GNU CC.)
-Some of them need suitable header files.
+          typedef union
+            {
+              int *__ip;
+              union wait *__up;
+            } wait_status_ptr_t __attribute__ ((__transparent_union__));
+          
+          pid_t wait (wait_status_ptr_t);
 
-   Here's an example showing how to copy the header files from a target
-machine.  On the target machine, do this:
+     This interface allows either `int *' or `union wait *' arguments
+     to be passed, using the `int *' calling convention.  The program
+     can call `wait' with arguments of either type:
 
-     (cd /usr/include; tar cf - .) > tarfile
+          int w1 () { int w; return wait (&w); }
+          int w2 () { union wait w; return wait (&w); }
 
-   Then, on the host machine, do this:
+     With this interface, `wait''s implementation might look like this:
 
-     ftp TARGET-MACHINE
-     lcd /usr/local/TARGET/include
-     get tarfile
-     quit
-     tar xf tarfile
+          pid_t wait (wait_status_ptr_t p)
+          {
+            return waitpid (-1, p.__ip, 0);
+          }
 
-
-File: gcc.info,  Node: Build Cross,  Prev: Cross Runtime,  Up: Cross-Compiler
+`unused'
+     When attached to a type (including a `union' or a `struct'), this
+     attribute means that variables of that type are meant to appear
+     possibly unused.  GNU CC will not produce a warning for any
+     variables of that type, even if the variable appears to do
+     nothing.  This is often the case with lock or thread classes,
+     which are usually defined and then not referenced, but contain
+     constructors and destructors that have nontrivial bookkeeping
+     functions.
 
-Actually Building the Cross-Compiler
-------------------------------------
-
-   Now you can proceed just as for compiling a single-machine compiler
-through the step of building stage 1.  If you have not provided some
-sort of `libgcc1.a', then compilation will give up at the point where
-it needs that file, printing a suitable error message.  If you do
-provide `libgcc1.a', then building the compiler will automatically
-compile and link a test program called `libgcc1-test'; if you get
-errors in the linking, it means that not all of the necessary routines
-in `libgcc1.a' are available.
-
-   You must provide the header file `float.h'.  One way to do this is
-to compile `enquire' and run it on your target machine.  The job of
-`enquire' is to run on the target machine and figure out by experiment
-the nature of its floating point representation.  `enquire' records its
-findings in the header file `float.h'.  If you can't produce this file
-by running `enquire' on the target machine, then you will need to come
-up with a suitable `float.h' in some other way (or else, avoid using it
-in your programs).
-
-   Do not try to build stage 2 for a cross-compiler.  It doesn't work to
-rebuild GNU CC as a cross-compiler using the cross-compiler, because
-that would produce a program that runs on the target machine, not on the
-host.  For example, if you compile a 386-to-68030 cross-compiler with
-itself, the result will not be right either for the 386 (because it was
-compiled into 68030 code) or for the 68030 (because it was configured
-for a 386 as the host).  If you want to compile GNU CC into 68030 code,
-whether you compile it on a 68030 or with a cross-compiler on a 386, you
-must specify a 68030 as the host when you configure it.
-
-   To install the cross-compiler, use `make install', as usual.
-
-
-File: gcc.info,  Node: Sun Install,  Next: VMS Install,  Prev: Cross-Compiler,  Up: Installation
-
-Installing GNU CC on the Sun
-============================
-
-   On Solaris, do not use the linker or other tools in `/usr/ucb' to
-build GNU CC.  Use `/usr/ccs/bin'.
-
-   If the assembler reports `Error: misaligned data' when bootstrapping,
-you are probably using an obsolete version of the GNU assembler.
-Upgrade to the latest version of GNU `binutils', or use the Solaris
-assembler.
-
-   Make sure the environment variable `FLOAT_OPTION' is not set when
-you compile `libgcc.a'.  If this option were set to `f68881' when
-`libgcc.a' is compiled, the resulting code would demand to be linked
-with a special startup file and would not link properly without special
-pains.
-
-   There is a bug in `alloca' in certain versions of the Sun library.
-To avoid this bug, install the binaries of GNU CC that were compiled by
-GNU CC.  They use `alloca' as a built-in function and never the one in
-the library.
-
-   Some versions of the Sun compiler crash when compiling GNU CC.  The
-problem is a segmentation fault in cpp.  This problem seems to be due to
-the bulk of data in the environment variables.  You may be able to avoid
-it by using the following command to compile GNU CC with Sun CC:
-
-     make CC="TERMCAP=x OBJS=x LIBFUNCS=x STAGESTUFF=x cc"
-
-   SunOS 4.1.3 and 4.1.3_U1 have bugs that can cause intermittent core
-dumps when compiling GNU CC.  A common symptom is an internal compiler
-error which does not recur if you run it again.  To fix the problem,
-install Sun recommended patch 100726 (for SunOS 4.1.3) or 101508 (for
-SunOS 4.1.3_U1), or upgrade to a later SunOS release.
+   To specify multiple attributes, separate them by commas within the
+double parentheses: for example, `__attribute__ ((aligned (16),
+packed))'.
 
 
-File: gcc.info,  Node: VMS Install,  Next: Collect2,  Prev: Sun Install,  Up: Installation
+File: gcc.info,  Node: Inline,  Next: Extended Asm,  Prev: Alignment,  Up: C Extensions
 
-Installing GNU CC on VMS
-========================
+An Inline Function is As Fast As a Macro
+========================================
 
-   The VMS version of GNU CC is distributed in a backup saveset
-containing both source code and precompiled binaries.
+   By declaring a function `inline', you can direct GNU CC to integrate
+that function's code into the code for its callers.  This makes
+execution faster by eliminating the function-call overhead; in
+addition, if any of the actual argument values are constant, their known
+values may permit simplifications at compile time so that not all of the
+inline function's code needs to be included.  The effect on code size is
+less predictable; object code may be larger or smaller with function
+inlining, depending on the particular case.  Inlining of functions is an
+optimization and it really "works" only in optimizing compilation.  If
+you don't use `-O', no function is really inline.
 
-   To install the `gcc' command so you can use the compiler easily, in
-the same manner as you use the VMS C compiler, you must install the VMS
-CLD file for GNU CC as follows:
+   To declare a function inline, use the `inline' keyword in its
+declaration, like this:
 
-  1. Define the VMS logical names `GNU_CC' and `GNU_CC_INCLUDE' to
-     point to the directories where the GNU CC executables
-     (`gcc-cpp.exe', `gcc-cc1.exe', etc.) and the C include files are
-     kept respectively.  This should be done with the commands:
+     inline int
+     inc (int *a)
+     {
+       (*a)++;
+     }
 
-          $ assign /system /translation=concealed -
-            disk:[gcc.] gnu_cc
-          $ assign /system /translation=concealed -
-            disk:[gcc.include.] gnu_cc_include
+   (If you are writing a header file to be included in ANSI C programs,
+write `__inline__' instead of `inline'.  *Note Alternate Keywords::.)
 
-     with the appropriate disk and directory names.  These commands can
-     be placed in your system startup file so they will be executed
-     whenever the machine is rebooted.  You may, if you choose, do this
-     via the `GCC_INSTALL.COM' script in the `[GCC]' directory.
+   You can also make all "simple enough" functions inline with the
+option `-finline-functions'.  Note that certain usages in a function
+definition can make it unsuitable for inline substitution.
 
-  2. Install the `GCC' command with the command line:
+   Note that in C and Objective C, unlike C++, the `inline' keyword
+does not affect the linkage of the function.
 
-          $ set command /table=sys$common:[syslib]dcltables -
-            /output=sys$common:[syslib]dcltables gnu_cc:[000000]gcc
-          $ install replace sys$common:[syslib]dcltables
+   GNU CC automatically inlines member functions defined within the
+class body of C++ programs even if they are not explicitly declared
+`inline'.  (You can override this with `-fno-default-inline'; *note
+Options Controlling C++ Dialect: C++ Dialect Options..)
 
-  3. To install the help file, do the following:
+   When a function is both inline and `static', if all calls to the
+function are integrated into the caller, and the function's address is
+never used, then the function's own assembler code is never referenced.
+In this case, GNU CC does not actually output assembler code for the
+function, unless you specify the option `-fkeep-inline-functions'.
+Some calls cannot be integrated for various reasons (in particular,
+calls that precede the function's definition cannot be integrated, and
+neither can recursive calls within the definition).  If there is a
+nonintegrated call, then the function is compiled to assembler code as
+usual.  The function must also be compiled as usual if the program
+refers to its address, because that can't be inlined.
 
-          $ library/help sys$library:helplib.hlb gcc.hlp
+   When an inline function is not `static', then the compiler must
+assume that there may be calls from other source files; since a global
+symbol can be defined only once in any program, the function must not
+be defined in the other source files, so the calls therein cannot be
+integrated.  Therefore, a non-`static' inline function is always
+compiled on its own in the usual fashion.
 
-     Now you can invoke the compiler with a command like `gcc /verbose
-     file.c', which is equivalent to the command `gcc -v -c file.c' in
-     Unix.
+   If you specify both `inline' and `extern' in the function
+definition, then the definition is used only for inlining.  In no case
+is the function compiled on its own, not even if you refer to its
+address explicitly.  Such an address becomes an external reference, as
+if you had only declared the function, and had not defined it.
 
-   If you wish to use GNU C++ you must first install GNU CC, and then
-perform the following steps:
+   This combination of `inline' and `extern' has almost the effect of a
+macro.  The way to use it is to put a function definition in a header
+file with these keywords, and put another copy of the definition
+(lacking `inline' and `extern') in a library file.  The definition in
+the header file will cause most calls to the function to be inlined.
+If any uses of the function remain, they will refer to the single copy
+in the library.
 
-  1. Define the VMS logical name `GNU_GXX_INCLUDE' to point to the
-     directory where the preprocessor will search for the C++ header
-     files.  This can be done with the command:
-
-          $ assign /system /translation=concealed -
-            disk:[gcc.gxx_include.] gnu_gxx_include
-
-     with the appropriate disk and directory name.  If you are going to
-     be using a C++ runtime library, this is where its install
-     procedure will install its header files.
-
-  2. Obtain the file `gcc-cc1plus.exe', and place this in the same
-     directory that `gcc-cc1.exe' is kept.
-
-     The GNU C++ compiler can be invoked with a command like `gcc /plus
-     /verbose file.cc', which is equivalent to the command `g++ -v -c
-     file.cc' in Unix.
-
-   We try to put corresponding binaries and sources on the VMS
-distribution tape.  But sometimes the binaries will be from an older
-version than the sources, because we don't always have time to update
-them.  (Use the `/version' option to determine the version number of
-the binaries and compare it with the source file `version.c' to tell
-whether this is so.)  In this case, you should use the binaries you get
-to recompile the sources.  If you must recompile, here is how:
-
-  1. Execute the command procedure `vmsconfig.com' to set up the files
-     `tm.h', `config.h', `aux-output.c', and `md.', and to create files
-     `tconfig.h' and `hconfig.h'.  This procedure also creates several
-     linker option files used by `make-cc1.com' and a data file used by
-     `make-l2.com'.
-
-          $ @vmsconfig.com
-
-  2. Setup the logical names and command tables as defined above.  In
-     addition, define the VMS logical name `GNU_BISON' to point at the
-     to the directories where the Bison executable is kept.  This
-     should be done with the command:
-
-          $ assign /system /translation=concealed -
-            disk:[bison.] gnu_bison
-
-     You may, if you choose, use the `INSTALL_BISON.COM' script in the
-     `[BISON]' directory.
-
-  3. Install the `BISON' command with the command line:
-
-          $ set command /table=sys$common:[syslib]dcltables -
-            /output=sys$common:[syslib]dcltables -
-            gnu_bison:[000000]bison
-          $ install replace sys$common:[syslib]dcltables
-
-  4. Type `@make-gcc' to recompile everything (alternatively, submit
-     the file `make-gcc.com' to a batch queue).  If you wish to build
-     the GNU C++ compiler as well as the GNU CC compiler, you must
-     first edit `make-gcc.com' and follow the instructions that appear
-     in the comments.
-
-  5. In order to use GCC, you need a library of functions which GCC
-     compiled code will call to perform certain tasks, and these
-     functions are defined in the file `libgcc2.c'.  To compile this
-     you should use the command procedure `make-l2.com', which will
-     generate the library `libgcc2.olb'.  `libgcc2.olb' should be built
-     using the compiler built from the same distribution that
-     `libgcc2.c' came from, and `make-gcc.com' will automatically do
-     all of this for you.
-
-     To install the library, use the following commands:
-
-          $ library gnu_cc:[000000]gcclib/delete=(new,eprintf)
-          $ library gnu_cc:[000000]gcclib/delete=L_*
-          $ library libgcc2/extract=*/output=libgcc2.obj
-          $ library gnu_cc:[000000]gcclib libgcc2.obj
-
-     The first command simply removes old modules that will be replaced
-     with modules from `libgcc2' under different module names.  The
-     modules `new' and `eprintf' may not actually be present in your
-     `gcclib.olb'--if the VMS librarian complains about those modules
-     not being present, simply ignore the message and continue on with
-     the next command.  The second command removes the modules that
-     came from the previous version of the library `libgcc2.c'.
-
-     Whenever you update the compiler on your system, you should also
-     update the library with the above procedure.
-
-  6. You may wish to build GCC in such a way that no files are written
-     to the directory where the source files reside.  An example would
-     be the when the source files are on a read-only disk.  In these
-     cases, execute the following DCL commands (substituting your
-     actual path names):
-
-          $ assign dua0:[gcc.build_dir.]/translation=concealed, -
-                   dua1:[gcc.source_dir.]/translation=concealed  gcc_build
-          $ set default gcc_build:[000000]
-
-     where the directory `dua1:[gcc.source_dir]' contains the source
-     code, and the directory `dua0:[gcc.build_dir]' is meant to contain
-     all of the generated object files and executables.  Once you have
-     done this, you can proceed building GCC as described above.  (Keep
-     in mind that `gcc_build' is a rooted logical name, and thus the
-     device names in each element of the search list must be an actual
-     physical device name rather than another rooted logical name).
-
-  7. *If you are building GNU CC with a previous version of GNU CC, you
-     also should check to see that you have the newest version of the
-     assembler*.  In particular, GNU CC version 2 treats global constant
-     variables slightly differently from GNU CC version 1, and GAS
-     version 1.38.1 does not have the patches required to work with GCC
-     version 2.  If you use GAS 1.38.1, then `extern const' variables
-     will not have the read-only bit set, and the linker will generate
-     warning messages about mismatched psect attributes for these
-     variables.  These warning messages are merely a nuisance, and can
-     safely be ignored.
-
-     If you are compiling with a version of GNU CC older than 1.33,
-     specify `/DEFINE=("inline=")' as an option in all the
-     compilations.  This requires editing all the `gcc' commands in
-     `make-cc1.com'.  (The older versions had problems supporting
-     `inline'.)  Once you have a working 1.33 or newer GNU CC, you can
-     change this file back.
-
-  8. If you want to build GNU CC with the VAX C compiler, you will need
-     to make minor changes in `make-cccp.com' and `make-cc1.com' to
-     choose alternate definitions of `CC', `CFLAGS', and `LIBS'.  See
-     comments in those files.  However, you must also have a working
-     version of the GNU assembler (GNU as, aka GAS) as it is used as
-     the back-end for GNU CC to produce binary object modules and is
-     not included in the GNU CC sources.  GAS is also needed to compile
-     `libgcc2' in order to build `gcclib' (see above); `make-l2.com'
-     expects to be able to find it operational in
-     `gnu_cc:[000000]gnu-as.exe'.
-
-     To use GNU CC on VMS, you need the VMS driver programs `gcc.exe',
-     `gcc.com', and `gcc.cld'.  They are distributed with the VMS
-     binaries (`gcc-vms') rather than the GNU CC sources.  GAS is also
-     included in `gcc-vms', as is Bison.
-
-     Once you have successfully built GNU CC with VAX C, you should use
-     the resulting compiler to rebuild itself.  Before doing this, be
-     sure to restore the `CC', `CFLAGS', and `LIBS' definitions in
-     `make-cccp.com' and `make-cc1.com'.  The second generation
-     compiler will be able to take advantage of many optimizations that
-     must be suppressed when building with other compilers.
-
-   Under previous versions of GNU CC, the generated code would
-occasionally give strange results when linked with the sharable
-`VAXCRTL' library.  Now this should work.
-
-   Even with this version, however, GNU CC itself should not be linked
-with the sharable `VAXCRTL'.  The version of `qsort' in `VAXCRTL' has a
-bug (known to be present in VMS versions V4.6 through V5.5) which
-causes the compiler to fail.
-
-   The executables are generated by `make-cc1.com' and `make-cccp.com'
-use the object library version of `VAXCRTL' in order to make use of the
-`qsort' routine in `gcclib.olb'.  If you wish to link the compiler
-executables with the shareable image version of `VAXCRTL', you should
-edit the file `tm.h' (created by `vmsconfig.com') to define the macro
-`QSORT_WORKAROUND'.
-
-   `QSORT_WORKAROUND' is always defined when GNU CC is compiled with
-VAX C, to avoid a problem in case `gcclib.olb' is not yet available.
+   GNU C does not inline any functions when not optimizing.  It is not
+clear whether it is better to inline or not, in this case, but we found
+that a correct implementation when not optimizing was difficult.  So we
+did the easy thing, and turned it off.
 
 
-File: gcc.info,  Node: Collect2,  Next: Header Dirs,  Prev: VMS Install,  Up: Installation
+File: gcc.info,  Node: Extended Asm,  Next: Asm Labels,  Prev: Inline,  Up: C Extensions
 
-`collect2'
-==========
+Assembler Instructions with C Expression Operands
+=================================================
 
-   GNU CC uses a utility called `collect2' on nearly all systems to
-arrange to call various initialization functions at start time.
+   In an assembler instruction using `asm', you can specify the
+operands of the instruction using C expressions.  This means you need
+not guess which registers or memory locations will contain the data you
+want to use.
 
-   The program `collect2' works by linking the program once and looking
-through the linker output file for symbols with particular names
-indicating they are constructor functions.  If it finds any, it creates
-a new temporary `.c' file containing a table of them, compiles it, and
-links the program a second time including that file.
+   You must specify an assembler instruction template much like what
+appears in a machine description, plus an operand constraint string for
+each operand.
 
-   The actual calls to the constructors are carried out by a subroutine
-called `__main', which is called (automatically) at the beginning of
-the body of `main' (provided `main' was compiled with GNU CC).  Calling
-`__main' is necessary, even when compiling C code, to allow linking C
-and C++ object code together.  (If you use `-nostdlib', you get an
-unresolved reference to `__main', since it's defined in the standard
-GCC library.  Include `-lgcc' at the end of your compiler command line
-to resolve this reference.)
+   For example, here is how to use the 68881's `fsinx' instruction:
 
-   The program `collect2' is installed as `ld' in the directory where
-the passes of the compiler are installed.  When `collect2' needs to
-find the *real* `ld', it tries the following file names:
+     asm ("fsinx %1,%0" : "=f" (result) : "f" (angle));
 
-   * `real-ld' in the directories listed in the compiler's search
-     directories.
+Here `angle' is the C expression for the input operand while `result'
+is that of the output operand.  Each has `"f"' as its operand
+constraint, saying that a floating point register is required.  The `='
+in `=f' indicates that the operand is an output; all output operands'
+constraints must use `='.  The constraints use the same language used
+in the machine description (*note Constraints::.).
 
-   * `real-ld' in the directories listed in the environment variable
-     `PATH'.
+   Each operand is described by an operand-constraint string followed by
+the C expression in parentheses.  A colon separates the assembler
+template from the first output operand and another separates the last
+output operand from the first input, if any.  Commas separate the
+operands within each group.  The total number of operands is limited to
+ten or to the maximum number of operands in any instruction pattern in
+the machine description, whichever is greater.
 
-   * The file specified in the `REAL_LD_FILE_NAME' configuration macro,
-     if specified.
+   If there are no output operands but there are input operands, you
+must place two consecutive colons surrounding the place where the output
+operands would go.
 
-   * `ld' in the compiler's search directories, except that `collect2'
-     will not execute itself recursively.
+   Output operand expressions must be lvalues; the compiler can check
+this.  The input operands need not be lvalues.  The compiler cannot
+check whether the operands have data types that are reasonable for the
+instruction being executed.  It does not parse the assembler instruction
+template and does not know what it means or even whether it is valid
+assembler input.  The extended `asm' feature is most often used for
+machine instructions the compiler itself does not know exist.  If the
+output expression cannot be directly addressed (for example, it is a
+bit field), your constraint must allow a register.  In that case, GNU CC
+will use the register as the output of the `asm', and then store that
+register into the output.
 
-   * `ld' in `PATH'.
+   The ordinary output operands must be write-only; GNU CC will assume
+that the values in these operands before the instruction are dead and
+need not be generated.  Extended asm supports input-output or read-write
+operands.  Use the constraint character `+' to indicate such an operand
+and list it with the output operands.
 
-   "The compiler's search directories" means all the directories where
-`gcc' searches for passes of the compiler.  This includes directories
-that you specify with `-B'.
+   When the constraints for the read-write operand (or the operand in
+which only some of the bits are to be changed) allows a register, you
+may, as an alternative, logically split its function into two separate
+operands, one input operand and one write-only output operand.  The
+connection between them is expressed by constraints which say they need
+to be in the same location when the instruction executes.  You can use
+the same C expression for both operands, or different expressions.  For
+example, here we write the (fictitious) `combine' instruction with
+`bar' as its read-only source operand and `foo' as its read-write
+destination:
 
-   Cross-compilers search a little differently:
+     asm ("combine %2,%0" : "=r" (foo) : "0" (foo), "g" (bar));
 
-   * `real-ld' in the compiler's search directories.
+The constraint `"0"' for operand 1 says that it must occupy the same
+location as operand 0.  A digit in constraint is allowed only in an
+input operand and it must refer to an output operand.
 
-   * `TARGET-real-ld' in `PATH'.
+   Only a digit in the constraint can guarantee that one operand will
+be in the same place as another.  The mere fact that `foo' is the value
+of both operands is not enough to guarantee that they will be in the
+same place in the generated assembler code.  The following would not
+work reliably:
 
-   * The file specified in the `REAL_LD_FILE_NAME' configuration macro,
-     if specified.
+     asm ("combine %2,%0" : "=r" (foo) : "r" (foo), "g" (bar));
 
-   * `ld' in the compiler's search directories.
+   Various optimizations or reloading could cause operands 0 and 1 to
+be in different registers; GNU CC knows no reason not to do so.  For
+example, the compiler might find a copy of the value of `foo' in one
+register and use it for operand 1, but generate the output operand 0 in
+a different register (copying it afterward to `foo''s own address).  Of
+course, since the register for operand 1 is not even mentioned in the
+assembler code, the result will not work, but GNU CC can't tell that.
 
-   * `TARGET-ld' in `PATH'.
+   Some instructions clobber specific hard registers.  To describe this,
+write a third colon after the input operands, followed by the names of
+the clobbered hard registers (given as strings).  Here is a realistic
+example for the VAX:
 
-   `collect2' explicitly avoids running `ld' using the file name under
-which `collect2' itself was invoked.  In fact, it remembers up a list
-of such names--in case one copy of `collect2' finds another copy (or
-version) of `collect2' installed as `ld' in a second place in the
-search path.
+     asm volatile ("movc3 %0,%1,%2"
+                   : /* no outputs */
+                   : "g" (from), "g" (to), "g" (count)
+                   : "r0", "r1", "r2", "r3", "r4", "r5");
 
-   `collect2' searches for the utilities `nm' and `strip' using the
-same algorithm as above for `ld'.
+   It is an error for a clobber description to overlap an input or
+output operand (for example, an operand describing a register class
+with one member, mentioned in the clobber list).  Most notably, it is
+invalid to describe that an input operand is modified, but unused as
+output.  It has to be specified as an input and output operand anyway.
+Note that if there are only unused output operands, you will then also
+need to specify `volatile' for the `asm' construct, as described below.
+
+   If you refer to a particular hardware register from the assembler
+code, you will probably have to list the register after the third colon
+to tell the compiler the register's value is modified.  In some
+assemblers, the register names begin with `%'; to produce one `%' in the
+assembler code, you must write `%%' in the input.
+
+   If your assembler instruction can alter the condition code register,
+add `cc' to the list of clobbered registers.  GNU CC on some machines
+represents the condition codes as a specific hardware register; `cc'
+serves to name this register.  On other machines, the condition code is
+handled differently, and specifying `cc' has no effect.  But it is
+valid no matter what the machine.
+
+   If your assembler instruction modifies memory in an unpredictable
+fashion, add `memory' to the list of clobbered registers.  This will
+cause GNU CC to not keep memory values cached in registers across the
+assembler instruction.
+
+   You can put multiple assembler instructions together in a single
+`asm' template, separated either with newlines (written as `\n') or
+with semicolons if the assembler allows such semicolons.  The GNU
+assembler allows semicolons and most Unix assemblers seem to do so.
+The input operands are guaranteed not to use any of the clobbered
+registers, and neither will the output operands' addresses, so you can
+read and write the clobbered registers as many times as you like.  Here
+is an example of multiple instructions in a template; it assumes the
+subroutine `_foo' accepts arguments in registers 9 and 10:
+
+     asm ("movl %0,r9;movl %1,r10;call _foo"
+          : /* no outputs */
+          : "g" (from), "g" (to)
+          : "r9", "r10");
+
+   Unless an output operand has the `&' constraint modifier, GNU CC may
+allocate it in the same register as an unrelated input operand, on the
+assumption the inputs are consumed before the outputs are produced.
+This assumption may be false if the assembler code actually consists of
+more than one instruction.  In such a case, use `&' for each output
+operand that may not overlap an input.  *Note Modifiers::.
+
+   If you want to test the condition code produced by an assembler
+instruction, you must include a branch and a label in the `asm'
+construct, as follows:
+
+     asm ("clr %0;frob %1;beq 0f;mov #1,%0;0:"
+          : "g" (result)
+          : "g" (input));
+
+This assumes your assembler supports local labels, as the GNU assembler
+and most Unix assemblers do.
+
+   Speaking of labels, jumps from one `asm' to another are not
+supported.  The compiler's optimizers do not know about these jumps, and
+therefore they cannot take account of them when deciding how to
+optimize.
+
+   Usually the most convenient way to use these `asm' instructions is to
+encapsulate them in macros that look like functions.  For example,
+
+     #define sin(x)       \
+     ({ double __value, __arg = (x);   \
+        asm ("fsinx %1,%0": "=f" (__value): "f" (__arg));  \
+        __value; })
+
+Here the variable `__arg' is used to make sure that the instruction
+operates on a proper `double' value, and to accept only those arguments
+`x' which can convert automatically to a `double'.
+
+   Another way to make sure the instruction operates on the correct data
+type is to use a cast in the `asm'.  This is different from using a
+variable `__arg' in that it converts more different types.  For
+example, if the desired type were `int', casting the argument to `int'
+would accept a pointer with no complaint, while assigning the argument
+to an `int' variable named `__arg' would warn about using a pointer
+unless the caller explicitly casts it.
+
+   If an `asm' has output operands, GNU CC assumes for optimization
+purposes the instruction has no side effects except to change the output
+operands.  This does not mean instructions with a side effect cannot be
+used, but you must be careful, because the compiler may eliminate them
+if the output operands aren't used, or move them out of loops, or
+replace two with one if they constitute a common subexpression.  Also,
+if your instruction does have a side effect on a variable that otherwise
+appears not to change, the old value of the variable may be reused later
+if it happens to be found in a register.
+
+   You can prevent an `asm' instruction from being deleted, moved
+significantly, or combined, by writing the keyword `volatile' after the
+`asm'.  For example:
+
+     #define get_and_set_priority(new)  \
+     ({ int __old; \
+        asm volatile ("get_and_set_priority %0, %1": "=g" (__old) : "g" (new)); \
+        __old; })
+     b
+
+If you write an `asm' instruction with no outputs, GNU CC will know the
+instruction has side-effects and will not delete the instruction or
+move it outside of loops.  If the side-effects of your instruction are
+not purely external, but will affect variables in your program in ways
+other than reading the inputs and clobbering the specified registers or
+memory, you should write the `volatile' keyword to prevent future
+versions of GNU CC from moving the instruction around within a core
+region.
+
+   An `asm' instruction without any operands or clobbers (and "old
+style" `asm') will not be deleted or moved significantly, regardless,
+unless it is unreachable, the same wasy as if you had written a
+`volatile' keyword.
+
+   Note that even a volatile `asm' instruction can be moved in ways
+that appear insignificant to the compiler, such as across jump
+instructions.  You can't expect a sequence of volatile `asm'
+instructions to remain perfectly consecutive.  If you want consecutive
+output, use a single `asm'.
+
+   It is a natural idea to look for a way to give access to the
+condition code left by the assembler instruction.  However, when we
+attempted to implement this, we found no way to make it work reliably.
+The problem is that output operands might need reloading, which would
+result in additional following "store" instructions.  On most machines,
+these instructions would alter the condition code before there was time
+to test it.  This problem doesn't arise for ordinary "test" and
+"compare" instructions because they don't have any output operands.
+
+   If you are writing a header file that should be includable in ANSI C
+programs, write `__asm__' instead of `asm'.  *Note Alternate Keywords::.
 
 
-File: gcc.info,  Node: Header Dirs,  Prev: Collect2,  Up: Installation
+File: gcc.info,  Node: Asm Labels,  Next: Explicit Reg Vars,  Prev: Extended Asm,  Up: C Extensions
 
-Standard Header File Directories
+Controlling Names Used in Assembler Code
+========================================
+
+   You can specify the name to be used in the assembler code for a C
+function or variable by writing the `asm' (or `__asm__') keyword after
+the declarator as follows:
+
+     int foo asm ("myfoo") = 2;
+
+This specifies that the name to be used for the variable `foo' in the
+assembler code should be `myfoo' rather than the usual `_foo'.
+
+   On systems where an underscore is normally prepended to the name of
+a C function or variable, this feature allows you to define names for
+the linker that do not start with an underscore.
+
+   You cannot use `asm' in this way in a function *definition*; but you
+can get the same effect by writing a declaration for the function
+before its definition and putting `asm' there, like this:
+
+     extern func () asm ("FUNC");
+     
+     func (x, y)
+          int x, y;
+     ...
+
+   It is up to you to make sure that the assembler names you choose do
+not conflict with any other assembler symbols.  Also, you must not use a
+register name; that would produce completely invalid assembler code.
+GNU CC does not as yet have the ability to store static variables in
+registers.  Perhaps that will be added.
+
+
+File: gcc.info,  Node: Explicit Reg Vars,  Next: Alternate Keywords,  Prev: Asm Labels,  Up: C Extensions
+
+Variables in Specified Registers
 ================================
 
-   `GCC_INCLUDE_DIR' means the same thing for native and cross.  It is
-where GNU CC stores its private include files, and also where GNU CC
-stores the fixed include files.  A cross compiled GNU CC runs
-`fixincludes' on the header files in `$(tooldir)/include'.  (If the
-cross compilation header files need to be fixed, they must be installed
-before GNU CC is built.  If the cross compilation header files are
-already suitable for ANSI C and GNU CC, nothing special need be done).
+   GNU C allows you to put a few global variables into specified
+hardware registers.  You can also specify the register in which an
+ordinary register variable should be allocated.
 
-   `GPLUSPLUS_INCLUDE_DIR' means the same thing for native and cross.
-It is where `g++' looks first for header files.  The C++ library
-installs only target independent header files in that directory.
+   * Global register variables reserve registers throughout the program.
+     This may be useful in programs such as programming language
+     interpreters which have a couple of global variables that are
+     accessed very often.
 
-   `LOCAL_INCLUDE_DIR' is used only for a native compiler.  It is
-normally `/usr/local/include'.  GNU CC searches this directory so that
-users can install header files in `/usr/local/include'.
+   * Local register variables in specific registers do not reserve the
+     registers.  The compiler's data flow analysis is capable of
+     determining where the specified registers contain live values, and
+     where they are available for other uses.  Stores into local
+     register variables may be deleted when they appear to be dead
+     according to dataflow analysis.  References to local register
+     variables may be deleted or moved or simplified.
 
-   `CROSS_INCLUDE_DIR' is used only for a cross compiler.  GNU CC
-doesn't install anything there.
-
-   `TOOL_INCLUDE_DIR' is used for both native and cross compilers.  It
-is the place for other packages to install header files that GNU CC will
-use.  For a cross-compiler, this is the equivalent of `/usr/include'.
-When you build a cross-compiler, `fixincludes' processes any header
-files in this directory.
-
-
-File: gcc.info,  Node: C Extensions,  Next: C++ Extensions,  Prev: Installation,  Up: Top
-
-Extensions to the C Language Family
-***********************************
-
-   GNU C provides several language features not found in ANSI standard
-C.  (The `-pedantic' option directs GNU CC to print a warning message if
-any of these features is used.)  To test for the availability of these
-features in conditional compilation, check for a predefined macro
-`__GNUC__', which is always defined under GNU CC.
-
-   These extensions are available in C and Objective C.  Most of them
-are also available in C++.  *Note Extensions to the C++ Language: C++
-Extensions, for extensions that apply *only* to C++.
+     These local variables are sometimes convenient for use with the
+     extended `asm' feature (*note Extended Asm::.), if you want to
+     write one output of the assembler instruction directly into a
+     particular register.  (This will work provided the register you
+     specify fits the constraints specified for that operand in the
+     `asm'.)
 
 * Menu:
 
-* Statement Exprs::     Putting statements and declarations inside expressions.
-* Local Labels::        Labels local to a statement-expression.
-* Labels as Values::    Getting pointers to labels, and computed gotos.
-* Nested Functions::    As in Algol and Pascal, lexical scoping of functions.
-* Constructing Calls::	Dispatching a call to another function.
-* Naming Types::        Giving a name to the type of some expression.
-* Typeof::              `typeof': referring to the type of an expression.
-* Lvalues::             Using `?:', `,' and casts in lvalues.
-* Conditionals::        Omitting the middle operand of a `?:' expression.
-* Long Long::		Double-word integers--`long long int'.
-* Complex::             Data types for complex numbers.
-* Hex Floats::          Hexadecimal floating-point constants.
-* Zero Length::         Zero-length arrays.
-* Variable Length::     Arrays whose length is computed at run time.
-* Macro Varargs::	Macros with variable number of arguments.
-* Subscripting::        Any array can be subscripted, even if not an lvalue.
-* Pointer Arith::       Arithmetic on `void'-pointers and function pointers.
-* Initializers::        Non-constant initializers.
-* Constructors::        Constructor expressions give structures, unions
-                         or arrays as values.
-* Labeled Elements::	Labeling elements of initializers.
-* Cast to Union::       Casting to union type from any member of the union.
-* Case Ranges::		`case 1 ... 9' and such.
-* Function Attributes:: Declaring that functions have no side effects,
-                         or that they can never return.
-* Function Prototypes:: Prototype declarations and old-style definitions.
-* Interrupt Functions:: Compiling functions for interrupt calls
-* C++ Comments::        C++ comments are recognized.
-* Dollar Signs::        Dollar sign is allowed in identifiers.
-* Character Escapes::   `\e' stands for the character <ESC>.
-* Variable Attributes::	Specifying attributes of variables.
-* Type Attributes::	Specifying attributes of types.
-* Alignment::           Inquiring about the alignment of a type or variable.
-* Inline::              Defining inline functions (as fast as macros).
-* Extended Asm::        Assembler instructions with C expressions as operands.
-                         (With them you can define "built-in" functions.)
-* Asm Labels::          Specifying the assembler name to use for a C symbol.
-* Explicit Reg Vars::   Defining variables residing in specified registers.
-* Alternate Keywords::  `__const__', `__asm__', etc., for header files.
-* Incomplete Enums::    `enum foo;', with details to follow.
-* Function Names::	Printable strings which are the name of the current
-			 function.
-* Return Address::      Getting the return or frame address of a function.
-* Other Builtins::      Other built-in functions.
-* Redefining Typedefs:: Allow typedefs to be redefined.
-* Deprecated Features:: Things might disappear from g++.
-* Backwards Compatibility:: Compatibilities with earlier definitions of C++.
-* Unnamed Fields::      Unnamed struct/union fields within structs/unions.
+* Global Reg Vars::
+* Local Reg Vars::
 
 
-File: gcc.info,  Node: Statement Exprs,  Next: Local Labels,  Up: C Extensions
+File: gcc.info,  Node: Global Reg Vars,  Next: Local Reg Vars,  Up: Explicit Reg Vars
 
-Statements and Declarations in Expressions
-==========================================
+Defining Global Register Variables
+----------------------------------
 
-   A compound statement enclosed in parentheses may appear as an
-expression in GNU C.  This allows you to use loops, switches, and local
-variables within an expression.
+   You can define a global register variable in GNU C like this:
 
-   Recall that a compound statement is a sequence of statements
-surrounded by braces; in this construct, parentheses go around the
-braces.  For example:
+     register int *foo asm ("a5");
 
-     ({ int y = foo (); int z;
-        if (y > 0) z = y;
-        else z = - y;
-        z; })
+Here `a5' is the name of the register which should be used.  Choose a
+register which is normally saved and restored by function calls on your
+machine, so that library routines will not clobber it.
 
-is a valid (though slightly more complex than necessary) expression for
-the absolute value of `foo ()'.
+   Naturally the register name is cpu-dependent, so you would need to
+conditionalize your program according to cpu type.  The register `a5'
+would be a good choice on a 68000 for a variable of pointer type.  On
+machines with register windows, be sure to choose a "global" register
+that is not affected magically by the function call mechanism.
 
-   The last thing in the compound statement should be an expression
-followed by a semicolon; the value of this subexpression serves as the
-value of the entire construct.  (If you use some other kind of statement
-last within the braces, the construct has type `void', and thus
-effectively no value.)
+   In addition, operating systems on one type of cpu may differ in how
+they name the registers; then you would need additional conditionals.
+For example, some 68000 operating systems call this register `%a5'.
 
-   This feature is especially useful in making macro definitions "safe"
-(so that they evaluate each operand exactly once).  For example, the
-"maximum" function is commonly defined as a macro in standard C as
-follows:
+   Eventually there may be a way of asking the compiler to choose a
+register automatically, but first we need to figure out how it should
+choose and how to enable you to guide the choice.  No solution is
+evident.
 
-     #define max(a,b) ((a) > (b) ? (a) : (b))
+   Defining a global register variable in a certain register reserves
+that register entirely for this use, at least within the current
+compilation.  The register will not be allocated for any other purpose
+in the functions in the current compilation.  The register will not be
+saved and restored by these functions.  Stores into this register are
+never deleted even if they would appear to be dead, but references may
+be deleted or moved or simplified.
 
-But this definition computes either A or B twice, with bad results if
-the operand has side effects.  In GNU C, if you know the type of the
-operands (here let's assume `int'), you can define the macro safely as
-follows:
+   It is not safe to access the global register variables from signal
+handlers, or from more than one thread of control, because the system
+library routines may temporarily use the register for other things
+(unless you recompile them specially for the task at hand).
 
-     #define maxint(a,b) \
-       ({int _a = (a), _b = (b); _a > _b ? _a : _b; })
+   It is not safe for one function that uses a global register variable
+to call another such function `foo' by way of a third function `lose'
+that was compiled without knowledge of this variable (i.e. in a
+different source file in which the variable wasn't declared).  This is
+because `lose' might save the register and put some other value there.
+For example, you can't expect a global register variable to be
+available in the comparison-function that you pass to `qsort', since
+`qsort' might have put something else in that register.  (If you are
+prepared to recompile `qsort' with the same global register variable,
+you can solve this problem.)
 
-   Embedded statements are not allowed in constant expressions, such as
-the value of an enumeration constant, the width of a bit field, or the
-initial value of a static variable.
+   If you want to recompile `qsort' or other source files which do not
+actually use your global register variable, so that they will not use
+that register for any other purpose, then it suffices to specify the
+compiler option `-ffixed-REG'.  You need not actually add a global
+register declaration to their source code.
 
-   If you don't know the type of the operand, you can still do this,
-but you must use `typeof' (*note Typeof::.) or type naming (*note
-Naming Types::.).
+   A function which can alter the value of a global register variable
+cannot safely be called from a function compiled without this variable,
+because it could clobber the value the caller expects to find there on
+return.  Therefore, the function which is the entry point into the part
+of the program that uses the global register variable must explicitly
+save and restore the value which belongs to its caller.
 
-   Statement expressions are not supported fully in G++, and their fate
-there is unclear.  (It is possible that they will become fully supported
-at some point, or that they will be deprecated, or that the bugs that
-are present will continue to exist indefinitely.)  Presently, statement
-expressions do not work well as default arguments.
+   On most machines, `longjmp' will restore to each global register
+variable the value it had at the time of the `setjmp'.  On some
+machines, however, `longjmp' will not change the value of global
+register variables.  To be portable, the function that called `setjmp'
+should make other arrangements to save the values of the global register
+variables, and to restore them in a `longjmp'.  This way, the same
+thing will happen regardless of what `longjmp' does.
 
-   In addition, there are semantic issues with statement-expressions in
-C++.  If you try to use statement-expressions instead of inline
-functions in C++, you may be surprised at the way object destruction is
-handled.  For example:
+   All global register variable declarations must precede all function
+definitions.  If such a declaration could appear after function
+definitions, the declaration would be too late to prevent the register
+from being used for other purposes in the preceding functions.
 
-     #define foo(a)  ({int b = (a); b + 3; })
+   Global register variables may not have initial values, because an
+executable file has no means to supply initial contents for a register.
 
-does not work the same way as:
+   On the Sparc, there are reports that g3 ... g7 are suitable
+registers, but certain library functions, such as `getwd', as well as
+the subroutines for division and remainder, modify g3 and g4.  g1 and
+g2 are local temporaries.
 
-     inline int foo(int a) { int b = a; return b + 3; }
-
-In particular, if the expression passed into `foo' involves the
-creation of temporaries, the destructors for those temporaries will be
-run earlier in the case of the macro than in the case of the function.
-
-   These considerations mean that it is probably a bad idea to use
-statement-expressions of this form in header files that are designed to
-work with C++.  (Note that some versions of the GNU C Library contained
-header files using statement-expression that lead to precisely this
-bug.)
+   On the 68000, a2 ... a5 should be suitable, as should d2 ... d7.  Of
+course, it will not do to use more than a few of those.
 
 
-File: gcc.info,  Node: Local Labels,  Next: Labels as Values,  Prev: Statement Exprs,  Up: C Extensions
+File: gcc.info,  Node: Local Reg Vars,  Prev: Global Reg Vars,  Up: Explicit Reg Vars
 
-Locally Declared Labels
+Specifying Registers for Local Variables
+----------------------------------------
+
+   You can define a local register variable with a specified register
+like this:
+
+     register int *foo asm ("a5");
+
+Here `a5' is the name of the register which should be used.  Note that
+this is the same syntax used for defining global register variables,
+but for a local variable it would appear within a function.
+
+   Naturally the register name is cpu-dependent, but this is not a
+problem, since specific registers are most often useful with explicit
+assembler instructions (*note Extended Asm::.).  Both of these things
+generally require that you conditionalize your program according to cpu
+type.
+
+   In addition, operating systems on one type of cpu may differ in how
+they name the registers; then you would need additional conditionals.
+For example, some 68000 operating systems call this register `%a5'.
+
+   Defining such a register variable does not reserve the register; it
+remains available for other uses in places where flow control determines
+the variable's value is not live.  However, these registers are made
+unavailable for use in the reload pass; excessive use of this feature
+leaves the compiler too few available registers to compile certain
+functions.
+
+   This option does not guarantee that GNU CC will generate code that
+has this variable in the register you specify at all times.  You may not
+code an explicit reference to this register in an `asm' statement and
+assume it will always refer to this variable.
+
+   Stores into local register variables may be deleted when they appear
+to be dead according to dataflow analysis.  References to local
+register variables may be deleted or moved or simplified.
+
+
+File: gcc.info,  Node: Alternate Keywords,  Next: Incomplete Enums,  Prev: Explicit Reg Vars,  Up: C Extensions
+
+Alternate Keywords
+==================
+
+   The option `-traditional' disables certain keywords; `-ansi'
+disables certain others.  This causes trouble when you want to use GNU C
+extensions, or ANSI C features, in a general-purpose header file that
+should be usable by all programs, including ANSI C programs and
+traditional ones.  The keywords `asm', `typeof' and `inline' cannot be
+used since they won't work in a program compiled with `-ansi', while
+the keywords `const', `volatile', `signed', `typeof' and `inline' won't
+work in a program compiled with `-traditional'.
+
+   The way to solve these problems is to put `__' at the beginning and
+end of each problematical keyword.  For example, use `__asm__' instead
+of `asm', `__const__' instead of `const', and `__inline__' instead of
+`inline'.
+
+   Other C compilers won't accept these alternative keywords; if you
+want to compile with another compiler, you can define the alternate
+keywords as macros to replace them with the customary keywords.  It
+looks like this:
+
+     #ifndef __GNUC__
+     #define __asm__ asm
+     #endif
+
+   `-pedantic' causes warnings for many GNU C extensions.  You can
+prevent such warnings within one expression by writing `__extension__'
+before the expression.  `__extension__' has no effect aside from this.
+
+
+File: gcc.info,  Node: Incomplete Enums,  Next: Function Names,  Prev: Alternate Keywords,  Up: C Extensions
+
+Incomplete `enum' Types
 =======================
 
-   Each statement expression is a scope in which "local labels" can be
-declared.  A local label is simply an identifier; you can jump to it
-with an ordinary `goto' statement, but only from within the statement
-expression it belongs to.
+   You can define an `enum' tag without specifying its possible values.
+This results in an incomplete type, much like what you get if you write
+`struct foo' without describing the elements.  A later declaration
+which does specify the possible values completes the type.
 
-   A local label declaration looks like this:
+   You can't allocate variables or storage using the type while it is
+incomplete.  However, you can work with pointers to that type.
 
-     __label__ LABEL;
+   This extension may not be very useful, but it makes the handling of
+`enum' more consistent with the way `struct' and `union' are handled.
 
-or
-
-     __label__ LABEL1, LABEL2, ...;
-
-   Local label declarations must come at the beginning of the statement
-expression, right after the `({', before any ordinary declarations.
-
-   The label declaration defines the label *name*, but does not define
-the label itself.  You must do this in the usual way, with `LABEL:',
-within the statements of the statement expression.
-
-   The local label feature is useful because statement expressions are
-often used in macros.  If the macro contains nested loops, a `goto' can
-be useful for breaking out of them.  However, an ordinary label whose
-scope is the whole function cannot be used: if the macro can be
-expanded several times in one function, the label will be multiply
-defined in that function.  A local label avoids this problem.  For
-example:
-
-     #define SEARCH(array, target)                     \
-     ({                                               \
-       __label__ found;                                \
-       typeof (target) _SEARCH_target = (target);      \
-       typeof (*(array)) *_SEARCH_array = (array);     \
-       int i, j;                                       \
-       int value;                                      \
-       for (i = 0; i < max; i++)                       \
-         for (j = 0; j < max; j++)                     \
-           if (_SEARCH_array[i][j] == _SEARCH_target)  \
-             { value = i; goto found; }              \
-       value = -1;                                     \
-      found:                                           \
-       value;                                          \
-     })
+   This extension is not supported by GNU C++.
 
 
-File: gcc.info,  Node: Labels as Values,  Next: Nested Functions,  Prev: Local Labels,  Up: C Extensions
+File: gcc.info,  Node: Function Names,  Next: Return Address,  Prev: Incomplete Enums,  Up: C Extensions
 
-Labels as Values
-================
+Function Names as Strings
+=========================
 
-   You can get the address of a label defined in the current function
-(or a containing function) with the unary operator `&&'.  The value has
-type `void *'.  This value is a constant and can be used wherever a
-constant of that type is valid.  For example:
+   GNU CC predefines two string variables to be the name of the current
+function.  The variable `__FUNCTION__' is the name of the function as
+it appears in the source.  The variable `__PRETTY_FUNCTION__' is the
+name of the function pretty printed in a language specific fashion.
 
-     void *ptr;
-     ...
-     ptr = &&foo;
+   These names are always the same in a C function, but in a C++
+function they may be different.  For example, this program:
 
-   To use these values, you need to be able to jump to one.  This is
-done with the computed goto statement(1), `goto *EXP;'.  For example,
-
-     goto *ptr;
-
-Any expression of type `void *' is allowed.
-
-   One way of using these constants is in initializing a static array
-that will serve as a jump table:
-
-     static void *array[] = { &&foo, &&bar, &&hack };
-
-   Then you can select a label with indexing, like this:
-
-     goto *array[i];
-
-Note that this does not check whether the subscript is in bounds--array
-indexing in C never does that.
-
-   Such an array of label values serves a purpose much like that of the
-`switch' statement.  The `switch' statement is cleaner, so use that
-rather than an array unless the problem does not fit a `switch'
-statement very well.
-
-   Another use of label values is in an interpreter for threaded code.
-The labels within the interpreter function can be stored in the
-threaded code for super-fast dispatching.
-
-   You may not use this mechanism to jump to code in a different
-function.  If you do that, totally unpredictable things will happen.
-The best way to avoid this is to store the label address only in
-automatic variables and never pass it as an argument.
-
-   An alternate way to write the above example is
-
-     static const int array[] = { &&foo - &&foo, &&bar - &&foo, &&hack - &&foo };
-     goto *(&&foo + array[i]);
-
-This is more friendly to code living in shared libraries, as it reduces
-the number of dynamic relocations that are needed, and by consequence,
-allows the data to be read-only.
-
-   ---------- Footnotes ----------
-
-   (1) The analogous feature in Fortran is called an assigned goto, but
-that name seems inappropriate in C, where one can do more than simply
-store label addresses in label variables.
-
-
-File: gcc.info,  Node: Nested Functions,  Next: Constructing Calls,  Prev: Labels as Values,  Up: C Extensions
-
-Nested Functions
-================
-
-   A "nested function" is a function defined inside another function.
-(Nested functions are not supported for GNU C++.)  The nested function's
-name is local to the block where it is defined.  For example, here we
-define a nested function named `square', and call it twice:
-
-     foo (double a, double b)
-     {
-       double square (double z) { return z * z; }
+     extern "C" {
+     extern int printf (char *, ...);
+     }
      
-       return square (a) + square (b);
-     }
-
-   The nested function can access all the variables of the containing
-function that are visible at the point of its definition.  This is
-called "lexical scoping".  For example, here we show a nested function
-which uses an inherited variable named `offset':
-
-     bar (int *array, int offset, int size)
-     {
-       int access (int *array, int index)
-         { return array[index + offset]; }
-       int i;
-       ...
-       for (i = 0; i < size; i++)
-         ... access (array, i) ...
-     }
-
-   Nested function definitions are permitted within functions in the
-places where variable definitions are allowed; that is, in any block,
-before the first statement in the block.
-
-   It is possible to call the nested function from outside the scope of
-its name by storing its address or passing the address to another
-function:
-
-     hack (int *array, int size)
-     {
-       void store (int index, int value)
-         { array[index] = value; }
-     
-       intermediate (store, size);
-     }
-
-   Here, the function `intermediate' receives the address of `store' as
-an argument.  If `intermediate' calls `store', the arguments given to
-`store' are used to store into `array'.  But this technique works only
-so long as the containing function (`hack', in this example) does not
-exit.
-
-   If you try to call the nested function through its address after the
-containing function has exited, all hell will break loose.  If you try
-to call it after a containing scope level has exited, and if it refers
-to some of the variables that are no longer in scope, you may be lucky,
-but it's not wise to take the risk.  If, however, the nested function
-does not refer to anything that has gone out of scope, you should be
-safe.
-
-   GNU CC implements taking the address of a nested function using a
-technique called "trampolines".   A paper describing them is available
-as `http://master.debian.org/~karlheg/Usenix88-lexic.pdf'.
-
-   A nested function can jump to a label inherited from a containing
-function, provided the label was explicitly declared in the containing
-function (*note Local Labels::.).  Such a jump returns instantly to the
-containing function, exiting the nested function which did the `goto'
-and any intermediate functions as well.  Here is an example:
-
-     bar (int *array, int offset, int size)
-     {
-       __label__ failure;
-       int access (int *array, int index)
+     class a {
+      public:
+       sub (int i)
          {
-           if (index > size)
-             goto failure;
-           return array[index + offset];
+           printf ("__FUNCTION__ = %s\n", __FUNCTION__);
+           printf ("__PRETTY_FUNCTION__ = %s\n", __PRETTY_FUNCTION__);
          }
-       int i;
-       ...
-       for (i = 0; i < size; i++)
-         ... access (array, i) ...
-       ...
+     };
+     
+     int
+     main (void)
+     {
+       a ax;
+       ax.sub (0);
        return 0;
-     
-      /* Control comes here from `access'
-         if it detects an error.  */
-      failure:
-       return -1;
      }
 
-   A nested function always has internal linkage.  Declaring one with
-`extern' is erroneous.  If you need to declare the nested function
-before its definition, use `auto' (which is otherwise meaningless for
-function declarations).
+gives this output:
 
-     bar (int *array, int offset, int size)
+     __FUNCTION__ = sub
+     __PRETTY_FUNCTION__ = int  a::sub (int)
+
+   These names are not macros: they are predefined string variables.
+For example, `#ifdef __FUNCTION__' does not have any special meaning
+inside a function, since the preprocessor does not do anything special
+with the identifier `__FUNCTION__'.
+
+
+File: gcc.info,  Node: Return Address,  Next: Other Builtins,  Prev: Function Names,  Up: C Extensions
+
+Getting the Return or Frame Address of a Function
+=================================================
+
+   These functions may be used to get information about the callers of a
+function.
+
+`__builtin_return_address (LEVEL)'
+     This function returns the return address of the current function,
+     or of one of its callers.  The LEVEL argument is number of frames
+     to scan up the call stack.  A value of `0' yields the return
+     address of the current function, a value of `1' yields the return
+     address of the caller of the current function, and so forth.
+
+     The LEVEL argument must be a constant integer.
+
+     On some machines it may be impossible to determine the return
+     address of any function other than the current one; in such cases,
+     or when the top of the stack has been reached, this function will
+     return `0'.
+
+     This function should only be used with a non-zero argument for
+     debugging purposes.
+
+`__builtin_frame_address (LEVEL)'
+     This function is similar to `__builtin_return_address', but it
+     returns the address of the function frame rather than the return
+     address of the function.  Calling `__builtin_frame_address' with a
+     value of `0' yields the frame address of the current function, a
+     value of `1' yields the frame address of the caller of the current
+     function, and so forth.
+
+     The frame is the area on the stack which holds local variables and
+     saved registers.  The frame address is normally the address of the
+     first word pushed on to the stack by the function.  However, the
+     exact definition depends upon the processor and the calling
+     convention.  If the processor has a dedicated frame pointer
+     register, and the function has a frame, then
+     `__builtin_frame_address' will return the value of the frame
+     pointer register.
+
+     The caveats that apply to `__builtin_return_address' apply to this
+     function as well.
+
+
+File: gcc.info,  Node: Other Builtins,  Prev: Return Address,  Up: C Extensions
+
+Other built-in functions provided by GNU CC
+===========================================
+
+   GNU CC provides a large number of built-in functions other than the
+ones mentioned above.  Some of these are for internal use in the
+processing of exceptions or variable-length argument lists and will not
+be documented here because they may change from time to time; we do not
+recommend general use of these functions.
+
+   The remaining functions are provided for optimization purposes.
+
+   GNU CC includes builtin versions of many of the functions in the
+standard C library.  These will always be treated as having the same
+meaning as the C library function even if you specify the
+`-fno-builtin' (*note C Dialect Options::.) option.  These functions
+correspond to the C library functions `alloca', `ffs', `abs', `fabsf',
+`fabs', `fabsl', `labs', `memcpy', `memcmp', `strcmp', `strcpy',
+`strlen', `sqrtf', `sqrt', `sqrtl', `sinf', `sin', `sinl', `cosf',
+`cos', and `cosl'.
+
+   You can use the builtin function `__builtin_constant_p' to determine
+if a value is known to be constant at compile-time and hence that GNU
+CC can perform constant-folding on expressions involving that value.
+The argument of the function is the value to test.  The function
+returns the integer 1 if the argument is known to be a compile-time
+constant and 0 if it is not known to be a compile-time constant.  A
+return of 0 does not indicate that the value is *not* a constant, but
+merely that GNU CC cannot prove it is a constant with the specified
+value of the `-O' option.
+
+   You would typically use this function in an embedded application
+where memory was a critical resource.  If you have some complex
+calculation, you may want it to be folded if it involves constants, but
+need to call a function if it does not.  For example:
+
+     #define Scale_Value(X)  \
+       (__builtin_constant_p (X) ? ((X) * SCALE + OFFSET) : Scale (X))
+
+   You may use this builtin function in either a macro or an inline
+function.  However, if you use it in an inlined function and pass an
+argument of the function as the argument to the builtin, GNU CC will
+never return 1 when you call the inline function with a string constant
+or constructor expression (*note Constructors::.) and will not return 1
+when you pass a constant numeric value to the inline function unless you
+specify the `-O' option.
+
+
+File: gcc.info,  Node: C++ Extensions,  Next: Gcov,  Prev: C Extensions,  Up: Top
+
+Extensions to the C++ Language
+******************************
+
+   The GNU compiler provides these extensions to the C++ language (and
+you can also use most of the C language extensions in your C++
+programs).  If you want to write code that checks whether these
+features are available, you can test for the GNU compiler the same way
+as for C programs: check for a predefined macro `__GNUC__'.  You can
+also use `__GNUG__' to test specifically for GNU C++ (*note Standard
+Predefined Macros: (cpp.info)Standard Predefined.).
+
+* Menu:
+
+* Naming Results::      Giving a name to C++ function return values.
+* Min and Max::		C++ Minimum and maximum operators.
+* Destructors and Goto:: Goto is safe to use in C++ even when destructors
+                           are needed.
+* C++ Interface::       You can use a single C++ header file for both
+                         declarations and definitions.
+* Template Instantiation:: Methods for ensuring that exactly one copy of
+                         each needed template instantiation is emitted.
+* Bound member functions:: You can extract a function pointer to the
+                        method denoted by a `->*' or `.*' expression.
+* C++ Signatures::	You can specify abstract types to get subtype
+			 polymorphism independent from inheritance.
+
+
+File: gcc.info,  Node: Naming Results,  Next: Min and Max,  Up: C++ Extensions
+
+Named Return Values in C++
+==========================
+
+   GNU C++ extends the function-definition syntax to allow you to
+specify a name for the result of a function outside the body of the
+definition, in C++ programs:
+
+     TYPE
+     FUNCTIONNAME (ARGS) return RESULTNAME;
      {
-       __label__ failure;
-       auto int access (int *, int);
        ...
-       int access (int *array, int index)
-         {
-           if (index > size)
-             goto failure;
-           return array[index + offset];
-         }
+       BODY
        ...
      }
 
+   You can use this feature to avoid an extra constructor call when a
+function result has a class type.  For example, consider a function
+`m', declared as `X v = m ();', whose result is of class `X':
+
+     X
+     m ()
+     {
+       X b;
+       b.a = 23;
+       return b;
+     }
+
+   Although `m' appears to have no arguments, in fact it has one
+implicit argument: the address of the return value.  At invocation, the
+address of enough space to hold `v' is sent in as the implicit argument.
+Then `b' is constructed and its `a' field is set to the value 23.
+Finally, a copy constructor (a constructor of the form `X(X&)') is
+applied to `b', with the (implicit) return value location as the
+target, so that `v' is now bound to the return value.
+
+   But this is wasteful.  The local `b' is declared just to hold
+something that will be copied right out.  While a compiler that
+combined an "elision" algorithm with interprocedural data flow analysis
+could conceivably eliminate all of this, it is much more practical to
+allow you to assist the compiler in generating efficient code by
+manipulating the return value explicitly, thus avoiding the local
+variable and copy constructor altogether.
+
+   Using the extended GNU C++ function-definition syntax, you can avoid
+the temporary allocation and copying by naming `r' as your return value
+at the outset, and assigning to its `a' field directly:
+
+     X
+     m () return r;
+     {
+       r.a = 23;
+     }
+
+The declaration of `r' is a standard, proper declaration, whose effects
+are executed *before* any of the body of `m'.
+
+   Functions of this type impose no additional restrictions; in
+particular, you can execute `return' statements, or return implicitly by
+reaching the end of the function body ("falling off the edge").  Cases
+like
+
+     X
+     m () return r (23);
+     {
+       return;
+     }
+
+(or even `X m () return r (23); { }') are unambiguous, since the return
+value `r' has been initialized in either case.  The following code may
+be hard to read, but also works predictably:
+
+     X
+     m () return r;
+     {
+       X b;
+       return b;
+     }
+
+   The return value slot denoted by `r' is initialized at the outset,
+but the statement `return b;' overrides this value.  The compiler deals
+with this by destroying `r' (calling the destructor if there is one, or
+doing nothing if there is not), and then reinitializing `r' with `b'.
+
+   This extension is provided primarily to help people who use
+overloaded operators, where there is a great need to control not just
+the arguments, but the return values of functions.  For classes where
+the copy constructor incurs a heavy performance penalty (especially in
+the common case where there is a quick default constructor), this is a
+major savings.  The disadvantage of this extension is that you do not
+control when the default constructor for the return value is called: it
+is always called at the beginning.
+
 
-File: gcc.info,  Node: Constructing Calls,  Next: Naming Types,  Prev: Nested Functions,  Up: C Extensions
+File: gcc.info,  Node: Min and Max,  Next: Destructors and Goto,  Prev: Naming Results,  Up: C++ Extensions
 
-Constructing Function Calls
-===========================
+Minimum and Maximum Operators in C++
+====================================
 
-   Using the built-in functions described below, you can record the
-arguments a function received, and call another function with the same
-arguments, without knowing the number or types of the arguments.
+   It is very convenient to have operators which return the "minimum"
+or the "maximum" of two arguments.  In GNU C++ (but not in GNU C),
 
-   You can also record the return value of that function call, and
-later return that value, without knowing what data type the function
-tried to return (as long as your caller expects that data type).
+`A <? B'
+     is the "minimum", returning the smaller of the numeric values A
+     and B;
 
-`__builtin_apply_args ()'
-     This built-in function returns a pointer of type `void *' to data
-     describing how to perform a call with the same arguments as were
-     passed to the current function.
+`A >? B'
+     is the "maximum", returning the larger of the numeric values A and
+     B.
 
-     The function saves the arg pointer register, structure value
-     address, and all registers that might be used to pass arguments to
-     a function into a block of memory allocated on the stack.  Then it
-     returns the address of that block.
+   These operations are not primitive in ordinary C++, since you can
+use a macro to return the minimum of two things in C++, as in the
+following example.
 
-`__builtin_apply (FUNCTION, ARGUMENTS, SIZE)'
-     This built-in function invokes FUNCTION (type `void (*)()') with a
-     copy of the parameters described by ARGUMENTS (type `void *') and
-     SIZE (type `int').
+     #define MIN(X,Y) ((X) < (Y) ? : (X) : (Y))
 
-     The value of ARGUMENTS should be the value returned by
-     `__builtin_apply_args'.  The argument SIZE specifies the size of
-     the stack argument data, in bytes.
+You might then use `int min = MIN (i, j);' to set MIN to the minimum
+value of variables I and J.
 
-     This function returns a pointer of type `void *' to data describing
-     how to return whatever value was returned by FUNCTION.  The data
-     is saved in a block of memory allocated on the stack.
+   However, side effects in `X' or `Y' may cause unintended behavior.
+For example, `MIN (i++, j++)' will fail, incrementing the smaller
+counter twice.  A GNU C extension allows you to write safe macros that
+avoid this kind of problem (*note Naming an Expression's Type: Naming
+Types.).  However, writing `MIN' and `MAX' as macros also forces you to
+use function-call notation for a fundamental arithmetic operation.
+Using GNU C++ extensions, you can write `int min = i <? j;' instead.
 
-     It is not always simple to compute the proper value for SIZE.  The
-     value is used by `__builtin_apply' to compute the amount of data
-     that should be pushed on the stack and copied from the incoming
-     argument area.
-
-`__builtin_return (RESULT)'
-     This built-in function returns the value described by RESULT from
-     the containing function.  You should specify, for RESULT, a value
-     returned by `__builtin_apply'.
+   Since `<?' and `>?' are built into the compiler, they properly
+handle expressions with side-effects;  `int min = i++ <? j++;' works
+correctly.
 
 
-File: gcc.info,  Node: Naming Types,  Next: Typeof,  Prev: Constructing Calls,  Up: C Extensions
+File: gcc.info,  Node: Destructors and Goto,  Next: C++ Interface,  Prev: Min and Max,  Up: C++ Extensions
 
-Naming an Expression's Type
-===========================
-
-   You can give a name to the type of an expression using a `typedef'
-declaration with an initializer.  Here is how to define NAME as a type
-name for the type of EXP:
-
-     typedef NAME = EXP;
-
-   This is useful in conjunction with the statements-within-expressions
-feature.  Here is how the two together can be used to define a safe
-"maximum" macro that operates on any arithmetic type:
-
-     #define max(a,b) \
-       ({typedef _ta = (a), _tb = (b);  \
-         _ta _a = (a); _tb _b = (b);     \
-         _a > _b ? _a : _b; })
-
-   The reason for using names that start with underscores for the local
-variables is to avoid conflicts with variable names that occur within
-the expressions that are substituted for `a' and `b'.  Eventually we
-hope to design a new form of declaration syntax that allows you to
-declare variables whose scopes start only after their initializers;
-this will be a more reliable way to prevent such conflicts.
-
-
-File: gcc.info,  Node: Typeof,  Next: Lvalues,  Prev: Naming Types,  Up: C Extensions
-
-Referring to a Type with `typeof'
+`goto' and Destructors in GNU C++
 =================================
 
-   Another way to refer to the type of an expression is with `typeof'.
-The syntax of using of this keyword looks like `sizeof', but the
-construct acts semantically like a type name defined with `typedef'.
+   In C++ programs, you can safely use the `goto' statement.  When you
+use it to exit a block which contains aggregates requiring destructors,
+the destructors will run before the `goto' transfers control.
 
-   There are two ways of writing the argument to `typeof': with an
-expression or with a type.  Here is an example with an expression:
-
-     typeof (x[0](1))
-
-This assumes that `x' is an array of functions; the type described is
-that of the values of the functions.
-
-   Here is an example with a typename as the argument:
-
-     typeof (int *)
-
-Here the type described is that of pointers to `int'.
-
-   If you are writing a header file that must work when included in
-ANSI C programs, write `__typeof__' instead of `typeof'.  *Note
-Alternate Keywords::.
-
-   A `typeof'-construct can be used anywhere a typedef name could be
-used.  For example, you can use it in a declaration, in a cast, or
-inside of `sizeof' or `typeof'.
-
-   * This declares `y' with the type of what `x' points to.
-
-          typeof (*x) y;
-
-   * This declares `y' as an array of such values.
-
-          typeof (*x) y[4];
-
-   * This declares `y' as an array of pointers to characters:
-
-          typeof (typeof (char *)[4]) y;
-
-     It is equivalent to the following traditional C declaration:
-
-          char *y[4];
-
-     To see the meaning of the declaration using `typeof', and why it
-     might be a useful way to write, let's rewrite it with these macros:
-
-          #define pointer(T)  typeof(T *)
-          #define array(T, N) typeof(T [N])
-
-     Now the declaration can be rewritten this way:
-
-          array (pointer (char), 4) y;
-
-     Thus, `array (pointer (char), 4)' is the type of arrays of 4
-     pointers to `char'.
-
-
-File: gcc.info,  Node: Lvalues,  Next: Conditionals,  Prev: Typeof,  Up: C Extensions
-
-Generalized Lvalues
-===================
-
-   Compound expressions, conditional expressions and casts are allowed
-as lvalues provided their operands are lvalues.  This means that you
-can take their addresses or store values into them.
-
-   Standard C++ allows compound expressions and conditional expressions
-as lvalues, and permits casts to reference type, so use of this
-extension is deprecated for C++ code.
-
-   For example, a compound expression can be assigned, provided the last
-expression in the sequence is an lvalue.  These two expressions are
-equivalent:
-
-     (a, b) += 5
-     a, (b += 5)
-
-   Similarly, the address of the compound expression can be taken.
-These two expressions are equivalent:
-
-     &(a, b)
-     a, &b
-
-   A conditional expression is a valid lvalue if its type is not void
-and the true and false branches are both valid lvalues.  For example,
-these two expressions are equivalent:
-
-     (a ? b : c) = 5
-     (a ? b = 5 : (c = 5))
-
-   A cast is a valid lvalue if its operand is an lvalue.  A simple
-assignment whose left-hand side is a cast works by converting the
-right-hand side first to the specified type, then to the type of the
-inner left-hand side expression.  After this is stored, the value is
-converted back to the specified type to become the value of the
-assignment.  Thus, if `a' has type `char *', the following two
-expressions are equivalent:
-
-     (int)a = 5
-     (int)(a = (char *)(int)5)
-
-   An assignment-with-arithmetic operation such as `+=' applied to a
-cast performs the arithmetic using the type resulting from the cast,
-and then continues as in the previous case.  Therefore, these two
-expressions are equivalent:
-
-     (int)a += 5
-     (int)(a = (char *)(int) ((int)a + 5))
-
-   You cannot take the address of an lvalue cast, because the use of its
-address would not work out coherently.  Suppose that `&(int)f' were
-permitted, where `f' has type `float'.  Then the following statement
-would try to store an integer bit-pattern where a floating point number
-belongs:
-
-     *&(int)f = 1;
-
-   This is quite different from what `(int)f = 1' would do--that would
-convert 1 to floating point and store it.  Rather than cause this
-inconsistency, we think it is better to prohibit use of `&' on a cast.
-
-   If you really do want an `int *' pointer with the address of `f',
-you can simply write `(int *)&f'.
-
-
-File: gcc.info,  Node: Conditionals,  Next: Long Long,  Prev: Lvalues,  Up: C Extensions
-
-Conditionals with Omitted Operands
-==================================
-
-   The middle operand in a conditional expression may be omitted.  Then
-if the first operand is nonzero, its value is the value of the
-conditional expression.
-
-   Therefore, the expression
-
-     x ? : y
-
-has the value of `x' if that is nonzero; otherwise, the value of `y'.
-
-   This example is perfectly equivalent to
-
-     x ? x : y
-
-In this simple case, the ability to omit the middle operand is not
-especially useful.  When it becomes useful is when the first operand
-does, or may (if it is a macro argument), contain a side effect.  Then
-repeating the operand in the middle would perform the side effect
-twice.  Omitting the middle operand uses the value already computed
-without the undesirable effects of recomputing it.
-
-
-File: gcc.info,  Node: Long Long,  Next: Complex,  Prev: Conditionals,  Up: C Extensions
-
-Double-Word Integers
-====================
-
-   GNU C supports data types for integers that are twice as long as
-`int'.  Simply write `long long int' for a signed integer, or `unsigned
-long long int' for an unsigned integer.  To make an integer constant of
-type `long long int', add the suffix `LL' to the integer.  To make an
-integer constant of type `unsigned long long int', add the suffix `ULL'
-to the integer.
-
-   You can use these types in arithmetic like any other integer types.
-Addition, subtraction, and bitwise boolean operations on these types
-are open-coded on all types of machines.  Multiplication is open-coded
-if the machine supports fullword-to-doubleword a widening multiply
-instruction.  Division and shifts are open-coded only on machines that
-provide special support.  The operations that are not open-coded use
-special library routines that come with GNU CC.
-
-   There may be pitfalls when you use `long long' types for function
-arguments, unless you declare function prototypes.  If a function
-expects type `int' for its argument, and you pass a value of type `long
-long int', confusion will result because the caller and the subroutine
-will disagree about the number of bytes for the argument.  Likewise, if
-the function expects `long long int' and you pass `int'.  The best way
-to avoid such problems is to use prototypes.
+   The compiler still forbids using `goto' to *enter* a scope that
+requires constructors.
 

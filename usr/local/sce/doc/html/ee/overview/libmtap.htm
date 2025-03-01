@@ -1,0 +1,299 @@
+<HTML>
+<HEAD>
+<TITLE> マルチタップライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libmtap.htm" SELECTED> マルチタップライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+マルチタップライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 使用手順<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> ポートとスロット<BR></A><BR>
+    <A HREF="#Heading4_2_2"> IOP用モジュールの依存関係とロード順序<BR></A><BR>
+    <A HREF="#Heading4_2_3"> ライブラリの使用手順<BR></A><BR>
+    <A HREF="#Heading4_2_4"> スレッドプライオリティの変更<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ポートオープンとシステムの負荷<BR></A><BR>
+    <A HREF="#Heading4_3_2"> RPC再入に関する注意<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+    <BR>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libmtapは"PlayStation 2"専用マルチタップを制御するためのライブラリです。libmtapとコントローラライブラリまたはメモリーカードライブラリを一緒に使用することで、"PlayStation 2"用マルチタップに接続されたコントローラおよびメモリーカードと通信を行うことができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libmtapに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libmtap.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libmtap.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">モジュールファイル</TD>
+<TD valign="TOP">mtapman.irx<BR>sio2man.irx<BR>padman.irx, mcman.irx, mcserv.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    libmtapはEE用ライブラリとIOP用モジュールとで構成されています。libmtapを使用する場合はEE側プログラムでsceSifLoadModule()を用いて、mtapman.irxをロードしてください。このとき、他の関連モジュールとのロード順序に注意が必要です。詳しくは後述します。<BR>
+    また、EE用ライブラリをリンクするために、各Makefileでリンクオプションに-lmtapを追加してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>使用手順</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>ポートとスロット</B>
+</A>
+</H3>
+<blockquote>
+    マルチタップを介して接続されたコントローラ / メモリーカードにアクセスするためには、libpad / libmcの各関数でportとslotの2つの引数によって、対象のコントローラ / メモリーカードを指定します。portは"PlayStation 2"本体のコントローラ端子 / メモリーカード差込口を、slotはマルチタップのコントローラ端子 / メモリーカード差込口を指定する引数です。<BR>
+    本体に直接接続されたコントローラ / メモリーカードにアクセスするときは、portに適切なポート番号を指定し、slotには0を指定します。マルチタップを介して接続されたコントローラ / メモリーカードにアクセスするときは、portとslotをそれぞれ適切に指定します。次の例を参照してください。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mtapn1.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>IOP用モジュールの依存関係とロード順序</B>
+</A>
+</H3>
+<blockquote>
+    コントローラおよびメモリーカードの通信に関連するIOP用モジュールとしては、sio2man.irx / padman.irx / mcman.irx / mcserv.irx、そしてmtapman.irxがあります。<BR>
+    padman.irx / mcman.irx / mcserv.irxはマルチタップ上のデバイスと通信するためにmtapman.irxの機能を使用しますが、直接mtapman.irxを参照するのではなくsio2man.irxを経由して間接的に参照します。mtapman.irxがロードされていない場合でも、これらのモジュールは処理に破綻をきたしません。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/mtapn2.gif">
+<P>
+    <BR>
+</DIV>
+    したがって、マルチタップに対応しないアプリケーションではmtapman.irxをロードする必要はありません。<BR>
+    マルチタップに対応するアプリケーションでは、上記の各モジュールを次の順序でロードする必要があります。<BR>
+    <OL>
+         <LI VALUE= 1> sio2man.irx<BR>
+         <LI VALUE= 2> mtapman.irx<BR>
+         <LI VALUE= 3> padman.irx および mcman.irx / mcserv.irx<BR>
+    </OL>
+    padman.irxとmcman.irx / mcserv.irxのロード順序は問いません。mcman.irxとmcserv.irxのロード順序はメモリーカードライブラリのドキュメントに従ってください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>ライブラリの使用手順</B>
+</A>
+</H3>
+<blockquote>
+    libmtapとlibpad / libmcとを使用して、マルチタップに接続されたコントローラやメモリカードにアクセスする手順は次のようになります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_1">
+(1) <B>libmtapの初期化</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      sceMtapInit()を呼び出して、マルチタップライブラリを初期化します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_2">
+(2) <B>libpad / libmcの初期化</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コントローラライブラリ / メモリーカードライブラリをそれぞれ初期化します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_3">
+(3) <B>マルチタップポートのオープン</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      sceMtapPortOpen()を呼び出して、マルチタップが接続されているはずのポートをオープンします。オープンしたポートに対しては1フレームに1回、マルチタップが接続されているかどうかの確認が行われるようになります。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_4">
+(4) <B>スロット数の確認</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コントローラライブラリの関数scePadGetSlotMax()を用いて、オープンしたポートに接続されているマルチタップのスロット数を確認します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_5">
+(5) <B>コントローラポートのオープン / メモリーカードの状態確認</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      scePadPortOpen()を呼び出してコントローラとの通信を開始します。<BR>
+      メモリーカードに対してはsceMcGetInfo()を呼び出してメモリーカードの接続状態を確認します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>スレッドプライオリティの変更</B>
+</A>
+</H3>
+<blockquote>
+    IOPのマルチタップドライバmtapman.irxのスレッドプライオリティを変更することができます。変更方法は<BR>
+    <OL>
+         <LI VALUE= 1> モジュールロード時に指定する<BR>
+         <LI VALUE= 2> 実行中に変更する<BR>
+    </OL>
+    の２通りあります。<BR>
+    モジュールロード時に指定するには、sceSifLoadModule()の引数にプライオリティを指定します。mtapman.irxのモジュールプライオリティは2つあり、最初に指定するのがメインスレッドプライオリティ、2番目に指定するのがSIFインターフェイスモジュールのプライオリティです。モジュールロード時の引数の記述は、<BR>
+<PRE>        char arg[] = "thpri=20,46";
+        sceSifLoadModule( "host0:/usr/local/sce/iop/modules/mtapman.irx",
+        					  strlen( arg ) + 1, arg );
+</PRE>
+    などと指定してください。<BR>
+    <BR>
+    実行中に変更するには、sceMtapChangeThreadPrioriry()を呼び出します。この場合2つのモジュールプライオリティを同時に変更します。詳しくは関数リファレンスを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ポートオープンとシステムの負荷</B>
+</A>
+</H3>
+<blockquote>
+    sceMtapPortOpen()でオープンしたポートにマルチタップが接続されていない場合、接続確認のために通信処理がタイムアウトするまでの時間がかかることになります。通信処理はIOPの負荷とはなりませんが、シリアルI/Fを占有するため他のコントローラやメモリーカードとの通信処理に影響を与えます。<BR>
+    タイミングの関係で、コントローラに対してはごくわずかしか影響がありませんが、メモリーカードに対しては、シリアルI/Fの空き時間が短くなる分だけダイレクトに影響が現れます。メモリーカードのアクセスを高速に行うためには、マルチタップが接続されていないポートを閉じるようにしてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    libmtapのすべての関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。そのため、複数のスレッドで利用する場合はRPC再入を起さないように注意が必要です。また、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+    RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

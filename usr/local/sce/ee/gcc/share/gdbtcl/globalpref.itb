@@ -1,21 +1,12 @@
-# Global preference class implementation for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# Globalpref
 # ----------------------------------------------------------------------
 # Implements Global preferences dialog
 #
 # ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt	hunt@cygnus.com     
+#            Copyright (C) 1997, 1998 Cygnus Solutions   
+#
 
 # ------------------------------------------------------------------
 #  PROC:  _init - set up the tracing labels info
@@ -181,21 +172,10 @@ body GlobalPref::build_win {} {
     -text $help_text -variable [pref varname gdb/help/browser]
   pack $frame.browser.cb -pady 10 -side left -fill none 
 
-  # use_icons
-  if {$tcl_platform(platform) == "unix"} {
-    frame $frame.use_icons
-    checkbutton $frame.use_icons.cb  \
-      -text "Use builtin image as icon." -variable [pref varname gdb/use_icons]
-    pack $frame.use_icons.cb -pady 10 -side left -fill none 
-  }
-
   pack $frame.icons.lab $frame.icons.cb -side left
   pack $frame.icons -side top -padx 10 -pady 10
   pack $frame.tracing -side top -fill x -expand 0 -side bottom
   pack $frame.browser -side top -fill x -expand 0 -side bottom
-  if {$tcl_platform(platform) == "unix"} {
-  pack $frame.use_icons -side top -fill x -expand 0 -side bottom
-  }
   pack $frame.d -side top -fill both -expand yes
 
   # make buttons

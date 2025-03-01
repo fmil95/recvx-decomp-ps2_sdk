@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<TITLE> ILOADP(DECI2 IOP Load Protocol) Specification</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="iloadp.htm" SELECTED> ILOADP
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+ILOADP(DECI2 IOP Load Protocol) Specification<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> メッセージフォーマット<BR></A><BR>
+    <A HREF="#Heading4_1_2"> ILOADP_CMD_START<BR></A><BR>
+    <A HREF="#Heading4_1_3"> ILOADP_CMD_REMOVE<BR></A><BR>
+    <A HREF="#Heading4_1_4"> ILOADP_CMD_LIST<BR></A><BR>
+    <A HREF="#Heading4_1_5"> ILOADP_CMD_INFO<BR></A><BR>
+    <A HREF="#Heading4_1_6"> ILOADP_CMD_WATCH<BR></A><BR>
+    <A HREF="#Heading4_1_7"> ILOADP_CMD_REPORT<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつであるILOADP について説明します。<BR>
+    ILOADP は、IOP 上のロードマネージャをコントロールするためのプロトコルで、プロトコル番号は、0x0150 です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>メッセージフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    ILOADP メッセージは、基本的な DECI2 ヘッダを使用して送信されます。<BR>
+    DECI2 ヘッダに続いて、以下の ILOADP ヘッダが続き、さらに必要に応じてデータが追加されます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iloan1.gif">
+<P>
+    <B>Cmd Code</B>
+</DIV>
+      <BLOCKQUOTE>
+      コマンドとリプライの種類を表し、以下の5種類のコマンドと対応するリプライがあります。<BR>
+      <BR>
+      ILOADP_CMD_START	(0),  ILOADP_CMD_STARTR	(1)<BR>
+      ILOADP_CMD_REMOVE	(2),  ILOADP_CMD_REMOVER	(3)<BR>
+      ILOADP_CMD_LIST	(4),  ILOADP_CMD_LISTR	(5)<BR>
+      ILOADP_CMD_INFO	(6),  ILOADP_CMD_INFOR	(7)<BR>
+      ILOADP_CMD_WATCH	(8),  ILOADP_CMD_WATCHR	(9)<BR>
+      <BR>
+      また、IOP から HOST への以下の通知があります。<BR>
+      <BR>
+      ILOADP_CMD_REPORT	(16)<BR>
+      <BR>
+      </BLOCKQUOTE>
+    いくつかのコマンドの戻り値には、以下のフォーマットのモジュール情報がつくことがあります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iloan2.gif">
+<P>
+    <B>メッセージ</B>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>ILOADP_CMD_START</B>
+</A>
+</H3>
+<blockquote>
+    モジュールのロードと実行には、ILOADP_CMD_START と ILOADP_CMD_STARTR を使います。<BR>
+    <BR>
+    ILOADP_CMD_STARTコマンドは、 ILOADP ヘッダを以下のように設定してモジュールのロードと実行を指示します。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_START<BR>
+      Stamp	= 任意の値 (IOP はこの値を関知しません)<BR>
+      Action	= 以下の bit flag<BR>
+      	  #define ILOADP_ACT_LOAD	0x01  モジュールのロードを要求。<BR>
+      	  #define ILOADP_ACT_START	0x02  ロードしたモジュールのスタートを要求。<BR>
+      	  #define ILOADP_ACT_INFO	0x04  ILOADP_CMD_START リプライ時に<BR>
+      					     モジュール情報を付加することを要求。<BR>
+      	  #define ILOADP_ACT_WATCH	0x08  ロードしたモジュールを監視(Watch) <BR>
+      					      することを要求。<BR>
+      					     (後述の ILOADP_CMD_WATCH コマン<BR>
+      					     ド参照)<BR>
+      modle_id = 実行するモジュールの ID (ILOADP_ACT_START の場合)<BR>
+      その他のフィールドは0<BR>
+      <BR>
+      </BLOCKQUOTE>
+    Action に ILOADP_ACT_LOAD を指定した場合は、ILOADP ヘッダ に続いて、ロードするファイルの名を表す null ターミネートされた文字列を続けます。<BR>
+    <BR>
+    Action に ILOADP_ACT_START を指定した場合は、ILOADP ヘッダおよびファイル名に続いて、各引数文字列が続きます。各引数はすべて null ターミネートされた文字列です。<BR>
+    <BR>
+    ILOADP_ACT_START を単独で指定したときにもファイル名文字列はつけてください。<BR>
+    このときは、ファイル名はダミーでもかまいません。<BR>
+    Action に ILOADP_ACT_WATCH を指定した場合、モジュールのロード／スタート時にモジュールを監視対象にします。<BR>
+    したがって、ILOADP_STAT_LOADED と ILOADP_STAT_RUNNING のステータスが報告されることはありません。<BR>
+    <BR>
+    ファイル名と引数の文字列の合計の最大サイズは各文字列最後の null character も含めて 160byte です。<BR>
+    <BR>
+    ILOADP_ACT_LOAD と ILOADP_ACT_START の指定可能な組合わせは以下のとおりです。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      ILOADP_ACT_LOAD | ILOADP_ACT_START<BR>
+      ILOADP_ACT_LOAD<BR>
+      ILOADP_ACT_START<BR>
+      </BLOCKQUOTE>
+    <BR>
+    ロードが完了した時点で、ILOADP_CMD_STARTR リプライが返ります。<BR>
+    ILOADP_CMD_STARTRリプライの、ILOADP ヘッダに以下の情報が返ってきます。<BR>
+      <BLOCKQUOTE>
+      <BR>
+      Cmd	= ILOADP_CMD_STARTR<BR>
+      Action	= コマンドに指定されたものと同じ値<BR>
+      Stamp	= コマンドに指定されたものと同じ値<BR>
+      Result	= 結果コード<BR>
+      	  #define ILOADP_RESULT_OK         0  正常終了<BR>
+      	  #define ILOADP_RESULT_LINKERR  １  リンク失敗<BR>
+      	  #define ILOADP_RESULT_NOMEM   2  メモリ不足<BR>
+      	  #define ILOADP_RESULT_OBJERR   3  オブジェクトファイルの形式が不正<BR>
+      	  #define ILOADP_RESULT_NOMOD   4  指定されたモジュールが見つからない<BR>
+      	  #define ILOADP_RESULT_ILLCMD   5  コマンドの指定が不正<BR>
+      						(action に ILOADP_ACT_LOAD <BR>
+      						もILOADP_ACT_STARTも無い等)<BR>
+      	  #define ILOADP_RESULT_BUSY     6  load 中に次の load コマンドが来た<BR>
+      	  #define ILOADP_RESULT_NOFILE   7  ファイルが見つからない<BR>
+      	  #define ILOADP_RESULT_FILERR   8  ファイルの読み込みエラーが生じた<BR>
+      	  #define ILOADP_RESULT_MEMINUSE  9  指定したアドレスはすでに使用中<BR>
+      Module_ID = ロードされたモジュールに付けられた ID 番号<BR>
+      <BR>
+      また、Action に ILOADP_ACT_INFO が指定されていると、ILOADP ヘッダに続いてモジュール情報がつきます。<BR>
+      </BLOCKQUOTE>
+    <BR>
+    ILOADP_CMD_STARTR リプライの送出後、ILOADP_ACT_START が指定されていれば、モジュールの実行が開始されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>ILOADP_CMD_REMOVE</B>
+</A>
+</H3>
+<blockquote>
+    現状未定義。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>ILOADP_CMD_LIST</B>
+</A>
+</H3>
+<blockquote>
+    IOP上に存在するモジュールＩＤの一覧の取得を指示します。<BR>
+    <BR>
+    ILOADP_CMD_LISTコマンドは、 ILOADP ヘッダ を以下のように設定します。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_LIST<BR>
+      Stamp	= 任意の値<BR>
+      その他のフィールドは 0<BR>
+      </BLOCKQUOTE>
+    <BR>
+    ILOADP_CMD_LISTRリプライの、ILOADP ヘッダ に以下の情報が返ってきます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_LISTR<BR>
+      Stamp	= コマンドに指定されたものと同じ値<BR>
+      Result	= 結果コード<BR>
+      	  #define ILOADP_RESULT_OK   0  正常終了<BR>
+      <BR>
+      </BLOCKQUOTE>
+    ILOADP ヘッダ に引き続いて、現存するモジュールの全ID が返ってきます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>ILOADP_CMD_INFO</B>
+</A>
+</H3>
+<blockquote>
+    特定のモジュールに関する情報を取得します。<BR>
+    <BR>
+    ILOADP_CMD_INFOコマンドは、 ILOADP ヘッダ を以下のように設定します。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd 	= ILOADP_CMD_INFO<BR>
+      Stamp	= 任意の値<BR>
+      Module_ID = 情報を取得したいモジュールのID<BR>
+      その他のフィールドは 0<BR>
+      </BLOCKQUOTE>
+    <BR>
+    ILOADP_CMD_INFORリプライの、ILOADP ヘッダ に以下の情報が返ってきます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_INFO<BR>
+      Stamp	= コマンドに指定されたものと同じ値<BR>
+      Module_ID = コマンドに指定されたものと同じ値<BR>
+      Result	= 結果コード<BR>
+      	  #define ILOADP_RESULT_OK        0  正常終了<BR>
+      	  #define ILOADP_RESULT_NOMOD   4  指定されたモジュールが見つからない<BR>
+      <BR>
+      ILOADP ヘッダ に続いてモジュール情報がつきます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_6">
+<A HREF="#Heading3_1"> 1. </A>6 <B>ILOADP_CMD_WATCH</B>
+</A>
+</H3>
+<blockquote>
+    モジュールの状態の変化の監視を要求します。<BR>
+    状態の変化は、後述の Module Status Report メッセージで通知されます。<BR>
+    <BR>
+    ILOADP_CMD_WATCH コマンドは、 ILOADP ヘッダ を以下のように設定します。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_WATCH<BR>
+      Stamp	= 任意の値<BR>
+      Module_ID = 状態変化を監視するモジュールのID<BR>
+      Action	= 以下のどちらか<BR>
+      	  ILOADP_ACT_WATCH_START	(1)  監視開始<BR>
+      	  ILOADP_ACT_WATCH_END	(0)  監視終了<BR>
+      その他のフィールドは 0<BR>
+      <BR>
+      </BLOCKQUOTE>
+    ILOADP_CMD_WATCHR リプライの、ILOADP ヘッダ に以下の情報が返ってきます<BR>
+      <BLOCKQUOTE>
+      <BR>
+      Cmd	= ILOADP_CMD_WATCHR<BR>
+      Stamp	= コマンドに指定されたものと同じ値<BR>
+      Module_ID = コマンドに指定されたものと同じ値<BR>
+      Action	= コマンドに指定されたものと同じ値<BR>
+      Result	= 結果コード<BR>
+      	  #define ILOADP_RESULT_OK	  0  正常終了<BR>
+      	  #define ILOADP_RESULT_NOMOD 4  指定されたモジュールが見つからない<BR>
+      <BR>
+      </BLOCKQUOTE>
+    監視開始を指定した場合は、ILOADP_CMD_WATCHR リプライに引き続いて、モジュールの現状をレポートする Module Status Report メッセージが返ってきます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_7">
+<A HREF="#Heading3_1"> 1. </A>7 <B>ILOADP_CMD_REPORT</B>
+</A>
+</H3>
+<blockquote>
+    以下の書式で、Module の状態の変化がレポートされます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      Cmd	= ILOADP_CMD_REPORT<BR>
+      Module_ID = 状態の変化したモジュールの ID<BR>
+      Stamp	= つねに 0<BR>
+      Result	= モジュールの状態<BR>
+      	  #define ILOADP_STAT_LOADED  1  未実行<BR>
+      					   load のみで start が指示されていな<BR>
+      					   い状態<BR>
+      	  #define ILOADP_STAT_RUNNING 2  実行中<BR>
+      	  #define ILOADP_STAT_DONE_REMOVE  3  実行終了、メモリから削除<BR>
+      	  #define ILOADP_STAT_DONE_RESIDENT 4  実行終了、メモリに常駐<BR>
+      </BLOCKQUOTE>
+    <BR>
+    ILOADP ヘッダ に続いて モジュールのエントリ関数の戻り値が１ワードつづき result が 3 または 4 のときのみ意味を持ち、モジュールのエントリ関数の戻り値が入ります。その他の場合は 0 が返ります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -7,54 +7,29 @@ defarray TOOLBAR_state {
   initialized 0
   button ""
   window ""
-  relief flat
-  last   ""
 }
 
 proc TOOLBAR_button_enter {w} {
   global TOOLBAR_state
-  
-  #save older relief (it covers buttons that
-  #interacte like checkbuttons)
-  set TOOLBAR_state(relief) [$w cget -relief]
-    
   if {[$w cget -state] != "disabled"} then {
-  
     if {$TOOLBAR_state(button) == $w} then {
       set relief sunken
     } else {
       set relief raised
     }
-    
-    $w configure \
-	-state active \
-	-relief $relief
+    $w configure -state active -relief $relief
   }
 
-  #store last action to synchronize operations
-  set TOOLBAR_state(last) enter
   set TOOLBAR_state(window) $w
 }
 
 proc TOOLBAR_button_leave {w} {
-    global TOOLBAR_state
-    if {[$w cget -state] != "disabled"} then {
-	$w configure -state normal
-    }
-
-    #restore original relief
-    if {
-	$TOOLBAR_state(window) == $w
-        && $TOOLBAR_state(last) == "enter"
-    } then {
-	$w configure -relief $TOOLBAR_state(relief)
-    } else {
-	$w configure -relief flat
-    }
-
-    set TOOLBAR_state(window) ""
-    #store last action to synch operations (enter->leave)
-    set TOOLBAR_state(last) leave
+  global TOOLBAR_state
+  if {[$w cget -state] != "disabled"} then {
+    $w configure -state normal
+  }
+  $w configure -relief flat
+  set TOOLBAR_state(window) ""
 }
 
 proc TOOLBAR_button_down {w} {
@@ -69,35 +44,15 @@ proc TOOLBAR_button_up {w} {
   global TOOLBAR_state
   if {$w == $TOOLBAR_state(button)} then {
     set TOOLBAR_state(button) ""
-    
-    #restore original relief
-      $w configure -relief $TOOLBAR_state(relief)      
-    
+    $w configure -relief flat
     if {$TOOLBAR_state(window) == $w
 	&& [$w cget -state] != "disabled"} then {
-
-      #SN does the toolbar bindings using "+" so that older
-      #bindings don't disapear. So no need to invoke the command.
-      #other applications should do the same so that we can delete
-      #this hack
-      global sn_options
-      if {! [array exists sn_options]} {
-	#invoke the binding
-	uplevel \#0 [list $w invoke]
-      }
+      uplevel \#0 [list $w invoke]
       if {[winfo exists $w]} then {
 	if {[$w cget -state] != "disabled"} then {
 	  $w configure -state normal
 	}
       }
-      # HOWEVER, if the pointer is still over the button, and it
-      # is enabled, then raise it again.
-
-      if {[string compare [winfo containing \
-			     [winfo pointerx $w] \
-			     [winfo pointery $w]] $w] == 0} { 
-	$w configure -relief raised
-      }	
     }
   }
 }
@@ -116,35 +71,6 @@ proc TOOLBAR_maybe_init {} {
     bind ToolbarButton <1> [list TOOLBAR_button_down %W]
     bind ToolbarButton <ButtonRelease-1> [list TOOLBAR_button_up %W]
   }
-}
-
-#Allows changing options of a toolbar button from the application
-#especially the relief value
-proc TOOLBAR_command {w args} {
-    global TOOLBAR_state
-    
-    set len [llength $args]
-    for {set i 0} {$i < $len} {incr i} {
-	set cmd [lindex $args $i]
-	switch -- $cmd {
-	  "relief" -
-	  "-relief" {
-	  	incr i
-	        set TOOLBAR_state(relief) [lindex $args $i]
-		$w configure $cmd [lindex $args $i]
-	    }
-	  "window" -
-	  "-window" {
-	  	incr i
-		set TOOLBAR_state(window) [lindex $args $i]
-	  }
-	  default {
-	  	#normal widget options
-		incr i
-		$w configure $cmd [lindex $args $i]
-	  }
-	}
-    }
 }
 
 # Pass this proc a frame and some children of the frame.  It will put

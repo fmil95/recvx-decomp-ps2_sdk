@@ -1,17 +1,3 @@
-# SrcTextWin class definition, for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 class SrcTextWin {
   inherit itk::Widget
 
@@ -28,7 +14,6 @@ class SrcTextWin {
     
     method constructor {args}
     method destructor {}
-    method disassembly_changed {}
     method reconfig {}
     method trace_find_hook {mode from_tty}
     method set_control_mode {mode}
@@ -36,9 +21,9 @@ class SrcTextWin {
     method build_win {}
     method SetRunningState {state}
     method enable {on}
-    method setTabs {win {asm S}}
+    method setTabs {win {asm ""}}
     method enable_disable_src_tags {win how}
-    method config_win {win {asm S}}
+    method config_win {win {asm ""}}
     method addPopup {menu label command {abg {}} {browse 1} {run 1}}
     method updateBalloon {}
     method ClearTags {}
@@ -46,7 +31,7 @@ class SrcTextWin {
     method FillAssembly {winname tagname filename funcname line addr pc_addr lib}
     method FillMixed {winname tagname filename funcname line addr pc_addr lib}
     method location {tagname filename funcname line addr pc_addr lib}
-    method LoadFile {winname name lib mtime_changed}
+    method LoadFile {winname name lib}
     method display_line { win line }
     method display_breaks {}
     method insertBreakTag {win linenum tag}
@@ -58,7 +43,6 @@ class SrcTextWin {
     method report_source_location {}
     method lookup_line {win y}
     method continue_to_here {{win {}} {y -1} {threads -1}}
-    method jump_to_here {{win {}} {y -1} {threads -1}}
     method set_bp_at_line {{type N} {win {}} {y -1} {threads "-1"}}
     method remove_bp_at_line {{win {}} {y -1}}
     method set_tp_at_line {{win {}} {y -1}}
@@ -85,12 +69,8 @@ class SrcTextWin {
     method ask_thread_bp {}
     method do_thread_bp {listbox}
     method test_get {var}
-    method clear_file {}
   }
 
-  protected {
-    method handle_set_hook {var val}
-  }
   private {
     variable top	;# toplevel window
     variable twin	;# top text window of pane
@@ -115,7 +95,7 @@ class SrcTextWin {
     variable id	;#thread id to line mapping
     # needed for assembly support
     variable _map
-    variable Cname  ""	;# cache index name for _map
+    variable Cname	;# cache index name for _map
     # cache is not shared among windows yet.  That could be a later
     # optimization
     variable Stwc	;# Source Text Window Cache
@@ -125,11 +105,6 @@ class SrcTextWin {
     variable _balloon_var {}
 
     method balloon_value {variable}
-    method _mtime_changed {filename}
-    method _initialize_srctextwin {}
-    method _clear_cache {}
-    method _highlightAsmLine {win addr pc_addr tagname} {}
-
     proc makeBreakDot {size colorList {image {}}}
   }
 

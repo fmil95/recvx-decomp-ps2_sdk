@@ -26,8 +26,10 @@ set_board_info ldflags  "-nostdlib -nostartfiles [libgloss_link_flags] [newlib_l
 # ELF simulator linker script.
 set_board_info ldscript "-Telfsim.ld";
 
-# The simulator doesn't return exit statuses and we need to indicate this.
-set_board_info needs_status_wrapper 1;
+# The board doesn't return exit statuses and we need to indicate this.
+# However, the standard GCC wrapper won't work with this target because
+# it doesn't return stuff from printf ().
+# set_board_info needs_status_wrapper 1;
 
 # We use a GDB stub to talk to the board.
 # set_board_info use_gdb_stub 1;

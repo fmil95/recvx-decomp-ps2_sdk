@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                     Emotion Engine Library
@@ -17,5 +17,5 @@
  *     0.60      Dec.02.1999   katayama   first checked in.
  */
 #include <modmsin.h>
-/* $Id: libmsin.h,v 1.1.54.1 2002/02/19 09:16:30 xokano Exp $ */
+/* $Id: libmsin.h,v 1.1 1999/12/13 01:41:51 morita Exp $ */
 

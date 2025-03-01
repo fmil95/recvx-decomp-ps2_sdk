@@ -32,7 +32,7 @@
 #define BUFFADDR_48	0x90000
 #define BUFSIZ_48	(65536>>1)
 #define BUFSIZ_441	(60208>>1)
-#define PCM_FILENAME	"host1:/usr/local/sce/data/sound/wave/knot_l.int"
+#define PCM_FILENAME	"host1:knot_l.int"
 #define PRINTF(x) printf x
 
 int myMain(int arg);

@@ -1,0 +1,398 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm305</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm304.htm">[前]</A> <A HREF="arm306.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.5 <A NAME="anchor2569112"></A>データ処理</H3>
+
+<BLOCKQUOTE>
+  <P><BR>
+  ARMには16のデータ処理命令があります。ほとんどのデータ処理命令が2つのソース・オペランドをとり（MoveおよびMove
+  Not命令には1つのオペランドしかない）、結果をレジスタにストアします（コンディション・コードを更新するだけのCompare命令とTest命令を除く）。2つのソース・オペランドのうち1つは常にレジスタで、もう1つは<A
+  NAME="anchor42611"></A>シフタ・オペランドと呼ばるイミディエイト値かレジスタです。2番目のオペランドがレジスタ値の場合、ALUへのオペランドとして使用される前にシフトが行われることがあります。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD>
+    <B>オペコード</B></TD> 
+    <TD>
+    <B>ニーモニック</B></TD> 
+    <TD>
+    <B>演算</B></TD> 
+    <TD>
+    <B>アクション</B></TD> 
+  </TR>
+  <TR>
+    <TD>
+    0</TD> 
+    <TD>
+    AND</TD> 
+    <TD>
+    論理積</TD> 
+    <TD>
+    Rd := Rn AND shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1</TD> 
+    <TD>
+    EOR</TD> 
+    <TD>
+    排他的論理和</TD> 
+    <TD>
+    Rd := Rn EOR shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    10</TD> 
+    <TD>
+    SUB</TD> 
+    <TD>
+    減算</TD> 
+    <TD>
+    Rd := Rn - shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    11</TD> 
+    <TD>
+    RSB</TD> 
+    <TD>
+    反転減算</TD> 
+    <TD>
+    Rd := shifter_operand - Rn</TD> 
+  </TR>
+  <TR>
+    <TD>
+    100</TD> 
+    <TD>
+    ADD</TD> 
+    <TD>
+    加算</TD> 
+    <TD>
+    Rd := Rn + shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    101</TD> 
+    <TD>
+    ADC</TD> 
+    <TD>
+    キャリ付き加算</TD> 
+    <TD>
+    Rd := Rn + shifter_operand + Carry Flag</TD> 
+  </TR>
+  <TR>
+    <TD>
+    110</TD> 
+    <TD>
+    SBC</TD> 
+    <TD>
+    キャリ付き減算</TD> 
+    <TD>
+    Rd := Rn - shifter_operand - NOT(Carry Flag)</TD> 
+  </TR>
+  <TR>
+    <TD>
+    111</TD> 
+    <TD>
+    RSC</TD> 
+    <TD>
+    キャリ付き反転減算</TD> 
+    <TD>
+    Rd := shifter_operand - Rn - NOT(Carry Flag)</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1000</TD> 
+    <TD>
+    TST</TD> 
+    <TD>
+    テスト</TD> 
+    <TD>
+    update flags after Rn AND shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1001</TD> 
+    <TD>
+    TEQ</TD> 
+    <TD>
+    テスト等価</TD> 
+    <TD>
+    update flags after Rn EOR shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1010</TD> 
+    <TD>
+    CMP</TD> 
+    <TD>
+    Compare</TD> 
+    <TD>
+    update flags after Rn - shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1011</TD> 
+    <TD>
+    CMN</TD> 
+    <TD>
+    比較否定</TD> 
+    <TD>
+    update flags after Rn + shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1100</TD> 
+    <TD>
+    ORR</TD> 
+    <TD>
+    （包含的）論理和</TD> 
+    <TD>
+    Rd := Rn OR shifter_operand</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1101</TD> 
+    <TD>
+    MOV</TD> 
+    <TD>
+    移動</TD> 
+    <TD>
+    Rd := shifter_operand (no first operand)</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1110</TD> 
+    <TD>
+    BIC</TD> 
+    <TD>
+    ビット・クリア</TD> 
+    <TD>
+    Rd := Rn AND NOT (shifter_operand)</TD> 
+  </TR>
+  <TR>
+    <TD>
+    1111</TD> 
+    <TD>
+    MVN</TD> 
+    <TD>
+    移動なし(ネガティブ)</TD> 
+    <TD>
+    Rd := NOT shifter_operand (no first operand)</TD> 
+  </TR>
+</TABLE><BR>
+</P>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表3-3 データ処理命令</FONT></P>
+
+<H4>3.5.1 命令エンコーディング</H4>
+
+<BLOCKQUOTE>
+  <PRE>&lt;opcode1&gt;{&lt;cond&gt;}{S}  Rd, &lt;shifter_operand&gt;
+&lt;opcode1&gt; := MOV | MVN
+&lt;opcode2&gt;{&lt;cond&gt;}  Rn, &lt;shifter_operand&gt;
+&lt;opcode2&gt; := CMP | CMN | TST | TEQ
+&lt;opcode3&gt;{&lt;cond&gt;}{S}  Rd, Rn, &lt;shifter_operand&gt;
+&lt;opcode3&gt; := ADD|SUB|RSB|ADC|SBC|RSC|AND|BIC|EOR|ORR</PRE>
+</BLOCKQUOTE>
+
+<P><BR>
+<TABLE BORDER="1" CELLSPACING="1" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004522"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004522"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004524"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004526"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004528"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004530"></A><B>26</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004532"></A><B>25</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004534"></A><B>24</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004536"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004538"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004540"></A><B>21</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004542"></A><B>20</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004544"></A><B>19</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004546"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004548"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004550"></A><B>16</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004552"></A><B>15</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004554"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004556"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004558"></A><B>12</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004560"></A><B>11</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004562"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004564"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004566"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004568"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004570"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004572"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004574"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004576"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004578"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004580"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004582"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1004584"></A><BR>
+    cond</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004592"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004594"></A><BR>
+    0</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004596"></A><BR>
+    I</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1004598"></A><BR>
+    opcode</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="1004606"></A><BR>
+    S</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1004608"></A><BR>
+    Rn</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="4">
+    <A NAME="1004616"></A><BR>
+    Rd</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="12">
+    <A NAME="1004624"></A><BR>
+    shifter_operand</TD>
+     
+  </TR>
+</TABLE></P>
+
+<BLOCKQUOTE>
+  <P><B>Rd</B> デスティネーション・レジスタを指定します。<BR>
+  <B>Rn</B> 最初のソース・オペランド・レジスタを指定します。<BR>
+  &lt;shifter_operand&gt; 次のソース・オペランドを指定します。シフタ・オペランドの詳細については、3-84ページの3-16「データ処理オペランド」を参照してください。</P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Iビット：</B>ビット25を使用して、<A NAME="anchor3756597"></A>イミディエイト値と&lt;shifter_operand&gt;のレジスタ形式を区別します。</P>
+  <P><B>Sビット：</B>ビット20を使用して、命令がコンディション・コードを更新することを示します。</P>
+</BLOCKQUOTE>
+
+<H4>3.5.2 <A NAME="anchor3019410"></A>コンディション・コード・フラグ</H4>
+
+<BLOCKQUOTE>
+  <P><A NAME="anchor2578801"></A>データ処理命令は4つのコンディション・コード・フラグを更新できます。</P>
+  <P>CMP、CMN、TST、TEQは、常にコンディション・コード・フラグを更新します。他の命令は、S（命令のSビットをセットします）が命令ニーモニックに追加される場合に更新されます。</P>
+  <P>ビットは以下のとおりセットされます。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0" WIDTH="89%">
+    <TR>
+      <TD WIDTH="33%">
+      <BLOCKQUOTE>
+        N（ネガティブ）フラグ</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="67%">
+      データ処理命令の結果が負であればセットされます。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      <BLOCKQUOTE>
+        Z（ゼロ）フラグ</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="67%">
+      結果がゼロであればセットされます。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      <BLOCKQUOTE>
+        C（キャリー）フラグ</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="67%">
+      加算、減算、比較の結果がキャリーを生じるとき（結果が32ビットより大きい）、またはMOVE／論理命令のシフタ出力でセットされます。</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="33%">
+      <BLOCKQUOTE>
+        V（オーバフロー）フラグ</BLOCKQUOTE>
+</TD>
+      <TD WIDTH="67%">
+      加算、減算、または比較でオーバフローが生じると（符号付き結果が31ビットより大きい）、MOVE命令または条件付き命令では変化しません。</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<H4>3.5.3 <A NAME="anchor3320842"></A>命令リスト</H4>
+
+<BLOCKQUOTE>
+  <P><A HREF="a_adc.htm"><B>ADC</B></A> Add with Carry (キャリ付き加算)<BR>
+  <B><A HREF="a_add.htm">ADD</A></B> Add (加算)<BR>
+  <B><A HREF="a_and.htm">AND</A></B> Logical AND (論理積)<BR>
+  <B><A HREF="a_bic.htm">BIC</A></B> Logical Bit Clear (論理ビット・クリア)<BR>
+  <B><A HREF="a_cmn.htm">CMN</A></B> Compare Negative (比較ネガティブ)<BR>
+  <B><A HREF="a_cmp.htm">CMP</A></B> Compare (比較)<BR>
+  <B><A HREF="a_eor.htm">EOR</A></B> Logical EOR (論理EOR)<BR>
+  <B><A HREF="a_mov.htm">MOV</A></B> Move (移動)<BR>
+  <B><A HREF="a_mvn.htm">MVN</A></B> Move Negative (移動ネガティブ)<BR>
+  <B><A HREF="a_orr.htm">ORR</A></B> Logical OR (論理和)<BR>
+  <B><A HREF="a_rsb.htm">RSB</A></B> Reverse Subtract (反転減算)<BR>
+  <B><A HREF="a_rsc.htm">RSC</A></B> Reverse Subtract with Carry
+  (キャリ付き反転減算)<BR>
+  <B><A HREF="a_sub.htm">SUB</A></B> Subtract (減算)<BR>
+  <B><A HREF="a_teq.htm">TEQ</A></B> Test Equivalence (テスト等価)<BR>
+  <B><A HREF="a_tst.htm">TST</A></B> Test (テスト)</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm304.htm">[前]</A> <A HREF="arm306.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

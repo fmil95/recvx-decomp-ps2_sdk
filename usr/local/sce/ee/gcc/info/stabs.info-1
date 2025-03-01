@@ -40,7 +40,7 @@ The "stabs" representation of debugging information
 * Symbol Descriptors::		Table of symbol descriptors
 * Type Descriptors::		Table of type descriptors
 * Expanded Reference::		Reference information by stab type
-* Questions::			Questions and anomalies
+* Questions::			Questions and anomolies
 * Stab Sections::		In some object file formats, stabs are
                                 in sections.
 * Symbol Types Index::          Index of symbolic stab symbol type names.
@@ -198,12 +198,13 @@ description of types, *Note Types::.
    A TYPE-NUMBER is often a single number.  The GNU and Sun tools
 additionally permit a TYPE-NUMBER to be a pair
 (FILE-NUMBER,FILETYPE-NUMBER) (the parentheses appear in the string,
-and serve to distinguish the two cases).  The FILE-NUMBER is 0 for the
-base source file, 1 for the first included file, 2 for the next, and so
-on.  The FILETYPE-NUMBER is a number starting with 1 which is
-incremented for each new type defined in the file.  (Separating the
-file number and the type number permits the `N_BINCL' optimization to
-succeed more often; see *Note Include Files::).
+and serve to distinguish the two cases).  The FILE-NUMBER is a number
+starting with 1 which is incremented for each seperate source file in
+the compilation (e.g., in C, each header file gets a different number).
+The FILETYPE-NUMBER is a number starting with 1 which is incremented
+for each new type defined in the file.  (Separating the file number and
+the type number permits the `N_BINCL' optimization to succeed more
+often; see *Note Include Files::).
 
    There is an AIX extension for type attributes.  Following the `='
 are any number of type attributes.  Each one starts with `@' and ends
@@ -437,7 +438,7 @@ be nested.
    If the linker detects that two source files have identical stabs
 between an `N_BINCL' and `N_EINCL' pair (as will generally be the case
 for a header file), then it only puts out the stabs once.  Each
-additional occurrence is replaced by an `N_EXCL' symbol.  I believe the
+additional occurance is replaced by an `N_EXCL' symbol.  I believe the
 GNU linker and the Sun (both SunOS4 and Solaris) linker are the only
 ones which supports this feature.
 
@@ -812,7 +813,7 @@ defined in; see *Note Block Structure::.
      .stabn 192,0,0,LBB2             # 192 is N_LBRAC
      .stabn 224,0,0,LBE2             # 224 is N_RBRAC
 
-   See *Note Procedures:: for more information on the `N_FUN' stab, and
+   *Note Procedures:: for more information on the `N_FUN' stab, and
 *Note Block Structure:: for more information on the `N_LBRAC' and
 `N_RBRAC' stabs.
 

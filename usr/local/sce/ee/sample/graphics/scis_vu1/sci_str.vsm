@@ -1,0 +1,791 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                       - scissoring VU1 -
+ *
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : sci_str.vsm
+ *
+ *       Version      Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.5.0        Sep,22,1999     thatake ¡¡¡¡1st Version
+ */
+
+; ---------------------------------------------------------------------
+;
+;
+;       vu1 micro code for clipping & scissoring sample
+;
+;
+;	VF01 - VF04 	: local_screen matrix & clip_screen matrix
+;	VF05 - VF08 	: local_light matrix(3 lighting vector + 1 ambient)
+;       VF09 - VF12     : light_color matrix
+;       VF13 - VF16     : local_clip matrix
+;       VF17 - VF18     : free
+;	VF19        	: gif tag(temporary)
+;	VF20 		: source vertex & st (st uses Q(Perspective 1/w))
+;	VF21 		: source normal & color (color uses lo_light*norm)
+;       VF22 - VF24     : recent 3 vertex point on GSprimitive coordinate
+;       VF25 - VF29     : temporary
+;	VF30		: free
+;	VF31		: free
+;
+;	VI01 : base or offset address (temporary)
+;	VI02 : pointer for gif tag / for XGKICK
+;	VI03 : pointer for vertex
+;	VI04 : clip checking reg 1
+;	VI05 : clip checking reg 2
+;	VI06 : clip checking reg 3
+;	VI07 : store pointer for RGBAQ
+;	VI08 : free
+;	VI09 : free
+;       VI10 : counter for vertices
+;       VI11,12 : Mask & Branch frag
+;	VI13 : 0-3(triangle) or -1(strip)
+;	VI14 : stack pointer
+;	VI15 : link register
+;
+; ---------------------------------------------------------------------
+	
+	NOP	IADDIU VI01, VI00, 8    ; source(world_screen)
+	NOP	IADDIU VI02, VI00, 0    ; source(local_world)
+	NOP	IADDIU VI03, VI00, 16	; screen matrix X object matrix
+	NOP     IADDIU VI14, VI00, 1024 ; set stack pointer
+	NOP	BAL VI15, MulMatrix2
+	NOP	NOP
+	NOP[E]	NOP
+	NOP	NOP
+
+LOADPRIM:
+	NOP 	XTOP VI01
+	NOP	LQ  VF30, 0(VI01)		; load Triangle Fan Tag
+	NOP	SQ  VF30, 30(VI00)		; save Triangle Fan Tag(30fix)
+	NOP	ILWR.x VI12, (VI01)x 		; copy to VI12(prim)
+	NOP	IADDI VI11, VI00, 0x0003	; set mask (triangle)
+	NOP	IAND  VI12, VI12, VI11		;
+	NOP	IADDI VI13, VI00, -1		;
+	MULx.xyzw VF31, VF31, VF00x		NOP
+	NOP	IBNE VI11, VI12, STRIP		; jump, if VI11==VI12
+	NOP	NOP
+TRIANGLE:
+	NOP	IADDIU VI13, VI00, 3
+	NOP     NOP
+STRIP:
+	NOP[E]	NOP
+	NOP	NOP
+START:
+	NOP 	XTOP VI01
+	NOP	IADDIU  VI03, VI01, 1		; pointer for vertices
+	NOP	LQ  VF20, 0(VI03)		; load vertex
+	NOP	LQ  VF21, 1(VI03)		; load normal
+	NOP	IADDIU VI11, VI00, 0x7fff	; set mask
+	NOP	ILWR.x VI10, (VI01)x 		; copy to VI10
+	NOP	IAND VI10, VI10, VI11		; mask.counter for vertices.
+	NOP 	LQ  VF19, 0(VI01) 		; load gif tag
+	MULAx.xyzw ACC, VF01, VF20x	IADD VI02, VI03, VI10
+	MADDAy.xyzw ACC, VF02, VF20y	IADD VI02, VI02, VI10
+	MADDAz.xyzw ACC, VF03, VF20z	IADD VI02, VI02, VI10 
+	MADDw.xyzw VF25, VF04, VF20w	IADD VI02, VI02, VI10		; 
+	MULAx.xyzw ACC, VF05, VF21x	IADDI VI04, VI00, -2
+	MADDAy.xyzw ACC, VF06, VF21y	IADDI VI05, VI00, -2
+	MADDAz.xyzw ACC, VF07, VF21z	IADDI VI06, VI00, -2
+	MADDw.xyzw VF29, VF08, VF21w	DIV Q, VF00w, VF25w
+	NOP 	SQ VF19, 0(VI02) 		; store gif tag
+	NOP	IADDIU VI07, VI02, 2		; set store pointer for RGBAQ
+	NOP	MOVE.xyzw VF22, VF00 ;(0,0,0,1) shall pass clip checking
+	NOP	MOVE.xyzw VF23, VF00 ;
+	NOP	MOVE.xyzw VF24, VF00 ;
+
+LOOP:
+	MULAx.xyzw ACC, VF13, VF20x	MOVE.xyzw VF22, VF23;push recent3point
+	MADDAy.xyzw ACC, VF14, VF20y	MOVE.xyzw VF23, VF24;
+	MADDAz.xyzw ACC, VF15, VF20z	NOP
+	MAXx.xyzw VF29, VF29, VF00x	NOP
+	MADDw.xyzw VF24, VF16, VF20w	NOP
+	CLIPw.xyz VF22xyz, VF22w	LQ  VF20, 3(VI03); load st 
+	MULq VF25, VF25, Q		NOP
+	MULAx.xyzw ACC, VF09, VF29x	LQ  VF21, 2(VI03); load color
+	MADDAy.xyzw ACC, VF10, VF29y	IADD  VI04, VI00, VI05
+	MADDAz.xyzw ACC, VF11, VF29z	IADD  VI05, VI00, VI06
+	MADDw.xyzw VF26, VF12, VF29w	NOP
+	MULq.xyz VF28, VF20, Q		LQ  VF20, 4(VI03); load vertex
+	CLIPw.xyz VF23xyz, VF23w	IADDIU  VI03, VI03, 4
+	CLIPw.xyz VF24xyz, VF24w	IADDIU  VI07, VI07, 3
+	MUL.xyz VF26, VF21, VF26	LQ  VF21, 1(VI03); load normal
+	FTOI4 VF27, VF25		IADD  VI04, VI04, VI05
+	MULAx.xyzw ACC, VF01, VF20x	IADD  VI04, VI04, VI06
+	MADDAy.xyzw ACC, VF02, VF20y	SQ  VF28, -4(VI07)
+	FTOI0 VF26, VF26		IADDI VI10, VI10, -1	
+	MADDAz.xyzw ACC, VF03, VF20z	SQ  VF27, -2(VI07);---storeXYZF2,3---
+	MADDw.xyzw VF25, VF04, VF20w	FCAND  VI01, 0x3f
+	MULAx.xyzw ACC, VF05, VF21x	IADD  VI06, VI00, VI01
+	MADDAy.xyzw ACC, VF06, VF21y	SQ  VF26, -3(VI07);--store color--
+	MADDAz.xyzw ACC, VF07, VF21z	NOP
+	MADDw.xyzw VF29, VF08, VF21w	IBGTZ VI04, XYZ3 ; VI04 > 0
+	NOP				NOP
+XYZ2:
+	NOP				DIV Q, VF00w, VF25w
+	NOP				IBNE  VI10, VI00, LOOP
+	NOP				NOP   
+	NOP				XGKICK VI02  
+	NOP[E]				NOP   
+	NOP				NOP
+	NOP				B START
+	NOP				NOP      	
+
+
+XYZ3:
+	;--- check triangle that has no necesary to scissor ---
+	NOP	FCOR VI01, 0xff7df7; ^0x8208
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	FCOR VI01, 0xffbefb; ^0x4104
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	FCOR VI01, 0xffdf7d; ^0x2082
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	FCOR VI01, 0xffefbe; ^0x1041
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	FCOR VI01, 0xfdf7df ;^0x20820 
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	FCOR VI01, 0xfefbef; ^0x10410
+	NOP	IBNE  VI01, VI00, XYZ3_ONLY
+	NOP	NOP
+	NOP	BAL  VI15, PushStackIFRegs
+	NOP	NOP
+	NOP	BAL  VI15, SCISSOR
+	NOP	NOP
+	NOP	BAL  VI15, PopStackIFRegs
+        NOP     NOP
+
+XYZ3_ONLY:
+	NOP	IADDIU VI11, VI00, 0x7fff ; set mask
+	NOP	IADDI  VI11, VI11, 1      ; set XYZ3 flag to VI11
+	NOP	ISW.w  VI11, -2(VI07) ;kick XYZ3
+        NOP     B XYZ2
+        NOP     NOP
+
+
+;--------------------------------------------------------------
+;
+;  Scissor Triangle
+;
+;	VF01 - VF04 	: clip_screen matrix 
+;	VF05 - VF08 	: local_light matrix(3 lighting vector + 1 ambient)
+;       VF09 - VF12     : light_color matrix
+;       VF13 - VF16     : local_clip matrix
+;       VF17 - VF20     : current point (clip/col/tex)
+;	VF21 - VF24    	: next point    (clip/color/tex)
+;	VF25 - VF28	: interpolate point (clip/color/tex)
+;	VF29		: temporary 
+;	VF30		: plane normal(+1 or -1) flag
+;	VF31		: 0, 0, 0, 0
+;
+;	VI01 : clipping return value
+;	VI02 : link register
+;	VI03 : link register
+;	VI04 : 
+;	VI05 : clipping mask (&0xfc0 current)
+;	VI06 : clipping mask (&0x03f next)
+;	VI07 : XYZ plane flag
+;	VI08 : pointer for vertex link(base 61-100 fix) flip with VI09
+;	VI09 : pointer for vertex link(offset 101-140 fix) flip with VI08
+;       VI10 : Number of pre_clipped vertex
+;       VI11 : Number of next_clipped vertex
+;	VI12 : Mask & Branch frag
+;	VI13 : 0-3(triangle) -1(strip)
+;	VI14 : stack pointer
+;	VI15 : link register(don't use)
+;------------------------------------------------------------------
+
+SCISSOR:
+PUSHTRIANGLE:
+	NOP		IADDIU VI08, VI00, 61 ; link buffer pointer
+	NOP		IADDIU VI09, VI00, 101; link buffer pointer(61+10*4)
+
+	NOP		SQ  VF22, 0(VI08);set recent 3 point
+	NOP		SQ  VF23, 3(VI08)
+	NOP		SQ  VF24, 6(VI08)
+	NOP		SQ  VF22, 9(VI08); add first element to end
+
+;	NOP		LQ  VF22, -5(VI03);load&save texUV
+;	NOP		LQ  VF23, -1(VI03)
+;	NOP		LQ  VF24, 3(VI03)
+	NOP		LQ  VF22, -9(VI03);load&save texUV
+	NOP		LQ  VF23, -5(VI03)
+	NOP		LQ  VF24, -1(VI03)
+	NOP		SQ  VF22, 2(VI08)
+	NOP		SQ  VF23, 5(VI08)
+	NOP		SQ  VF24, 8(VI08)
+	NOP		SQ  VF22, 11(VI08)
+
+	NOP		IBLTZ VI13, STRIP_COLOR ;VI13 0-3(triangle), -1(strip)
+	NOP		NOP
+;	NOP		LQ  VF22, -6(VI07);load&save gouraud_shaded color
+;	NOP		LQ  VF23, -3(VI07)
+;	NOP		LQ  VF24, 0(VI07)
+	NOP		LQ  VF22, -9(VI07);load&save gouraud_shaded color
+	NOP		LQ  VF23, -6(VI07)
+	NOP		LQ  VF24, -3(VI07)
+	ITOF0 VF22, VF22	NOP
+	ITOF0 VF23, VF23	NOP
+	ITOF0 VF24, VF24	NOP
+	NOP		SQ  VF22, 1(VI08)
+	NOP		SQ  VF23, 4(VI08)
+	NOP		SQ  VF24, 7(VI08)
+	NOP		SQ  VF22, 10(VI08)
+	NOP		B  PLANE_START
+	NOP		NOP
+STRIP_COLOR:
+;	NOP		LQ  VF24, 0(VI07)
+	NOP		LQ  VF24, -3(VI07)
+	ITOF0 VF24, VF24	NOP
+	NOP		SQ  VF24, 1(VI08)
+	NOP		SQ  VF24, 4(VI08)
+	NOP		SQ  VF24, 7(VI08)
+	NOP		SQ  VF24, 10(VI08)
+
+PLANE_START:
+ZMINUS:
+	NOP				IADDIU	VI05, VI00, 0x800 ;2nd -z
+	NOP				IADDIU	VI06, VI00, 0x020 ;1st -z
+	NOP				IADDIU  VI07, VI00, 2  ;set Z flag
+	NOP				IADDIU  VI08, VI00, 61 ; buff point1
+	NOP				IADDIU  VI09, VI00, 101; buff point2
+	NOP				IADDIU  VI10, VI00, 3  ;num of vertex
+	NOP				IADDIU  VI11, VI00, 0 
+	SUBw.x  VF30x, VF00x, VF00w	NOP ;load -1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_ZM:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_ZM
+	NOP				NOP
+	NOP				IADDIU VI08, VI00, 101    ; 
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+	NOP[d]				NOP
+  END_ZM:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+
+ZPLUS:
+	NOP				IADDIU	VI05, VI00, 0x400 ;2nd +z
+	NOP				IADDIU	VI06, VI00, 0x010 ;1st +z
+	NOP				IADDIU  VI07, VI00, 2   ;set Z flag
+	NOP				IADDIU  VI08, VI00, 101 ; flip pointer
+	NOP				IADDIU  VI09, VI00, 61  ; 
+	NOP				IADD    VI10, VI00, VI11;num of vertex
+	NOP				IADDIU  VI11, VI00, 0   ;
+	ADDw.x  VF30x, VF00x, VF00w	NOP ;load 1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_ZP:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_ZP
+	NOP				NOP
+	NOP				IADDIU  VI08, VI00, 61    ; 
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+  END_ZP:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+XMINUS:
+	NOP				IADDIU	VI05, VI00, 0x080 ;2nd -x
+	NOP				IADDIU	VI06, VI00, 0x002 ;1st -x
+	NOP				IADDIU  VI07, VI00, 0 ;set Z flag
+	NOP				IADDIU  VI08, VI00, 61 ;flip pointer
+	NOP				IADDIU  VI09, VI00, 101
+	NOP				IADD    VI10, VI00, VI11 
+	NOP				IADDIU  VI11, VI00, 0;
+	SUBw.x  VF30x, VF00x, VF00w	NOP ;load -1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_XM:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_XM
+	NOP				NOP
+	NOP				IADDIU  VI08, VI00, 101    ; 
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+  END_XM:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+XPLUS:
+	NOP				IADDIU	VI05, VI00, 0x040 ;2nd +x
+	NOP				IADDIU	VI06, VI00, 0x001 ;1st +x
+	NOP				IADDIU  VI07, VI00, 0 ;set Z flag
+	NOP				IADDIU  VI08, VI00, 101
+	NOP				IADDIU  VI09, VI00, 61
+	NOP				IADD    VI10, VI00, VI11 ;
+	NOP				IADDIU  VI11, VI00, 0;
+	ADDw.x  VF30x, VF00x, VF00w	NOP ;load 1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_XP:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_XP
+	NOP				NOP
+	NOP				IADDIU  VI08, VI00, 61
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+  END_XP:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+YMINUS:
+	NOP				IADDIU	VI05, VI00, 0x200 ;2nd -y
+	NOP				IADDIU	VI06, VI00, 0x008 ;1st -y
+	NOP				IADDIU  VI07, VI00, 1 ;set Y flag
+	NOP				IADDIU  VI08, VI00, 61 ; flip pointer
+	NOP				IADDIU  VI09, VI00, 101
+	NOP				IADD    VI10, VI00, VI11 ;
+	NOP				IADDIU  VI11, VI00, 0;
+	SUBw.x  VF30x, VF00x, VF00w	NOP ;load -1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_YM:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_YM
+	NOP				NOP
+	NOP				IADDIU  VI08, VI00, 101    ; 
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+  END_YM:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+YPLUS:
+	NOP				IADDIU	VI05, VI00, 0x100 ;2nd +y
+	NOP				IADDIU	VI06, VI00, 0x004 ;1st +y
+	NOP				IADDIU  VI07, VI00, 1 ;set Z flag
+	NOP				IADDIU  VI08, VI00, 101 ; flip pointer
+	NOP				IADDIU  VI09, VI00, 61
+	NOP				IADD    VI10, VI00, VI11 ;
+	NOP				IADDIU  VI11, VI00, 0;
+	ADDw.x  VF30x, VF00x, VF00w	NOP ;load 1(plane normal flag)
+	NOP				LQI  VF21, (VI08++)
+	NOP				LQI  VF22, (VI08++)
+	NOP				LQI  VF23, (VI08++)
+  LOOP_YP:
+	NOP				BAL  VI02, CLIP_INTER
+	NOP				NOP
+	NOP				ISUBIU  VI10, VI10, 1
+	NOP				NOP
+	NOP				IBNE    VI10, VI00, LOOP_YP
+	NOP				NOP
+	NOP				IADDIU  VI08, VI00, 61    ; 
+	NOP				BAL  VI02, SAVE_LAST_LOOP
+	NOP				NOP	
+  END_YP:
+	NOP				IBEQ VI11, VI00, END_ALL
+	NOP				NOP
+
+	NOP				IADDIU VI08, VI00, 61
+	NOP				IADDIU VI09, VI00, 101
+	NOP				IADD   VI10, VI00, VI11 ;
+	NOP				IADDIU VI11, VI00, 0;
+	NOP				BAL  VI01, DrawScissorPolygon
+	NOP				NOP
+
+END_ALL:
+	NOP				JR  VI15 ;
+	NOP				NOP
+
+;--------------------------------------------------------------
+;  Add first element to end of the list for triangle fan
+;
+SAVE_LAST_LOOP:
+	NOP				LQ   VF21, 0(VI08)
+	NOP				LQ   VF22, 1(VI08)
+	NOP				LQ   VF23, 2(VI08)
+	NOP				SQI   VF21, (VI09++)
+	NOP				SQI   VF22, (VI09++)
+	NOP				SQI   VF23, (VI09++)
+	NOP				JR  VI02
+	NOP				NOP
+
+
+;-------------------------------------------------------------------
+;	[ Tracing TriangleFan vertex list ]
+;	To trace and check two link points on the vertex list
+;	(Are current&next points inside or outside against the plane?),
+;	we can get the cross point and add it to the list.
+;--------------------------------------------------------------------
+
+CLIP_INTER:
+	ADD.xyzw VF17, VF31, VF21	LQI  VF21, (VI08++) ;LOAD current&next
+	ADD.xyzw VF18, VF31, VF22	LQI  VF22, (VI08++)
+	ADD.xyzw VF19, VF31, VF23	LQI  VF23, (VI08++)
+	NOP				NOP
+	CLIPw.xyz  VF17, VF17w		NOP
+	CLIPw.xyz  VF21, VF21w		NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				FCGET VI01
+	NOP				IAND  VI04, VI01, VI05 ;currmask
+	NOP				NOP
+	NOP				IBEQ  VI04, VI00, CUR_IN
+	NOP				NOP
+
+  CUR_OUT: ;current is outside
+	NOP				IAND  VI04, VI01, VI06
+	NOP				NOP
+	NOP				IBEQ  VI04, VI00, CO_NEXT_IN
+	NOP				NOP
+
+    CO_NEXT_OUT: ;both curr&next are outside 
+	NOP				B  CLIP_INTER_END ;do nothing
+	NOP				NOP
+
+    CO_NEXT_IN: ;curr is out & next is in (save cross point only)
+	NOP				BAL  VI01, INTERPOLATE
+	NOP				NOP
+	NOP				SQI  VF25, (VI09++)
+	NOP				SQI  VF26, (VI09++)
+	NOP				SQI  VF27, (VI09++)
+	NOP				IADDIU  VI11, VI11, 1
+	NOP				B  CLIP_INTER_END
+	NOP				NOP
+
+  CUR_IN: ;current is inside
+	NOP				IAND  VI04, VI01, VI06
+	NOP				NOP
+	NOP				IBEQ  VI04, VI00, CI_NEXT_IN
+	NOP				NOP
+
+    CI_NEXT_OUT: ;curr is in & next is out (save both curr&cross point)
+	NOP				BAL  VI01, INTERPOLATE
+	NOP				NOP
+	NOP				SQI  VF17, (VI09++)
+	NOP				SQI  VF18, (VI09++)
+	NOP				SQI  VF19, (VI09++)
+	NOP				SQI  VF25, (VI09++)
+	NOP				SQI  VF26, (VI09++)
+	NOP				SQI  VF27, (VI09++)
+	NOP				IADDIU  VI11, VI11, 2
+	NOP				B  CLIP_INTER_END
+	NOP				NOP
+
+    CI_NEXT_IN: ;curr is in & next is in (save curr point only)
+	NOP				SQI  VF17, (VI09++)
+	NOP				SQI  VF18, (VI09++)
+	NOP				SQI  VF19, (VI09++)
+	NOP				IADDIU  VI11, VI11, 1
+
+CLIP_INTER_END:
+	NOP				JR  VI02
+	NOP				NOP
+
+;---------------------------------------------------------------
+;	Function for Crossing point detection
+;
+;	c: current point (clipping coordinate)
+;	n: next point (clipping coordinate)
+;---------------------------------------------------------------
+
+INTERPOLATE:
+	MULx.w   VF25w, VF17w, VF30x	NOP ;sgn*c[w]
+	MULx.w   VF26w, VF21w, VF30x	NOP ;sgn*n[w]
+	NOP				IADD  VI12, VI00, VI07;Num of rotation
+	SUBw.xyzw VF25, VF17, VF25w	NOP ; c[xyz]-sgn*c[w]
+	SUBw.xyzw VF26, VF21, VF26w	NOP ; n[xyz]-sgn*n[w]
+	NOP				NOP	
+  LOOP_ROT:
+	NOP	IBEQ  VI12, VI00, LOOP_ROT_END
+	NOP	NOP
+	NOP	MR32.xyzw  VF25, VF25
+	NOP	MR32.xyzw  VF26, VF26
+	NOP	ISUBIU  VI12, VI12, 1
+	NOP	NOP
+	NOP	B   LOOP_ROT
+	NOP	NOP
+  LOOP_ROT_END:
+	SUB.xyz  VF27, VF26, VF25	NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				DIV  Q, VF25x, VF27x
+	NOP				WAITQ
+	ADDq.x  VF29x, VF00x, Q		NOP
+	ABS.x   VF29x, VF29x		NOP ; ans = |(c-cw)/((n-nw)+(c-cw))|
+	SUB.xyzw VF25, VF21, VF17	NOP ; n - c
+	SUB.xyzw VF26, VF22, VF18	NOP 
+	SUB.xyzw VF27, VF23, VF19	NOP 
+;	SUB.xyzw VF28, VF24, VF20	NOP
+	MULx.xyzw  VF25, VF25, VF29x	NOP ; ans*(n-c)
+	MULx.xyzw  VF26, VF26, VF29x	NOP
+	MULx.xyzw  VF27, VF27, VF29x	NOP
+;	MULx.xyzw  VF28, VF28, VF29x	NOP
+	ADD.xyzw   VF25, VF25, VF17	NOP ; c+ans*(n-c)
+	ADD.xyzw   VF26, VF26, VF18	NOP 
+	ADD.xyzw   VF27, VF27, VF19	NOP
+;	ADD.xyzw   VF28, VF28, VF20	NOP
+	NOP				JR  VI01
+	NOP				NOP
+
+;-------------------------------------------------------------
+;
+; Perspective projection & XGKICK for Clipped Polygon
+;
+; there is no necessory to calculate lighting color here,
+; bacause we interpolated color which has already lit.
+;-------------------------------------------------------------
+DrawScissorPolygon:
+START2:
+	NOP	IADDIU VI02, VI00, 30	; set XGKICK pointer(30fix)
+	NOP	IADD   VI03, VI00, VI08 ;
+	NOP	IADDIU VI11, VI00, 0x7fff
+	NOP	IADDIU VI11, VI11, 0x01
+	NOP	ISW.x VI11, 0(VI02) ;Nreg is zero!! 
+	NOP   	XGKICK VI02         ;Kick dummy GifTag(stall here)
+	NOP	LQ  VF20, 0(VI03)		; load vertex
+	NOP	LQ  VF01, 20(VI00)      ;load clip_screen matrix
+	NOP	LQ  VF02, 21(VI00)
+	NOP	LQ  VF03, 22(VI00)
+	NOP	LQ  VF04, 23(VI00)
+	MULAx.xyzw ACC, VF01, VF20x	IADDIU VI07, VI02, 2
+	MADDAy.xyzw ACC, VF02, VF20y	IADDIU VI11, VI10, 0x7fff
+	MADDAz.xyzw ACC, VF03, VF20z	IADDIU VI11, VI11, 0x01
+	MADDw.xyzw VF25, VF04, VF20w	ISW.x VI11, 0(VI02)
+	NOP				NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				DIV Q, VF00w, VF25w
+	NOP				NOP
+	NOP				NOP
+
+LOOP2:
+	NOP				LQ  VF27, 1(VI03); load color
+	NOP				LQ  VF21, 2(VI03); load st
+	NOP				NOP
+	NOP				NOP
+	NOP				NOP
+	FTOI0 VF29, VF27		NOP
+	MULq.xyz VF28, VF21, Q		LQ  VF20, 3(VI03); load vertex
+	MULq VF25, VF25, Q		IADDI VI10, VI10, -1	
+	MULAx.xyzw ACC, VF01, VF20x	NOP
+	MADDAy.xyzw ACC, VF02, VF20y	NOP	 
+	MADDAz.xyzw ACC, VF03, VF20z	SQ VF29, 0(VI07)
+	FTOI4 VF26, VF25		NOP
+	MADDw.xyzw VF25, VF04, VF20w	SQ VF28, -1(VI07)
+	NOP				IADDIU  VI07, VI07, 3
+	NOP				IADDIU  VI03, VI03, 3;load normal
+	NOP				SQ VF26, -2(VI07);---storeXYZF2,3---
+	NOP				DIV Q, VF00w, VF25w
+	NOP				IBNE VI10, VI00, LOOP2
+	NOP				NOP   
+
+	; --- send result to GIF and stop ---
+	NOP   	XGKICK VI02  
+	NOP	LQ  VF01, 0(VI00) ;load local_screen matrix
+	NOP	LQ  VF02, 1(VI00)
+	NOP	LQ  VF03, 2(VI00)
+	NOP	LQ  VF04, 3(VI00)
+	NOP	NOP
+	NOP   	JR  VI01
+	NOP	NOP      
+
+
+; -------------------------------------------------------------------
+;   PushStackIFRegs
+;
+
+PushStackIFRegs:
+	NOP		SQD.xyzw VF17, (--VI14);
+	NOP		SQD.xyzw VF18, (--VI14);
+	NOP		SQD.xyzw VF19, (--VI14);
+	NOP		SQD.xyzw VF20, (--VI14);
+	NOP		SQD.xyzw VF21, (--VI14);
+	NOP		SQD.xyzw VF22, (--VI14);
+	NOP		SQD.xyzw VF23, (--VI14);
+	NOP		SQD.xyzw VF24, (--VI14);
+	NOP		SQD.xyzw VF25, (--VI14);
+	NOP		SQD.xyzw VF26, (--VI14);
+	NOP		SQD.xyzw VF27, (--VI14);
+	NOP		SQD.xyzw VF28, (--VI14);
+	NOP		SQD.xyzw VF29, (--VI14);
+	NOP		SQD.xyzw VF30, (--VI14);
+	NOP		SQD.xyzw VF31, (--VI14);
+	NOP		ISUBIU   VI14, VI14, 1 ;
+	NOP		ISWR.x   VI02, (VI14);
+	NOP		ISWR.y   VI03, (VI14);
+	NOP		ISWR.z   VI04, (VI14);
+	NOP		ISWR.w   VI05, (VI14);
+	NOP		ISUBIU   VI14, VI14, 1 ;
+	NOP		ISWR.x   VI06, (VI14);
+	NOP		ISWR.y   VI07, (VI14);
+	NOP		ISWR.z   VI08, (VI14);
+	NOP		ISWR.w   VI09, (VI14);
+	NOP		ISUBIU   VI14, VI14, 1 ;
+	NOP		ISWR.x   VI10, (VI14);
+	NOP		ISWR.y   VI11, (VI14);
+	NOP		ISWR.z   VI12, (VI14);
+	NOP		ISWR.w   VI13, (VI14);
+	NOP		ISUBIU   VI14, VI14, 1 ;
+	NOP		ISWR.x   VI14, (VI14);
+	NOP		ISWR.y   VI15, (VI14);
+        NOP             NOP
+        NOP             JR VI15
+        NOP             NOP
+
+PopStackIFRegs:
+	NOP		IADD     VI01, VI00, VI15
+	NOP		ISWR.x   VI14, (VI14);
+	NOP		ISWR.y   VI15, (VI14);
+	NOP		IADDIU   VI14, VI14, 1 ;
+	NOP		ILWR.x   VI10, (VI14);
+	NOP		ILWR.y   VI11, (VI14);
+	NOP		ILWR.z   VI12, (VI14);
+	NOP		ILWR.w   VI13, (VI14);
+	NOP		IADDIU   VI14, VI14, 1 ;
+	NOP		ILWR.x   VI06, (VI14);
+	NOP		ILWR.y   VI07, (VI14);
+	NOP		ILWR.z   VI08, (VI14);
+	NOP		ILWR.w   VI09, (VI14);
+	NOP		IADDIU   VI14, VI14, 1 ;
+	NOP		ILWR.x   VI02, (VI14);
+	NOP		ILWR.y   VI03, (VI14);
+	NOP		ILWR.z   VI04, (VI14);
+	NOP		ILWR.w   VI05, (VI14);
+	NOP		IADDIU   VI14, VI14, 1 ;
+	NOP		LQI.xyzw VF31, (VI14++);
+	NOP		LQI.xyzw VF30, (VI14++);
+	NOP		LQI.xyzw VF29, (VI14++);
+	NOP		LQI.xyzw VF28, (VI14++);
+	NOP		LQI.xyzw VF27, (VI14++);
+	NOP		LQI.xyzw VF26, (VI14++);
+	NOP		LQI.xyzw VF25, (VI14++);
+	NOP		LQI.xyzw VF24, (VI14++);
+	NOP		LQI.xyzw VF23, (VI14++);
+	NOP		LQI.xyzw VF22, (VI14++);
+	NOP		LQI.xyzw VF21, (VI14++);
+	NOP		LQI.xyzw VF20, (VI14++);
+	NOP		LQI.xyzw VF19, (VI14++);
+	NOP		LQI.xyzw VF18, (VI14++);
+	NOP		LQI.xyzw VF17, (VI14++);
+        NOP             NOP
+        NOP             JR VI01
+        NOP             NOP
+
+
+; -------------------------------------------------------------------
+;   MulMatrix 
+;      VI01 : address of source matrix
+;      VI02 : address of source matrix
+;      VI03 : address of destination matrix
+;      VF01 - VF04 : local-screen matrix
+;      VF05 - VF08 : local-light matrix
+;      VF09 - VF12 : world-screen matrix -> light-color matrix
+;      VF13 - VF16 : local-clip matrix
+;      VF17 - VF20 : local-world matrix
+;      VF21 - VF24 : world-light matrix
+;      VF25 - VF28 : world-clip matrix
+
+MulMatrix2:
+	NOP                          	LQI.xyzw VF17, (VI02++);0local_world
+        NOP                            	LQI.xyzw VF09, (VI01++);8world_screen
+        NOP                            	LQI.xyzw VF10, (VI01++);9
+        NOP                            	LQI.xyzw VF11, (VI01++);10
+        NOP                            	LQI.xyzw VF12, (VI01++);11
+        MULAx.xyzw ACC, VF09, VF17x     LQI.xyzw VF18, (VI02++);1
+        MADDAy.xyzw ACC, VF10, VF17y    LQI.xyzw VF19, (VI02++);2
+        MADDAz.xyzw ACC, VF11, VF17z    LQI.xyzw VF20, (VI02++);3
+        MADDw.xyzw VF01, VF12, VF17w    LQI.xyzw VF21, (VI02++);4normal_light
+        MULAx.xyzw ACC, VF09, VF18x     LQI.xyzw VF22, (VI02++);5
+        MADDAy.xyzw ACC, VF10, VF18y    LQI.xyzw VF23, (VI02++);6
+        MADDAz.xyzw ACC, VF11, VF18z    LQI.xyzw VF24, (VI02++);7
+        MADDw.xyzw VF02, VF12, VF18w    LQI.xyzw VF25, (VI01++);12world_clip
+        MULAx.xyzw ACC, VF09, VF19x     LQI.xyzw VF26, (VI01++);13
+        MADDAy.xyzw ACC, VF10, VF19y    LQI.xyzw VF27, (VI01++);14
+        MADDAz.xyzw ACC, VF11, VF19z    LQI.xyzw VF28, (VI01++);15
+        MADDw.xyzw VF03, VF12, VF19w    NOP
+        MULAx.xyzw ACC, VF09, VF20x     NOP
+        MADDAy.xyzw ACC, VF10, VF20y    NOP
+        MADDAz.xyzw ACC, VF11, VF20z    NOP
+        MADDw.xyzw VF04, VF12, VF20w    NOP
+        MULAx.xyzw ACC, VF21, VF17x     LQI.xyzw VF09, (VI01++);16light_color
+        MADDAy.xyzw ACC, VF22, VF17y    LQI.xyzw VF10, (VI01++);17
+        MADDAz.xyzw ACC, VF23, VF17z    LQI.xyzw VF11, (VI01++);18
+        MADDw.xyzw VF05, VF24, VF17w    LQI.xyzw VF12, (VI01++);19
+        MULAx.xyzw ACC, VF21, VF18x     NOP
+        MADDAy.xyzw ACC, VF22, VF18y    NOP
+        MADDAz.xyzw ACC, VF23, VF18z    NOP
+        MADDw.xyzw VF06, VF24, VF18w    NOP
+        MULAx.xyzw ACC, VF21, VF19x     NOP
+        MADDAy.xyzw ACC, VF22, VF19y    NOP
+        MADDAz.xyzw ACC, VF23, VF19z    NOP
+        MADDw.xyzw VF07, VF24, VF19w    MOVE  VF08, VF24
+;May be, VF24 is (0,0,0,1)(4th column of Normal_Light matrix)
+;        MULAx.xyzw ACC, VF21, VF20x     NOP
+;        MADDAy.xyzw ACC, VF22, VF20y    NOP
+;        MADDAz.xyzw ACC, VF23, VF20z    NOP
+;        MADDw.xyzw VF08, VF24, VF20w    IADDIU VI01, VI00, 4
+        MULAx.xyzw ACC, VF25, VF17x     NOP
+        MADDAy.xyzw ACC, VF26, VF17y    NOP
+        MADDAz.xyzw ACC, VF27, VF17z    NOP
+        MADDw.xyzw VF13, VF28, VF17w    NOP
+        MULAx.xyzw ACC, VF25, VF18x     NOP
+        MADDAy.xyzw ACC, VF26, VF18y    NOP
+        MADDAz.xyzw ACC, VF27, VF18z    NOP
+        MADDw.xyzw VF14, VF28, VF18w    NOP
+        MULAx.xyzw ACC, VF25, VF19x     NOP
+        MADDAy.xyzw ACC, VF26, VF19y    NOP
+        MADDAz.xyzw ACC, VF27, VF19z    NOP
+        MADDw.xyzw VF15, VF28, VF19w    NOP
+        MULAx.xyzw ACC, VF25, VF20x     NOP
+        MADDAy.xyzw ACC, VF26, VF20y    NOP
+        MADDAz.xyzw ACC, VF27, VF20z    NOP
+        MADDw.xyzw VF16, VF28, VF20w    NOP
+	NOP				SQ  VF01, 0(VI00)
+	NOP				SQ  VF02, 1(VI00)
+	NOP				SQ  VF03, 2(VI00)
+	NOP				SQ  VF04, 3(VI00) ;save local_screen
+        NOP                            	NOP
+        NOP                            	JR VI15
+        NOP                            	NOP
+
+
+
+
+
+
+
+
+
+
+

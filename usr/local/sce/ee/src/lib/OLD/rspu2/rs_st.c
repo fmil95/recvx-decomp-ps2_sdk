@@ -1,4 +1,4 @@
-/* SCE CONFIDENTIAL
+/* SCEI CONFIDENTIAL
  "PlayStation 2" Programmer Tool Runtime Library  Release 1.6
  */
 /* 

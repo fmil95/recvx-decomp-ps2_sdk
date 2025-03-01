@@ -1,5 +1,5 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                      Emotion Engine Library
@@ -153,8 +153,8 @@ typedef struct {
 } sceGifTag __attribute__((aligned(16)));
 
 #define SCE_GIF_SET_TAG(nloop, eop, pre, prim, flg, nreg) \
-	((u_long)(nloop) | ((u_long)(eop)<<15) | ((u_long)(pre) << 46) | \
-	((u_long)(prim)<<47) | ((u_long)(flg)<<58) | ((u_long)(nreg)<<60))
+	((long)(nloop) | ((long)(eop)<<15) | ((long)(pre) << 46) | \
+	((long)(prim)<<47) | ((long)(flg)<<58) | ((long)(nreg)<<60))
 
 #define SCE_GIF_CLEAR_TAG(tp) \
 	(*(u_long128 *)(tp) = (u_long128)0)
@@ -163,61 +163,6 @@ typedef struct {
 #define SCE_GIF_REGLIST		1
 #define SCE_GIF_IMAGE		2
 #define SCE_GIF_PACKED_AD 	0x0e
-
-/** Gif Packed Mode register struct **/
-
-typedef struct _sceGifPackRgbaq {
-    u_int R;
-    u_int G;
-    u_int B;
-    u_int A;
-} sceGifPackRgbaq;
-
-typedef struct _sceGifPackAd {
-    u_long DATA;
-    u_long ADDR;
-} sceGifPackAd;
-
-typedef struct _sceGifPackSt {
-    float S;
-    float T;
-    float Q;
-    u_int pad96;
-} sceGifPackSt;
-
-typedef struct _sceGifPackUv {
-    int  U;
-    int  V;
-    long pad64;
-} sceGifPackUv;
-
-typedef struct _sceGifPackXyzf {
-    int   X;
-    int   Y;
-    u_int Z;
-    u_int F:12;
-    u_int pad108:3;
-    u_int ADC:1;
-    u_int pad112:16;
-} sceGifPackXyzf;
-
-typedef struct _sceGifPackXyz {
-    int   X;
-    int   Y;
-    u_int Z;
-    u_int pad96:15;
-    u_int ADC:1;
-    u_int pad112:16;
-} sceGifPackXyz;
-
-typedef struct _sceGifPackFog {
-    u_int pad[3];
-    u_int F;
-} sceGifPackFog;
-
-typedef struct _sceGifPackNop {
-    u_long pad[2];
-} sceGifPackNop;
 
 /* Bit patterns for GS general registers */
 
@@ -313,11 +258,6 @@ typedef struct {
 	unsigned long pad00;
 } sceGsFinish;
 
-typedef struct {
-	unsigned long pad00:56;
-	unsigned long F:8;
-} sceGsFog;
-  
 typedef struct {
 	unsigned long FCR:8;
 	unsigned long FCG:8;
@@ -915,29 +855,6 @@ typedef struct {
 #define GS_CLAMP_MAXV_O 	(34)
  
 
-// GS_FOG
-//
-// 63             56              48              40              32
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// |               |                                               |
-// |      F        |                                               |
-// |               |                                               |
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//	
-//  31            24              16               8               0
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-// |                                                               |
-// |                                                               |
-// |                                                               |
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-//
-// definition 
-//	
-#define GS_FOG_F_M              (0xff << 56)
-
-#define GS_FOG_F_O  	        ( 56 )
-
-
 // GS_FOGCOL
 //
 // 63             56              48              40              32
@@ -1086,7 +1003,7 @@ typedef struct {
 //
 // definition
 //	
-#define GS_FRAME_FBP_M  		(0x1ff     << 0)
+#define GS_FRAME_FBP_M  		(0xff      << 0)
 #define GS_FRAME_FBW_M  		(0x3f      <<16)
 #define GS_FRAME_PSM_M  		(0x3f      <<24)
 #define GS_FRAME_FBMSK_M  		(0xffffffffL<<32)
@@ -1412,7 +1329,7 @@ typedef struct {
 
 // PAL, INTERLACE
 #define SCE_GS_SET_DISPLAY_INTERLACE(dx, dy, magh, magv, dw, dh)\
-	((u_long)(0x290 + (dx))	| \
+	((u_long)(0x27c + (dx))	| \
 	((u_long)(72 + (dy)) << 12) | \
 	((u_long)(magh) << 23)	| ((u_long)(magv) << 27) | \
 	((u_long)(dw) << 32)	| ((u_long)(dh) << 44))
@@ -1421,7 +1338,7 @@ typedef struct {
 
 // NTSC, NOINTERLACE
 #define SCE_GS_SET_DISPLAY_NOINTERLACE(dx, dy, magh, magv, dw, dh)\
-	((u_long)(0x27c + (dx))	| \
+	((u_long)(0x290 + (dx))	| \
 	((u_long)(25 + (dy)) << 12) | \
 	((u_long)(magh) << 23)	| ((u_long)(magv) << 27) | \
 	((u_long)(dw) << 32)	| ((u_long)(dh) << 44))

@@ -2,7 +2,7 @@
 
 SHELL=/bin/sh
 
-TOP = ../../..
+TOP = /usr/local/sce/ee
 INCDIR = $(TOP)/include
 LIB_INST_DIR = $(TOP)/lib
 HDR_INST_DIR = $(TOP)/include
@@ -20,7 +20,7 @@ DVPASM = $(PREFIX)-dvp-as
 RM=/bin/rm -f
 INSTALL = install
 
-CFLAGS = -c -Wall -Wa,-al -fno-common -O2 -G0 
+CFLAGS = -c -Wall -Wa,-al -fno-common -O2 -G0
 ASFLAGS = -c -xassembler-with-cpp -Wall -Wa,-al
 DVPASMFLAGS = -g 
 

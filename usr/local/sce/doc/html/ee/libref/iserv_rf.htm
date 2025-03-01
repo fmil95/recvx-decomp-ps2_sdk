@@ -1,0 +1,798 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> 標準IOPサービス</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>標準IOPサービス</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceExecData>sceExecData </A><BR>
+</TD><TD> </TD>
+<TD>オブジェクトの実行データ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifLoadModule>sceSifLoadModule </A><BR>
+</TD><TD> </TD>
+<TD>IOP メモリへのモジュールのロード</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifLoadElf>sceSifLoadElf </A><BR>
+</TD><TD> </TD>
+<TD>EEメモリへのELFオブジェクトのロード</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifLoadElfPart>sceSifLoadElfPart </A><BR>
+</TD><TD> </TD>
+<TD>EEメモリへのELFオブジェクトの一部をロード</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifLoadFileReset>sceSifLoadFileReset </A><BR>
+</TD><TD> </TD>
+<TD>モジュールロードルサービスのバインド情報を無効に</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifInitIopHeap>sceSifInitIopHeap </A><BR>
+</TD><TD> </TD>
+<TD>IOP 側のヒープ領域を操作する準備をする</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifAllocIopHeap>sceSifAllocIopHeap </A><BR>
+</TD><TD> </TD>
+<TD>IOP 側のヒープ領域を確保する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifFreeIopHeap>sceSifFreeIopHeap </A><BR>
+</TD><TD> </TD>
+<TD>IOP 側のヒープ領域を解放する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifLoadIopHeap>sceSifLoadIopHeap </A><BR>
+</TD><TD> </TD>
+<TD>IOP 側のメモリに指定ファイルを読み込む</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>iopのリブートとモジュールの書き換え関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSifRebootIop>sceSifRebootIop </A><BR>
+</TD><TD> </TD>
+<TD>IOPシステムをリブートする</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSifSyncIop>sceSifSyncIop </A><BR>
+</TD><TD> </TD>
+<TD>IOPが再起動したかを確認する</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceExecData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceExecData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        オブジェクトの実行データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned int <I>epc</I>;
+	unsigned int <I>gp</I>;
+	unsigned int <I>sp</I>;
+	unsigned int <I>dummy</I>;
+} <B>sceEexcData</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>epc</I>	オブジェクトエントリーポイント
+<I>gp</I>	オブジェクトグローバルポイント
+<I>sp</I>	オブジェクトスタックポイント
+<I>dummy</I>	未使用
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceSifLoadElf() や sceSifLoadElfPart() をつかってロードしたオブジェクトの実行情報を格納する構造体です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./iserv_rf.htm#sceSifLoadElf">sceSifLoadElf</a>(), <a href="./iserv_rf.htm#sceSifLoadElfPart">sceSifLoadElfPart</a>()
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceSifLoadModule>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifLoadModule
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP メモリへのモジュールのロード
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifLoadModule</B> (
+	char *<I>module</I>,
+	int  <I>args</I>,
+	char *<I>argp</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module</I>	ロードすべきモジュールのファイル名(最大251文字)
+<I>args</I>	argp のサイズ
+<I>argp</I>	モジュールのロード時に渡される引数(最大251文字)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0 以上  ロード成功。モジュールの番号。 <BR>
+    &lt; 0	ロード失敗 <BR>
+    -SCE_EBINDMISS	IOP側のモジュールへのバインド失敗 <BR>
+    -SCE_EVERSIONMISS	IOP側のモジュールのバージョンが合わない <BR>
+    -SCE_ECALLMISS	IOP側への RPC が失敗 <BR>
+    上記以外       IOP側のLoadStartModule() の返り値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    module で指定したファイル名をロードすべき IOP モジュールの	ファイル名として IOP 側に送り、 LoadStartModule() を実行します。args/argp は LoadStartModule() の引数args/argp としてそのまま与えられます。 <BR>
+    argp は、NULL で区切られた複数の文字列が指定可能です。その複数の文字列の最初のものから順に、モジュールの初期化関数に	arg[1] .. arg[n] として与えられます。 <BR>
+    詳しくは、IOP の	LoadStartModule() を参照してください。 <BR>
+    あらかじめsceSifInitRpc(0) を呼び出しておく必要があります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifLoadElf>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifLoadElf
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EEメモリへのELFオブジェクトのロード
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifLoadElf</B> (
+	char *<I>objfile</I>,
+	sceExecData *<I>data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>objfile</I>	ロードすべきオブジェクトのファイル名(最大251文字)
+<I>data</I>    オブジェクトの実行情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0 	ロード成功 <BR>
+    &lt; 0	ロード失敗 <BR>
+    -SCE_EBINDMISS	IOP側のモジュールへのバインド失敗 <BR>
+    -SCE_EVERSIONMISS	IOP側のモジュールのバージョンが合わない <BR>
+    -SCE_ECALLMISS	IOP側への RPC が失敗 <BR>
+    -SCE_ELOADMISS	ロード失敗(ファイルがない、ELF形式ではないなど) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    objfile で指定したファイル名をELF形式のファイルとして EE のメモリ上に転送します。 <BR>
+    あらかじめsceSifInitRpc(0) を呼び出しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifLoadElfPart>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifLoadElfPart
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EEメモリへのELFオブジェクトの一部をロード
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifLoadElfPart</B> (
+	char *<I>objfile</I>,
+	char *<I>secname</I>,
+	sceExecData *<I>data</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>objfile</I>		ロードすべきオブジェクトのファイル名(最大251文字)
+<I>scename</I> 		ロードすべきセクション名(最大251文字)
+<I>data</I>		オブジェクトの実行情報
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0 	ロード成功 <BR>
+    &lt; 0     ロード失敗 <BR>
+    -SCE_EBINDMISS	IOP側のモジュールへのバインド失敗 <BR>
+    -SCE_EVERSIONMISS	IOP側のモジュールのバージョンが合わない <BR>
+    -SCE_ECALLMISS	IOP側への RPC が失敗 <BR>
+    -SCE_ELOADMISS	ロード失敗(ファイルがない、ELF形式ではないなど) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    objfile で指定したファイル名をELF形式のファイルとして EE のメモリ上に転送します。 <BR>
+    その際、secname で指定したセクション名(".text や".bss")のみロードします。 <BR>
+    あらかじめsceSifInitRpc(0) を呼び出しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifLoadFileReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifLoadFileReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        モジュールロードルサービスのバインド情報を無効に
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifLoadFileReset</B>( void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現在は、必ず０を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側をリセット後は、モジュールロードサービスの RPC BIND 情報が無効になるので必ずこの関数を呼んでください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifInitIopHeap>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifInitIopHeap
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP 側のヒープ領域を操作する準備をする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifInitIopHeap</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    0	成功 <BR>
+    &lt; 0	失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側のヒープ領域を操作するための初期化を行います。 <BR>
+    あらかじめsceSifInitRpc(0) を呼び出しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifAllocIopHeap>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifAllocIopHeap
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP 側のヒープ領域を確保する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceSifAllocIopHeap</B>(
+	int <I>size</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>size</I>	確保するサイズ(バイト単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NULL		失敗 <BR>
+    NULL以外	IOP での AllocSysMemory() の返り値 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側で AllocSysMemory(0,size,NULL) を行い、その取得アドレスを返します。 <BR>
+    あらかじめsceSifInitIopHeap() を呼び出しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifFreeIopHeap>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifFreeIopHeap
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP 側のヒープ領域を解放する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifFreeIopHeap</B>(
+	void *<I>addr</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>addr</I>	解放するアドレス(IOPのメモリアドレス)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    &lt; 0	失敗 <BR>
+    0	成功 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側で FreeSysMemory(addr) を行い、その返り値を返します。 <BR>
+    通常は sceSifAllocIopHeap() で取得したメモリヒープを解放するために使用しますが、AllocSysMemory() で確保したエリアならどれでも解放することができます。 <BR>
+    あらかじめsceSifInitIopHeap() を呼び出しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifLoadIopHeap>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifLoadIopHeap
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP 側のメモリに指定ファイルを読み込む
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifLoadIopHeap</B>(
+	char *<I>fname</I>,
+	void *<I>addr</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fname</I>		読み込むファイル名(IOP で open() できる名前。最大252文字)
+<I>addr</I>		IOPのメモリアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    &lt; 0	失敗 <BR>
+    0	成功 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側で指定ファイル名 fname で open() を行い、成功すればaddr のメモリアドレスへファイルの内容を読み込みます。 <BR>
+    あらかじめsceSifInitIopHeap() を呼び出しておく必要があります。 <BR>
+<BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>iopのリブートとモジュールの書き換え関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceSifRebootIop>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifRebootIop
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPシステムをリブートする
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifRebootIop</B>(
+	char *<I>imgfile</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>imgfile</I>	置き換えモジュールのイメージファイル名(最大70文字)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    失敗すれば０ <BR>
+    成功すれば０以外 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOPシステムサービスをリブートして、デフォルトモジュールを置き換える為の関数です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSifSyncIop>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSifSyncIop
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOPが再起動したかを確認する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSifSyncIop</B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOPシステムサービスのリブートが完了すれば１。それ以外は、０。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOPシステムサービスをリブート完了を確認する為の関数です。 <BR>
+<BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

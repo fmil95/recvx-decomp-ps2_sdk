@@ -1,0 +1,518 @@
+<HTML>
+<HEAD>
+<TITLE> SIFシステム</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="sif.htm" SELECTED> SIFシステム
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+SIFシステム<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 SIFシステムの構成<BR></A>
+<P><A HREF="#Heading3_2">  2 SIF DMA API<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 関連ファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 SIF Command API<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_3_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_3_3"> 利用手順<BR></A><BR>
+    <A HREF="#Heading4_3_4"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 SIF RPC API<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_4_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_4_3"> 利用手順<BR></A><BR>
+    <A HREF="#Heading4_4_4"> 標準サービス関数<BR></A><BR>
+    <A HREF="#Heading4_4_5"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_5">  5 RPC再入に関する注意<BR></A>
+    <UL>
+    <A HREF="#Heading4_5_1"> RPC再入のしくみ<BR></A><BR>
+    <A HREF="#Heading4_5_2"> RPC再入の防止<BR></A><BR>
+    <A HREF="#Heading4_5_3"> RPCを使用するライブラリ関数<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_6">  6 IOPモジュールの置き換え<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> デフォルトモジュールの置き換え<BR></A><BR>
+    <A HREF="#Heading4_6_2"> デフォルト以外のモジュールの置き換え<BR></A><BR>
+    <A HREF="#Heading4_6_3"> IOPモジュールのスレッドプライオリティ指定<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>SIFシステムの構成</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    SIF(SubBus I/F)を介してEE - IOP間の通信を行うSIFシステムは、次のような階層構造で構成されています。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sifn1.gif">
+<P>
+    <BR>
+</DIV>
+    SIF DMA / SIF CMD / SIF RPC(Remote Procedure Call)という3つのレベルで、EE側 / IOP側双方にそれぞれほぼ同一のAPIが用意されています。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>SIF DMA API</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    SIF DMA APIはSIFシステムのもっとも下位の階層となるAPIです。EEからIOPへ、逆にIOPからEEへ、それぞれ相手側メモリへのDMA転送を行う関数と、転送処理の状態を調べる関数、DMAチャネルの再設定を行う関数が用意されています。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sifn2.gif">
+<P>
+    <BR>
+</DIV>
+    EE側IOP側ともにSIF DMAの受け口は基本的に常時開いていますので、相手側メモリへのDMA転送は非同期に（相手側の状態を意識せずに）実行することができます。ただし、EEが受け手となる転送の際に、DMA終了割り込みが発生すると、EE側の受け口が閉じます。またIOPが受け手となる転送の際に、SIF_DMA_ERTを指定してDMA終了割り込みを発生させると、IOP側の受け口が閉じます。いずれの場合も、受け手側でDMAチャネルの再設定を行って受け口を開きなおす必要があります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    SIF DMA APIを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">sif.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">EE ライブラリ</TD>
+<TD valign="TOP">libkernl.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOP モジュール</TD>
+<TD valign="TOP">iop.ilb</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>SIF Command API</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    SIF CMD(Command) APIはSIF DMA APIの上位階層に位置し、EE / IOPそれぞれ相手側でローカルに定義し登録した関数（コマンド関数）を、コマンドパケットを送ることによって実行させる仕組みです。たとえば、IOP側でIOPアプリケーションの変数を変更するコマンド関数を登録しておけば、EE側からIOPアプリケーションの動作を制御することができます。また逆に、EE側にコマンド関数を登録しておいて、IOPアプリケーションからの指示に応じてアクションを起すこともできます。EE側 / IOP側ともに、ほぼ同一のAPIが実装されています。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sifn3.gif">
+<P>
+    <BR>
+</DIV>
+    SIF CMD APIは、SIF DMA APIと並行して使用することができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    SIF CMD APIを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">sifcmd.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">EEライブラリ</TD>
+<TD valign="TOP">Libkernl.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOPモジュール</TD>
+<TD valign="TOP">iop.ilb</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>利用手順</B>
+</A>
+</H3>
+<blockquote>
+    まず、初期設定としてEE / IOP双方でsceSifInitCmd()を呼び出します。このときの内部動作は次のとおりです。<BR>
+    <OL>
+         <LI VALUE= 1> 受信バッファ（8qword）を確保し、そのアドレスを交換する。<BR>
+         <LI VALUE= 2> SIF CMD用の割り込みハンドラを登録する。<BR>
+         <LI VALUE= 3> ソフトウエアレジスタを初期化する。<BR>
+    </OL>
+    次に、受け手となるプロセッサの側でsceSetCmdBuffer()を呼び出し、コマンド関数登録用のバッファ（テーブル）を登録します。さらに、sceSifAddCmdHandler()を呼び出し、コマンド関数を登録します。コマンド関数は、割り込み関数として実行されます。コマンド関数を複数登録する場合は、必要なだけsceSifAddCmdHandler()を繰り返します。<BR>
+    あとは必要に応じて、適切なコマンドパケットを用意しsceSifSendCmd()を呼び出すことによって、受け手プロセッサに送り実行させます。このときの内部動作は次のとおりです。<BR>
+    <OL>
+         <LI VALUE= 1> コマンドパケットを相手側の受信バッファへ転送し、転送終了割り込みを発生させる。<BR>
+         <LI VALUE= 2> 受け手側でSIF CMD用の割り込みハンドラが動き、受信バッファを検索する。<BR>
+         <LI VALUE= 3> 受信バッファにコマンドパケットがあれば、パケットを解析し、適切なコマンド関数を割り込み領域で実行する。<BR>受信バッファにデータが何もなければ、そのままリターンする。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    SIF CMD APIを使用するプログラム例として、/sce/ee/sample/sif/sifcmdおよび/sce/iop/sample/sif/sifcmdがあります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>SIF RPC API</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    SIF RPC(Remote Procedure Call) APIは、SIF CMD API上に作られた、単純なクライアントサーバモデルを構築する仕組みです。たとえば、IOP側で登録した関数をEEアプリケーションから呼び出し、結果をEEアプリケーションに返させるといったことができます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sifn4.gif">
+<P>
+    <BR>
+</DIV>
+    EE / IOP双方にほぼ同一のAPIが用意されているので、上図とは逆にEE側がサーバとなりIOP側がクライアントとなることも可能ですし、両方の役割を同時にこなすことも可能です。<BR>
+    また、SIF RPC APIは、SIF DMA API / SIF CMD APIと並行して使用可能です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_2">
+<A HREF="#Heading3_4"> 4. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    SIF RPC APIを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">sifrpc.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">EE ライブラリ</TD>
+<TD valign="TOP">libkernl.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOP モジュール</TD>
+<TD valign="TOP">iop.ilb</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_3">
+<A HREF="#Heading3_4"> 4. </A>3 <B>利用手順</B>
+</A>
+</H3>
+<blockquote>
+    SIF RPC APIを使用する際の手順をまとめると次のようになります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sifn5.gif">
+<P>
+    <BR>
+</DIV>
+    サーバ側のサービスループ内では、クライアント側からのリクエストがない場合、そのサービスループを呼び出したスレッドはリクエストが来るまではスリープ状態になっています。<BR>
+    クライアント側の関数sceSifBindRpc()およびsceSifCallRpc()では、この関数を呼び出したスレッドはサーバ側から応答があるまで、セマフォもしくはイベントフラグによる待ちの状態になっています（同期呼び出し、またはWAIT実行といいます）。また、待ちの状態にならないように呼び出して、sceSifCheckStatRpc()で処理終了を確認することも可能です（非同期呼び出し、またはNOWAIT実行といいます）。<BR>
+    なお、同期呼び出しの場合、サービス関数の処理終了はサーバ側からのDMA割り込みで通知されます。したがって、割り込み禁止状態または割り込みハンドラ内で同期呼び出しを行うとハングアップしますので注意してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_4">
+<A HREF="#Heading3_4"> 4. </A>4 <B>標準サービス関数</B>
+</A>
+</H3>
+<blockquote>
+    EE側をクライアントとするサービス関数として、入出力サービスと標準IOPサービスの2つが提供されています。詳細はそれぞれ別ドキュメント（libio / libiserv）にまとめてありますので参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_5">
+<A HREF="#Heading3_4"> 4. </A>5 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    SIF RPC APIを使用するプログラム例として、/sce/ee/sample/sif/sifrpcおよび/sce/ee/sample/sif/sifrpcがあります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>RPC再入に関する注意</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_1">
+<A HREF="#Heading3_5"> 5. </A>1 <B>RPC再入のしくみ</B>
+</A>
+</H3>
+<blockquote>
+    SIF RPC APIで呼び出すサービス関数は再入不可能です。関数自体が再入可能（リエントラント）にコーディングされていても、RPC経由での再入はできません。<BR>
+    クライアント側から見ると、あるサービス関数をsceSifCallRpc()で呼び出したらその処理が終了しないうちに重ねて呼び出すことはできない、ということになります。もし重ねて呼び出すと、多くの場合、適切なデータが得られずクライアント側でライブラリの内部関数 _sceRpcFreePacket()がハングアップするという症状が現れます。<BR>
+    このような再入が引き起こされるのは、複数のスレッドで同じサービス関数を利用している場合、さらに詳しく言うと次の2つのケースです。<BR>
+
+     <H4><B>WAIT実行で再入が起こるケース</B></H4>
+
+    <OL>
+         <LI VALUE= 1> あるスレッド(A)でsceSifCallRpc(&bd)をWAIT実行する<BR>
+         <LI VALUE= 2> sceSifCallRpc(&bd)内部でセマフォ待ちに入り、別のスレッド(B)に実行権が移る<BR>
+         <LI VALUE= 3> スレッド(B)でsceSifCallRpc(&bd)を実行する……(1)のsceSifCallRpc(&bd)が終了していなければ再入が起こる<BR>
+    </OL>
+
+     <H4><B>NOWAIT実行で再入が起こるケース</B></H4>
+
+    <OL>
+         <LI VALUE= 1> あるスレッド(A)でsceSifCallRpc(&bd)をNOWAIT実行する<BR>
+         <LI VALUE= 2> 何らかの割り込みが起こり、割り込みハンドラに制御が移る<BR>
+         <LI VALUE= 3> 割り込みハンドラ内部で、スレッド(A)より優先度の高いスレッド(B)が起床される<BR>
+         <LI VALUE= 4> 割り込みハンドラから復帰し、スレッド(B)に実行権が移る<BR>
+         <LI VALUE= 5> スレッド(B)でsceSifCallRpc(&bd)を実行する……(1)のsceSifCallRpc(&bd)が終了していなければ再入が起こる<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_2">
+<A HREF="#Heading3_5"> 5. </A>2 <B>RPC再入の防止</B>
+</A>
+</H3>
+<blockquote>
+    RPC再入が起こらないようにするには、次のような方法があります。<BR>
+<UL>
+         <LI> 同じClientDataを使用するsceSifCallRpc()はひとつのスレッドでまとめて実行する<BR>
+         <LI> 同じClientDataを使用するsceSifCallRpc()を複数のスレッドで実行する場合は、セマフォ等を用いて排他制御する（スレッドセーフな構造）<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_3">
+<A HREF="#Heading3_5"> 5. </A>3 <B>RPCを使用するライブラリ関数</B>
+</A>
+</H3>
+<blockquote>
+    SCEが提供しているライブラリ関数のうち以下に挙げるものは、内部でsceSifCallRpc()を使用しています。基本的に、同じライブラリに属する関数は同じClientDataを使用していますので、上記のような方法で、RPC再入が起こらないように注意して利用してください。<BR>
+<UL>
+         <LI> libpadの一部の関数<BR>
+         <LI> libmtapの各関数<BR>
+         <LI> libmcのほとんどの関数<BR>
+         <LI> libmcxのほどんどの関数<BR>
+         <LI> libcdvdのほとんどの関数<BR>
+         <LI> libsdrの一部の関数<BR>
+         <LI> 標準IOPサービスのほとんどの関数<BR>
+         <LI> 入出力サービスのほとんどの関数<BR>
+</UL>
+    詳細は各ライブラリのオーバービューを参照してください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>IOPモジュールの置き換え</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>デフォルトモジュールの置き換え</B>
+</A>
+</H3>
+<blockquote>
+    IOP側にはデフォルトでいくつかのモジュールがROMからロードされていますが、これを置き換えるためには、いったんIOPシステムをリブートしてOSを再起動する必要があります。その際に、リプレースモジュール（置き換える新しいモジュール）をイメージファイルとして指定します。イメージファイルはライブラリのバージョンに合わせて提供されます。<BR>
+    アプリケーションでは、ディスクから起動後すぐにIOPをリブートしてデフォルトモジュールを置き換えるようにしてください。プログラム例を以下に示します。<BR>
+    <BR>
+<PRE>        #include &lt;eekernel.h&gt;
+        #include &lt;eeregs.h&gt;
+        #include &lt;sifdev.h&gt;
+        #include &lt;stdio.h&gt;
+        #include &lt;libcdvd.h&gt;
+        
+        #define DISK_BOOT  /* ディスクから起動する場合（T10000での開発中は外す）*/
+        
+        int main()
+        {
+         sceSifInitRpc(0);
+         /* DiskReady待ち*/
+         sceCdInit(SCECdINIT);
+        #ifdef DISK_BOOT
+         /* IOPリブート・デフォルトモジュールの置き換え*/
+         while ( !sceSifRebootIop("cdrom0:\\IOP14.IMG;1") );
+         while( !sceSifSyncIop() );
+         /* 再初期化*/
+         sceSifInitRpc(0);
+         sceCdInit(SCECdINIT);
+         sceFsReset();
+        #endif
+         /* デフォルト以外のモジュールの起動*/
+         while (sceSifLoadModule("cdrom0:\\SIO2MAN.IRX;1",0,NULL) &lt; 0);
+         while (sceSifLoadModule("cdrom0:\\PADMAN.IRX;1",0,NULL) &lt; 0);
+           :
+           :
+        }
+</PRE>
+    <BR>
+    sceSifRebootIop()を発行してsceSifSyncIop()が0以外を返すまでの間、printf()を含めて、IOPを介するサービスは一切使用できません（GSやEEのコプロセッサの制御は可能です）。<BR>
+    また、SIFCMD / SIFRPCおよびDECIの設定もすべてリセットされますので、再設定を行ってください。sceOpen() / sceRead()についてはsceFsReset()、libcdvdについては、sceCdInit()を呼び出します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_2">
+<A HREF="#Heading3_6"> 6. </A>2 <B>デフォルト以外のモジュールの置き換え</B>
+</A>
+</H3>
+<blockquote>
+    デフォルト以外のモジュールを置き換えるには、上記のプログラム例にもありますが、IOPをリブートしてから再びsceSifLoadModule()を実行してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_3">
+<A HREF="#Heading3_6"> 6. </A>3 <B>IOPモジュールのスレッドプライオリティ指定</B>
+</A>
+</H3>
+<blockquote>
+    sceSifLoadModule()でIOP側モジュールを起動する際に、そのモジュールが実行されるスレッドのプライオリティを指定することができます。次に示すように、第3引数で指定してください。<BR>
+    padの場合：<BR>
+<PRE>        char* mes = "thpri=32,34"; &lt;- 変更したい値を設定する
+        sceSifLoadModule( "host0:/usr/local/sce/iop/modules/padman.irx", strlen(mes)+1, mes );
+</PRE>
+    <BR>
+    また、IOP側モジュールを持つ各ライブラリ（libpadを除く）には、動作中のモジュールのスレッドプライオリティを変更する関数（sce<I>XXX</I>ChangeThreadPriority()）が用意されています。
+    詳しくは各ライブラリのドキュメントを参照してください。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

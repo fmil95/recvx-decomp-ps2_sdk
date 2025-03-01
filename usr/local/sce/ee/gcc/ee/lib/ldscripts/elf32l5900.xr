@@ -17,8 +17,6 @@ SECTIONS
   .gnu.version 0 : { *(.gnu.version)	}
   .gnu.version_d 0 : { *(.gnu.version_d)	}
   .gnu.version_r 0 : { *(.gnu.version_r)	}
-  .rel.init    0 : { *(.rel.init)	}
-  .rela.init   0 : { *(.rela.init)	}
   .rel.text    0 :
     {
       *(.rel.text)
@@ -26,16 +24,6 @@ SECTIONS
   .rela.text   0 :
     {
       *(.rela.text)
-    }
-  .rel.fini    0 : { *(.rel.fini)	}
-  .rela.fini   0 : { *(.rela.fini)	}
-  .rel.rodata  0 :
-    {
-      *(.rel.rodata)
-    }
-  .rela.rodata 0 :
-    {
-      *(.rela.rodata)
     }
   .rel.data    0 :
     {
@@ -45,58 +33,29 @@ SECTIONS
     {
       *(.rela.data)
     }
+  .rel.rodata  0 :
+    {
+      *(.rel.rodata)
+    }
+  .rela.rodata 0 :
+    {
+      *(.rela.rodata)
+    }
+  .rel.got     0 : { *(.rel.got)		}
+  .rela.got    0 : { *(.rela.got)		}
   .rel.ctors   0 : { *(.rel.ctors)	}
   .rela.ctors  0 : { *(.rela.ctors)	}
   .rel.dtors   0 : { *(.rel.dtors)	}
   .rela.dtors  0 : { *(.rela.dtors)	}
-  .rel.got     0 : { *(.rel.got)		}
-  .rela.got    0 : { *(.rela.got)		}
-  .rel.sdata   0 :
-    {
-      *(.rel.sdata)
-    }
-  .rela.sdata   0 :
-    {
-      *(.rela.sdata)
-    }
-  .rel.sbss    0 :
-    { 
-      *(.rel.sbss)
-    }
-  .rela.sbss   0 :
-    {
-      *(.rela.sbss)
-    }
-  .rel.sdata2  0 : 
-    { 
-      *(.rel.sdata2)
-    }
-  .rela.sdata2 0 : 
-    {
-      *(.rela.sdata2)
-    }
-  .rel.sbss2   0 : 
-    { 
-      *(.rel.sbss2)	
-    }
-  .rela.sbss2  0 : 
-    { 
-      *(.rela.sbss2)	
-    }
-  .rel.bss     0 : 
-    { 
-      *(.rel.bss)
-    }
-  .rela.bss    0 : 
-    { 
-      *(.rela.bss)
-    }
+  .rel.init    0 : { *(.rel.init)	}
+  .rela.init   0 : { *(.rela.init)	}
+  .rel.fini    0 : { *(.rel.fini)	}
+  .rela.fini   0 : { *(.rela.fini)	}
+  .rel.bss     0 : { *(.rel.bss)		}
+  .rela.bss    0 : { *(.rela.bss)		}
   .rel.plt     0 : { *(.rel.plt)		}
   .rela.plt    0 : { *(.rela.plt)		}
-  .init        0 : 
-  { 
-    KEEP (*(.init))
-  } =0
+  .init        0 : { KEEP (*(.init))	} =0
   .plt    0 : { *(.plt)	}
   .text    0 :
   {
@@ -105,14 +64,14 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
   } =0
-  .fini    0 :
+  .fini    0 : { KEEP (*(.fini))		} =0
+  .rodata  0 :
   {
-    KEEP (*(.fini))
-  } =0
-  .rodata 0 : { *(.rodata)   }
+    *(.rodata)
+  }
   .rodata1 0 : { *(.rodata1) }
-  .sdata2 0 : { *(.sdata2)   }
-  .sbss2 0 : { *(.sbss2)   }
+  .eh_frame : { *(.eh_frame) }
+  .gcc_except_table : { *(.gcc_except_table) }
   /* Adjust the address for the data segment.  We want to adjust up to
      the same address within the page on the next page up.  */
   .data  0 :
@@ -120,23 +79,13 @@ SECTIONS
     *(.data)
   }
   .data1 0 : { *(.data1) }
-  .eh_frame : { KEEP (*(.eh_frame)) }
-  .gcc_except_table : { *(.gcc_except_table) }
-  .got		0 : { *(.got.plt) *(.got) }
+  .got         0 : { *(.got.plt) *(.got) }
   .dynamic     0 : { *(.dynamic) }
   /* We want the small data sections together, so single-instruction offsets
      can access them all, and initialized data all before uninitialized, so
      we can shorten the on-disk segment size.  */
-  .sdata   0 : 
-  {
-    *(.sdata) 
-  }
-  .sbss    0 :
-  {
-    *(.dynsbss)
-    *(.sbss)
-    *(.scommon)
-  }
+  .sdata   0 : { *(.sdata) *(.sdata.*) }
+  .sbss    0 : { *(.sbss) *(.scommon) }
   .bss     0 :
   {
    *(.dynbss)
@@ -167,7 +116,7 @@ SECTIONS
   .debug_aranges  0 : { *(.debug_aranges) }
   .debug_pubnames 0 : { *(.debug_pubnames) }
   /* DWARF 2 */
-  .debug_info     0 : { *(.debug_info) *(.gnu.linkonce.wi.*) }
+  .debug_info     0 : { *(.debug_info) }
   .debug_abbrev   0 : { *(.debug_abbrev) }
   .debug_line     0 : { *(.debug_line) }
   .debug_frame    0 : { *(.debug_frame) }

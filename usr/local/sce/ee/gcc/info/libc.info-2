@@ -429,14 +429,12 @@ instead of the globals `stdin', `stdout', and `stderr'.  The argument
 * getc::        Get a character from a file or stream (macro)
 * getchar::     Get a character from standard input (macro)
 * gets::        Get character string from standard input (obsolete)
-* getw::        Get a word (int) from a file or stream
 * iprintf::     Write formatted output (integer only)
 * mktemp::      Generate unused file name
 * perror::      Print an error message on standard error
 * putc::        Write a character on a stream or file (macro)
 * putchar::     Write a character on standard output (macro)
 * puts::        Write a character string on standard output
-* putw::        Write a word (int) to a file or stream
 * remove::      Delete a file's name
 * rename::      Rename a file
 * rewind::      Reinitialize a file or stream
@@ -1119,7 +1117,7 @@ ANSI C requires `getchar'; it suggests, but does not require, that
 `lseek', `read', `sbrk', `write'.
 
 
-File: libc.info,  Node: gets,  Next: getw,  Prev: getchar,  Up: Stdio
+File: libc.info,  Node: gets,  Next: iprintf,  Prev: getchar,  Up: Stdio
 
 `gets'--get character string (obsolete, use `fgets' instead)
 ============================================================
@@ -1154,32 +1152,7 @@ buffer, NULL is returned.
 `lseek', `read', `sbrk', `write'.
 
 
-File: libc.info,  Node: getw,  Next: iprintf,  Prev: gets,  Up: Stdio
-
-`getw'--read a word (int)
-=========================
-
-*Synopsis*
-     #include <stdio.h>
-     int getw(FILE *FP);
-   *Description*
-`getw' is a function, defined in `stdio.h'.  You can use `getw' to get
-the next word from the file or stream identified by FP.  As a side
-effect, `getw' advances the file's current position indicator.
-
-   RETURNS The next word (read as an `int'), unless there is no more
-data, or the host system reports a read error; in either of these
-situations, `getw' returns `EOF'.  Since `EOF' is a valid `int', you
-must use `ferror' or `feof' to distinguish these situations.
-
-*Portability*
-`getw' is a remnant of K&R C, it is not part of any ISO C Standard.
-`fread' should be used instead.  In fact, this implementation of `getw'
-is based upon `fread'.
-
-   Supporting OS subroutines required: `fread'.
-
-File: libc.info,  Node: iprintf,  Next: mktemp,  Prev: getw,  Up: Stdio
+File: libc.info,  Node: iprintf,  Next: mktemp,  Prev: gets,  Up: Stdio
 
 `iprintf'--write formatted output (integer only)
 ================================================
@@ -1351,7 +1324,7 @@ ANSI C requires `putchar'; it suggests, but does not require, that
 `lseek', `read', `sbrk', `write'.
 
 
-File: libc.info,  Node: puts,  Next: putw,  Prev: putchar,  Up: Stdio
+File: libc.info,  Node: puts,  Next: remove,  Prev: putchar,  Up: Stdio
 
 `puts'--write a character string
 ================================
@@ -1379,29 +1352,7 @@ must be `0'; any non-negative value is permitted.
    Supporting OS subroutines required: `close', `fstat', `isatty',
 `lseek', `read', `sbrk', `write'.
 
-File: libc.info,  Node: putw,  Next: remove,  Prev: puts,  Up: Stdio
-
-`putw'--write a word (int)
-==========================
-
-*Synopsis*
-     #include <stdio.h>
-     int putw(int W, FILE *FP);
-   *Description*
-`putw' is a function, defined in `stdio.h'.  You can use `putw' to
-write a word to the file or stream identified by FP.  As a side effect,
-`putw' advances the file's current position indicator.
-
-   RETURNS Zero on success, `EOF' on failure.
-
-*Portability*
-`putw' is a remnant of K&R C, it is not part of any ISO C Standard.
-`fwrite' should be used instead.  In fact, this implementation of
-`putw' is based upon `fwrite'.
-
-   Supporting OS subroutines required: `fwrite'.
-
-File: libc.info,  Node: remove,  Next: rename,  Prev: putw,  Up: Stdio
+File: libc.info,  Node: remove,  Next: rename,  Prev: puts,  Up: Stdio
 
 `remove'--delete a file's name
 ==============================
@@ -1528,6 +1479,65 @@ Both ANSI C and the System V Interface Definition (Issue 2) require
 pointer: the SVID issue 2 specification says that a `NULL' buffer
 pointer requests unbuffered output.  For maximum portability, avoid
 `NULL' buffer pointers.
+
+   Supporting OS subroutines required: `close', `fstat', `isatty',
+`lseek', `read', `sbrk', `write'.
+
+
+File: libc.info,  Node: setvbuf,  Next: siprintf,  Prev: setbuf,  Up: Stdio
+
+`setvbuf'--specify file or stream buffering
+===========================================
+
+*Synopsis*
+     #include <stdio.h>
+     int setvbuf(FILE *FP, char *BUF,
+         int MODE, size_t SIZE);
+   *Description*
+Use `setvbuf' to specify what kind of buffering you want for the file
+or stream identified by FP, by using one of the following values (from
+`stdio.h') as the MODE argument:
+
+`_IONBF'
+     Do not use a buffer: send output directly to the host system for
+     the file or stream identified by FP.
+
+`_IOFBF'
+     Use full output buffering: output will be passed on to the host
+     system only when the buffer is full, or when an input operation
+     intervenes.
+
+`_IOLBF'
+     Use line buffering: pass on output to the host system at every
+     newline, as well as when the buffer is full, or when an input
+     operation intervenes.
+
+   Use the SIZE argument to specify how large a buffer you wish.  You
+can supply the buffer itself, if you wish, by passing a pointer to a
+suitable area of memory as BUF.  Otherwise, you may pass `NULL' as the
+BUF argument, and `setvbuf' will allocate the buffer.
+
+*Warnings*
+You may only use `setvbuf' before performing any file operation other
+than opening the file.
+
+   If you supply a non-null BUF, you must ensure that the associated
+storage continues to be available until you close the stream identified
+by FP.
+
+*Returns*
+A `0' result indicates success, `EOF' failure (invalid MODE or SIZE can
+cause failure).
+
+*Portability*
+Both ANSI C and the System V Interface Definition (Issue 2) require
+`setvbuf'. However, they differ on the meaning of a `NULL' buffer
+pointer: the SVID issue 2 specification says that a `NULL' buffer
+pointer requests unbuffered output.  For maximum portability, avoid
+`NULL' buffer pointers.
+
+   Both specifications describe the result on failure only as a nonzero
+value.
 
    Supporting OS subroutines required: `close', `fstat', `isatty',
 `lseek', `read', `sbrk', `write'.

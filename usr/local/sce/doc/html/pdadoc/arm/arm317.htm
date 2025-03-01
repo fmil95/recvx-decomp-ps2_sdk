@@ -1,0 +1,451 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm317</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo109.htm">[前]</A> <A HREF="admo201.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H4>3.17 <A NAME="anchor1553572"></A>ワードまたは符号なしバイト・ロード/ストア・アドレッシングモード</H4>
+
+<BLOCKQUOTE>
+  <P>ワードまたは符号なしバイト・ロード/ストア命令のアドレス計算に使用するアドレッシング・モードが9つあります。各アドレッシング・モードの詳細について、以降説明します。</P>
+  <BLOCKQUOTE>
+    <P><A HREF="admo201.htm"><B>イミディエイト・オフセット</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}     Rd, [Rn, #+/-&lt;12_bit_offset&gt;]</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo202.htm"><B>レジスタ・オフセット</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}     Rd, [Rn, +/-Rm]</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo203.htm"><B>スケール付きレジスタ・オフセット</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}     Rd, [Rn, +/-Rm, &lt;shift&gt; #&lt;shift_imm&gt;]</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo204.htm"><B>イミディエイト・プレインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}     Rd, [Rn, #+/-&lt;12_bit_offset&gt;]!</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo205.htm"><B>レジスタ・プレインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}     Rd, [Rn, +/-Rm]!</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo206.htm"><B>スケール付きレジスタ・プレインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <P>LDR|STR{&lt;cond&gt;}{B} Rd, [Rn, +/-Rm, &lt;shift&gt; #&lt;shift_imm&gt;]!</P>
+    </BLOCKQUOTE>
+    <P><A HREF="admo207.htm"><B>イミディエイト・ポストインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}{T}   Rd, [Rn], #+/-&lt;12_bit_offset&gt;</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo208.htm"><B>レジスタ・ポストインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}{T}    Rd, [Rn], +/-Rm</PRE>
+    </BLOCKQUOTE>
+    <P><A HREF="admo209.htm"><B>スケール付きレジスタ・ポストインデックス</B></A></P>
+    <BLOCKQUOTE>
+      <PRE>LDR|STR{&lt;cond&gt;}{B}{T}    Rd, [Rn], +/-Rm, &lt;shift&gt; #&lt;shift_imm&gt;
+ </PRE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>イミディエイト・オフセット/インデックス<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1020790"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020792"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020794"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020796"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020798"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020800"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020802"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020804"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020806"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020808"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020810"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020812"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020814"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020816"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020818"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020820"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020822"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020824"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020826"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020828"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020830"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020832"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020834"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020836"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020838"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020840"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020842"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020844"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020846"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020848"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020850"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020852"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1020854"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020862"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020864"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020866"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020868"></A><BR>
+    P</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020870"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020872"></A><BR>
+    B</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020874"></A><BR>
+    W</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020876"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1020878"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1020886"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="12">
+    <P><CENTER><A NAME="1020894"></A><BR>
+    12_bit_offset</CENTER></TD>
+  </TR>
+</TABLE></H4>
+
+<H4>レジスタ・オフセット/インデックス<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1020918"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020920"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020922"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020924"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020926"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020928"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020930"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020932"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020934"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020936"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020938"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020940"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020942"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020944"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020946"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020948"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020950"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020952"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020954"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020956"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020958"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020960"></A><B>10</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020962"></A><B>9</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020964"></A><B>8</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020966"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020968"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020970"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020972"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020974"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020976"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020978"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1020980"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1020982"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020990"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020992"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020994"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020996"></A><BR>
+    P</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1020998"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021000"></A><BR>
+    B</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021002"></A><BR>
+    W</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021004"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021006"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021014"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021022"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021024"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021026"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021028"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021030"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021032"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021034"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021036"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021038"></A><BR>
+    Rm</CENTER></TD>
+  </TR>
+</TABLE></H4>
+
+<H4>スケール付きレジスタ・オフセット/インデックス<BR>
+<TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1021068"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021070"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021072"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021074"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021076"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021078"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021080"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021082"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021084"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021086"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021088"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021090"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021092"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021094"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021096"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021098"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021100"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021102"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021104"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021106"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021108"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021110"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021112"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021114"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021116"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021118"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021120"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021122"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021124"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021126"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021128"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1021130"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021132"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021140"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021142"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021144"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021146"></A><BR>
+    P</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021148"></A><BR>
+    U</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021150"></A><BR>
+    B</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021152"></A><BR>
+    W</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021154"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021156"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021164"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="5">
+    <P><CENTER><A NAME="1021172"></A><BR>
+    shift_imm</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="2">
+    <P><CENTER><A NAME="1021182"></A><BR>
+    shift</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1021186"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1021188"></A><BR>
+    Rm</CENTER></TD>
+  </TR>
+</TABLE></H4>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Pビット：</B>プレ/ポスト・インデックス操作：</P>
+  <BLOCKQUOTE>
+    <P>プレインデックス操作(P==1)は、ベース・レジスタにオフセットを適用し、結果をアドレスとして使用することを示します。</P>
+    <P>ポストインデックス操作(P==0)は、ベース・レジスタ値をアドレスに使用し、次にベース・レジスタにオフセットを適用して、ベース・レジスタに書き戻すことを示します。</P>
+  </BLOCKQUOTE>
+  <P><B>Uビット：</B>オフセットをベースに加算する（U==1）か、またはベースから減算する（U==0）ことを示します。</P>
+  <P><B>Bビット：</B>符号なしバイト・アクセス（B==1）とワード・アクセス（B==0）を区別します。</P>
+  <P><B>Wビット：</B>このビットには以下の2つの意味があります。</P>
+  <P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="28%">
+      <B>P==1の場合</B></TD> 
+      <TD WIDTH="72%">
+      W==1の場合、計算されたアドレスがベース・レジスタに書き戻されます（W==0の場合、ベース・レジスタは更新されません。）</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="28%">
+      <B>P==0の場合</B></TD> 
+      <TD WIDTH="72%">
+      W==1の場合、現在のアクセスは、（保護およびメモリ・システムによって）ユーザ・モード・アクセスとして扱われます(W==0の場合、通常のアクセスが実行されます）。</TD> 
+    </TR>
+  </TABLE></P>
+  <P><B>Lビット：</B>ロード(L==1)とストア(L==0)を区別します。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo109.htm">[前]</A> <A HREF="admo201.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

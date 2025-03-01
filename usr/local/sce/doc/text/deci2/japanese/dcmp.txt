@@ -1,0 +1,233 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+DCMP Specification
+===================
+
+
+ 1 概要
+--------
+
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである 
+    DCMP について説明します。
+    DECI2 プロトコルにはエラー検出等の機能はなく、完全に reliable ではあ
+    りません。DCMP は、DECI2の信頼性を補強するために、エラー発生時の通知
+    手段を提供するものです。 DCMP プロトコルのプロトコル番号は、DCMP = 
+    0x1 です。
+    
+    DECI2 Manager/dsnetm は DECI2 パケットの処理においてエラーを発見した
+    とき、DCMP メッセージによってアプリケーションやプロトコルドライバに通
+    知します。
+    通常、アプリケーションやプロトコルドライバが DCMP メッセージを送信す
+    る必要はありません。上位プロトコルのロックがかけられているときでも 
+    DCMP メッセージの通知は行われます。一方、エラーのリポートを無限に繰り
+    返すような事を避けるために、DCMP メッセージに関するエラーは通知されま
+    せん。
+    
+    エラー通知のほか、各 node のステータス変化をアプリケーションやプロト
+    コルドライバに通知したり、dsnetm と DECI2 Manager 間で通信路を確立す
+    るときなどにも DCMP メッセージが使用されます。
+    
+
+  1.1 メッセージフォーマット
+
+    DCMP メッセージは、DECI2 ヘッダに以下の DCMP ヘッダが続き、さらにデー
+    タが続くという形式を持ちます。DCMP ヘッダのフォーマットは次のとおりで
+    す。
+        図 1 DCMP ヘッダ
+
+    
+    メッセージの Type には以下のようなものがあります。
+    
+      DCMP_TYPE_CONNECT	0
+      DCMP_TYPE_ECHO	1
+      DCMP_TYPE_STATUS	2
+      DCMP_TYPE_ERROR	3
+    
+    DCMP_TYPE_CONNECT は、dsnetm と DECI2 Manager の間で通信路を確立する
+    際に使用されます。アプリケーションやプロトコルドライバでこのメッセー
+    ジを送受信することはありません。
+    
+    DCMP_TYPE_ECHO は、通信路が保持されているかどうかをテストするためのメ
+    ッセージです。通常、アプリケーションやプロトコルドライバでこのメッセ
+    ージを送受信する必要はありません。
+    
+    DCMP_TYPE_STATUS は、ある node 上でステータスの変化が生じたときに 
+    DECI2 Manager/dsnetm からすべてのアプリケーションやプロトコルドライバ
+    に送信されるメッセージです。
+    
+    DCMP_TYPE_ERROR は、エラーが発生した場合に DECI2 Manager/dsnetm から、
+    エラーを発生させたアプリケーションやプロトコルドライバに送信されるメ
+    ッセージです。
+    
+
+ 2 メッセージ
+--------------
+
+    以下、DCMP メッセージの詳細を Type ごとに説明します。
+
+  2.1 DCMP_TYPE_CONNECT
+
+    dsnetm から DECI2 Manager への接続・切断メッセージ
+        図 2 DCMP_TYPE_CONNECT メッセージ
+
+
+    Code
+
+      DCMP_CODE_CONNECT		0	// connect request
+      DCMP_CODE_CONNECTR	1	// connect reply
+      DCMP_CODE_DISCONNECT	2	// disconnect request
+      DCMP_CODE_DISCONNECTR	3	// disconnect reply
+
+    Result
+
+      リプライメッセージにおいて成功なら 0、エラーの場合は以下の値を返し
+      ます。
+      
+      DCMP_ERR_INVALDEST		1	// destination invalid
+      DCMP_ERR_ALREADYCONN	2	// already connected
+      DCMP_ERR_NOTCONNECT	3	// not connected
+
+    EE Boot parameter / IOP Boot parameter
+
+      前半 2 word は EE 用、後半 2 word は IOP 用の初期化パラメータです。
+      現在仕様が確定していませんので、内容は省略します。
+      
+    DCMP_CODE_CONNECT と DCMP_CODE_DISCONNECT メッセージは、dsnetm から
+    DECI2 Manager に対して送られる接続要求、切断要求メッセージです。
+    dsnetm は、起動時やリセット時にこのメッセージを送信します。
+    
+    DCMP_CODE_CONNECT メッセージを受けとった DECI2 Manager は、
+    DCMP_CODE_CONNECTR メッセージを dsnetm に返します。
+    DCMP_CODE_DISCONNECT メッセージに関しても同様の処理を行います。
+    DECI2 Manager は、DCMP_CODE_DISCONNECT メッセージが送られてくるまでは、
+    dsnetm との通信路は保持されていると判断します。
+
+  2.2 DCMP_TYPE_ECHO
+
+    通信路のテスト用メッセージ
+        図 3 DCMP_TYPE_ECHO メッセージ
+
+
+    Code
+
+      DCMP_CODE_ECHO	0	// echo
+      DCMP_CODE_ECHOR	1	// echo reply
+
+    Identifier / Sequence Number
+
+      DCMP_CODE_ECHO メッセージと DCMP_CODE_ECHOR メッセージとの対応を確
+      認するための手助けとなるデータです。
+
+    Data
+
+      32bytes までの任意のデータです。
+      
+    DCMP_CODE_ECHO メッセージは、通信路が保持されているかどうかのテストを
+    行うためのものです。このメッセージを受けとった DECI2 Manager は、
+    DECI2 ヘッダの source と destination を置きかえ、Code を 
+    DCMP_CODE_ECHOR に変えて送り返します。
+    
+    
+
+  2.3 DCMP_TYPE_STATUS
+
+    ステータス通知メッセージ
+        図 4 DCMP_TYPE_STATUS メッセージ
+
+
+    Code
+
+      DCMP_CODE_CONNECTED	0	// !NOCONNECT
+      DCMP_CODE_PROTO		1	// !NOPROTO
+      DCMP_CODE_UNLOCKED	2	// !LOCKED
+      DCMP_CODE_SPACE		3	// !NOSPACE
+      DCMP_CODE_ROUTE		4	// !NOROUTE
+
+    Protocol/Node ID
+
+      DCMP_CODE_PROTO の場合にはプロトコル番号、DCMP_CODE_CONNECT 及び
+      DCMP_CODE_ROUTE の場合には Node ID を表します。それ以外の場合は 0 
+      となります。
+    
+    DCMP_TYPE_STATUS タイプのメッセージは、DECI2 環境のステータスを各アプ
+    リケーションやプロトコルドライバに通知するためのものです。
+    エラーによって停止していたアプリケーションやプロトコルドライバは、こ
+    のメッセージによってリトライのタイミングを得ることができます。
+    
+    DCMP_CODE_CONNECTED は、dsnetm と DECI2 Manager の間で通信路が確立さ
+    れたことを通知するメッセージです。dsnetm から全てのアプリケーションに
+     DECI2 Manager から全てのプロトコルドライバに直接送信されます。
+    
+    DCMP_CODE_PROTO は、アプリケーションやプロトコルドライバが新しく登録
+    されたときに他の node に対して送信されるメッセージです。受けとった 
+    node 上の DECI2 Manager/dsnetm は、同じプロトコルを使用するアプリケー
+    ションやプロトコルドライバがあれば、それに対して送信されます。
+    
+    特別な条件として、SCE が実装するターゲットの起動時に必ず登録されるプ
+    ロトコルドライバについては、それらに対する DCMP_CODE_PROTO は発行しな
+    いようになっています。
+    
+    DCMP_CODE_UNLOCKED はロック状態が解除されたことを通知するメッセージ、
+    DCMP_CODE_SPACE は DECI2 Manager/dsnetm の NOSPACE 状態が解消されたこ
+    とを通知するメッセージです。それぞれ、他の node とその node に登録さ
+    れているアプリケーションやプロトコルドライバに対してブロードキャスト
+    されます。
+    
+    DCMP_CODE_ROUTE は、dsnetm と DECI2 Manager 間のみで送受信される特別
+    なメッセージです。このメッセージがアプリケーションやプロトコルドライ
+    バに送信されることはありません。このメッセージは、dsnetm が通信路の確
+    立を行う際に使用されます。
+
+  2.4 DCMP_TYPE_ERROR
+
+    エラー通知メッセージ
+        図 5 DCMP_TYPE_ERROR メッセージ
+
+
+    Code
+
+      DCMP_CODE_NOROUTE		0	// no route to node
+      DCMP_CODE_NOPROTO		1	// protocol unreachable
+      DCMP_CODE_LOCKED		2	// locked
+      DCMP_CODE_NOSPACE		3	// deci2 manager/dsnetm buffer full
+      DCMP_CODE_INVALHEAD	4	// invalid header
+      DCMP_CODE_NOCONNECT	5	// not connected
+    
+    DCMP_TYPE_ERROR タイプのメッセージは、DECI2 パケットの処理においてエ
+    ラーが発生したことを DECI2 Manager/dsnetm からそのパケットを発行した
+    アプリケーションやプロトコルドライバに通知するものです。つまり、DECI2
+     ヘッダの Destination フィールドには、エラーを発生させたパケットの 
+    Source フィールドの値が入ります。プロトコルドライバには、すぐにエラー
+    とわかるような場合は関数の戻り値として通知しますが、それ以外はこのメ
+    ッセージで通知します。dsnetm とアプリケーション間では、すべてのエラー
+    はこのメッセージで通知されます。
+    
+    DECI2 Manager/dsnetm は、エラーを発生させたパケットの DECI2ヘッダの 
+    Source フィールド及び Protocol フィールドから、どのアプリケーションや
+    プロトコルドライバにエラーを通知すればよいかを判断します。
+    
+    DCMP_CODE_NOROUTE は、dsnetm と DECI2 Manager 間のみで送受信される特
+    別なメッセージです。このメッセージがアプリケーションやプロトコルドラ
+    イバに送信されることはありません。
+    
+    DCMP_CODE_NOPROTO は、送信先の node に指定したプロトコル番号を持つプ
+    ロトコルドライバが登録されていないことを通知するメッセージです。
+    
+    DCMP_CODE_LOCKED は、送信先の node が他のプロトコルを使用するアプリケ
+    ーションやプロトコルドライバによってロックされていることを通知するメ
+    ッセージです。
+    
+    DCMP_CODE_NOSPACE は、送信先の node や中継を行う node が DECI2 パケッ
+    トを送信するために必要なメモリを確保できなかったことを通知するメッセ
+    ージです。
+    
+    DCMP_CODE_INVALHEAD は、DECI2 ヘッダの情報に誤りがあることを通知する
+    メッセージです。このメッセージは、dsnetm からアプリケーションに対して
+    のみ送信されます。それ以外の状況では、ヘッダ情報が信用できず通知先を
+    特定できないので通知しません。
+    
+    DCMP_CODE_NOCONNECT は、送信先の node との通信路が確立されていないこ
+    とを通知するメッセージです。

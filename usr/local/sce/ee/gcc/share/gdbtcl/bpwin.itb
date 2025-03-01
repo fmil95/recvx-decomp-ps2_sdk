@@ -1,22 +1,15 @@
-# Breakpoint window for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
+# BpWin - Implements breakpoint window for gdb
+# ----------------------------------------------------------------------
+#   AUTHOR:  Martin M. Hunt <hunt@cygnus.com>
+#   Copyright (C) 1997, 1998 Cygnus Solutions
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
 
 # ------------------------------------------------------------------
 #  CONSTRUCTOR:  create the main breakpoint window
 # ------------------------------------------------------------------
 body BpWin::constructor {args} {
-  window_name "Breakpoints" "BPs"
+  window_name "Breakpoints"
   
   add_hook gdb_breakpoint_change_hook "$this update"
   if {[pref getd gdb/bp/menu] != ""} {
@@ -119,25 +112,15 @@ body BpWin::build_win {} {
       -underline 0 -state disabled
     $m add separator
     $m add command -label "Remove" -underline 0 -state disabled
-    $itk_interior.m add cascade -menu $itk_interior.m.all -label "Global" \
-      -underline 0
+    $itk_interior.m add cascade -menu $itk_interior.m.all -label "Global" -underline 0
     set m [menu $itk_interior.m.all]
-    $m add check -label " Show Threads" \
-      -variable [pref varname gdb/bp/show_threads] \
+    $m add check -label " Show Threads" -variable [pref varname gdb/bp/show_threads] \
       -underline 1 -command "$this toggle_threads"
     $m add separator
-    $m add command -label "Disable All" -underline 0 \
-      -command "$this bp_all disable"
-    $m add command -label "Enable All" -underline 0 \
-      -command "$this bp_all enable"
+    $m add command -label "Disable All" -underline 0 -command "$this bp_all disable"
+    $m add command -label "Enable All" -underline 0 -command "$this bp_all enable"
     $m add separator
-    $m add command -label "Remove All" -underline 0 \
-      -command "$this bp_all delete"
-    $m add separator
-    $m add command -label "Store Breakpoints..." -underline 0 \
-      -command [code $this bp_store]
-    $m add command -label "Restore Breakpoints..." -underline 3 \
-      -command [code $this bp_restore]
+    $m add command -label "Remove All" -underline 0 -command "$this bp_all delete"
   }
 
   set Menu [menu $itk_interior.pop -tearoff 0]
@@ -281,65 +264,6 @@ body BpWin::bp_add { bpnum {tracepoint 0}} {
   incr i
   set next_row $i
   grid rowconfigure $twin $i -weight 1
-}
-
-# ------------------------------------------------------------------
-#  METHOD:  bp_store - stores away the breakpoints in a file of gdb
-#                      commands
-# ------------------------------------------------------------------
-body BpWin::bp_store {} {
-  set out_file [tk_getSaveFile]
-  if {$out_file == ""} {
-    return
-  }
-  if {[catch {::open $out_file w} outH]} {
-    tk_messageBox -message "Could not open $out_file: $outH"
-    return
-  }
-  foreach breakpoint [gdb_get_breakpoint_list] {
-    # This is an lassign
-    foreach {file function line_no address type \
-	       enable_p disp ignore cmds thread hit_count} \
-      [gdb_get_breakpoint_info $breakpoint] {
-	break
-      }
-
-    if {$file != ""} {
-      set filename [file tail $file]
-      set bp_specifier $filename:$line_no
-    } else {
-      set bp_specifier *$address
-    }
-
-    if {[string compare $disp "delete"] == 0} {
-      puts $outH "tbreak $bp_specifier"
-    } else {
-      puts $outH "break $bp_specifier"
-    }
-      
-    if {!$enable_p} {
-      puts $outH "disable \$bpnum"
-    }
-    if {$ignore > 0} {
-      puts $outH "ignore \$bpnum $ignore"
-    }
-  }
-  close $outH
-}
-
-# ------------------------------------------------------------------
-#  METHOD:  bp_restore - restore the breakpoints from a file of gdb
-#                      commands
-# ------------------------------------------------------------------
-body BpWin::bp_restore {} {
-  set inH [tk_getOpenFile]
-  if {$inH == ""} {
-    return
-  }
-  bp_all delete
-  if {[catch {gdb_cmd "source $inH"} err]} {
-    tk_messageBox -message "Error sourcing in BP file $inH: \"$err\""
-  }
 }
 
 # ------------------------------------------------------------------

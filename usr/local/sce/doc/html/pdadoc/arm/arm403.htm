@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm403</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm402.htm">[前]</A> <A HREF="arm404.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.3 <A NAME="anchor2967687"></A>ロードおよびストア命令</H3>
+
+<BLOCKQUOTE>
+  <P>ロードおよびストア命令は、1ワードをロードまたはストアするのに最良の方法です。また、これらの命令は、バイトやハーフワードをロードまたはストアできる唯一の命令です。</P>
+</BLOCKQUOTE>
+
+<P></P>
+
+<H4>4.3.1 <A NAME="anchor3003344"></A>単純文字列比較</H4>
+
+<BLOCKQUOTE>
+  <P>以下のコードは、ゼロで終わる2つの文字列で非常に簡単な<A NAME="anchor303126"></A>文字列比較を実行します。</P>
+  <PRE>; String compare
+; On entry          : R0 points to the first string
+;                   : R1 points to the second string
+;                   : Call this code with a BL
+; On exit           : R0 is &lt; 0 if the first string is less than the second
+;                   : R0 is = 0 if the first string is equal to the second
+;                   : R0 is &gt; 0 if the first string is greater than the second
+;                   : R1, R2 and R3 are destroyed
+strcmp
+    LDRB    R2, [R0], #1   ;Get a byte from the first string
+    LDRB    R3, [R1], #1   ;Get a byte from the second string
+    CMP     R2, #0         ;Have we reached the end of either
+    CMPNE   R3, #0         ; string?
+    BEQ     return         ;Go to return code if so
+    CMP     R2, R3         ;Are the strings the same so far?
+    BEQ     strcmp         ;Repeat for next character if so
+return
+    SUB     R0, R2, R3     ;Calculate result value and return
+    MOV     PC, LR         ; by copying R14 (LR) into the PC</PRE>
+  <P>各文字列のワードを一度にロードし、4バイト全部を比較することによって、このコードをより高速にインプリメントすることができます。</P>
+</BLOCKQUOTE>
+
+<H4>4.3.2 <A NAME="anchor1393492"></A>リンクされたリスト</H4>
+
+<BLOCKQUOTE>
+  <P>以下のコードは、リンクされたリストで要素を検索します。リンクされたリストの各レコードには、単一バイト値と次のレコードを指すポインタの2つの要素があります。ポインタがヌルを指す場合は、それがリスト内の最後の要素であることを示します。</P>
+  <PRE>; Linked list search
+; On entry       : R0 holds a pointer to the first record in the list
+;                  : R1 holds the byte we are searching for
+;                  : Call this code with a BL
+; On exit         : R0 holds the address of the first record matched
+;                  : or a null pointer if no match was found
+;                  : R2 is destroyed
+llsearch
+        CMP        R0, #0        ; null pointer?
+        LDRNEB     R2, [R0]     ; load the byte value from this record
+        CMPNE      R1, R2        ; compare with the looked-for value
+        LDRNE      R0, [R0, #4] ; if not found, follow the link to the
+        BNE        llsearch       ; next record and then keep looking
+        MOV        PC, LR         ; return with pointer in R0</PRE>
+</BLOCKQUOTE>
+
+<H4>4.3.3 <A NAME="anchor2850930"></A>ロング分岐</H4>
+
+<BLOCKQUOTE>
+  <P>ロード命令を使用して、4Gバイトのアドレス空間のどこにでも分岐を行うことができます。リンク・レジスタ(R14)の値を手動で設定することによって、アドレス空間内のどこにでもサブルーチン・コールを行えます。</P>
+  <PRE>; Long branch (and link)
+        ADD     LR, PC, #4      ; set the return address to be 8 bytes
+                                   ; after the next instruction
+        LDR     PC, [PC, #-4]   ; get the address from the next word
+        DCD     function         ; store the address of the function
+                                    ; (DCD is an assembler directive)
+return_here                       ; return to here</PRE>
+  <P>このコードは、ロードの後のロケーションに、呼び出す関数のアドレスを保持します。実際には、このロケーションはロード命令の4Kバイト以内にあればアクセス可能です。また、このコードは呼び出す関数のアドレスを除いて位置独立であることに注意してください。完全な位置独立は、ロードの後の分岐先のオフセットをストアし、それを加算命令でPCに加算することによって達成できます。</P>
+</BLOCKQUOTE>
+
+<H4>4.3.4 <A NAME="anchor1807368"></A>多岐分岐</H4>
+
+<BLOCKQUOTE>
+  <P>以下のコードは、呼び出す関数のアドレス・テーブルを使用することによって、前述の多岐分岐コードを高度化したものです。</P>
+  <PRE>addresses of functions to call. 
+; Multi-way branch
+; On entry: R0 holds the branch index
+        CMP         R0, #maxindex          ; checks the index is in the range
+                                           ; by using an unsigned compare.
+        LDRLO       PC, [PC, R0, LSL #2]   ; convert the index to a word offset
+                                           ; do a look up in the table put the loaded
+                                           ; value into the PC and jump there
+        B          IndexOutOfRange         ; jump to the error handler
+        DCD        Handler0                ; DCD is an assembler directive to
+        DCD        Handler1                ; store a word (in this case an
+        DCD        Handler2                ; address in memory).
+        DCD        Handler3
+        ....</PRE>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm402.htm">[前]</A> <A HREF="arm404.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

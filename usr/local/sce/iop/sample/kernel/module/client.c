@@ -1,11 +1,10 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
- *		I/O Processor Library Sample Program
- *
- *			-- Module --
- *
+ *                      Emotion Engine Library
+ *                          Version 0.1.0
+ * 
  *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  * 
@@ -13,7 +12,7 @@
  * 
  *       Version        Date            Design      Log
  *  --------------------------------------------------------------------
- *       2.3.0          May,19,2001     isii
+ *       0.1.0
  */
 
 #include <stdio.h>
@@ -22,17 +21,15 @@
 /* メモリに常駐しなくとも, 以下のようにモジュール名と
  * モジュールバージョンを付けることは可能です。
  */
-#define MYNAME "client"
-ModuleInfo Module = { MYNAME, 0x0101 };
+ModuleInfo Module = {"myprogram", 0x0101 };
 
-extern void libentry1(char *name);
-extern void libentry2(char *name);
+extern void libentry1(int i);
+extern void libentry2(int i);
 
-int start(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    printf("'%s' Start\n", MYNAME);
-    libentry1(MYNAME);
-    libentry2(MYNAME);
-    printf("'%s' end\n", MYNAME);
-    return NO_RESIDENT_END;
+    printf("Resident library call sample\n");
+    libentry1(argc);
+    libentry2(argc*2);
+    return 0;
 }

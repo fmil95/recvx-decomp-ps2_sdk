@@ -1,0 +1,678 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Run Under Debugger</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Run Under Debugger</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-12.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-14.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-460569"></A>Run Under Debugger</H2>
+<P CLASS="Body">
+<A NAME="pgfId-460739"></A>The GNU debugger, <A NAME="marker-460758"></A>GDB can debug programs by using the built-in simulator (this does not require access to any hardware).</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-461092"></A>Debug with the built-in simulator</H3>
+<P CLASS="Body">
+<A NAME="pgfId-514092"></A>Run this executable under GDB using the built-in simulator, as follows: </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513939"></A><STRONG CLASS="CodeOutput">
+%</STRONG>
+ ee-gdb -nw sky_main.exe</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513941"></A><STRONG CLASS="CodeOutput">
+GNU gdb 4.17-sky-980617</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513943"></A><STRONG CLASS="CodeOutput">
+Copyright 1998 Free Software Foundation, Inc.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513945"></A><STRONG CLASS="CodeOutput">
+GDB is free software, covered by the GNU General Public License,</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513947"></A><STRONG CLASS="CodeOutput">
+and you are welcome to change it and/or distribute copies of </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513949"></A><STRONG CLASS="CodeOutput">
+it under certain conditions.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513951"></A><STRONG CLASS="CodeOutput">
+Type &quot;show copying&quot; to see the conditions. This version of GDB is</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513953"></A><STRONG CLASS="CodeOutput">
+supported for customers of Cygnus Solutions. Type &quot;show warranty&quot;</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513955"></A><STRONG CLASS="CodeOutput">
+for details.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513957"></A><STRONG CLASS="CodeOutput">
+This GDB was configured as &quot;--host=sparc-sun-solaris2.5-gnulibc1</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513959"></A><STRONG CLASS="CodeOutput">
+--target=ee&quot;...</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513961"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ target sim</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513963"></A><STRONG CLASS="CodeOutput">
+Connected to the simulator.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513965"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ load</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513967"></A><STRONG CLASS="CodeOutput">
+Loading section .text, size 0x21dc vma 0x10000</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513969"></A><STRONG CLASS="CodeOutput">
+Loading section .rodata, size 0x100 vma 0x121e0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513971"></A><STRONG CLASS="CodeOutput">
+Loading section .vutext, size 0x20c30 vma 0x122e0</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513973"></A><STRONG CLASS="CodeOutput">
+Loading section .data, size 0x728 vma 0x32f10</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513975"></A><STRONG CLASS="CodeOutput">
+Loading section .dmadata, size 0x10 vma 0x33640</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513977"></A><STRONG CLASS="CodeOutput">
+Loading section .sdata, size 0x38 vma 0x33650</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513979"></A><STRONG CLASS="CodeOutput">
+Start address 0x10004</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513981"></A><STRONG CLASS="CodeOutput">
+Transfer rate: 1160160 bits in &lt;1 sec.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513983"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ break main</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513985"></A><STRONG CLASS="CodeOutput">
+Breakpoint 1 at 0x10344: file sky_main.c, line 106.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513987"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ run</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513989"></A><STRONG CLASS="CodeOutput">
+Starting program: sky_main.exe</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513991"></A><STRONG CLASS="CodeOutput">
+CPU context is now master</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513993"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513995"></A><STRONG CLASS="CodeOutput">
+Breakpoint 1, main () at sky_main.c:106</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513997"></A><STRONG CLASS="CodeOutput">
+106  enable_cop2();</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-513999"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ step 3</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514001"></A><STRONG CLASS="CodeOutput">
+main () at sky_main.c:109</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514003"></A><STRONG CLASS="CodeOutput">
+109  start_DMA_ch1_source_chain(&amp;My_dma_start);</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514005"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ list</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514007"></A><STRONG CLASS="CodeOutput">
+104  int main() </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514009"></A><STRONG CLASS="CodeOutput">
+105  {</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514011"></A><STRONG CLASS="CodeOutput">
+106  enable_cop2();</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514013"></A><STRONG CLASS="CodeOutput">
+107  </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514015"></A><STRONG CLASS="CodeOutput">
+108  /* Send the data through the simulator.         */</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514017"></A><STRONG CLASS="CodeOutput">
+109  start_DMA_ch1_source_chain(&amp;My_dma_start);</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514019"></A><STRONG CLASS="CodeOutput">
+110  wait_until_idle();</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514021"></A><STRONG CLASS="CodeOutput">
+111  </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514023"></A><STRONG CLASS="CodeOutput">
+112  /* Send a screen refresh though the simulator.  */</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514025"></A><STRONG CLASS="CodeOutput">
+113   start_DMA_ch1_source_chain(&amp;screen_refresh);</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514027"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ break 110</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514029"></A><STRONG CLASS="CodeOutput">
+Breakpoint 2 at 0x1035c: file sky_main.c, line 110.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514031"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ continue</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514033"></A><STRONG CLASS="CodeOutput">
+Continuing.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514035"></A><STRONG CLASS="CodeOutput">
+</STRONG>
+&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514037"></A><STRONG CLASS="CodeOutput">
+Breakpoint 2, main () at sky_main.c:110</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514039"></A><STRONG CLASS="CodeOutput">
+110  wait_until_idle();</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514041"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ set cpu vif1</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514043"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ info registers</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514045"></A><STRONG CLASS="CodeOutput">
+vif1_pc: 0x3364c    vif1_pcx: 0x7</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514047"></A><STRONG CLASS="CodeOutput">
+     vif1_stat      vif1_fbrst        vif1_err       vif1_mark </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514049"></A><STRONG CLASS="CodeOutput">
+      01000000        00000000        00000000        00000000</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514051"></A><STRONG CLASS="CodeOutput">
+    vif1_cycle       vif1_mode        vif1_num       vif1_mask</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514053"></A><STRONG CLASS="CodeOutput">
+      00000404        00000000        00000000        00000000</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514055"></A><STRONG CLASS="CodeOutput">
+     vif1_code      vif1_itops       vif1_base       vif1_ofst </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514057"></A><STRONG CLASS="CodeOutput">
+      20000000        00000000        00000000        00000000 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514059"></A><STRONG CLASS="CodeOutput">
+     vif1_tops       vif1_itop        vif1_top        vif1_dbf </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514061"></A><STRONG CLASS="CodeOutput">
+      00000000        00000000        00000000        00000000 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514063"></A><STRONG CLASS="CodeOutput">
+       vif1_r0         vif1_r1         vif1_r2         vif1_r3 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514065"></A><STRONG CLASS="CodeOutput">
+      00000000        00000000        00000000        00000000 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514067"></A><STRONG CLASS="CodeOutput">
+       vif1_c0         vif1_c1         vif1_c2         vif1_c3 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514069"></A><STRONG CLASS="CodeOutput">
+      00000000        00000000        00000000        00000000 </STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514071"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ next</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514073"></A><STRONG CLASS="CodeOutput">
+CPU context is now master</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514075"></A>&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514077"></A><STRONG CLASS="CodeOutput">
+Breakpoint 2, main () at sky_main.c:110</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514079"></A><STRONG CLASS="CodeOutput">
+110  wait_until_idle();</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514081"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ backtrace</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514083"></A><STRONG CLASS="CodeOutput">
+#0  main () at sky_main.c:110</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514085"></A><STRONG CLASS="CodeOutput">
+(gdb)</STRONG>
+ continue</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514087"></A><STRONG CLASS="CodeOutput">
+Continuing.</STRONG>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514089"></A><STRONG CLASS="CodeOutput">
+</STRONG>
+&nbsp;</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen">
+<A NAME="pgfId-514091"></A><STRONG CLASS="CodeOutput">
+Program exited normally.</STRONG>
+</P>
+</TD>
+</TR>
+</TABLE>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Run Under Debugger</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-12.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-14.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

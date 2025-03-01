@@ -1,0 +1,244 @@
+<HTML>
+<HEAD>
+<TITLE> 入出力サービス</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libio.htm" SELECTED> 入出力サービス
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+入出力サービス<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> ファイルの指定<BR></A><BR>
+    <A HREF="#Heading4_1_4"> RPC再入に関する注意<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    CD(DVD)-ROM上のファイルおよび開発用コンピュータ上のファイルに対する入出力サービスは、EE Kernelの拡張部分としてSIF RPCを使用して実装されています。open/close, read/write, seek, ioctlという一般的なAPIに加えて、簡易printf関数と、SIF RPCのバインド情報をリセットする関数が用意されています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    入出力サービスAPIを使用するには次に示すヘッダファイルが必要です。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">sifdev.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>ファイルの指定</B>
+</A>
+</H3>
+<blockquote>
+    ファイルは、オープン時のファイル名によって指定されます。<BR>
+    ファイル名は次のフォーマットの文字列で、長さは1024byte以下に制限されています。<BR>
+    <BR>
+    デバイス名:パス名<BR>
+    <BR>
+    デバイス名は、ファイルの存在するデバイスを示します。現在、有効なデバイス名は次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">host0</TD>
+<TD valign="TOP">開発用コンピュータのディスク。<BR>dsedb/dsefilesvを介して処理を行う</TD>
+</TR>
+<TR>
+<TD valign="TOP">host</TD>
+<TD valign="TOP">（同上）</TD>
+</TR>
+<TR>
+<TD valign="TOP">host1</TD>
+<TD valign="TOP">開発用コンピュータのディスク。<BR>dsidb/dsifilesvを介して処理を行う</TD>
+</TR>
+<TR>
+<TD valign="TOP">cdrom0</TD>
+<TD valign="TOP">CD/DVD-ROM</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    パス名は、そのデバイス上のファイルの位置を示す文字列です。デバイスに応じて、パス名には次の規則があります。<BR>
+    <BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイス</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>パス名の規則</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">host0/host1</TD>
+<TD valign="TOP">Linuxのファイル名規則に準じた文字列</TD>
+</TR>
+<TR>
+<TD valign="TOP">cdrom0</TD>
+<TD valign="TOP">ISO-9660の規則に準じた文字列</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    ファイル名の例を以下に示します。<BR>
+    <BR>
+<PRE>        host0:/usr/local/sce/iop/modules/fileio.irx
+        (ホストマシン上の/usr/local/sce/iop/modules/fileio.irx)
+</PRE>
+    <BR>
+<PRE>        cdrom0:\\SYSTEM.CNF;1
+        (CD/DVD-ROM上の最上位ディレクトリのSYSTEM.CNF)
+</PRE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>RPC再入に関する注意</B>
+</A>
+</H3>
+<blockquote>
+    入出力サービス関数はSIF RPCを使用しているため、複数のスレッドで利用する場合はRPC再入を起さないように注意が必要です。RPC再入については「SIFシステム」ドキュメントに解説がありますので参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_1">
+(1) <B>RPC WAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()をWAIT実行します。RPC再入に注意するほか、割り込み禁止状態や割り込みハンドラ内で呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceClose()<BR>
+         <LI> sceLseek()<BR>
+         <LI> sceOpen()<BR>
+         <LI> sceRead()<BR>
+         <LI> sceWrite()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_2">
+(2) <B>RPC NOWAIT関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数は、sceOpen()でNOWAITを指定してあるファイルに対して、sceSifBindRpc() / sceSifCallRpc()をNOWAIT実行します。RPC再入に注意するほか、割り込みハンドラ内では呼び出さないようにしてください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceClose()<BR>
+         <LI> sceLseek()<BR>
+         <LI> sceRead()<BR>
+         <LI> sceWrite()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_3">
+(3) <B>RPCチェック関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifCheckStatRpc()を呼び出します。RPC再入に注意して使用してください。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceIoctl()<BR>
+</UL>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_4_4">
+(4) <B>非RPC関数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      以下の関数はsceSifBindRpc() / sceSifCallRpc()を使用しません。RPC再入を考慮することなく使用できます（関数自体が再入可能という意味ではありません）。<BR>
+      </BLOCKQUOTE>
+<UL>
+         <LI> sceFsReset()<BR>
+</UL>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

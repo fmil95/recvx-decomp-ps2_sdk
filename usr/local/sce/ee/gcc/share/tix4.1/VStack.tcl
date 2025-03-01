@@ -213,14 +213,8 @@ proc tixVStack:raise {w child} {
     }
 
     if {[info exists data($child,createcmd)] && $data($child,createcmd) !=""} {
-        # nasty hack to stop multiple attempts to create
-        # pages.
-
-        set tmp_cmd $data($child,createcmd)
- 	set data($child,createcmd) ""
-       
-        # create the page.
-	uplevel #0 $tmp_cmd
+	uplevel #0 $data($child,createcmd)
+	set data($child,createcmd) ""
     }
 
     tixCallMethod $w RaiseChildFrame $child

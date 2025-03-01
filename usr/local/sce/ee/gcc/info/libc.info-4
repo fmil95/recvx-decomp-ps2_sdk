@@ -48,64 +48,7 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: libc.info,  Node: strtok,  Next: strupr,  Prev: strstr,  Up: Strings
-
-`strtok'--get next token from a string
-======================================
-
-*Synopsis*
-     #include <string.h>
-     char *strtok(char *SOURCE, const char *DELIMITERS)
-     char *strtok_r(char *SOURCE, const char *DELIMITERS,
-         char **LASTS)
-   *Description*
-The `strtok' function is used to isolate sequential tokens in a
-null-terminated string, `*SOURCE'. These tokens are delimited in the
-string by at least one of the characters in `*DELIMITERS'.  The first
-time that `strtok' is called, `*SOURCE' should be specified; subsequent
-calls, wishing to obtain further tokens from the same string, should
-pass a null pointer instead.  The separator string, `*DELIMITERS', must
-be supplied each time, and may change between calls.
-
-   The `strtok' function returns a pointer to the beginning of each
-subsequent token in the string, after replacing the separator character
-itself with a NUL character.  When no more tokens remain, a null
-pointer is returned.
-
-   The `strtok_r' function has the same behavior as `strtok', except a
-pointer to placeholder `*[lasts'> must be supplied by the caller.
-
-*Returns*
-`strtok' returns a pointer to the next token, or `NULL' if no more
-tokens can be found.
-
-*Portability*
-`strtok' is ANSI C.
-
-   `strtok' requires no supporting OS subroutines.
-
-
-File: libc.info,  Node: strupr,  Next: strxfrm,  Prev: strtok,  Up: Strings
-
-`strupr'--force string to uppercase
-===================================
-
-*Synopsis*
-     #include <string.h>
-     char *strupr(char *A);
-   *Description*
-`strupr' converts each characters in the string at A to upper case.
-
-*Returns*
-`strupr' returns its argument, A.
-
-*Portability*
-`strupr' is not widely portable.
-
-   `strupr' requires no supporting OS subroutines.
-
-
-File: libc.info,  Node: strxfrm,  Next: swab,  Prev: strupr,  Up: Strings
+File: libc.info,  Node: strxfrm,  Prev: strupr,  Up: Strings
 
 `strxfrm'--transform string
 ===========================
@@ -138,23 +81,6 @@ indeterminate.
 `strxfrm' is ANSI C.
 
    `strxfrm' requires no supporting OS subroutines.
-
-
-File: libc.info,  Node: swab,  Prev: strxfrm,  Up: Strings
-
-`swab'--swap adjacent bytes
-===========================
-
-*Synopsis*
-     #include <unistd.h>
-     void swab(const void *IN, void *OUT, ssize_t N);
-   *Description*
-This function copies N bytes from the memory region pointed to by IN to
-the memory region pointed to by OUT, exchanging adjacent even and odd
-bytes.
-
-*Portability*
-`swab' requires no supporting OS subroutines.
 
 
 File: libc.info,  Node: Signals,  Next: Timefns,  Prev: Strings,  Up: Top

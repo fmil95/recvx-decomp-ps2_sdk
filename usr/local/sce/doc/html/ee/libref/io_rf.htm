@@ -1,0 +1,729 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> 入出力サービス</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>入出力サービス</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>ファイル操作関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceClose>sceClose </A><BR>
+</TD><TD> </TD>
+<TD>ファイルのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceFsReset>sceFsReset </A><BR>
+</TD><TD> </TD>
+<TD>ファイルサービスのバインド情報を無効に</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceIoctl>sceIoctl </A><BR>
+</TD><TD> </TD>
+<TD>ファイルへの特殊操作</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceLseek>sceLseek </A><BR>
+</TD><TD> </TD>
+<TD>ファイルポインタの移動</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceOpen>sceOpen </A><BR>
+</TD><TD> </TD>
+<TD>ファイルのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#scePrintf>scePrintf </A><BR>
+</TD><TD> </TD>
+<TD>簡易printf</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceRead>sceRead </A><BR>
+</TD><TD> </TD>
+<TD>ファイルからの読み出し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceWrite>sceWrite </A><BR>
+</TD><TD> </TD>
+<TD>ファイルへの書き込み</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>ファイル操作関数</H2></U>
+</DIV>
+<A name=sceClose>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceClose
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceClose</B>(
+	int <I>fd</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	すでにオープンしてあるファイルディスクリプタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功すれば、ゼロを返します。 <BR>
+    エラーがあったときは-1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイルのオペレーションを終了します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、SCE_NOWAITでsceOpen()したディスクリプタ以外は、実行中の間セマフォで待ちの状態になります。 <BR>
+    SCE_NOWAITでsceOpen()したディスクリプタの場合は、返り値はコマンドが成功したかどうかしかわかりません。 <BR>
+    この関数を、割り込み禁止領域で呼ぶことは出来ません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceFsReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceFsReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルサービスのバインド情報を無効に
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceFsReset</B>(	void )
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現在は、必ず０を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP側をリセット後は、ファイルサービスのRPC BIND情報が無効になるので必ずこの関数を呼んでください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceIoctl>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceIoctl
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルへの特殊操作
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceIoctl</B>(
+	int <I>fd</I>,
+	int <I>request</I>,
+	void *<I>arg</I>	
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>		操作対象のファイルディスクリプタ
+<I>request</I>		操作コマンド。デバイスに依存します。
+<I>arg</I>		コマンドに与える引数。requestに依存します。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功すれば0を返します。 <BR>
+    エラーがあったときは-1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイル(デバイス)に対してsceRead / sceWriteではできないさまざまな操作を行います。操作内容は、それぞれのデバイスに依存します。 <BR>
+    現在、EE側で実装されいるのは下記のコマンドリクエストだけです。 <BR>
+    現在の実装では、argのアドレスから1024バイトをIOPに渡して、それをそのまま、iop側のioctl()に渡して実行されます。 <BR>
+<BR>
+    SCE_FS_EXECUTING <BR>
+    <B>引数</B> <BR>
+    <blockquote>
+    	int *is_end <BR>
+    </blockquote>
+    <B>使用例</B> <BR>
+    <blockquote>
+    	int is_end; <BR>
+    </blockquote>
+    <blockquote>
+    	sceIoctl( fd, SCE_FS_EXECUTING, &is_end); <BR>
+    </blockquote>
+    <blockquote>
+    	if (is_end) printf ("Now Executing...\n"); <BR>
+    </blockquote>
+    <blockquote>
+    	else  printf("Execute is end.\n"); <BR>
+    </blockquote>
+    <B>解説</B> <BR>
+    <blockquote>
+    	SCE_NOWAITでオープンしたファイルに対する操作の終了を調べます。引数の値が <BR>
+    </blockquote>
+    <blockquote>
+    	1であれば実行中、0であれば終了と判別します。 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceLseek>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceLseek
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルポインタの移動
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceLseek</B>(
+	int <I>fd</I>,
+	int <I>offset</I>,
+	int <I>where</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	ポインタを移動するファイルのファイルディスクリプタ
+<I>offset</I>	ポインタの移動距離（バイト単位）
+<I>where</I>	offsetの基準位置。以下のいずれかの定数で指定する。
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>定数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SEEK_SET</TD>
+<TD valign="TOP">ファイルの開始位置</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SEEK_CUR</TD>
+<TD valign="TOP">ファイルポインタの現在位置</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SEEK_END</TD>
+<TD valign="TOP">ファイルの最後</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    新たに設定されたファイルポインタの値。 <BR>
+    エラーがあったときは-1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    読み書きの対象となるデータの位置(ファイルポインタ)を変更します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、SCE_NOWAITでsceOpen()したディスクリプタ以外は、実行中の間セマフォで待ちの状態になります。 <BR>
+    SCE_NOWAITでsceOpen()したディスクリプタの場合は、返り値はコマンドが成功したかどうかしかわかりません。この関数を、割り込み禁止領域で呼ぶことは出来ません。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceOpen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceOpen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceOpen</B>(
+	char *<I>filename</I>,
+	int <I>mode</I>	
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>filename</I>		デバイス名へのポインタ
+<I>mode</I>		アクセスモード。次のいずれかの定数で指定する。
+		複数指定する場合は論理和をとる。
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>定数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_RDONLY</TD>
+<TD valign="TOP">読み出し用にオープンする</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_WRONLY</TD>
+<TD valign="TOP">書き込み用にオープンする</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_RDWR</TD>
+<TD valign="TOP">読み書き可能でオープンする</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_CREAT</TD>
+<TD valign="TOP">ファイルが存在しなければ新規作成する</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_TRUNC</TD>
+<TD valign="TOP">既存のファイル内容を切り捨てる</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_NOWAIT</TD>
+<TD valign="TOP">ノンウエイトモードでオープンする</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_NOWBDC</TD>
+<TD valign="TOP">Dキャッシュのライトバックを行なわない</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了の場合はファイルディスクリプタ（0以上の値）を返します。 <BR>
+    エラーの場合以下のとおりです。 <BR>
+    SCE_EVERSIONMISS	IOP側のモジュールのバージョンが合わない <BR>
+    SCE_ENODEV		内部管理のディスクリプタが足りなくなった <BR>
+    上記以外		IOP側のオープンが失敗 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ファイルをオープンします。オープンしたファイルに対してはファイルディスクリプタが与えられます。 <BR>
+    sceRead/sceWrite/sceLseek/sceIoctl(の一部)はIOPからのリクエストが返るまでリクエストしたスレッドがスリープします。 <BR>
+    sceOpen時にSCE_NOWAITを指定しておけばスリープせずに、終了を待たずに関数を抜けます。関数の終了は、sceIoctlのSCE_FS_EXECUTINGリクエストで確認可能です。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、IOPでopen()を行ったディスクリプタの取得を受ける必要があるので、その間セマフォで待ちの状態になります。 <BR>
+    この関数を、割り込み禁止領域で呼ぶことは出来ません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=scePrintf>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>scePrintf
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        簡易printf
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>scePrintf</B>(
+	const char *<I>fmt</I>,
+	<I>...</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fmt</I>	出力書式
+<I>...</I>	不定引数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みハンドラと割り込み禁止中に使用できる簡易出力関数です。 <BR>
+    割り込みハンドラと割り込み禁止中以外での使用は推奨しません。 <BR>
+    mallocは使用しません。 <BR>
+<BR>
+    以下のような制限があります。 <BR>
+<BR>
+    DECI2のユーザープロトコルドライバが動作している場合には、タイミングによってはプログラムの続行が不可能となります。その場合は、メッセージを出力してプログラムを終了します。標準入力ドライバもDECI2のユーザプロトコルドライバとして実装されていますので、デバッガやコンソールプログラムからの文字入力などを行っている場合にも上記現象が発生する可能性があります。 <BR>
+<BR>
+    書式は以下のサポートのみで、'%'と変換文字の間はゼロパディングのみ使用可能です。 <BR>
+    <B>形式</B> <BR>
+    <blockquote>
+    	d	符合あり10進数 <BR>
+    </blockquote>
+    <blockquote>
+    	o	符合無し8進数 <BR>
+    </blockquote>
+    <blockquote>
+    	u	符合無し10進数 <BR>
+    </blockquote>
+    <blockquote>
+    	x	符合無し16進数 <BR>
+    </blockquote>
+    <blockquote>
+    	f	単精度浮動少数	(*) <BR>
+    </blockquote>
+    <blockquote>
+    	s	文字列 <BR>
+    </blockquote>
+    <blockquote>
+    	c	文字 <BR>
+    </blockquote>
+    <B>参考</B> <BR>
+    <blockquote>
+    	(*) メモリ効率を優先した設計のため精度は保証しません。 <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルからの読み出し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceRead</B>(
+	int <I>fd</I>,
+	void *<I>buffer</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>		読み出し対象のファイルディスクリプタ
+<I>buffer</I>		読み出したデータを格納するバッファのアドレス
+<I>size</I>		読み出すデータサイズ（バイト単位）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    読み出したデータサイズ（バイト単位） <BR>
+    エラーがあったときは-1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープン済みのファイルからデータを読み出します。 <BR>
+    現時点の実装では、bufferとしてSPRを指定することはできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceWrite>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceWrite
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ファイルへの書き込み
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceWrite</B>(
+	int <I>fd</I>,
+	void *<I>buffer</I>,
+	int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>fd</I>	書き込み対象のファイルディスクリプタ
+<I>buffer</I>	書き込むデータが格納されているアドレス
+<I>size</I>	書き込むデータのサイズ（バイト単位）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    書き込んだデータのサイズ（バイト単位） <BR>
+    エラーがあったときは-1を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープン済みのファイルに対してデータを書き込みます。 <BR>
+    現時点の実装では、bufferとしてSPRを指定することはできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、SCE_NOWAITでsceOpen()したディスクリプタ以外は、実行中の間セマフォで待ちの状態になります。 <BR>
+    SCE_NOWAITでsceOpen()したディスクリプタの場合は、返り値はコマンドが成功したかどうかしかわかりません。 <BR>
+    この関数を、割り込み禁止領域で呼ぶことは出来ません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

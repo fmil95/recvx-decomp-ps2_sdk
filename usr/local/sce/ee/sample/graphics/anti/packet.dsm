@@ -1,0 +1,185 @@
+
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                    -- AntiAlias sample --
+ *
+ *                        Version 0.5.0
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : packet.dsm
+ *
+ *       Version   Date           Design       Log
+ *  --------------------------------------------------------------------
+ *       0.5.0     Oct,12,1999    thatake      first version
+ */
+
+.include "vumacros.h"
+.global My_dma_start
+.global My_dma_start2
+.global My_matrix
+.global My_light_matrix
+.global My_light_color_matrix
+.global My_rot_trans_matrix
+
+.global My_giftag
+.global My_coefficient
+
+.global My_cup_start
+.global My_cup_ini
+.global My_cup_blockcenter
+
+.data
+
+
+; -------- dma --------
+.align 4
+My_dma_start:
+DmaRef *, My_microcode
+
+; draw grid
+DmaRef *, My_environment
+My_cup_start:
+DmaRef *, model0
+DmaRef *, model1
+DmaRef *, model2
+DmaRef *, model3
+DmaRef *, model4
+DmaRef *, model5
+DmaRef *, model6
+
+DMAend
+
+.align 4
+My_cup_blockcenter:
+fxyzw 2.209903 2.590505 -2.191359 1.0
+fxyzw 2.220755 2.560212 2.201385 1.0
+fxyzw -2.215949 2.533798 2.239052 1.0
+fxyzw -2.153297 2.615333 -2.152568 1.0
+fxyzw 5.538479 -0.075087 0.176980 1.0
+fxyzw 8.181374 1.651891 0.177257 1.0
+fxyzw 5.464226 4.300038 0.176698 1.0
+My_cup_ini:
+DmaRef *, model0
+DmaRef *, model1
+DmaRef *, model2
+DmaRef *, model3
+DmaRef *, model4
+DmaRef *, model5
+DmaRef *, model6
+
+
+; ---------- micro code ------------
+.align 4
+.DmaData My_microcode
+MPG 0, *
+.include "aa_clip.vsm"
+.EndMPG
+.EndDmaData
+
+
+; ----------------- matrix environment -----------------
+.DmaData My_environment
+
+;BASE 0          ; sets the vif1 base register
+;OFFSET 492      ; sets the vif1 offset register
+
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.200000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.200000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 2.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 1.0, -1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT COLOR MATRIX
+My_light_color_matrix:
+fxyzw 0.8, 0.2, 0.2, 0.0
+fxyzw 0.2, 0.8, 0.2, 0.0
+fxyzw 0.2, 0.2, 0.8, 0.0
+fxyzw 0.2, 0.2, 0.2, 1.0
+.EndUnpack
+
+unpack 4, 4, V4_32, 38, *
+My_coefficient:
+fwzyx 0.0, 0.0, 0.0, 0.0
+My_giftag:
+iwzyx 0x00000000, 0x00000412, 0x3005c000, 0x00008000
+.EndUnpack
+
+MSCAL 0         ; 
+
+BASE 40          ; sets the vif1 base register
+OFFSET 492      ; sets the vif1 offset register
+.EndDmaData
+
+
+; -------- part 0/5  ---------
+.DmaData model0
+.align 7
+.include "cup0.dsm"
+.EndDmaData
+
+; -------- part 1/5  ---------
+.DmaData model1
+.align 7
+.include "cup1.dsm"
+.EndDmaData
+
+; -------- part 2/5  ---------
+.DmaData model2
+.align 7
+.include "cup2.dsm"
+.EndDmaData
+
+; -------- part 3/5  ---------
+.DmaData model3
+.align 7
+.include "cup3.dsm"
+.EndDmaData
+
+; -------- part 4/5  ---------
+.DmaData model4
+.align 7
+.include "cup4.dsm"
+.EndDmaData
+
+; -------- part 5/5  ---------
+.DmaData model5
+.align 7
+.include "cup5.dsm"
+.EndDmaData
+
+; -------- part 6/5  ---------
+.DmaData model6
+.align 7
+.include "cup6.dsm"
+.EndDmaData
+
+
+
+
+
+
+

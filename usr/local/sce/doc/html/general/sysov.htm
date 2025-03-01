@@ -1,0 +1,1041 @@
+<HTML>
+<HEAD>
+<TITLE> "PlayStation 2"システム概要</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="sysov.htm" SELECTED>システム概要
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+"PlayStation 2"システム概要<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 アーキテクチャ<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> Emotion Engine（EE）<BR></A><BR>
+    <A HREF="#Heading4_1_2"> Vector Processing Unit（VPU）<BR></A><BR>
+    <A HREF="#Heading4_1_3"> VIF<BR></A><BR>
+    <A HREF="#Heading4_1_4"> Image Processing Unit（IPU）<BR></A><BR>
+    <A HREF="#Heading4_1_5"> Graphics Synthesizer（GS）<BR></A><BR>
+    <A HREF="#Heading4_1_6"> GIF<BR></A><BR>
+    <A HREF="#Heading4_1_7"> DMAC<BR></A><BR>
+    <A HREF="#Heading4_1_8"> IOP<BR></A><BR>
+    <A HREF="#Heading4_1_9"> SPU2<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 データフロー<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 3Dグラフィックスのデータフローパターン<BR></A><BR>
+    <A HREF="#Heading4_2_2"> ムービーデータのデータフロー<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 OS（Kernel）<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> マルチスレッド管理<BR></A><BR>
+    <A HREF="#Heading4_3_2"> 優先度<BR></A><BR>
+    <A HREF="#Heading4_3_3"> スレッド間通信<BR></A><BR>
+    <A HREF="#Heading4_3_4"> Kernel API<BR></A><BR>
+    <A HREF="#Heading4_3_5"> メモリマップ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 ライブラリ<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> EEライブラリ<BR></A><BR>
+    <A HREF="#Heading4_4_2"> IOPライブラリ<BR></A><BR>
+    <A HREF="#Heading4_4_3"> IOPモジュール<BR></A><BR>
+    <A HREF="#Heading4_4_4"> コンポーネントサウンドライブラリ（CSL）<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_5">  5 ミドルウェア<BR></A>
+    <UL>
+    <A HREF="#Heading4_5_1"> 中間ファイルフォーマット<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_6">  6 周辺機器<BR></A>
+    <UL>
+    <A HREF="#Heading4_6_1"> CD(DVD)-ROM<BR></A><BR>
+    <A HREF="#Heading4_6_2"> メモリーカード<BR></A><BR>
+    <A HREF="#Heading4_6_3"> コントローラ<BR></A><BR>
+    <A HREF="#Heading4_6_4"> マルチタップ<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+    このドキュメントは、"PlayStation 2"の性能を十分に引き出すソフトウェアを効率よく開発していただけるよう、システムの特徴およびその背景となるコンセプトなどを概説し、ソフトウェアデザインのヒントを提供するものです。<BR>
+    <BR>
+    *このドキュメントの内容は2000年5月現在で確定的な情報に基づいています。開発中で未確定の事項には触れていません。また、記載されている事項についても今後変更される可能性がありますので、あらかじめご了承ください。<BR>
+<DIV align=center>
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>アーキテクチャ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    "PlayStation 2"システム全体のブロックダイヤグラムを次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof1.gif">
+<P>
+    <B>図 1 "PlayStation 2"のブロックダイヤグラム</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      全体のメインプロセッサとなるのがEmotion Engine（EE）です。EEからポリゴンデータを受け取って描画処理を行いビデオ信号として出力するのがGraphics Synthesizer（GS）です。IOPは外部入出力デバイスを制御するサブプロセッサで、固有のメモリを持ち、ある程度の処理を独立して行うことができます。SPU2はサウンド機能を受け持ちます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>Emotion Engine（EE）</B>
+</A>
+</H3>
+<blockquote>
+    Emotion Engine（EE）は、コンピュータエンタテインメントを特に意識して設計された、高速処理・高度の並列処理を特徴とするプロセッサです。EEのブロックダイヤグラムを次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof2.gif">
+<P>
+    <B>図 2 EEのブロックダイヤグラム</B>
+</DIV>
+    <BR>
+    EE coreは2-wayのスーパースケーラパイプラインを持ち、2命令を同時に実行することができる、64bitマイクロプロセッサです。命令セットはMIPS III準拠で、一部のMIPS IV命令と128bitマルチメディア命令が拡張されています。16Kbyteの命令キャッシュと8Kbyteのデータキャッシュとを持ち、さらに、16Kbyteのスクラッチパッドメモリ（SPRAM）を持っています。スクラッチパッドメモリは通常のメモリと同様にアクセスできるほか、DMAによるデータ転送を行うことも可能です。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>Vector Processing Unit（VPU）</B>
+</A>
+</H3>
+<blockquote>
+    VPUは32bit浮動小数点数の4並列演算を行うベクトル演算プロセッサで、3Dグラフィクスのジオメトリ演算に多用される4要素ベクトルや4×4行列を効率よく扱うことができます。<BR>
+    VPUは内部に独自のプログラムメモリおよびデータメモリを持ち、独自のインストラクションセット（マイクロ命令）によるプログラムを実行することができます。マイクロ命令は64bit長で、4並列浮動小数点演算を行うUpper命令と、除算・ロード・ストア・整数演算・分岐などを行うLower命令の2命令を同時に実行することができます。<BR>
+    EEにはこのようなVPUが2個搭載されています。VPU0はEE coreにコプロセッサ接続されています。一方のVPU1は独立して動作し、初等関数演算ユニット（EFU）を持つほか内部メモリも強化されていて、GIFを介してGSに接続されています。<BR>
+    EE core＋VPU0がゲームロジックの演算を行いVPU1がポリゴンデータへの変換処理を行うという直列的な分担、あるいは、EE core＋VPU0がキャラクターの動きなど複雑で非定型的な処理を行いVPU1はバックグラウンドの定型的な処理を行うという並列的な分担が考えられます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof3.gif">
+<P>
+    <B>図 3 VPUのブロックダイヤグラム</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>VIF</B>
+</A>
+</H3>
+<blockquote>
+    VIFは、EEのメインバスとVPUとを結ぶインタフェースユニットです。転送されたデータを、VPUが利用しやすい形式に整えてVPUのデータメモリに書き込む展開機能を持っています。また、内部レジスタの値で補完することによって、定型的なデータはそのつど転送することなくメモリ上に生成することができます。<BR>
+    VPU1に接続されているVIF1は、ダブルバッファリングをサポートしています。データメモリ上に２つのバッファを用意し、先に転送したデータをVPU1が処理している間に、もうひとつのバッファに次のデータを転送することによって、スループットを高めることができます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>Image Processing Unit（IPU）</B>
+</A>
+</H3>
+<blockquote>
+    IPUはMPEG2ビットストリームのデコードを行う画像データプロセッサです。マクロブロック復号、RGB画像への変換、αプレーンの自動生成、オーダードディザ、4bitインデクスカラーへの変換などの機能を持ちます。動き補償（MC）はIPUでは行わず、EE coreでマルチメディア命令を使用して行います。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>Graphics Synthesizer（GS）</B>
+</A>
+</H3>
+<blockquote>
+    Graphics Synthesizer（GS）は3Dグラフィックの描画処理およびビデオ信号の出力を行うグラフィックプロセッサで、並列処理と広帯域メモリアクセスにより圧倒的なパフォーマンスを示します。GSのブロックダイヤグラムを次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof4.gif">
+<P>
+    <B>図 4 GSのブロックダイヤグラム</B>
+</DIV>
+    <BR>
+    Setup/DDA部ではEEから渡されたポリゴンデータ（GSプリミティブ）をピクセルに展開します。続くPixel Process部では各ピクセルに対して、テクスチャマッピング、フォギング、アルファブレンディングを最大16ピクセル並列処理します。<BR>
+    これら一連の描画処理においては各ポリゴンの情報のほかにテクスチャや描画モードなど半固定的な情報（描画環境）を使用しますが、描画環境の一部についてはレジスタが2組用意され、オーバーヘッドなしに切り替えて使用することができます。これにより、たとえば前景オブジェクトと背景オブジェクトのGSプリミティブが順不同でGSに引き渡されたときでも、描画速度の低下を招くことはありません。<BR>
+    DRAMは4Mbyteを内蔵し、フレームバッファ / Zバッファ / テクスチャバッファ / CLUTを任意に配置することができます。<BR>
+    CRTCは2個の独立した矩形読み出し回路を持ち、フレームバッファの別々の領域を読み出し、画像フォーマットや出力解像度・画面上の位置もそれぞれ別個に設定したうえ、重ね合わせて出力することができます。たとえば、3Dグラフィクスによる動画映像と高解像度の文字によるメッセージなどを容易に合成表示することができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_6">
+<A HREF="#Heading3_1"> 1. </A>6 <B>GIF</B>
+</A>
+</H3>
+<blockquote>
+    GIFはEEからGSへのインタフェースユニットです。後述する3つのデータパス間の調停を行うとともに、データパケットの先頭に付加されたタグ（GIFtag）にしたがってポリゴンデータやイメージデータなどをそれぞれ適切なGSのレジスタに書き込む機能を持ちます。<BR>
+    EEからGSへのデータパスは、PATH1 / PATH2 / PATH3と３つが用意されています。優先順位はPATH1＞PATH2＞PATH3で、特徴と用途はそれぞれ次のとおりです。<BR>
+<UL>
+         <LI> PATH1：VPU1のデータメモリからGSへのデータ転送パス。<BR>         VPU1で生成したGSプリミティブデータの転送に使用する。<BR>
+         <LI> PATH2：VIF1からGSへ、またGSからVIF1へのデータ転送パス。<BR>
+         <LI> PATH3：EEのメインメモリあるいはスクラッチパッドメモリからGSへのデータ転送<BR>         パス。他の描画処理を止めないために、大きなイメージデータを分割して断続<BR>         転送する機能を持つ。また、必要に応じて転送を禁止することができる。<BR>
+</UL>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof5.gif">
+<P>
+    <B>図 5 PATH1 / PATH2 / PATH3</B>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_7">
+<A HREF="#Heading3_1"> 1. </A>7 <B>DMAC</B>
+</A>
+</H3>
+<blockquote>
+    EE coreの演算能力をデータ転送処理に割かれないようにするため、DMACの機能が強化されています。<BR>
+    大きな特徴は、タグ情報に従って行う能動的なDMA転送（Chain Mode）です。転送データのアドレスとサイズ、そして次に参照すべきタグのアドレスがタグ情報として指示され、DMACがそれを解釈してデータ転送を行います。たとえば、共通のオブジェクトデータベースを使用して部分的に異なるグラフィクスデータを生成することが、タグ情報だけを組替えることによって可能です。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof6.gif">
+<P>
+    <B>図 6　タグによるDMA転送</B>
+</DIV>
+    <BR>
+    このほか、メモリを介して周辺機器から別の周辺機器への転送をスムーズに行うためのストール制御機能、特定のデータを優先的に転送する優先度制御機能、画像データの一部分を切り出すInterleaveモードなどが特徴的な機能です。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_8">
+<A HREF="#Heading3_1"> 1. </A>8 <B>IOP</B>
+</A>
+</H3>
+<blockquote>
+    IOPは、CD/DVD-ROMドライブやサウンドデバイス（SPU2）、コントローラ、メモリーカード、PCMCIA、USB、i.Linkなど、外部入出力デバイスを制御するプロセッサです。"PlayStation"のCPUと同等の処理能力を持ち、SSBUSを介してEEと協調しつつ、独立して処理を行うことができます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_9">
+<A HREF="#Heading3_1"> 1. </A>9 <B>SPU2</B>
+</A>
+</H3>
+<blockquote>
+    SPU2はふたつのコアから構成され、ローカルメモリと外部入出力を持つ分解能48kHzの音響合成プロセッサです。<BR>
+    ふたつのコア（CORE0 / CORE1）はそれぞれPlayStationのSPUと同様に、24ボイスのボイス処理、リバーブ処理、マスターボリューム処理を行ってステレオ2系統（Dry / Wet）のサウンドを生成します。さらに、16bitサウンドデータをホストプロセッサ（IOP）から転送し、直接出力したりボイス出力とミキシングして出力することができます。また逆に、各コアで生成したサウンドデータをホストプロセッサへ転送することもできます。<BR>
+    CORE0の出力はCORE1に入力され、CORE1でミキシングされたサウンドが出力ブロックを経てアナログ／デジタルの2系統に出力されるように接続されています。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof7.gif">
+<P>
+    <B>図 7 SPU2ブロックダイヤグラム</B>
+</DIV>
+    <BR>
+    ホストプロセッサ（IOP）とのデータ転送はDMAまたはI/O転送によって行いますが、処理の進行状況をホスト側で知るためのレジスタと割り込み機能があり、データ転送を適切なタイミングで行うことができます。また、ストリーミングの負荷を軽減するために、ハードウェアでダブルバッファリングをサポートするAuto DMA転送機能が備えられています。<BR>
+    これらの割り込みやDMA転送は、サウンド生成処理と同様、ふたつのコアでそれぞれ独立に行うことができます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>データフロー</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>3Dグラフィックスのデータフローパターン</B>
+</A>
+</H3>
+<blockquote>
+    3Dグラフィックスデータの生成は、EE core＋VPU0とVPU1とで分担して行うことができますが、先にも述べたとおり、２とおりの分担方式があります。<BR>
+    まずひとつは、EE core＋VPU0がゲームシステム管理やジオメトリ演算を行い、VPU1がその後処理としてポリゴンデータへの変換処理を行うという直列的な分担です。<BR>
+    もうひとつは、EE core＋VPU0がキャラクターの動きなど複雑な非定型の処理を行い、VPU1は背景部分などの定型的な処理を行うという並列的な分担です。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof8.gif">
+<P>
+    <B>図 8 直列的な分担のデータフロー</B>
+<P>
+<IMG SRC ="gif/sysof9.gif">
+<P>
+    <B>図 9 並列的な分担のデータフロー</B>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>ムービーデータのデータフロー</B>
+</A>
+</H3>
+<blockquote>
+    IPUが取り扱う動画データは、MPEG2 I-Picture相当のIPU動画と、標準MPEG2動画との2種類があります。後者は動き補償（MC）をEE coreで行う必要があります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof10.gif">
+<P>
+    <B>図 10 IPU動画のデコード
+</B>
+<P>
+<IMG SRC ="gif/sysof11.gif">
+<P>
+    <B>図 11 MPEG2動画のデコード
+</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>OS（Kernel）</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    EEおよびIOPのシステムソフトウェア（Kernel）は、細部で相違はありますが、いずれもマルチスレッドをサポートするオペレーティングシステムです。Kernelは、システムのブート、プログラムのロード、マルチスレッドのスケジュール管理、スレッド間通信、例外ハンドラ、メモリ管理、キャッシュ管理、デバイス管理、およびデバッガサポート機能を提供します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>マルチスレッド管理</B>
+</A>
+</H3>
+<blockquote>
+    スレッドとは、並行処理の観点から見た、プログラムの論理的な単位です。アプリケーションプログラムの処理内容を複数のスレッドに分け、それらを同時並行的に動作させることができます。同時並行といっても厳密に同時に実行されているスレッドはひとつだけで、Kernelの管理のスケジューリングに従い順次切り替えられて実行されるしくみになっています。<BR>
+    Kernelのマルチスレッドスケジューリングは、スレッドの状態と、生成時に与えられた優先度によって行います。タイムシェアリングシステムではなく、優先度の高いスレッドから暗黙のうちに実行権が奪われることはありません。外部割り込みがあっても、割り込みハンドラ内で優先度が変更されたり優先度のより高いスレッドが実行可能状態に移されない限り、割り込みから復帰すればもとのスレッドが実行されます。<BR>
+    スレッドは次に示すように６つの状態を取ります。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof12.gif">
+<P>
+    <B>図 12 スレッドの状態遷移
+</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      生成されたスレッドはまずDORMANT状態になり、起動されることによってREADY状態となって実行待ち行列（レディキュー）に入ります。レディキューの並び順は優先度の高い順で、同一優先度のスレッドどうしは早くREADY状態になった順に並びます。<BR>
+      レディキューの先頭にあるスレッドが実行されてRUN状態となります。RUN状態のスレッドは、セマフォなどの条件成立待ちによってWAIT状態に移り、待ち条件が成立するとREADY状態に戻ります。<BR>
+      READY状態にあるスレッドが他から強制的に実行保留されている状態がSUSPEND状態です。また、WAIT状態にあるスレッドが強制的に実行保留されている状態がWAIT-SUSPEND状態です。<BR>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>優先度</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelはユーザプログラムの優先度を0（最高）として起動します。ユーザプログラムの各スレッドは0～127の優先度を持つことができます。<BR>
+    IOP側では、ユーザプログラムが使用できる優先度の範囲はUSER_HIGHEST_PRIORITY（=9） ～ USER_LOWEST_PRIORITY（=123）に限られています。また、SCEI提供のデバイスドライバが以下に示す優先度を使用しています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><B>優先度</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>デバイスドライバ</B></TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>8</DIV></TD>
+<TD valign="TOP">loader</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>10</DIV></TD>
+<TD valign="TOP">reboot</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>16</DIV></TD>
+<TD valign="TOP">sio2man</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>18</DIV></TD>
+<TD valign="TOP">(reserved)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>20</DIV></TD>
+<TD valign="TOP">padman, mtapman(high)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>24</DIV></TD>
+<TD valign="TOP">rspu2drv, sdrdrv</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>28</DIV></TD>
+<TD valign="TOP">i.link(high)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>30</DIV></TD>
+<TD valign="TOP">usb(high)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>34</DIV></TD>
+<TD valign="TOP">i.link(low)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>36</DIV></TD>
+<TD valign="TOP">usb(low)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>40</DIV></TD>
+<TD valign="TOP">(reserved)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>42</DIV></TD>
+<TD valign="TOP">mcman,mcxman</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>46</DIV></TD>
+<TD valign="TOP">padman, mtapman(low)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>48</DIV></TD>
+<TD valign="TOP">(reserved)</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>81</DIV></TD>
+<TD valign="TOP">cdvdfsv</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>88</DIV></TD>
+<TD valign="TOP">loadmodule</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>96</DIV></TD>
+<TD valign="TOP">fileio</TD>
+</TR>
+<TR>
+<TD valign="TOP"><DIV align=center>104</DIV></TD>
+<TD valign="TOP">mcserv,mcxserv</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>スレッド間通信</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelはスレッド間の通信・同期機能として、セマフォを提供します。IOP Kernelはさらにイベントフラグとメッセージボックスを提供します。<BR>
+    セマフォは、あるデバイスやメモリ領域を同時に使用するスレッド数を制限するために使用します。あらかじめ最大数を指定してセマフォを作成しておき、デバイス等を使用したいスレッドはWaitSema()関数を実行してセマフォ資源（すなわちデバイス等の使用権）を取得してから使用します。もしセマフォ資源に空きがなければセマフォ待ち行列に入り、他スレッドがSignalSema()関数を実行してセマフォ資源を返却すると、待ち行列の先頭から順次セマフォ資源が与えられてREADY状態に戻ります。<BR>
+    イベントフラグはより多様な同期処理を行うことができます。あらかじめフラグの初期値を設定してイベントフラグを作成しておき、条件の成立を待つスレッドはWaitEventFlag()関数を実行することにより、解除条件を指定して待ち行列に入ります。他のスレッドがSetEventFlag()によってフラグ値を変更すると、それによって解除条件が満たされたスレッドがREADY状態に戻ります。<BR>
+    メッセージボックスはスレッド間でのデータ交換をサポートするサービスで、セマフォとリングバッファの組み合わされたものと考えることもできます。<BR>
+    まずCreateMbx()を用いてメッセージボックスを作成しておきます（複数可）。メッセージを待つスレッドはメッセージボックスの番号を指定してReceiveMbx()を発行してWAIT状態に入ります。他のスレッドまたはスレッド独立部からSendMbx() / iSendMbx()でメッセージボックスの番号を指定してメッセージを送信すると、そのメッセージボックスで待っているスレッドがREADY状態に移されます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>Kernel API</B>
+</A>
+</H3>
+<blockquote>
+    KernelのAPIはC言語の関数として定義されています。<BR>
+    注意すべき点は、スレッド中から呼び出す場合と、たとえば割り込みハンドラなどスレッドでない部分から呼び出す場合とで、APIが別々に用意されていることです。ほぼ同じ機能であっても内部処理が異なるため、たとえばTerminateThとiTerminateThというように、割り込みハンドラなどから呼び出すための関数は「i」を付けた名前になっています。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_5">
+<A HREF="#Heading3_3"> 3. </A>5 <B>メモリマップ</B>
+</A>
+</H3>
+<blockquote>
+    EE Kernelのメモリマップを次に示します。<BR>
+    ユーザメモリは、キャッシュ使用モードの異なる３つの仮想アドレスに重複してマップされています。プログラマはこの3つの仮想アドレスを使い分けることで、キャッシュの使用方法をきめこまかく制御することができます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof13.gif">
+<P>
+    <B>図 13 EE Kernelメモリマップ
+</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>ライブラリ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    "PlayStation 2"用のソフトウェア作成を支援する目的で、各ハードウェア機能ブロックを制御するライブラリと、ソフトウェア開発を支援するためのライブラリが提供されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>EEライブラリ</B>
+</A>
+</H3>
+<blockquote>
+    EE上で動作するライブラリとして、SCEから提供されているものは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ライブラリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>用途・機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">libkernl</TD>
+<TD valign="TOP">カーネル制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libscf</TD>
+<TD valign="TOP">コンフィグレーション情報の取得</TD>
+</TR>
+<TR>
+<TD valign="TOP">libcdvd</TD>
+<TD valign="TOP">CD(DVD)-ROM制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libdev</TD>
+<TD valign="TOP">デバッグ支援（VU0/1,VIF0/1,GIF）</TD>
+</TR>
+<TR>
+<TD valign="TOP">libdma</TD>
+<TD valign="TOP">DMA制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libgraph</TD>
+<TD valign="TOP">GS制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libipu</TD>
+<TD valign="TOP">IPU制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">liblout</TD>
+<TD valign="TOP">CSL：ラインアウト</TD>
+</TR>
+<TR>
+<TD valign="TOP">libmc</TD>
+<TD valign="TOP">メモリーカード制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libmcx</TD>
+<TD valign="TOP">PDA制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libmpeg</TD>
+<TD valign="TOP">MPEG2 / MPEG1画像のデコード</TD>
+</TR>
+<TR>
+<TD valign="TOP">libmsin</TD>
+<TD valign="TOP">CSL：MIDIストリーム生成</TD>
+</TR>
+<TR>
+<TD valign="TOP">libpad</TD>
+<TD valign="TOP">コントローラ制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libmtap</TD>
+<TD valign="TOP">マルチタップ制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libpc</TD>
+<TD valign="TOP">パフォーマンス測定</TD>
+</TR>
+<TR>
+<TD valign="TOP">libpkt</TD>
+<TD valign="TOP">DMAパケット作成の支援</TD>
+</TR>
+<TR>
+<TD valign="TOP">libsdr</TD>
+<TD valign="TOP">SPU2のリモート制御（IOP側libsdのリモート呼び出し）</TD>
+</TR>
+<TR>
+<TD valign="TOP">libssyn</TD>
+<TD valign="TOP">CSL：ソフトウェア・シンセサイザ</TD>
+</TR>
+<TR>
+<TD valign="TOP">libvu0</TD>
+<TD valign="TOP">VU0制御</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    ライブラリ関数は、それぞれが収められているアーカイブをまたぐ相互参照をしないように実装されています。したがって各ライブラリ関数はアーカイブ単位で単独に使用することができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_2">
+<A HREF="#Heading3_4"> 4. </A>2 <B>IOPライブラリ</B>
+</A>
+</H3>
+<blockquote>
+    IOP上で動作するライブラリとして、SCEから提供されているものは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ライブラリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>用途・機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">iopkernl</TD>
+<TD valign="TOP">カーネル制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">cdvd</TD>
+<TD valign="TOP">CD(DVD)-ROM制御</TD>
+</TR>
+<TR>
+<TD valign="TOP">libsd</TD>
+<TD valign="TOP">低レベルサウンドライブラリ</TD>
+</TR>
+<TR>
+<TD valign="TOP">moddelay</TD>
+<TD valign="TOP">CSL：MIDIレイテンシ調整</TD>
+</TR>
+<TR>
+<TD valign="TOP">modhsyn</TD>
+<TD valign="TOP">CSL：ハードウェア・シンセサイザ</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmidi</TD>
+<TD valign="TOP">CSL：MIDIシーケンサ</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmono</TD>
+<TD valign="TOP">CSL：MIDIモノラル</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmsin</TD>
+<TD valign="TOP">CSL：MIDIストリーム生成</TD>
+</TR>
+<TR>
+<TD valign="TOP">modssyn</TD>
+<TD valign="TOP">CSL：ソフトウェア・シンセサイザ</TD>
+</TR>
+<TR>
+<TD valign="TOP">usbd</TD>
+<TD valign="TOP">USBドライバライブラリ</TD>
+</TR>
+<TR>
+<TD valign="TOP">ilink,ilsock</TD>
+<TD valign="TOP">i.LINKドライバライブラリ</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_3">
+<A HREF="#Heading3_4"> 4. </A>3 <B>IOPモジュール</B>
+</A>
+</H3>
+<blockquote>
+    IOP上で動作するモジュールとしてSCEから提供されているものは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>モジュール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>用途・機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">iopリプレースモジュール</TD>
+<TD valign="TOP">iopリブート・デフォルトモジュール<BR>(cdvdman.irx,cdvdfsv.irx,sifcmd.irx,<BR>fileio.irx, loadfile.irx)</TD>
+</TR>
+<TR>
+<TD valign="TOP">libsd.irx, sdrdrv.irx</TD>
+<TD valign="TOP">低レベルサウンド制御モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">mcman.irx, mcserv.irx</TD>
+<TD valign="TOP">メモリーカード制御モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">mcxman.irx,mcxserv.irx</TD>
+<TD valign="TOP">PDA制御モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">moddelay.irx</TD>
+<TD valign="TOP">CSL：MIDIレイテンシ調整</TD>
+</TR>
+<TR>
+<TD valign="TOP">modhsyn.irx</TD>
+<TD valign="TOP">CSL：ハードウェア・シンセサイザ</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmidi.irx</TD>
+<TD valign="TOP">CSL：MIDIシーケンサ</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmono.irx</TD>
+<TD valign="TOP">CSL：MIDIモノラル</TD>
+</TR>
+<TR>
+<TD valign="TOP">modmsin.irx</TD>
+<TD valign="TOP">CSL：MIDIストリーム生成</TD>
+</TR>
+<TR>
+<TD valign="TOP">modssyn.irx</TD>
+<TD valign="TOP">CSL：ソフトウェア・シンセサイザ</TD>
+</TR>
+<TR>
+<TD valign="TOP">mtapman.irx</TD>
+<TD valign="TOP">マルチタップ制御モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">padman.irx</TD>
+<TD valign="TOP">コントローラ制御モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">sio2man.irx</TD>
+<TD valign="TOP">シリアル通信基本モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">usbd.irx</TD>
+<TD valign="TOP">USBドライバモジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">ilink.irx,ilsock.irx</TD>
+<TD valign="TOP">i.LINKドライバモジュール</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_4">
+<A HREF="#Heading3_4"> 4. </A>4 <B>コンポーネントサウンドライブラリ（CSL）</B>
+</A>
+</H3>
+<blockquote>
+    CSLはサウンド生成処理をコンポーネント化するための標準化アーキテクチャです。CSLモジュールを適宜組み合わせ、必要に応じて独自のCSLモジュールを作成することによって、高度なサウンド処理を容易に実装することができます。<BR>
+    CSLの規定は主として、ストリームデータを受け渡すバッファ構造に関するものです。モジュール内の処理はもちろん、APIについても柔軟性とパフォーマンスを確保するために推奨規定だけを設けてあります。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof14.gif">
+<P>
+    <B>図 14 CSLモジュールコンテキストの構造
+</B>
+</DIV>
+    CSLモジュールは、IOP上で動作するものとEE上で動作するものがありますが、入出力データ形式の組み合わせによってカテゴリ分けされます。<BR>
+    SCEから提供するCSLモジュールは次のとおりです。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>モジュール</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ハードウェア・<BR>シンセサイザ<BR>（modhsyn）</TD>
+<TD valign="TOP">IOP；MIDI→Original</TD>
+<TD valign="TOP">SPU2のボイスを使用する音源</TD>
+</TR>
+<TR>
+<TD valign="TOP">ソフトウェア・<BR>シンセサイザ<BR>（modssyn）</TD>
+<TD valign="TOP">IOP；MIDI→PCM</TD>
+<TD valign="TOP">多機能WaveTable音源IOP側<BR>モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIシーケンサ<BR>（modmidi）</TD>
+<TD valign="TOP">IOP；Original→MIDI</TD>
+<TD valign="TOP">SQファイルからMIDIストリーム<BR>への変換</TD>
+</TR>
+<TR>
+<TD valign="TOP">効果音シーケンサ</TD>
+<TD valign="TOP">IOP；Original→MIDI</TD>
+<TD valign="TOP">効果音専用シーケンサ※</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIメッセージ生成<BR>（modmsin）</TD>
+<TD valign="TOP">IOP；Original→MIDI</TD>
+<TD valign="TOP">MIDIストリーム生成</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIモノフォニック<BR>（modmono）</TD>
+<TD valign="TOP">IOP；MIDI→MIDI</TD>
+<TD valign="TOP">モノフォニック化</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIディレイ<BR>（moddelay）</TD>
+<TD valign="TOP">IOP；MIDI→MIDI</TD>
+<TD valign="TOP">レイテンシの調節</TD>
+</TR>
+<TR>
+<TD valign="TOP">MIDIメッセージ生成<BR>（libmsin）</TD>
+<TD valign="TOP">EE；Original→MIDI</TD>
+<TD valign="TOP">MIDIストリーム生成</TD>
+</TR>
+<TR>
+<TD valign="TOP">ソフトウェア・<BR>シンセサイザ<BR>（libssyn）</TD>
+<TD valign="TOP">EE；MIDI→PCM</TD>
+<TD valign="TOP">多機能WaveTable音源EE側<BR>モジュール</TD>
+</TR>
+<TR>
+<TD valign="TOP">ラインアウト<BR>（liblout）</TD>
+<TD valign="TOP">EE；PCM→Original</TD>
+<TD valign="TOP">SPU2を使用するPCMストリーム<BR>再生</TD>
+</TR>
+</TABLE>
+<BR>
+    ※は未実装<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>ミドルウェア</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    "PlayStation 2"のソフトウェア開発をサポートするために、ライブラリよりもレベルの高い「ミドルウェア」が提供されます。<BR>
+    ミドルウェアは、"PlayStation 2"の高性能をよりクオリティの高い表現につなげるソフトウェアという位置付けです。3Dグラフィックス・アニメーション・サウンドなどコンピュータエンタテインメントを構成する表現手法のクオリティを高めるためには、それぞれ高度に専門的な技術とノウハウの蓄積が必要です。優れた技術を持つサードパーティがそれぞれ得意な分野でミドルウェアを提供することにより、次世代のコンピュータエンタテインメントにふさわしい高いクオリティの表現可能性が広がることになります。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_5_1">
+<A HREF="#Heading3_5"> 5. </A>1 <B>中間ファイルフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"用に提供される多数のミドルウェアの要として、中間ファイルフォーマット（eS）が規定されます。<BR>
+    新しい中間ファイルフォーマットは、従来HMDフォーマットでサポートされていた領域はもちろん、ジオメトリ・テクスチャ・アニメーション・景観を一元的に取り扱うことができ、さらに各アプリケーション / ミドルウェアに独自の情報を取り扱うために容易に拡張することができます。ミドルウェアは、データのそれぞれ一部分をランタイムデータとして取り出して処理します。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof15.gif">
+<P>
+    <B>図 15 中間ファイルフォーマットとミドルウェア
+</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_6">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 6 <B>周辺機器</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_1">
+<A HREF="#Heading3_6"> 6. </A>1 <B>CD(DVD)-ROM</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"に搭載されているCD(DVD)-ROMドライブは最大24倍速（CD-ROM） / 4倍速（DVD-ROM）、回転速度一定のCAV方式で、データ転送レートは一定ではありません。読み出しエラー発生時に回転速度を落としてリトライするかどうかを制御することができます。<BR>
+    CD-DAの再生はソフトウェア・ストリーミングによって可能です。ただし44.1KHz→48KHzのピッチ変換が必要になるため、高い負荷がかかります。CD-XAはサポートしていません。<BR>
+    CD(DVD)-ROMへのアクセスをサポートするライブラリとして、libcdvdが提供されます。<BR>
+    ファイルシステムはISO-9660 level1に準拠し、DVDのUDFはサポートしていません。ファイルやディレクトリの名前や個数に関して、下記の制限があります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>制限</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ数</TD>
+<TD valign="TOP">40ディレクトリ／システム</TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ階層の深さ</TD>
+<TD valign="TOP">最大８階層</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル数</TD>
+<TD valign="TOP">30ファイル／ディレクトリ</TD>
+</TR>
+<TR>
+<TD valign="TOP">使用できる文字</TD>
+<TD valign="TOP">0～9、A～Z、_</TD>
+</TR>
+<TR>
+<TD valign="TOP">ファイル名の形式</TD>
+<TD valign="TOP">（ファイル名8文字）．（拡張子3文字）；１<BR>※ロングファイル名不可</TD>
+</TR>
+<TR>
+<TD valign="TOP">ディレクトリ名の形式</TD>
+<TD valign="TOP">（ディレクトリ名8文字）<BR>※拡張子不可</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    ファイルのアクセスは、まずファイル名からセクタ番号を取得し、そのセクタ番号を指定してデータを読み出します。データ読み出し処理はノンブロッキングで、他の処理を並行して行うことができます。なお、別途提供されるCD(DVD)-ROM Generatorを使用すると、ファイルとセクタ番号のマッピングテーブルを作成することができ、実行時にファイル名からセクタ番号を取得する処理を省くことができます。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_2">
+<A HREF="#Heading3_6"> 6. </A>2 <B>メモリーカード</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"は容量を増大したメモリーカード8MBをサポートします。従来のメモリーカード（128kB）は、ブラウザでPS用データファイルをコピーする場合にのみ利用できます。<BR>
+    メモリーカード8MBの主な仕様を次に示します。<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>仕様</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>（参考）メモリーカード<BR>(128kB) の仕様</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">容量（ブロック数）</TD>
+<TD valign="TOP">64Mbit（1000）</TD>
+<TD valign="TOP">1Mbit（15）</TD>
+</TR>
+<TR>
+<TD valign="TOP">管理単位</TD>
+<TD valign="TOP">クラスタ（＝1024bytes）</TD>
+<TD valign="TOP">スロット（＝8192bytes）</TD>
+</TR>
+<TR>
+<TD valign="TOP">アクセス単位</TD>
+<TD valign="TOP">ページ（＝512bytes）</TD>
+<TD valign="TOP">セクタ（＝128bytes）</TD>
+</TR>
+<TR>
+<TD valign="TOP">消去単位</TD>
+<TD valign="TOP">ブロック（＝8192bytes）</TD>
+<TD valign="TOP"></TD>
+</TR>
+<TR>
+<TD valign="TOP">書き込み所要時間</TD>
+<TD valign="TOP">60ms／ブロック</TD>
+<TD valign="TOP">2200ms／ブロック</TD>
+</TR>
+<TR>
+<TD valign="TOP">読み出し所要時間</TD>
+<TD valign="TOP">25ms／ブロック</TD>
+<TD valign="TOP">2200ms／ブロック</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    大容量化に伴って、ファイルシステムについても階層ディレクトリのサポートのほか、アイコンや、ファイル情報の内容などが変更されています。<BR>
+    メモリーカードへのアクセスを支援するライブラリとして、libmcが提供されています。libmcは、メモリーカードのフォーマット、カード情報の取得、ファイル一覧の取得、階層ディレクトリの操作、ファイルのリード / ライト、ファイル属性の変更などをサポートします。libmcの処理はノンブロッキングで、処理終了をポーリングしつつ他の処理を並行して行えるようになっています。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_3">
+<A HREF="#Heading3_6"> 6. </A>3 <B>コントローラ</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"はアナログコントローラ（DUALSHOCK2）のほか、既存のPlayStation用コントローラをサポートします。<BR>
+    コントローラへのアクセスを支援するライブラリとして、libpadが提供されています。libpadはコントローラの接続状態やアクチュエータ情報の取得、ボタンデータの読み取り、アクチュエータの制御をサポートします。<BR>
+    libpadはEE側プログラムとIOP側プログラムとで構成されています。コントローラとの通信処理はIOP側プログラムがVSyncに同期して1フレームに１回ずつ行い、読み取ったデータはDMAによってEE側メモリに転送し、EE側プログラムはメモリからデータを読み出すしくみになっています。つまり、EE側で動作するアプリケーションは任意のタイミングでlibpadの関数を呼び出してコントローラのデータを読むことができますが、そのデータは最大で1Vsync前の状態を表していることになります。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sysof16.gif">
+<P>
+    <B>図 16 コントローラのデータ読み出しタイミング
+</B>
+</DIV>
+      <BLOCKQUOTE>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_6_4">
+<A HREF="#Heading3_6"> 6. </A>4 <B>マルチタップ</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"専用マルチタップを使用することにより、最大8台のコントローラとメモリカードを"PlayStation 2"に接続することができます。<BR>
+    マルチタップを使用する際には、libmtapを介してlibpad / libmcのサービスを利用します。あらかじめlibmtapのモジュールをIOP側にロードし、マルチタップが接続されたポートをオープンしておくことにより、libpad / libmcの各関数でマルチタップに接続されたコントローラやメモリカードにアクセスできるようになります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

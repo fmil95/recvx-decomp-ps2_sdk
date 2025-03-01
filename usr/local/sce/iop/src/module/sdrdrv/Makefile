@@ -1,63 +1,31 @@
-#
-#  IOP SPU2 Synthesizer program Makefile
-#
-#  $Id: Makefile,v 1.5 2001/05/19 14:00:32 kaol Exp $
-#
-
 ifeq ($(wildcard PathDefs),)
 PathDefs:
 	iop-path-setup > PathDefs || (rm -f PathDefs ; exit 1)
 endif
 include PathDefs
 
-TOP = ../../..
-
-     RM = /bin/rm -f
-
-  CDEFS =
-XCFLAGS = -I$(TOP)/include -I$(TOP)/../common/include -I/usr/local/sce/common/include $(CDEFS)
-ASFLAGS = -I$(TOP)/include -I$(TOP)/../common/include -I/usr/local/sce/common/include $(CDEFS)
-LDFLAGS = -L$(TOP)/lib -noiopilb -G 0 -s $(LDOPT)
-
-CFLAGS  = -Wall -G 0 -O2 $(XCFLAGS)
+CFLAGS  = -I../../../include -I../../../../common/include -I. -Wall -G0 
+ASFLAGS  = -I../../../include -G0 -I../../../../common/include 
 
 #----------- customize section --------------
-MODULE   = sdrdrv
-IRX      = $(MODULE).irx
-ILB      = $(MODULE).ilb
-TBL      = $(MODULE).tbl
-ENT      = $(MODULE).o
+PROGNAME = sdrdrv
 
-SRCS = sdd_main.c sdd_com.c sdd_cb.c
-OBJS = sdd_main.o sdd_com.o sdd_cb.o $(ENT)
+OBJS     = sdd_main.o sdd_com.o sdd_cb.o 
+#ILIBS	= -ilb=$(TOP)lib/iop.ilb 
+ILIBS	=
 
 INIT_OBJ = sdd_com.o
 
-LDOPT    = 
-LIBS     = -ilb=libsd.ilb -ilb=iop.ilb
-
-all:	$(IRX) $(ILB)
-
-$(IRX): $(OBJS)
-	$(LINK.o) $(OBJS) -o $(IRX) $(LIBS)
-
-$(ILB): $(TBL)
-	ioplibgen $(TBL) -d $(ILB)
-
-$(ENT): $(TBL)
-	ioplibgen $(TBL) -e mylibent.s
-	$(AS) -o $(ENT) mylibent.s
-	$(RM) mylibent.s
-
-clean:
-	$(RM) *.o *.irx *.map *.ilb
-
-clear:
-	$(RM) *~
+#----------- rules --------------
+all:	$(PROGNAME).irx
 
 install: all
-	cp $(IRX) $(TOP)/modules
-	cp $(ILB) $(TOP)/lib
+	cp $(PROGNAME).irx ../../../modules
 
-world:	clean install
+clean:
+	rm -f *.o $(PROGNAME).irx *.map
+
+$(PROGNAME).irx: $(OBJS)
+	$(LINK.o) -s -o $@ \
+		$(OBJS) -L../../../lib -L../sd -L./  -ilb=libsd.ilb $(ILIBS)
 

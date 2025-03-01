@@ -1,0 +1,1080 @@
+<html>
+<head> 
+<title> PlayStation Develop </title>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#336699" alink="#FF6699" vlink="#008080">
+
+<A NAME="Top">
+
+
+<A NAME="0006160">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Tool Chain Release 1.6 : ee-gcc の不具合について その３</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.16
+                                                    SCEIソフトウェア開発部
+
+
+           Tool Chain Release 1.6 : ee-gcc の不具合について その３
+
+
+Tool Chain Release 1.6 に含まれる ee-gcc (version 2.9-ee-991111) において
+以下の不具合が判明いたしましたのでお伝えいたします。
+
+
+○ 症状
+
+代入コードが一部正常にコンパイルされない事がある。
+
+
+○ 解説
+
+以下のようなＣソースコードにおいて「変数をインデックスにした配列に構造体を
+代入する」部分が正常にコンパイルされず、アセンブラコードに反映されない事が
+あります。
+この不具合は最適化オプション -O2 もしくは -Os の使用時に発生する事を確認し
+ています。
+
+
+	（不具合の起こるコード例）
+
+	typedef struct{
+		int x, y;
+	}Vector __attribute__((aligned(8)));
+
+	main()
+	{
+		int n;
+		static Vector buff[3];
+		static Vector v = {1,2};
+			:
+		buff[n] = v;      /* この部分が正常にコンパイルされない */
+			:
+	}
+
+
+○ 回避方法
+
+現在、オプション追加等による回避方法は見つかっておりません。
+以下に挙げる対応をお願いいたします。
+
+  ・ Tool Chain を旧バージョン Release 1.5 もしくは Release 1.3 のもの
+     (version 2.9-ee-990721) に戻す。
+
+
+○ 今後の対応
+
+近日中に、不具合を修正した「Tool Chain ee-gcc」を登録する予定です。
+ライセンシの皆様には大変お手数をおかけ致します事、お詫び申し上げます。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006070">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/07</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Runtime Library Release 1.6 : gccchg_j.txt の誤記について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+ライセンシー各位
+
+                                                                  00.06.07
+                                                    SCEIソフトウェア開発部
+
+
+        Runtime Library Release 1.6 : gccchg_j.txt の誤記について
+
+
+Runtime Library Release 1.6 に含まれる sce/1st_read/gccchg_j.txt に記載
+されている内容に誤りがあった為、撤回させて頂きます。
+
+○ 内容
+
+- C++ のプログラムで、typedef で宣言した型に aligned でメモリ境界を指
+  定しても、その型のオブジェクトが指定の境界に配置されない場合がある不
+  具合を修正しました。
+
+○ 解説
+
+この不具合は 1.6 でも残っています。
+お手数ですが C++ をお使いの方は aligned にて改めてアラインメントを
+指定するようにして下さい（この点は今後のバージョンアップにて修正させ
+て頂きます）。
+
+以下に症状の簡単な例を示します。
+
+例：
+-------------------------------------------------------------
+#include &lt;libvu0.h&gt;
+
+typedef struct {
+    int pad[3];
+    sceVu0FVECTOR vec;
+} TEST1;
+
+typedef struct {
+    int pad[3];
+    sceVu0FVECTOR vec __attribute__ ((aligned(16)));
+} TEST2;
+
+TEST1 test1;
+TEST2 test2;
+
+int main(void)
+{
+    printf("%p\n",test1.vec);
+    printf("%p\n",test2.vec);
+    return 1;
+}
+-------------------------------------------------------------
+
+実行結果：
+-------------------------------------------------------------
+0x10b58c &lt;--- NG(*)
+0x10b5b0 &lt;--- OK
+-------------------------------------------------------------
+(*) sceVu0FVECTOR 構造体自体に aligned(16) の指定があるにも
+    関わらず 16byte アラインメントになっていない。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006051">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/05</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Tool Chain Release 1.6 : ee-gcc の不具合について その２</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.06
+                                                    SCEIソフトウェア開発部
+
+
+        Tool Chain Release 1.6 : ee-gcc の不具合について その２
+
+
+Tool Chain Release 1.6 に含まれる ee-gcc (version 2.9-ee-991111) において
+以下の不具合が判明いたしましたのでお伝えいたします。
+
+
+○ 症状
+
+ソースコードの一部がコンパイルされない場合がある。
+
+
+○ 解説
+
+1.6 の ee-gcc で新たに実装された最適化の不具合により、最適化オプション -O2
+もしくは -Os の使用時に、ソースコードの一部が正常にコンパイルされず、アセン
+ブラコードに反映されない事があります。詳細については現在確認中です。
+
+
+○ 回避策
+
+当面の回避策として、以下に挙げるいずれかの対応をお願いいたします。
+
+  1) コンパイルオプション -fno-edge-lcm を指定する。
+     これによって前述の「1.6 で新たに追加された最適化処理」を無効にします。
+
+  2) Tool Chain を旧バージョン Release 1.5 もしくは Release 1.3 のもの
+     (version 2.9-ee-990721) に戻す。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006050">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/05</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Tool Chain Release 1.6 : ee-gdb GUI版が起動しない件について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.06
+                                                    SCEIソフトウェア開発部
+
+
+        Tool Chain Release 1.6 : ee-gdb GUI版が起動しない件について
+
+
+Tool Chain Release 1.6 パッケージファイル tc_160.tgz におきまして、ファイル
+の不足による以下の不具合がありましたのでお伝えいたします。
+
+
+○ 症状
+
+ee-gdb GUI版を起動しようとすると、以下のようなエラーが出力されて起動できな
+い。
+
+  $ ee-gdb -w main.elf
+  Error: cannot use fontset "TK"
+         Using default fontset
+  Error: cannot use color scheme "TK"
+         Using default color scheme
+
+
+○ 原因
+
+パッケージ tc_160.tgz に含まれる sce/ee/gcc/share/tix4.1 以下のファイルが
+一部不足していました。
+
+
+○ 修正版の登録
+
+「ダウンロード → プログラマツール」から tc_160.tgz を削除し、新たにパッケ
+ージ tc_160a.tgz を再登録いたしました。
+
+
+○ 修復方法
+
+1.6 より以前の環境をバックアップしている場合は、sce/ee/gcc/share/tix4.1 に
+不足分のファイルをコピーする事で修復できます。再登録パッケージをダウンロー
+ドする必要はありません。
+
+  （例）
+  # cd /usr/local
+  # cp -R sce_old/ee/gcc/share/tix4.1 sce/ee/gcc/share/
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="0006010">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 00/06/01</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Tool Chain Release 1.6 : ee-gcc の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+
+                                                                  00.06.01
+                                                    SCEIソフトウェア開発部
+
+
+              Tool Chain Release 1.6 : ee-gcc の不具合について
+
+
+Tool Chain Release 1.6 に含まれる ee-gcc (version 2.9-ee-991111) において
+以下の不具合が判明いたしましたのでお伝えいたします。
+
+
+○ 症状
+
+float から int の変換が起きるようなプログラムをコンパイルする際、以下のような
+メッセージが出てエラーとなる事がある。
+
+  (例）
+  main.c:100:Could not find a spill register
+  (insn 66 172 173 (parallel[
+      (set (reg:SI 3 v1)
+        (fix:SI (reg:SF 35$f3)))
+      (clobber (scratch:SI))
+      (clobber (scratch:SF))
+    ] ) 217 {fix_truncsfsi2} (insn_list 165 (nil))
+   (expr_list:REG_DEAD(reg:SF 35 $f3)
+     (expr_list:REG_UNUSED(scratch:SI)
+      (expr_list:REG_UNUSED (scratch:SF)
+       (nil)))))
+  ../../src/gcc/toplev.c:1516: Internal compiler error in function fatal_insn
+  Please submit a Problem Report to Cygnus Solutions with send-pr.
+
+
+○ 解説
+
+通常、float 変数を int にキャストするようなコードは "cvt.w.s" 命令にコンパイル
+されますが、その際まれに上記エラーが発生する事があります。
+より詳細な発生条件については現在確認中です。
+
+
+○ 回避策
+
+当面の回避策として、以下に挙げるいずれかの対応をお願いいたします。
+
+  1) エラーが発生した行を、以下のようなインライン関数を用いて修正する。
+
+     （例）
+     extern __inline__ int FtoI(float x)
+     {
+         int ret;
+         float ff;
+         asm __volatile__ ("
+             cvt.w.s    %1,%2
+             mfc1    %0,%1
+         " : "=r"(ret),"=f"(ff) : "f"(x) );
+         return ret;
+     }
+     main(){
+         int i1;
+         float f1;
+             :
+       /*i1 = (int)(f1);          この行でエラーが発生 */
+         i1 = FtoI(f1);  /* インライン関数で置き換える */
+             :
+     }
+
+  2) Tool Chain を旧バージョン Release 1.5 もしくは Release 1.3 のもの
+     (version 2.9-ee-990721) に戻す。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9911161">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>libsd, libspu2 Ver.1.1 の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/11/16
+                                               (株)SCE ソフトウェア開発部
+
+
+                   libsd, libspu2 Ver.1.1 の不具合について
+
+
+libsd および libspu2 Ver.1.1 において、以下の不具合が判明いたしました。
+
+
+○ 症状
+
+   SPU IRQ を使用する場合、IRQ が実際よりも高い頻度で入る。
+
+○ 詳細
+
+   ボイスストリームを行なう場合（streamサンプル等）に特に問題になる。
+   常に発生するわけではなく、SPU ローカルメモリの初期状態と初期化タイミン
+   グに依存する。
+
+○ 回避策
+
+   この不具合を回避するためのオブジェクト spu_sfr.o を
+
+     [ダウンロード→プログラマツール]
+
+   に登録致しました。
+   使用方法についてはそこの情報を参照してください。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9911160">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/16</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>csl（新サウンドライブラリ）Ver.1.1 の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/11/16
+                                               (株)SCE ソフトウェア開発部
+
+
+            csl（新サウンドライブラリ）Ver.1.1 の不具合について
+
+
+ハードシンセサイザ(csl_hsyn）で、pan に不具合があり、正しい設定値にならな
+いことがあります。これは sq に設定する場合も hd（音色バンク）に設定する場
+合も同様です。この不具合は次バージョンで修正する予定です。
+
+なお、この不具合の件も含めまして、csl についての補足説明を
+
+  [技術情報→開発に関するご注意点'99]
+
+に登録致しました。御一読下さい。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9911040">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/04</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000用カーネル t10000-1020.bin について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/11/04
+                                               (株)SCE ソフトウェア開発部
+
+
+               DTL-T10000用カーネル t10000-1020.bin について
+
+
+"DTL-T10000用 Runtime Library Release 1.1" に含まれる DTL-T10000用カーネル
+"t10000-1020.bin" は、以前のカーネルに比べて以下の相違点があります。
+
+
+  ・t10000-1020.bin より以前のカーネル
+    T10000 起動時に、ＴＶモニタに「TOOL PlayStation2」の黒い画像が出る。
+
+  ・t10000-1020.bin
+    T10000 起動時に、ＴＶモニタに「TOOL PlayStation2」の黒い画像が出ない。
+    （開発ツールの動作には何ら支障ありません）
+
+
+次回のリリースより、再び「TOOL PlayStation2」画面が出るように修正致します。
+
+なお、上の内容に基づいて [技術情報→プログラマツール] の
+
+   DTL-T10000用カーネル修復ツール  99/10/08
+
+の情報を修正しました。（ファイル自体の変更はありません）
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9911020">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/11/02</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>Runtime Library Release 1.1 について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/11/02
+                                               (株)SCE ソフトウェア開発部
+
+
+                      Runtime Library Release 1.1 について
+
+
+10/29に「ダウンロード→プログラマツール」にUP致しました
+
+    elib_110.tgz    EBシリーズ用 Runtime Library Release 1.1
+    tlib_110.tgz    DTL-T10000用 Runtime Library Release 1.1
+    tc_110.tgz      Tool Chain Release 1.1
+
+におきまして、一部のディレクトリの日付が西暦2000年になっていました。
+本日修正したものを再度UPし、古いものは削除いたしました。
+
+開発ツールの動作自体には何ら影響ありませんので、既にダウンロード済みの方は
+再度ダウンロードする必要はありません。
+
+日付を修正したディレクトリを以下に挙げます。
+
+
+    [elib_110.tgz]
+     sce/ee/
+     sce/ee/gcc/
+     sce/iop/
+     sce/iop/gcc/
+
+    [tlib_110.tgz]
+     sce/ee/gcc/
+     sce/iop/gcc/
+
+    [tc_110.tgz]
+     sce/
+     sce/ee/
+     sce/ee/gcc/src/
+     sce/iop/
+     sce/iop/gcc/
+     sce/iop/gcc/src/
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9910290">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/10/29</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>T10000 と特定の HUB との 100BASE-TX 接続の問題</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/10/29
+                                               (株)SCE ソフトウェア開発部
+
+
+              T10000 と特定の HUB との 100BASE-TX 接続の問題
+
+
+○ 症状
+
+現在、DTL-T10000 と一部の HUB との組み合わせにおいて 100BASE-TX で正常に接
+続できないという症状が発生しています。以下に問題の起こる HUB と各バージョ
+ンを挙げます。
+
+    [正常に動作しないHUB]
+
+    (1) BayStack 350T (BayNetoworks/Nortel)
+        Versions: HW:RevC　FW:V1.01 SW:V2.0.2.1
+    (2) BayStack 350F-HD (BayNetoworks/Nortel)
+        Versions: HW:RevA  FW:V1.01 SW:V2.0.1.2
+        Versions: HW:RevA  FW:V1.01 SW:V2.0.2.1
+        Versions: HW:RevA  FW:V1.01 SW:V2.0.4.0
+
+
+○ 回避策
+
+上記の HUB を御使用になっている場合、または別の HUB を使っていて正常に接続
+できない症状が起きた場合は、以下の回避策を試して頂きますようお願いいたします。
+
+    1. 別の HUB を間に挟んでみる。
+    2. HUB の設定が「10BASE-T/100BASE-TX 自動認識(Autonegotiation)」に
+       なっている場合、「10BASE-T 固定」の設定に切り替えてみる。
+
+
+○ 動作確認済 HUB 一覧
+
+現在、弊社で動作確認が取れている HUB を以下に挙げます。
+
+    [動作確認済HUB]
+
+    (1) プラネックスコミュニケーションズ株式会社
+        5ポートデュアルスピードハブ                 DNS-500
+        8ポートデュアルスピードハブ(ノンスタック)   DNS-800
+        8ポートスイッチングハブ                     FX-08W
+        16ポートスイッチングハブ                    FHSW-1616NW(*)
+        (*) 工場出荷時の設定で確認
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9910220">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/10/22</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000用カーネル t10000-1002.bin の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/10/22
+                                               (株)SCE ソフトウェア開発部
+
+
+          DTL-T10000用カーネル t10000-1002.bin の不具合について
+
+
+○ 症状
+
+DTL-T10000用カーネル t10000-1002.bin において、以下の不具合がありました。
+
+・割り込みハンドラ中から iWakeupThread または iSignalSema で、割り込まれ
+  たスレッドより、高い優先順位のスレッドを Wait 状態から Run 状態にした
+  場合、FPU レジスタの一部が破壊される事がある。
+
+
+○ 対策
+
+バグ修正版のflashイメージファイル t10000-1003.bin を、臨時リリースとして
+「ダウンロード→プログラマツール」の項にＵＰ致しました。
+t10000-1002.bin から t10000-1003.bin に置き換えて御使用下さい。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9910150">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/10/15</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>DTL-T10000用カーネル t10000-1001.bin の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/10/15
+                                               (株)SCE ソフトウェア開発部
+
+
+            DTL-T10000用カーネル t10000-1001.bin の不具合について
+
+
+○ 症状
+
+DTL-T10000用カーネル t10000-1001.bin において、IOPブートが正常に行われない
+不具合がありました。
+このバグは、ユーザがIOP上のプログラムを作成している場合にのみ不具合が生じる
+ものです。IOPプログラムを作成していない場合は、特に実害はありません。
+また、EBシリーズを御使用になっている方も関係ありません。
+
+
+○ 対策
+
+バグ修正版のflashイメージファイル t10000-1002.bin を、臨時リリースとして
+「ダウンロード→プログラマツール」の項にＵＰ致しました。
+t10000-1001.bin から t10000-1002.bin に置き換えて御使用下さい。
+
+
+以上
+
+
+</pre></blockquote>
+
+<A NAME="9909090">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/09</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>ee-gcc コンパイラ 0.5.0 の不具合に関する追加事項</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/09
+                                               (株)SCE ソフトウェア開発部
+
+
+               ee-gcc コンパイラ 0.5.0 の不具合に関する追加事項
+
+
+ee-gcc コンパイラ 0.5.0 の不具合につきましては sce/1st_read/gccchg_j.txt
+で公開致しておりますが、新たな不具合が判明致しましたのでお知らせ致します。
+
+現在コンパイラの修正を進めております。次回のリリースでは修正版を出す予定
+です。
+
+
+1. 128bit 即値代入について
+
+  [症状]
+  ・第95bit が 1 かつ 第96bit 以上が全て 0 の値を代入した際、
+    第96bit 以上の bit が全て 1 になってしまう。
+  ・第31bit が 1 かつ 第32bit 以上が全て 0 の値を代入した際、
+    第32bit 以上の bit が全て 1 になってしまう。
+  ・64bit で表現可能な負の値を代入した際、上位 64bit が全て0になってしまう。
+
+  [回避策]
+  128bit の初期化は static 変数を一旦経由して下さい。
+
+    （不具合の影響を受ける例）
+    u_long128 test;
+    test = (u_long128)0x00000000876543210123456789abcdef;
+
+    （不具合の影響を受けない例）
+    static u_long128 _test = 0x00000000876543210123456789abcdefL;
+    u_long128 test;
+    test = _test;
+
+
+2. 構造体のアライメントについて
+
+   [症状]
+   typedef 宣言において、'__attribute__ ((aligned(16)))' などの
+   「アライメントを設定するアトリビュート指定」が、他の宣言部分の解釈に
+   影響を与えてしまう。
+
+   [詳細]
+   問題の起きやすい部分として libvu0.h 中の以下の行があります。
+
+     typedef float sceVu0FVECTOR[4] __attribute__ ((aligned(16)));
+
+   libvu0.h をインクルードした以下のようなソースにおいて、float v[4] が
+   16 byte 境界に配置されてしまい、構造体のサイズが不正に大きくなってしま
+   います。
+
+     （不具合の影響を受ける例）
+     #include &lt;libvu0.h&gt;
+     struct test {
+        int a;
+        int b;
+	float v[4];
+     };
+
+   [回避策]
+   実際には使わない float [4] の型を aligned(4) で定義するという方法で回避
+   できます。
+
+     （不具合の影響を受けない例）
+    #include &lt;libvu0.h&gt;
+    /* 実際には使わない float [4] の型を aligned(4) で定義する */
+    typedef float __not_used__[4] __attribute__((aligned (4)));
+     struct test {
+        int a;
+        int b;
+        float v[4];   /* すると v は 4byte 境界に配置される */
+    };
+
+
+3. エラーメッセージ中の行番号について
+
+  [症状]
+  関数形式のマクロの呼び出しが複数行に渡っているときに、その呼び出しよ
+  りも後でエラーが検出されると、エラーメッセージ中の行番号がずれる。
+
+  [回避策]
+  エラーが検出された場合、エラーメッセージが示す行番号から見てファイル
+  の終端方向の部分も調べるようにしてください。
+
+
+4. インターナルエラーについて
+
+  [症状]
+  構造体の先頭から 32KB を越える位置にあるメンバをアクセスする場合、ア
+  クセスの仕方によっては、最適化オプションを指定せずにコンパイルすると
+  インターナルエラーが発生する。
+
+    （エラーが発生する例）
+    struct FOO {
+        int a[8192];
+        int b[256];
+    };
+
+    static struct FOO x;
+    static struct FOO *foo = &x;
+    static int i = 0;
+
+    int main()
+    {
+        foo->b[i] = 0;
+        return 0;
+    }
+
+  [回避策]
+  最適化オプションを指定してください。
+
+
+5. 関数呼び出しで値が保存されるレジスタについて
+
+  [症状]
+  関数呼び出しで値が保存されるレジスタ($16, $17 等)を 128bit 幅で使用
+  する関数が、これらのレジスタの上位 64bit を保存しない。
+
+  [回避策]
+  128bit の変数を使用する関数から 128 bit の変数を使用する関数を呼び出
+  さないようにしてください(asm 文の中で使用するだけならば問題ありませ
+  ん)。
+
+
+6. anonymous union について
+
+  [症状]
+  入れ子になっている anonymous union がエラーと見なされる。
+
+  [回避策]
+  回避策はありません。コンパイラが修正されるまでは、anonymous union の
+  使用を避けるようお願いいたします。
+
+
+7. 分岐遅延スロットについて
+
+  [症状]
+  アセンブラが分岐遅延スロットに nop 以外の命令を滅多に配置しない。
+
+  [回避策]
+  この不具合が実用上の問題となることはありませんが、アセンブリ言語でプ
+  ログラミングするならば、'.set noreorder' と '.set reorder' を使うこ
+  とにより、分岐遅延スロット等に手作業で有効な命令を配置することができ
+  ます。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>割り込みコンテキストの不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/08
+                                               (株)SCE ソフトウェア開発部
+
+
+                     割り込みコンテキストの不具合について
+
+
+0.5.0 カーネル（flash-0825.bin）におきまして、以下の不具合が判明致しました
+のでお知らせ致します。
+現在カーネルの修正を進めております。次回リリースでは修正版を出す予定です。
+
+○ 症状
+
+  割り込みコンテキストから別スレッドを経由して、元のスレッドに戻ると、
+  浮動小数点レジスタ（COP1レジスタ）の一部の内容が破壊される。
+  （COP1 以外のレジスタ(GPR)は確実にプッシュ・ポップされます）
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909070">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/07</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>ee-gdb 上での sceRead() の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/07
+                                               (株)SCE ソフトウェア開発部
+
+
+                   ee-gdb 上での sceRead() の不具合について
+
+
+  ee-gdb でデバッグ中のプログラムが sceRead() を実行した際、指定バイト数の
+  ファイル入力が出来なかった場合に、sceRead() を呼び出したまま停止するとい
+  う不具合がありました。
+  ファイルのサイズを事前に確認し、ファイルの終端を越えて入力しないようにする
+  ことで回避できます。
+  この不具合は 0.6.0 にて修正する予定です。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9909060">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/09/06</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>300MHz動作の開発機における不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/09/06
+                                               (株)SCE ソフトウェア開発部
+
+
+                    300MHz動作の開発機における不具合について
+
+
+クロック300MHz で動作する開発機（９月出荷予定の正式版開発ツール等）におき
+まして、以下の不具合が判明いたしましたのでお知らせします。
+
+なお、EB-1000/2000/2000S 等の 200MHz で動作する開発機においては、不具合は
+発生いたしません。
+
+
+○ 症状
+
+COP1(FPU) の除算系命令    DIV.S, SQRT.S, RSQRT.S
+COP2(VU0) の除算系命令    DIV, SQRT, RSQRT, VDIV, VSQRT, VRSQRT
+において、まれに間違った値が返る事がある。
+
+
+○ 原因
+
+EE 内部の FDIV（浮動小数点除算器）の動作不良。
+
+
+○ ソフトウェアでの回避策
+
+以下に挙げる箇所に、除算系命令を配置しない事で回避できます。
+
+1. 分岐命令の分岐先２命令
+2. 分岐命令の後ろ３命令（分岐遅延スロットを含む）
+3. SYNC.P の直後１命令
+4. VU0 マイクロコードの先頭２命令
+
+
+○ 今後の対応
+
+ハードウェア：
+EE を修正する事で対応を進めております。将来リリースされる開発機及び実機に
+おきましては、修正版の EE を搭載する予定です。
+
+ソフトウェア：
+Ｃ言語による開発に際しては、ハードウェアの不具合を回避するコードを生成する
+ように、コンパイラを修正する事で対応を進めております。但し、アセンブラでの
+開発に際しては、プログラム上の制約事項が残る可能性があります。詳細は追って
+アナウンスさせて頂く予定です。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9908241">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/08/24</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>libkernl 0.4.0 の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/08/24
+                                               (株)SCE ソフトウェア開発部
+
+
+                       libkernl 0.4.0 の不具合について
+
+
+libkernl 0.4.0 におきまして、以下のバグが判明致しましたのでお知らせいた
+します。
+
+
+● libkernl
+
+１）sceRead() で 1byte単位でリードしていると、ファイルのシーク位置がEOFの
+    時点でハングしてしましまう事がある。
+    （当面の回避策）
+    1byteより大きい単位でリードする。
+
+２）DualShock 使用時、"pad" ドライバでsceOpenしたときに、アナログモードに
+    なっていると変な値を読み込んでしまう。
+    （当面の回避策）
+    sceOpen 時にデジタルモードにしておくか、コントローラを２つ差して
+    "pads" ドライバを使用する。
+
+３）sceOpen 時に "pad" で open すると、ペリフェラルデータが正しく読みとれ
+    ない事がある。
+    （当面の回避策）
+    GS を初期化した後、Vsync を１回待って sceOpen する。もしくはコントロ
+    ーラを２つ差して "pads" ドライバを使用する。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9908240">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/08/24</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>librspu2,libspu2,libsnd2 0.4.0 の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/08/24
+                                               (株)SCE ソフトウェア開発部
+
+
+                librspu2,libspu2,libsnd2 0.4.0 の不具合について
+
+
+暫定サウンドライブラリ 0.4.0 におきまして、以下のバグが判明致しましたので
+お知らせいたします。
+なお、次回リリース（0.5.0）では全て修正される予定です。
+
+
+● libspu2 (librspu2)
+
+１）SsVabTransCompleted, SpuIsTransferCompleted を用いて、波形転送の終了を
+    検出する際、２回目の以降の転送では、転送中でも終了したと認識される。
+    （当面の回避策）
+    SpuSetTransferCallback を使って転送終了コールバックを自分で定義するか
+    転送が終了する時間を見越して待つようにする。
+
+２）ストリーミングの再生中に、SpuSetCore()でコアを切りかえると、ストリーミ
+    ングが破綻することがある。
+    （当面の回避策）
+    ストリーミング中にはSpuSetCore()を使用しない。
+
+３）SpuGetKeyStatus(), SpuGetAllKeysStatus() で取得されるキーステータスに
+    ついて、一方のコアのキーオンのステータスが更新されると、それがもう一
+    方のコアのステータスにもコピーされてしまう。
+
+
+● libsnd2 (librspu2)
+
+１）seqの再生が途中で止まってしまうことがある。データに依存していて、再現
+    するデータならば、毎回同じ場所で止まる。
+
+２）SsVabOpenHead/SsVabTransBody で 512KB以上のVABをオープンすることができ
+    ない。ローカルメモリの512KB以上の領域に転送することもできない。
+
+３）SsVabOpenHead を複数回以上実行した場合、２回目以降のVAB-IDが正しく設定
+    されない。
+
+
+以上
+
+</pre></blockquote>
+
+<A NAME="9907080">
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table><LEFT><I>Release 99/07/08</I></LEFT>
+<table width=580>
+<tr><td align=center><img src="icons/tic0.gif" align=middle><td><font size=+2><b>カーネル flash-0624.coff の不具合について</b></font>
+</table>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<blockquote><pre>
+
+ライセンシー各位
+                                                                '99/07/08
+                                               (株)SCE ソフトウェア開発部
+
+
+              カーネル flash-0624.coff の不具合について
+
+
+○ 症状
+
+「Development Software for EE Release 0.3.0」付属のflashイメージ
+（カーネル）flash-0624.coff において、
+
+    DMAC 終了割り込みハンドラを使用した場合、割り込みハンドラから
+    復帰すると、$1 レジスタの値が破壊される
+
+という不具合がありました。
+なお、これは flash-0624.coff 固有のバグです。それ以前のバージョン
+にはこのバグはありません。
+
+
+○ 対策
+
+不具合修正版の flash イメージファイル flash-0705.coff を、
+「ダウンロード→プログラマツール」の項に登録致しました。
+flash-0624.coff から flash-0705.coff に置き換えて御使用下さい。
+
+
+以上
+
+
+</pre></blockquote>
+
+<table border=0>
+<TR><TD width=580>
+<table width=580><tr><td><img src="icons/l58b.gif" width=580 height=6></td></tr></table>
+<h4>
+<address><center><I>Copyright (c) 2000 Sony Computer Entertainment Inc.All Rights Reserved.</I></center></address>
+</h4>
+</TD></TR>
+</TABLE>
+
+</body>
+</html>

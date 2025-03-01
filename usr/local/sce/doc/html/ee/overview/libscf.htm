@@ -1,0 +1,367 @@
+<HTML>
+<HEAD>
+<TITLE> システムコンフィグレーションライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libscf.htm" SELECTED> システムコンフィグレーションライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+システムコンフィグレーション<BR>ライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 注意事項<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 システムコンフィグレーション情報の内容<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 機種による相違<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 時刻の解説<BR></A><BR>
+    <A HREF="#Heading4_2_3"> 言語の解説<BR></A><BR>
+    <A HREF="#Heading4_2_4"> テレビ画面の縦横比の解説<BR></A><BR>
+    <A HREF="#Heading4_2_5"> SPDIFの解説<BR></A><BR>
+    <A HREF="#Heading4_2_6"> 日付の表示形式の解説<BR></A><BR>
+    <A HREF="#Heading4_2_7"> 時刻の表示形式の解説<BR></A><BR>
+    <A HREF="#Heading4_2_8"> サマータイムの解説<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+    <BR>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libscfは、表示言語やテレビ画面の縦横比など、"PlayStation 2"の詳細設定画面でユーザが設定したシステムコンフィグレーション情報を取得するためのライブラリです。<BR>
+    システムコンフィグレーション情報の内容は、海外版 "PlayStation 2"と日本語版 <BR>
+    "PlayStation 2"およびDTL-T10000とでは異なりますが、libscfはこの相違を吸収します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    システムコンフィグレーションライブラリAPIを利用するのに必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libscf.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libscf.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libkernl.a(Library Release2.0以降)</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>注意事項</B>
+</A>
+</H3>
+<blockquote>
+    libscfの各関数は、スレッドセーフではありません。同時に複数のスレッドから呼び出されると誤動作を引き起こす危険があるため、複数のスレッドでlibscfの関数を呼び出す場合はセマフォなどを用いて排他制御を行ってください。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>システムコンフィグレーション情報の内容</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>機種による相違</B>
+</A>
+</H3>
+<blockquote>
+    海外版の"PlayStation 2"では、日付の表示方法やタイムゾーンの設定、サマータイムがあるかないかなどが設定できるようになっています。<BR>
+    日本版"PlayStation 2"、DTL-T10000で設定では、これらの項目は設定できませんので、以下の固定値を返すようにしています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>開発ツール<BR>DTL-T10000</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>日本版<BR>"PlayStation 2"</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>海外版<BR>"PlayStation 2"</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetLanguage</TD>
+<TD valign="TOP">SCE_JAPANESE<BR>_LANGUAGE</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetAspect</TD>
+<TD valign="TOP">SCE_ASPECT_43</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetSpdif</TD>
+<TD valign="TOP">SCE_SPDIF_ON</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetDate<BR>Notation</TD>
+<TD valign="TOP">SCE_DATE<BR>_YYYYMMDD</TD>
+<TD valign="TOP">SCE_DATE_<BR>YYYYMMDD</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGet<BR>SummerTime</TD>
+<TD valign="TOP">SCE_<BR>SUMMER<BR>TIME_OFF</TD>
+<TD valign="TOP">SCE<BR>_SUMMER<BR>TIME_OFF</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetTime<BR>Notatinon</TD>
+<TD valign="TOP">SCE_TIME_<BR>24HOUR</TD>
+<TD valign="TOP">SCE_TIME<BR>_24HOUR</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetTimeZone</TD>
+<TD valign="TOP">540</TD>
+<TD valign="TOP">540</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetLocal<BR>TimefromRTC</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceScfGetGMT<BR>fromRTC</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+<TD valign="TOP">設定値</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>時刻の解説</B>
+</A>
+</H3>
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_1">
+(1) <B>"PlayStation 2"の時刻の管理方法</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      日本版、海外版の全"PlayStation 2"は、RTCにJST(Japanese Standard Time日本標準時)を保存することで時刻を管理します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_2">
+(2) <B>"PlayStation 2"の時刻の設定方法</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ゲームのディスクを入れずに電源を入れると、詳細設定画面が表示され、そこでRTCの時刻を設定できます。<BR>
+      ここで設定する時刻は現地時刻ですが、JSTに変換されてRTCに保存されます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_3">
+(3) <B>DTL-T10000の時刻の設定方法</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      開発用コンピュータでWWWブラウザを起動し、DTL-T10000にアクセスして管理ツール画面を開き、「"PlayStation 2" RTC設定」をクリックして画面を開き、「時刻を選択する」を選択します。年・月・日・時・分をJSTで設定してください。<BR>
+      JSTはGMT(Greenwich Mean Timeグリニッジ標準時)+9時間で計算できます。<BR>
+      管理ツール画面については、DTL-T10000取扱説明書を参照してください。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_2_4">
+(4) <B>現地時刻、GMTの取得方法</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      まず、sceCdReadClockでRTCの値を取得します。<BR>
+      現地時刻を求めるには、取得したRTCの値をsceScfGetLocalTimefromRTCで変換します。<BR>
+      GMTを求めるには、取得したRTCの値をsceScfGetGMTfromRTCで変換します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>言語の解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetLanguage関数で言語設定情報を取得することができます。<BR>
+    返り値は以下のいずれかです。<BR>
+<UL>
+         <LI> SCE_JAPANESE_LANGUAGE		日本語<BR>
+         <LI> SCE_ENGLISH_LANGUAGE		英語<BR>
+         <LI> SCE_FRENCH_LANGUAGE		フランス語<BR>
+         <LI> SCE_SPANISH_LANGUAGE		スペイン語<BR>
+         <LI> SCE_GERMAN_LANGUAGE		ドイツ語<BR>
+         <LI> SCE_ITALIAN_LANGUAGE		イタリア語<BR>
+         <LI> SCE_DUTCH_LANGUAGE		オランダ語<BR>
+         <LI> SCE_PORTUGUESE_LANGUAGE	ポルトガル語<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>テレビ画面の縦横比の解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetAspect関数でテレビ画面の縦横比の設定を取得することができます。<BR>
+    戻り値は以下のいずれかです。<BR>
+<UL>
+         <LI> SCE_ASPECT_43	4:3<BR>
+         <LI> SCE_ASPECT_FULL	FULL SCREEN<BR>
+         <LI> SCE_ASPECT_169	16:9<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>SPDIFの解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetSpdif関数でSPDIFの設定を取得することができます。<BR>
+    SPDIFを有効にしているとSCE_SPDIF_ONを返し、無効にしているとSCE_SPDIF_OFFを返します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>日付の表示形式の解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetDateNotation関数で日付の表示形式を取得することができます。<BR>
+    戻り値はSCE_DATE_YYYYMMDD,SCE_DATE_MMDDYYYY,SCE_DATE_DDMMYYYYのいずれかです。<BR>
+    タイトルアプリケーションで日付を表示する際には、この表示形式に従ってください。<BR>
+    具体例をあげると2000年10月23日の表示は、<BR>
+    SCE_DATE_YYYYMMDD	2000/10/23<BR>
+    SCE_DATE_MMDDYYYY	10/23/2000<BR>
+    SCE_DATE_DDMMYYYY	23/10/2000 のようにしてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>時刻の表示形式の解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetTimeNotation関数で時刻の表示方法を返します。<BR>
+    返り値はSCE_TIME_24HOURまたはSCE_TIME_12HOURのいずれかです。<BR>
+    タイトルアプリケーションで時刻を表示する際には、この表示形式に従ってください。<BR>
+    具体例として15:00:00の表示は、<BR>
+    SCE_TIME_24HOUR 24時間制	15:00:00<BR>
+    SCE_TIME_12HOUR 12時間制	03:00:00 PM のようにしてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>サマータイムの解説</B>
+</A>
+</H3>
+<blockquote>
+    sceScfGetSummerTime関数でサマータイムが設定されているか取得することができます。<BR>
+    返り値がSCE_SUMMERTIME_ONのとき、そのタイムゾーンの標準時刻を1時間進めます。<BR>
+    SCE_SUMMERTIME_OFFのとき標準時刻はそのままです。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

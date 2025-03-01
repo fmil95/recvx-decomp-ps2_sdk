@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Installing on Win32</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Installing on Win32</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-7.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-489909"></A><A NAME="22321"></A>Installing on Win32</H2>
+<OL>
+<LI>
+<A NAME="pgfId-489915"></A>Insert the CD.<TT CLASS="Code">
+</TT>
+</LI>
+<LI>
+<A NAME="pgfId-489924"></A>Make sure that you have <TT CLASS="Code">
+unzip.exe.</TT>
+ </LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489949"></A>It should be available on the CD.</P>
+<OL>
+<LI>
+<A NAME="pgfId-489480"></A>Create a directory.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489582"></A>Use the following commands to create a directory called <TT CLASS="Code">
+C:&#92;&gt;CYGNUS </TT>
+and <TT CLASS="Code">
+cd</TT>
+ into that directory:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489581"></A><STRONG CLASS="CodeOutput">
+C:&#92;&gt;</STRONG>
+ <TT CLASS="Code">
+mkdir C:&#92;CYGNUS</TT>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489587"></A><STRONG CLASS="CodeOutput">
+C:&#92;&gt;</STRONG>
+ <TT CLASS="Code">
+cd C:&#92;CYGNUS</TT>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489588"></A><STRONG CLASS="CodeOutput">
+C:&#92;CYGNUS&gt;</STRONG>
+<TT CLASS="Code">
+</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-489464"></A>Extract the zipfile.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-490021"></A>Note: all subsequent instructions assume that you are installing from the CD and that the CD-ROM drive is <STRONG CLASS="CodeOutput">
+D:&#92;</STRONG>
+.</P>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-490024"></A>Use the following command:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489636"></A><STRONG CLASS="CodeOutput">
+C:&#92;CYGNUS&gt;</STRONG>
+ <TT CLASS="Code">
+d:&#92;unzip d:&#92;ee.zip</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489638"></A>For the Win32 toolchain the libraries are installed in different locations. Therefore, the Win32 hosted toolchain requires the following environmental settings to function properly. Assume the release is installed in <TT CLASS="Code">
+C:&#92;CYGNUS</TT>
+.</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-489663"></A>SET PROOT=C:&#92;cygnus&#92;ee-<VAR CLASS="CodeVariant">
+&lt;yymmdd&gt;</VAR>
+</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-489664"></A>SET PATH=%PROOT%&#92;H-i586-cygwin32&#92;BIN;%PATH%</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-489665"></A>SET INFOPATH=%PROOT%&#92;info</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-489666"></A>REM Set TMPDIR to point to a ramdisk if you have one</P>
+<P CLASS="CodeExample2">
+<A NAME="pgfId-489686"></A>SET TMPDIR=%PROOT%</P>
+<OL>
+<LI>
+<A NAME="pgfId-489687"></A>Add the bin directory that is created by the extraction, to your path.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489854"></A>On Windows NT, click on <SPAN CLASS="Bold">
+Start</SPAN>
+ -&gt; <SPAN CLASS="Bold">
+Settings</SPAN>
+ -&gt; <SPAN CLASS="Bold">
+Control Panel</SPAN>
+. The Control Panel window opens. Select the <SPAN CLASS="Bold">
+System</SPAN>
+ icon. In the System Properties window, select the <SPAN CLASS="Bold">
+Environment</SPAN>
+ tab. Enter the appropriate settings (as shown below) in the Variable and Value dialog boxes.</P>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489702"></A>On Windows 95 or Windows 98, open the file<TT CLASS="Code">
+ autoexec.bat </TT>
+in the root directory of the boot drive. Add the following variable settings:</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489690"></A>SET PROOT=C:&#92;cygnus&#92;ee-<VAR CLASS="CodeVariant">
+&lt;yymmdd&gt;</VAR>
+</P>
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489720"></A>SET PATH=%PROOT%&#92;H-i586-cygwin32&#92;BIN;%PATH%</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-489203"></A>Set the <TT CLASS="Code">
+INFOPATH</TT>
+ environment variable.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489217"></A>Using the following command:  </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489216"></A><TT CLASS="Code">
+SET INFOPATH=%PROOT%&#92;info</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<OL>
+<LI>
+<A NAME="pgfId-489235"></A>Set the <TT CLASS="Code">
+TMPDIR</TT>
+ environment variable.</LI>
+</OL>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489243"></A>Use the following command: </P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CodeScreen2">
+<A NAME="pgfId-489242"></A>SET TMPDIR=%PROOT%</P>
+</TD>
+</TR>
+</TABLE>
+<P CLASS="NumberedFollow">
+<A NAME="pgfId-489266"></A>You are done. Everything is set up and you can use the GNUPro Toolkit.</P>
+<TABLE>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+</TD>
+</TR>
+</TABLE>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Installing on Win32</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-6.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-7.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-9.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

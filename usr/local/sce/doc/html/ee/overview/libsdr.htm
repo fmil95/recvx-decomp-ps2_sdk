@@ -1,0 +1,701 @@
+<HTML>
+<HEAD>
+<TITLE> 低レベルサウンドライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libsdr.htm" SELECTED> 低ﾚﾍﾞﾙｻｳﾝﾄﾞﾗｲﾌﾞﾗﾘ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+低レベルサウンドライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 機能解説<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> libsd関数一覧<BR></A><BR>
+    <A HREF="#Heading4_2_2"> バッチコマンド一覧<BR></A><BR>
+    <A HREF="#Heading4_2_3"> レジスタマクロ一覧<BR></A><BR>
+    <A HREF="#Heading4_2_4"> スレッドプライオリティの変更<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 注意事項<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> ノンブロッキング処理とコールバック<BR></A><BR>
+    <A HREF="#Heading4_3_2"> 複数スレッドからの呼び出し（再入）<BR></A><BR>
+    <A HREF="#Heading4_3_3"> 転送データのメモリ配置<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libsdrは、IOPに接続されているSPU2をEE側でリモート制御する低レベルサウンドライブラリです。libsdrのルーチンはIOP側にあるドライバモジュールと協調して動作し、IOP用の低レベルサウンドライブラリlibsdと同等の機能をEEアプリケーションに提供します。処理の本体はIOP側のドライバモジュールで実行されますので、EE側ではコマンドを発行してただちにリターンする、ノンブロック処理が可能になっています。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sdrn1.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    libsdrを使用するには次のファイルが必要です。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリ</TD>
+<TD valign="TOP">libsdr.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libsdr.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">ランタイムモジュール<BR>(IOP側)</TD>
+<TD valign="TOP">sdrdrv.irx<BR>libsd.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>機能解説</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>libsd関数一覧</B>
+</A>
+</H3>
+<blockquote>
+    libsdrを通じて呼び出せるlibsdの関数一覧を次に示します。<BR>
+    呼び出し方法についてはsceSdRemote()の説明、各関数の機能詳細についてはlibsdのドキュメントを参照してください。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>libsd関数名</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdInit</TD>
+<TD valign="TOP">サウンドデバイスの初期化</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetParam</TD>
+<TD valign="TOP">基本パラメータレジスタへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdGetParam</TD>
+<TD valign="TOP">基本パラメータレジスタの読み出し</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetSwitch</TD>
+<TD valign="TOP">ボイス制御パラメータレジスタへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdGetSwitch</TD>
+<TD valign="TOP">ボイス制御パラメータの読み出し</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetAddr</TD>
+<TD valign="TOP">アドレス値レジスタへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdGetAddr</TD>
+<TD valign="TOP">アドレス値レジスタの読み出し</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetCoreAttr</TD>
+<TD valign="TOP">コア設定擬似レジスタへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdGetCoreAttr</TD>
+<TD valign="TOP">コア設定擬似レジスタの読み出し</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdProcBatch</TD>
+<TD valign="TOP">バッチ処理</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdProcBatchEx</TD>
+<TD valign="TOP">バッチ処理 ボイス一括処理付き</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdVoiceTrans</TD>
+<TD valign="TOP">SPU2ローカルメモリへの転送</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdBlockTrans</TD>
+<TD valign="TOP">入出力ブロックへの転送</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdVoiceTransStatus</TD>
+<TD valign="TOP">ボイス転送の状態取得</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdBlockTransStatus</TD>
+<TD valign="TOP">入出力ブロック転送の状態取得</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetTransCallback</TD>
+<TD valign="TOP">転送の割り込みコールバックの設定</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetIRQCallback</TD>
+<TD valign="TOP">IRQの割り込みコールバックの設定</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdSetEffectAttr</TD>
+<TD valign="TOP">エフェクト属性の設定</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdGetEffectAttr</TD>
+<TD valign="TOP">エフェクト属性の取得</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdClearEffectWorkArea</TD>
+<TD valign="TOP">エフェクトワークエリアのクリア</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdNote2Pitch</TD>
+<TD valign="TOP">ノート値からピッチ値への変換</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceSdPitch2Note</TD>
+<TD valign="TOP">ピッチ値からノート値への変換</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>バッチコマンド一覧</B>
+</A>
+</H3>
+<blockquote>
+    sceSdProcBatch()およびsceSdProcBatchEx()を使用すると、一連のバッチコマンドをまとめてIOP側へ指示し実行させることができます。バッチコマンドの一覧を次に示します。それぞれの詳細はlibsdのドキュメントを参照してください。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>バッチコマンド</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BSET_PARAM</TD>
+<TD valign="TOP">sceSdSetParam()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BGET_PARAM</TD>
+<TD valign="TOP">sceSdGetParam()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BSET_SWITCH</TD>
+<TD valign="TOP">sceSdSetSwitch()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BGET_SWITCH</TD>
+<TD valign="TOP">sceSdGetSwitch()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BSET_ADDR</TD>
+<TD valign="TOP">sceSdSetAddr()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BGET_ADDR</TD>
+<TD valign="TOP">sceSdGetAddr()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BSET_CORE</TD>
+<TD valign="TOP">sceSdSetCoreAttr()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_BGET_CORE</TD>
+<TD valign="TOP">sceSdGetCoreAttr()を実行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_WRITE_IOP</TD>
+<TD valign="TOP">IOPメモリへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_WRITE_EE</TD>
+<TD valign="TOP">EEメモリへの書き込み</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_RETURN_EE</TD>
+<TD valign="TOP">returnsをEEメモリに転送</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>レジスタマクロ一覧</B>
+</A>
+</H3>
+<blockquote>
+    libsdrではSPU2の各レジスタを指定するために、libsdで定義されているレジスタマクロを使用します。レジスタマクロの一覧を次に示します。詳細はlibsdおよびSPU2のドキュメントを参照してください。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_1">
+(1) <B>基本パラメータレジスタマクロ</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボイスボリューム（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボイスボリューム（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_PITCH</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">発音時のピッチ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ADSR1</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ADSR2</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ（２）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ENVX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ現在値</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボリューム現在値（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボリューム現在値（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MMIX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイスミキシング後の出力指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリューム（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリューム（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_EVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクトリターンボリューム<BR>（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_EVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクトリターンボリューム<BR>（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_AVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">コア外部入力のボリューム（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_AVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">コア外部入力のボリューム（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_BVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">サウンドデータ入力のボリューム<BR>（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_BVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">サウンドデータ入力のボリューム<BR>（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリュームの現在値 (左)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリュームの現在値 (右)</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    <BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_2">
+(2) <B>ボイス制御パラメータレジスタマクロ</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_PMON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ピッチ変調の指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_NON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ノイズ発生器への割り当て</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_KON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">キーオン（ボイス発音開始）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_KOFF</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">キーオフ（ボイス発音終了）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_ENDX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エンドポイント通過フラグ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Dry 左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Dry 右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXEL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Wet 左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXER</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Wet 右）</TD>
+</TR>
+</TABLE>
+<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_3">
+(3) <B>アドレス値レジスタマクロ</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_SSA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">波形データの先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_LSAX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ループポイントのアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_NAX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">次に読みこまれるべき波形データ<BR>のアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_ESA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト処理用作業領域の<BR>先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_EEA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト処理用作業領域の<BR>終端アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_TSA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">転送開始アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_IRQA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">割り込みアドレスの指定</TD>
+</TR>
+</TABLE>
+<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_2_3_4">
+(4) <B>エントリ（擬似レジスタマクロ）</B>
+</A>
+</H4>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>マクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_EFFECT_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト領域への<BR>書き込み許可</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_IRQ_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">IRQ割り込み許可</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_MUTE_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ミュート</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_NOISE_CLK</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ノイズ発生器のM系列シフト<BR>周波数</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_SPDIF_MODE</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">SPDIFの設定（マスク）</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>スレッドプライオリティの変更</B>
+</A>
+</H3>
+<blockquote>
+    IOP側で動作するドライバモジュールsdrdrv.irxのスレッドプライオリティを変更することができます。変更方法は<BR>
+    <OL>
+         <LI VALUE= 1> ソースコードを改変する<BR>
+         <LI VALUE= 2> モジュールロード時に指定する<BR>
+         <LI VALUE= 3> 実行中に変更する<BR>
+    </OL>
+    の３通りがあります。<BR>
+    ソースコードを改変する場合は、sdrdrvのソースコードにおいてsdd_main.c（メインスレッド）およびsdd_com.c（コールバックスレッド）内のスレッドを作成している部分で、param.initPriorityに指定している値を変更してください。<BR>
+    モジュールロード時に指定するには、sceSifLoadModule()の引数として、次のようにスレッドプライオリティ値を指定します。<BR>
+<PRE>        char arg[] = "thpri=24,24";
+        sceSifLoadModule( "host0:/usr/local/sce/iop/modules/sdrdrv.irx",
+          strlen( arg ) + 1, arg );
+</PRE>
+    sdrdrv.irxのスレッドは２つあり、最初に指定するのがメインスレッドに設定されるプライオリティ値、２番目に指定するのがコールバックスレッドに設定されるプライオリティ値です。デフォルト値はどちらも24です。コールバックスレッドのプライオリティ値はメインスレッドのプライオリティ値と同じか大きい値（つまり、より低いプライオリティ）でなければいけません。<BR>
+    実行中に変更するには、sceSdRemote()にてコマンドrSdChangeThreadPriorityを指定して呼び出します。この場合も２つのスレッドプライオリティをモジュールロード時と同じ順序で引数として指定し、同時に変更します。詳しくは関数リファレンスを参照してください。<BR>
+    <BR>
+    スレッドプライオリティ値を変更する場合は、他のモジュールのプライオリティに対して細心の注意を払う必要があります。安易にIOPスレッドプライオリティ値を変更することはお勧めいたしません。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>注意事項</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>ノンブロッキング処理とコールバック</B>
+</A>
+</H3>
+<blockquote>
+    libsdの関数を呼び出すsceSdRemote()は、ブロッキング処理とノンブロッキング処理を引数で指定することができます。ブロッキング処理の場合、sceSdRemote()はIOP側ドライバモジュールに対してコマンドを発行してから、その処理が終わるまで待ち、結果を返値として返します。ノンブロッキング処理の場合は、コマンドを発行するとIOP側の処理を待たず、返値は0としてただちにリターンします。<BR>
+    IOP側の処理が終わらないうちに、次のコマンドを送ると誤動作することがあります。ノンブロッキング処理の場合にIOP側の処理終了を知るには、sceSdRemoteCallBack()を用いて終了コールバック関数を設定するか、バッチコマンドのSD_WRITE_EEやSD_RETURN_EEを用いてポーリングしてください。終了コールバックを使用するとコンテキストスイッチを起こすことになりますので、EEの処理効率を重視するのであればポーリングが有利です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>複数スレッドからの呼び出し（再入）</B>
+</A>
+</H3>
+<blockquote>
+    libsdrは再入可能（re-entrant）ではありません。複数のスレッドから非同期にlibsdrの関数を呼び出す場合は、お互いの呼び出しが重ならないように注意する必要があります。<BR>
+    RPCの再入について「SIFシステム」ドキュメントに解説がありますので、再入の起こるしくみや防止法など参考にしてください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>転送データのメモリ配置</B>
+</A>
+</H3>
+<blockquote>
+    sceSdRemote()でエフェクト属性を設定 / 取得する場合、またEEメモリへの書き込みを伴うバッチコマンド（SD_WRITE_EE / SD_RETURN_EE）を実行する場合は、libsdr内部でSIF DMA転送を使用するため、DMA転送に関する一般的な注意事項を意識する必要があります。<BR>
+    まず、転送するメモリのアライメントに注意してください。EE側は16byte、IOP側は4byte境界に合わせるように、コンパイラのattribute機能で設定しなければなりません。<BR>
+    もうひとつ、メインメモリとキャッシュとの整合性にも注意してください。EEにはバススヌープ機能がないため、IOPからEEにDMA転送が行われた後EE側で同じキャッシュライン上の他の変数にアクセスがあると、DMA転送した領域がライトバックによって書きつぶされてしまうケースがあります。そうならないようにメモリ配置を計画してください。EEのキャッシュラインのサイズは64byteなので、64byteアライメントに合わせれば（メモリの利用効率は落ちますが）安全です。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

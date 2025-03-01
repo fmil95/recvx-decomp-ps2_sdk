@@ -1,0 +1,3725 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> i.LINK ドライバライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>i.LINK ドライバライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>i.LINKデバイスドライバの操作一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sce1394ConfGet>sce1394ConfGet </A><BR>
+</TD><TD> </TD>
+<TD>i.LINKデバイスドライバの動作パラメータ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394ConfSet>sce1394ConfSet </A><BR>
+</TD><TD> </TD>
+<TD>i.LINKデバイスドライバの動作パラメータ設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394Destroy>sce1394Destroy </A><BR>
+</TD><TD> </TD>
+<TD>デバイスドライバの使用中止</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394Initialize>sce1394Initialize </A><BR>
+</TD><TD> </TD>
+<TD>i.LINKデバイスドライバのロードと初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394UnitAdd>sce1394UnitAdd </A><BR>
+</TD><TD> </TD>
+<TD>ユニットディレクトリの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394UnitDelete>sce1394UnitDelete </A><BR>
+</TD><TD> </TD>
+<TD>ユニットディレクトリの削除</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>SB_CONTROL.request一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbCycleTime>sce1394SbCycleTime </A><BR>
+</TD><TD> </TD>
+<TD>サイクルタイムの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbDisable>sce1394SbDisable </A><BR>
+</TD><TD> </TD>
+<TD>シリアルバスのディスエーブル</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbEnable>sce1394SbEnable </A><BR>
+</TD><TD> </TD>
+<TD>シリアルバスのイネーブル</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbEui64>sce1394SbEui64 </A><BR>
+</TD><TD> </TD>
+<TD>自ノードのEUI64取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbGenNumber>sce1394SbGenNumber </A><BR>
+</TD><TD> </TD>
+<TD>generation numberの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbNodeCount>sce1394SbNodeCount </A><BR>
+</TD><TD> </TD>
+<TD>ノード数の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbNodeID>sce1394SbNodeID </A><BR>
+</TD><TD> </TD>
+<TD>自ノードのノードID取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbPhyPacket>sce1394SbPhyPacket </A><BR>
+</TD><TD> </TD>
+<TD>PHYパケットの送信（未実装）</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbReset>sce1394SbReset </A><BR>
+</TD><TD> </TD>
+<TD>バスリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394SbSelfId>sce1394SbSelfId </A><BR>
+</TD><TD> </TD>
+<TD>Self-IDの取得</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>SB_EVENT.indication一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sce1394EvAlloc>sce1394EvAlloc </A><BR>
+</TD><TD> </TD>
+<TD>イベントバッファの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394EvFree>sce1394EvFree </A><BR>
+</TD><TD> </TD>
+<TD>イベントバッファの削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394EvPoll>sce1394EvPoll </A><BR>
+</TD><TD> </TD>
+<TD>イベントの発生調査</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394EvWait>sce1394EvWait </A><BR>
+</TD><TD> </TD>
+<TD>イベント発生待ち</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>TR_DATA.indication / TR_DATA.response一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#callbackFunc>callbackFunc </A><BR>
+</TD><TD> </TD>
+<TD>簡易形式コールバック関数</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#rawCallbackFunc>rawCallbackFunc </A><BR>
+</TD><TD> </TD>
+<TD>直接形式コールバック関数</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrDataInd>sce1394TrDataInd </A><BR>
+</TD><TD> </TD>
+<TD>コールバック関数の登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrDataUnInd>sce1394TrDataUnInd </A><BR>
+</TD><TD> </TD>
+<TD>コールバック関数の削除</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>TR_DATA.request / TR_DATA.confirmation一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrAlloc>sce1394TrAlloc </A><BR>
+</TD><TD> </TD>
+<TD>トランザクションハンドルの作成</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrFree>sce1394TrFree </A><BR>
+</TD><TD> </TD>
+<TD>トランザクションコンテクストの解放</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrGetBlockSize>sce1394TrGetBlockSize </A><BR>
+</TD><TD> </TD>
+<TD>ブロックサイズの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrGetDest>sce1394TrGetDest </A><BR>
+</TD><TD> </TD>
+<TD>対象ノードIDの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrGetExtension>sce1394TrGetExtension </A><BR>
+</TD><TD> </TD>
+<TD>ユーザーデータの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrGetGenNumber>sce1394TrGetGenNumber </A><BR>
+</TD><TD> </TD>
+<TD>generation numberの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrGetSpeed>sce1394TrGetSpeed </A><BR>
+</TD><TD> </TD>
+<TD>送信レートの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrLock>sce1394TrLock </A><BR>
+</TD><TD> </TD>
+<TD>ロックトランザクション</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrRead / sce1394TrReadV>sce1394TrRead / sce1394TrReadV </A><BR>
+</TD><TD> </TD>
+<TD>リードトランザクション</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrSetBlockSize>sce1394TrSetBlockSize </A><BR>
+</TD><TD> </TD>
+<TD>ブロックサイズの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrSetDest>sce1394TrSetDest </A><BR>
+</TD><TD> </TD>
+<TD>対象ノードIDの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrSetExtension>sce1394TrSetExtension </A><BR>
+</TD><TD> </TD>
+<TD>ユーザーデータの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrSetGenNumber>sce1394TrSetGenNumber </A><BR>
+</TD><TD> </TD>
+<TD>generation numberの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrSetSpeed>sce1394TrSetSpeed </A><BR>
+</TD><TD> </TD>
+<TD>送信レートの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrStatus>sce1394TrStatus </A><BR>
+</TD><TD> </TD>
+<TD>レスポンスコードと終了ステータスの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394TrWrite / sce1394TrWriteV>sce1394TrWrite / sce1394TrWriteV </A><BR>
+</TD><TD> </TD>
+<TD>ライトトランザクション</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>Config-ROM access support一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrCapability>sce1394CrCapability </A><BR>
+</TD><TD> </TD>
+<TD>ノードのケーパビリティ情報取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrEui64>sce1394CrEui64 </A><BR>
+</TD><TD> </TD>
+<TD>EUI64の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrFindNode>sce1394CrFindNode </A><BR>
+</TD><TD> </TD>
+<TD>ノードIDの検索</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrFindUnit>sce1394CrFindUnit </A><BR>
+</TD><TD> </TD>
+<TD>ユニットディレクトリの検索</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrGenNumber>sce1394CrGenNumber </A><BR>
+</TD><TD> </TD>
+<TD>Config-ROM情報のgeneration number取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrMaxRec>sce1394CrMaxRec </A><BR>
+</TD><TD> </TD>
+<TD>max_rec情報の取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrMaxSpeed>sce1394CrMaxSpeed </A><BR>
+</TD><TD> </TD>
+<TD>最大転送レートの取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sce1394CrRead>sce1394CrRead </A><BR>
+</TD><TD> </TD>
+<TD>Config-ROMの内容取得</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>i.LINKデバイスドライバの操作</H2></U>
+</DIV>
+<A name=sce1394ConfGet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394ConfGet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        i.LINKデバイスドライバの動作パラメータ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394ConfGet</B>(
+	int <I>member</I>, 
+	...
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>member</I>	パラメータの種別を表す次のいずれかの値
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>パラメータ種別</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_PRIORITY</TD>
+<TD valign="TOP">ドライバスレッドの優先度<BR>（＊変更予定あり＊）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_TRSIZE_MASTER</TD>
+<TD valign="TOP">送出するトランザクションの<BR>最大ペイロードサイズ（バイト）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_TRSIZE_SLAVE</TD>
+<TD valign="TOP">受信するトランザクションの<BR>最大ペイロードサイズ（バイト）</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    i.LINKデバイスドライバの現在の動作パラメータを返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    i.LINKデバイスドライバの現在の動作パラメータを返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394ConfSet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394ConfSet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        i.LINKデバイスドライバの動作パラメータ設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394ConfSet</B>(
+	int <I>member</I>,
+	int <I>value</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>member</I>	パラメータの種別を表す次のいずれかの値
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>パラメータ種別</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_PRIORITY</TD>
+<TD valign="TOP">ドライバスレッドの優先度<BR>（＊変更予定あり＊）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_TRSIZE_MASTER</TD>
+<TD valign="TOP">送出するトランザクションの<BR>最大ペイロードサイズ（バイト）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_TRSIZE_SLAVE</TD>
+<TD valign="TOP">受信するトランザクションの最大<BR>ペイロードサイズ（バイト）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394CF_NODE_CAPABILITY</TD>
+<TD valign="TOP">ノードケーパビリティ</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<I>value</I>	パラメータとして設定する値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    以前の動作パラメータの値を返す。 <BR>
+    エラーとして、次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    i.LINKデバイスドライバの動作パラメータを設定する。 <BR>
+    優先度は<I>value</I>と<I>value</I>+1の二種類が設定される（＊変更予定あり＊）。 <BR>
+    最大ペイロードサイズの初期値は122であり、0の指定は初期値を意味する。ハードウエアの扱える値を越える場合、SCE1394ERR_INVALID_ARGUMENTを返す。ハードウエア資源が他の用途で使用中の場合はSCE1394ERR_RESOURCE_UNAVAILABLEを返す。 <BR>
+    ノードケーパビリティはコンフィグレーションROMのBus_Info_Block中の第5バイトの値で指定する（irmc / cmc / isc / bmc / pmc）。実装されていない機能を指定した場合はエラーとなり、状態は変更されない。現在cmcのみが実装済。 <BR>
+    そのノードがルートである場合にcmcをイネーブルすると、サイクルスタートパケットの送信が開始される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394Destroy>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394Destroy
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デバイスドライバの使用中止
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394Destroy</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    新しいドライバ参照数を返す。 <BR>
+    エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    i.LINKデバイスドライバの使用を止める。具体的には、ドライバの参照数を1減らし、0であればデバイスドライバをリセットしてリソースを解放する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394Initialize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394Initialize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        i.LINKデバイスドライバのロードと初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394Initialize</B>(
+	void *<I>arg</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>arg</I>	NULLを指定しなければならない
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    以前のドライバ参照数を返す。 <BR>
+    エラーとして、次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    i.LINKデバイスドライバをロードし初期化する。具体的には、ドライバの参照数を1増やし、以前の参照数を返す。すでに初期化済の場合は初期化処理は行わない。 <BR>
+    ドライバスレッド（複数）は36, 37の二種類の優先度で作成される（28, 34の二種類に変更される予定）。 <BR>
+    初期化直後はシリアルバスがディスエーブルされた状態になっているため、sce1394SbEnable()を呼び出すまでパケットの送受信はできない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394UnitAdd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394UnitAdd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユニットディレクトリの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394UnitAdd</B>(
+	int <I>size</I>,
+	u_int *<I>dir</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>size</I>	イメージデータのquadlet数
+<I>dir</I>		ユニットディレクトリイメージ（host byte order）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ユニットディレクトリの識別子（id &gt; 0）を返す。 <BR>
+    エラーとして、次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Config-ROMのルートディレクトリにユニットディレクトリを追加し、識別子（id &gt; 0）を返す。 <BR>
+    イメージデータの先頭にはディレクトリサイズが含まれていなければならないが、CRCは自動生成される。 <BR>
+    ユニットディレクトリにはサブディレクトリ等が含まれていてもよい。サブディレクトリ等のCRCはあらかじめ設定しておかなければならない。 <BR>
+    ユニット数、イメージサイズは有限である。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394UnitDelete>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394UnitDelete
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユニットディレクトリの削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394UnitDelete</B>(
+	int <I>id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>		ユニットディレクトリの識別子
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ID <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    識別子<I>id</I>で指定されたユニットディレクトリを削除する。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>SB_CONTROL.request</H2></U>
+</DIV>
+</blockquote>
+<A name=sce1394SbCycleTime>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbCycleTime
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        サイクルタイムの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sce1394SbCycleTime</B>(
+	u_int *<I>bus_time</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>bus_time</I>		BUS_TIMEの値をコピーするバッファまたはNULL
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CYCLE_TIME CSRとBUS_TIME CSRの値を取得する。正常時には、返す値は0xfff3fbff以下となる。 <BR>
+    エラーとして、次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自らがcycle-masterでなく、以前の呼びだしから現在までの間、cycle-startパケットを受信できなかったことがある場合、(u_int)SCE1394ERR_RESOURCE_UNAVAILABLEを返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbDisable>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbDisable
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        シリアルバスのディスエーブル
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbDisable</B>(
+	int <I>reset</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>reset</I>	bus-reset発行の有無
+	0 : 発行しない
+	1 : 発行する
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    以前のバス状態を返す（0: disabled, 1: enabled)。 <BR>
+    エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    シリアルバスでのパケット送受信を禁止し、外部からのパケットに応答しないようにする。<I>reset</I>の指定により、同時にbus-resetを発行することができる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbEnable>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbEnable
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        シリアルバスのイネーブル
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbEnable</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    以前のバス状態を返す（0: disabled, 1: enabled）。 <BR>
+    エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    シリアルバスでのパケット送受信を可能にする。 <BR>
+    最初のsce1394Initialize()直後はディスエーブル状態となっている。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbEui64>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbEui64
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        自ノードのEUI64取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394SbEui64</B>(
+	u_int *<I>buff</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>buff</I>	EUI64を返す2quadletのバッファ
+	<I>buff</I>[0]	上位32bit
+	<I>buff</I>[1]	下位32bit
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自分自身の64bit Extended Unique IDを取得し、<I>buff</I>が指す領域にhost byte orderで格納する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbGenNumber>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbGenNumber
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        generation numberの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbGenNumber</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    generation number（ &gt;= 0 ）を返す。 <BR>
+    エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    バスのgeneration numberを返す。 <BR>
+    generation numberはbus-resetを検出するごとにインクリメントされる値で、この関数を二度呼び出す間に値が変化していればバス構成が変化したことになり、この間に取得した情報が無効となっている可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbNodeCount>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbNodeCount
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ノード数の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbNodeCount</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノード数を返す。Self-IDを受信できていないときは0を返す。 <BR>
+    また、エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に受信したSelf-IDデータから得られるノード数を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbNodeID>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbNodeID
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        自ノードのノードID取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbNodeID</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自分自身のノードIDを返す。 <BR>
+    エラーとしてSCE1394ERR_NOT_INITIALIZEDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自分自身のノードID（BUS-IDとPHY-IDを連結した16bit値）を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbPhyPacket>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbPhyPacket
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PHYパケットの送信（未実装）
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbPhyPacket</B>(
+	int <I>request</I>,
+	 u_int <I>arg</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>request</I>	PHYパケットの種類
+		RAWPACKET
+		LINKON
+		GAPCOUNT
+		ROOTHOLD
+<I>arg</I>	PHYパケットに含めるパラメータ、またはPHYパケットそのもの
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NOT_SUPPORTED <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PHYパケットを送信する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        バスリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394SbReset</B>(
+	int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>flag</I>	0を指定しなければならない
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    PHYに（short）bus-resetを要求する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394SbSelfId>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394SbSelfId
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Self-IDの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394SbSelfId</B>(
+	int <I>nquad</I>,
+	u_int *<I>buff</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nquad</I>	バッファサイズ（quadlet）
+<I>buff</I>	転送先バッファアドレス（4byte整合）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Self-IDのquadlet数を返す。Self-IDを受信できていない場合は0を返す。 <BR>
+    また、エラーとしてSCE1394ERR_INVALID_ARGUMENTを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に受信したSelf-IDデータをhost byte orderとしてバッファへコピーし、Self-IDの実際のquadlet数を返す。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>SB_EVENT.indication</H2></U>
+</DIV>
+</blockquote>
+<A name=sce1394EvAlloc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394EvAlloc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントバッファの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394EvAlloc</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    作成したイベントバッファのid（ &gt; 0 ）を返す。 <BR>
+    エラーとして、次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントバッファを作成し、そのid（ &gt; 0 ）を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394EvFree>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394EvFree
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントバッファの削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394EvFree</B>(
+	int <I>id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>	イベントバッファ識別子
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ID <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントバッファを削除する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394EvPoll>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394EvPoll
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントの発生調査
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394EvPoll</B>(
+	int <I>id</I>,
+	int <I>eventMask</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>		イベントバッファid
+<I>eventMask</I>	調べるイベントの種類
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベント</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ビット</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_RESET_START</TD>
+<TD valign="TOP">1</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_RESET_COMPLETE</TD>
+<TD valign="TOP">2</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_SELF_ID</TD>
+<TD valign="TOP">3</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_COMMAND_RESET</TD>
+<TD valign="TOP">4</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_OCCUPANCY_VIOLATION</TD>
+<TD valign="TOP">8</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_CYCLE_TOO_LONG</TD>
+<TD valign="TOP">9</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_CABLE_POWER_FAIL</TD>
+<TD valign="TOP">10</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_DUPLICATE_CHANNEL</TD>
+<TD valign="TOP">11</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_HEADER_CRC_ERROR</TD>
+<TD valign="TOP">12</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_REQUEST_DATA_ERROR</TD>
+<TD valign="TOP">13</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_ACK_MISSING</TD>
+<TD valign="TOP">14</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_DATA_ERROR</TD>
+<TD valign="TOP">15</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_FORMAT_ERROR</TD>
+<TD valign="TOP">16</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_RETRY_FAILED</TD>
+<TD valign="TOP">17</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNEXPECTED_CHANNEL</TD>
+<TD valign="TOP">18</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNKNOWN_TCODE</TD>
+<TD valign="TOP">19</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNSOLICITED_RESPONSE</TD>
+<TD valign="TOP">20</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    発生しているイベントを表すビットマスクを返す。指定されたイベントが発生していない場合は0を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたイベントが発生しているか調べ、発生しているイベントのビットマスクを返す。指定されたイベントが発生していない場合は0を返す。 <BR>
+    指定されたイベントはバッファから取り除かれる。 <BR>
+    既にsce1394EvWait()でブロックしているイベントバッファに対して呼出すことはできない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394EvWait>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394EvWait
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベント発生待ち
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394EvWait</B>(
+	int <I>id</I>,
+	int <I>eventMask</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>		イベントバッファid
+<I>eventMask</I>	待合わせるイベントのビットマスク
+        </BLOCKQUOTE>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベント</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ビット</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_RESET_START</TD>
+<TD valign="TOP">1</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_RESET_COMPLETE</TD>
+<TD valign="TOP">2</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_SELF_ID</TD>
+<TD valign="TOP">3</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_COMMAND_RESET</TD>
+<TD valign="TOP">4</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_BUS_OCCUPANCY_VIOLATION</TD>
+<TD valign="TOP">8</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_CYCLE_TOO_LONG</TD>
+<TD valign="TOP">9</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_CABLE_POWER_FAIL</TD>
+<TD valign="TOP">10</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_DUPLICATE_CHANNEL</TD>
+<TD valign="TOP">11</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_HEADER_CRC_ERROR</TD>
+<TD valign="TOP">12</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_REQUEST_DATA_ERROR</TD>
+<TD valign="TOP">13</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_ACK_MISSING</TD>
+<TD valign="TOP">14</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_DATA_ERROR</TD>
+<TD valign="TOP">15</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_FORMAT_ERROR</TD>
+<TD valign="TOP">16</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_RESPONSE_RETRY_FAILED</TD>
+<TD valign="TOP">17</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNEXPECTED_CHANNEL</TD>
+<TD valign="TOP">18</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNKNOWN_TCODE</TD>
+<TD valign="TOP">19</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE1394EV_UNSOLICITED_RESPONSE</TD>
+<TD valign="TOP">20</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        <BLOCKQUOTE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    発生しているイベントを表すビットマスクを返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたイベントのいずれかが発生しているか調べ、発生しているイベントのビットマスクを返す。イベントが発生していない場合は発生するまでブロックする。 <BR>
+    指定されたイベントはバッファから取り除かれる。 <BR>
+    ひとつのイベントバッファで同時に複数のスレッドが待つことはできない。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>TR_DATA.indication / TR_DATA.response</H2></U>
+</DIV>
+</blockquote>
+<A name=callbackFunc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>callbackFunc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        簡易形式コールバック関数
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>callbackFunc</B>(
+	u_int <I>off</I>,
+	u_int <I>size</I>,
+	u_int *<I>payload</I>,
+	int <I>pb</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>off</I>		リクエストのoffset_Lフィールドの値
+<I>size</I>	リクエストのlengthフィールドの値
+<I>payload</I>	リクエストのデータ部先頭アドレス（network byte order）
+<I>pb</I>		リクエストのパケットブロックハンドル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    返信すべきrcode。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リクエストパケットを受信したときにコールバック専用スレッドから呼び出される、簡易形式コールバック関数。 <BR>
+    この関数は、直ちに返信すべきrcodeを返さなければならない。 <BR>
+    リクエストパケットに関する詳細情報は以下のAPIで取得できる。 <BR>
+    <blockquote>
+    	int sce1394PbGetGenNumber(int pb); <BR>
+    </blockquote>
+    <blockquote>
+    	int sce1394PbGetSpeed(int pb); <BR>
+    </blockquote>
+    <blockquote>
+    	int sce1394PbGetDest(int pb); <BR>
+    </blockquote>
+    <blockquote>
+    	int sce1394PbGetSource(int pb); <BR>
+    </blockquote>
+    <blockquote>
+    	int sce1394PbGetExTCode(int pb); <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=rawCallbackFunc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>rawCallbackFunc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        直接形式コールバック関数
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef int (*sce1394TrDataIndProc)(int pb, void *arg);
+sce1394TrDataIndProc <B>rawCallbackFunc</B>(
+	int <I>pb</I>,
+	void *<I>arg</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pb</I>		パケットブロックハンドル
+<I>arg</I>	コンテクスト
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    返信すべきパケットブロックハンドル。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リクエストパケットを受信したときにコールバック専用スレッドから呼び出される、直接形式コールバック関数。 <BR>
+    この関数は、直ちにレスポンスとして返信すべきパケットブロックハンドルを返さなければならない。パケットブロックハンドルは送受信プライマリパケットに関する情報を保持するデータの識別子（ &gt; 0 ）。保持されるデータには以下のようなものが含まれる。 <BR>
+    <blockquote>
+    	generation number <BR>
+    </blockquote>
+    <blockquote>
+    	転送レート <BR>
+    </blockquote>
+    <blockquote>
+    	対象ノードID（BUS-IDとPHY-IDを連結した16bit値） <BR>
+    </blockquote>
+    <blockquote>
+    	送信ノードID <BR>
+    </blockquote>
+    <blockquote>
+    	トランザクションコード <BR>
+    </blockquote>
+    <blockquote>
+    	転送サイズ <BR>
+    </blockquote>
+    <blockquote>
+    	ペイロードデータ <BR>
+    </blockquote>
+        </BLOCKQUOTE>
+    <blockquote>
+    	... <BR>
+    </blockquote>
+</blockquote>
+<A name=sce1394TrDataInd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrDataInd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コールバック関数の登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef int (*sce1394TrDataIndProc)(int pb, void *arg);
+int <B>sce1394TrDataInd</B>(
+	int <I>offH</I>,
+	u_int <I>offL</I>,
+	u_int <I>size</I>,
+	sce1394TrDataIndProc <I>write</I>, void *<I>wArg</I>,
+	sce1394TrDataIndProc <I>read</I>, void *<I>rArg</I>,
+	sce1394TrDataIndProc <I>lock</I>, void *<I>lArg</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>offH</I>     検出すべきリクエストのoffset_Hフィールドの値
+<I>offL</I>     同じくoffset_Lフィールドの最小値
+<I>size</I>     同じくoffset_Lフィールドの範囲
+<I>write,read,lock</I>   リクエストパケット検出時に呼ぶ直接形式コールバック関数
+                 またはNULL
+<I>wArg,rArg,lArg</I>   コールバック関数に渡すコンテクスト
+                  <I>write,read,lock</I>にNULLを指定した場合は
+                  簡易形式コールバック関数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    コールバック関数の登録id（ &gt; 0 ）を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    自ノードへのリクエスト受信時に呼出されるコールバック関数を登録し、登録id（ &gt; 0 ）を返す。 <BR>
+    <I>offH</I>へ繰上がりの生ずる<I>offL</I> / <I>size</I>の指定は不可。 <BR>
+    コールバック関数の定義についてはrawCallbackFunc()およびcallbackFunc()の説明を参照のこと。 <BR>
+        </BLOCKQUOTE>
+    CSR空間などのi.LINKドライバがデフォルトで応答する空間は、あたかも最初にこの関数によって登録されていたかの様に扱われる。このためユーザーが後から設定した空間がこれと重なる場合には、ユーザーの設定が優先される。 <BR>
+    sce1394TrDataInd()はwrite/read/lockすべてのコールバック関数を一括して登録する。例えばlockに対してNULLを渡すことはコールバック関数を「登録しない」のではなく「無効ハンドラを登録」することになる。したがって通常の使い方ではread用とwrite用の最低２つのコールバック関数を指定することになるはずである。 <BR>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrDataUnInd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrDataUnInd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        コールバック関数の削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394TrDataUnInd</B>(
+	int <I>id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>id</I>		登録id
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_INVALID_ID <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録済のコールバック関数を削除する。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>TR_DATA.request / TR_DATA.confirmation</H2></U>
+</DIV>
+</blockquote>
+<A name=sce1394TrAlloc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrAlloc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        トランザクションハンドルの作成
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrAlloc</B>(
+	int <I>nodeId</I>,
+	int <I>mode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	対象ノードのID（BUS-IDとPHY-IDを連結した16bit値）
+<I>mode</I>	0を指定しなければならない
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    作成したトランザクションコンテクストハンドル（ &gt; 0 ）を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストを作成し、その識別子（トランザクションコンテクストハンドル）を返す。 <BR>
+    トランザクションコンテクストには次のようなデータが含まれる。 <BR>
+    <blockquote>
+    	generation number <BR>
+    </blockquote>
+    <blockquote>
+    	対象ノードID（BUS-IDとPHY-IDを連結した16bit値） <BR>
+    </blockquote>
+    <blockquote>
+    	転送レート <BR>
+    </blockquote>
+    <blockquote>
+    	終了ステータス <BR>
+    </blockquote>
+    <blockquote>
+    	分割転送サイズ <BR>
+    </blockquote>
+    <blockquote>
+    	ユーザーデータ <BR>
+    </blockquote>
+    generation numberは、その時点でsce1394SbGenNumber()が返す値で初期化される。 <BR>
+    転送レートは利用可能な値がデフォルトとして設定される。 <BR>
+    分割転送サイズは0（分割しない）で初期化される。 <BR>
+    ユーザーデータはNULLで初期化される。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrFree>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrFree
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        トランザクションコンテクストの解放
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394TrFree</B>(
+	int <I>tc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクストハンドル
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_INVALID_ID <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストを開放する。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrGetBlockSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrGetBlockSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ブロックサイズの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrGetBlockSize</B>(
+	int <I>tc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現在設定されている分割転送サイズを返す。 <BR>
+    エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに設定されている分割転送サイズを返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrGetDest>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrGetDest
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        対象ノードIDの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrGetDest</B>(
+	int <I>tc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>tc</I>に設定されている対象ノードIDを返す。 <BR>
+    エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに設定されている対象ノードIDを返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrGetExtension>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrGetExtension
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザーデータの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394TrGetExtension</B>(
+	int <I>tc</I>,
+	void **<I>extension</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>extension</I>	取得した値を格納する領域へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに設定されているユーザーデータを取得する。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrGetGenNumber>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrGetGenNumber
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        generation numberの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrGetGenNumber</B>(
+	int <I>tc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>tc</I>に設定されているgeneration numberを返す。 <BR>
+    エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに設定されているgeneration numberを取得する。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrGetSpeed>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrGetSpeed
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        送信レートの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrGetSpeed</B>(
+	int <I>tc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    送信レートを次のいずれかの値で返す。 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>送信レート</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">S100（100Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">S200（200Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">S400（400Mbit/sec）</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    エラーとしてSCE1394ERR_INVALID_IDを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに設定されている送信レートを返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrLock>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrLock
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ロックトランザクション
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrLock</B>(
+	int <I>tc</I>,
+	int <I>offH</I>, u_int <I>offL</I>,
+	int <I>len</I>,
+	void *<I>buff</I>,
+	int <I>ex_tCode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+<I>offH,offL</I>	対象アドレスオフセット
+<I>len</I>	送信データバイト数
+<I>buff</I>	送受信データバッファアドレス
+<I>ex_tCode</I>	ロックタイプ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    受信したペイロードバイト数を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NOT_SUPPORTED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_INVALID_SIZE <BR>
+    SCE1394ERR_INVALID_ADDRESS <BR>
+    SCE1394ERR_TRANSACTION_ERROR <BR>
+    SCE1394ERR_RESET_DETECTED <BR>
+    SCE1394ERR_REQUEST_DISABLED <BR>
+    SCE1394ERR_ERROR_RESPONSE <BR>
+    SCE1394ERR_TIMEOUT <BR>
+    SCE1394ERR_ACK_MISSING <BR>
+    SCE1394ERR_RETRY_LIMIT <BR>
+    SCE1394ERR_DATA_ERROR <BR>
+    SCE1394ERR_INVALID_PARAMETER <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクスト<I>tc</I>に設定されているパラメータに基づき、ロックトランザクションを起動し、トランザクションの終了を待つ。 <BR>
+    データはネットワークバイトオーダー（BigEndian）として扱われる。 <BR>
+    トランザクションコンテクストに設定されているgeneration numberとsce1394SbGenNumber()で得られる値とが一致しない状態でトランザクションを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。 <BR>
+    コンテクストを指定したリクエストはリエントラントではないので、同一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrRead / sce1394TrReadV>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrRead / sce1394TrReadV
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        リードトランザクション
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrRead</B>(
+	int <I>tc</I>,
+	int <I>offH</I>, u_int <I>offL</I>,
+	int <I>len</I>,
+	void *<I>buff</I>
+);
+int <B>sce1394TrReadV</B>(
+	int <I>tc</I>,
+	int <I>offH</I>, u_int <I>offL</I>,
+	int <I>count</I>,
+	sce1394Iov *<I>vec</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>offH,offL</I>	対象アドレスオフセット
+<I>len</I>	読出しバイト数
+<I>buff</I>	データバッファアドレス
+<I>count</I>	<I>vec</I>要素数
+<I>vec</I>	バッファリスト
+	typedef sce1394Iov {
+		int	iov_len;	//バイト数（最終要素を除き4の倍数）
+		void	*iov_base; //データバッファアドレス（4バイト整合）
+	} sce1394Iov;
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sce1394TrRead()は総転送バイト数を、sce1394TrReadV()は受信したペイロードバイト数を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NOT_SUPPORTED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_INVALID_SIZE <BR>
+    SCE1394ERR_INVALID_ADDRESS <BR>
+    SCE1394ERR_TRANSACTION_ERROR <BR>
+    SCE1394ERR_RESET_DETECTED <BR>
+    SCE1394ERR_REQUEST_DISABLED <BR>
+    SCE1394ERR_FAILED_RESPONSE <BR>
+    SCE1394ERR_TIMEOUT <BR>
+    SCE1394ERR_ACK_MISSING <BR>
+    SCE1394ERR_RETRY_LIMIT <BR>
+    SCE1394ERR_DATA_ERROR <BR>
+    SCE1394ERR_INVALID_PARAMETER <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストtcに設定されているパラメータに基づき、リードトランザクションを起動し、トランザクションの終了を待つ。 <BR>
+    データはネットワークバイトオーダー（BigEndian）として扱われる。 <BR>
+    sce1394TrRead()は分割転送サイズを最大ペイロード長として、<I>len</I>バイトに達するまでトランザクションを繰返し、総転送バイト数を返す。分割される場合、対象アドレスオフセットは自動的にインクリメントされる。ただし、<I>offH</I>へ繰上がるような指定はできない。 <BR>
+    sce1394TrReadV()は単一のトランザクションを起動し、受取ったデータを不連続なデータ領域に転送する。受信したペイロードバイト数を返す。 <BR>
+    トランザクションコンテクストに設定されているgeneration numberとsce1394SbGenNumber()で得られる値とが一致しない状態でトランザクションを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。 <BR>
+    コンテクストを指定したリクエストはリエントラントではないので、同一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrSetBlockSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrSetBlockSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ブロックサイズの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrSetBlockSize</B>(
+	int <I>tc</I>,
+	int <I>size</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+<I>size</I>	分割転送サイズ（バイト）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に設定されていた分割転送サイズを返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに分割転送サイズを設定し、直前に設定されていた値を返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrSetDest>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrSetDest
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        対象ノードIDの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrSetDest</B>(
+	int <I>tc</I>,
+	int <I>nodeId</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>nodeId</I>	対象ノードID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に設定されていた対象ノードIDを返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに対象ノードIDを設定し、直前に設定されていた対象ノードIDを返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrSetExtension>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrSetExtension
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユーザーデータの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394TrSetExtension</B>(
+	int <I>tc</I>,
+	void **<I>extension</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>extension</I>	設定/取得される値を格納する領域へのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかのエラーコードを返す。 <BR>
+    SCE1394ERR_OK <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストにユーザーデータとしてポインタを設定し、直前に設定されていた値を取得する。 <BR>
+    ドライバがユーザーデータを使用することはない。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrSetGenNumber>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrSetGenNumber
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        generation numberの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrSetGenNumber</B>(
+	int <I>tc</I>,
+	int <I>genNumber</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>genNumber</I>	設定する値
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に設定されていたgeneration numberを返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストにgeneration numberを設定し、直前に設定されていた値を返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrSetSpeed>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrSetSpeed
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        送信レートの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrSetSpeed</B>(
+	int <I>tc</I>,
+	int <I>speed</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>		トランザクションコンテクスト
+<I>speed</I>	送信レートを表す次のいずれかの値
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>送信レート</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">S100（100Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">S200（200Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">S400（400Mbit/sec）</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前に設定されていた送信レートの値を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクストに送信レートを設定し、直前に設定されていた値を返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrStatus>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrStatus
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        レスポンスコードと終了ステータスの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394TrStatus</B>(
+	int <I>tc</I>,
+	int *<I>rCode</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+<I>rCode</I>	直前のレスポンスに含まれていたrCodeを格納する領域へのポインタまたはNULL
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_TRANSACTION_ERROR <BR>
+    SCE1394ERR_RESET_DETECTED <BR>
+    SCE1394ERR_REQUEST_DISABLED <BR>
+    SCE1394ERR_FAILED_RESPONSE <BR>
+    SCE1394ERR_TIMEOUT <BR>
+    SCE1394ERR_ACK_MISSING <BR>
+    SCE1394ERR_RETRY_LIMIT <BR>
+    SCE1394ERR_DATA_ERROR <BR>
+    SCE1394ERR_INVALID_PARAMETER <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    直前のトランザクションのレスポンスコードを<I>rCode</I>の指す領域に格納し、終了ステータスを返す。 <BR>
+    トランザクションコンテクストを指定したリクエストはリエントラントではないので、同一のトランザクションコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394TrWrite / sce1394TrWriteV>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394TrWrite / sce1394TrWriteV
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ライトトランザクション
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394TrWrite</B>(
+	int <I>tc</I>,
+	int <I>offH</I>, u_int <I>offL</I>,
+	int <I>len</I>,
+	void *<I>buff</I>
+);
+int <B>sce1394TrWriteV</B>(
+	int <I>tc</I>,
+	int <I>offH</I>, u_int <I>offL</I>,
+	int <I>count</I>,
+	sce1394Iov *<I>vec</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>tc</I>	トランザクションコンテクスト
+<I>offH,offL</I>	対象アドレスオフセット
+<I>len</I>	書込みバイト数
+<I>buff</I>	データバッファアドレス
+<I>count</I>	<I>vec</I>要素数
+<I>vec</I>	バッファリスト
+	typedef sce1394Iov {
+		int	iov_len;	//バイト数（最終要素を除き4の倍数）
+		void	*iov_base; //データバッファアドレス（4バイト整合）
+	} sce1394Iov;
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sce1394TrWrite()は総転送バイト数、sce1394TrWriteV()は連結後のペイロードバイト数を返す。 <BR>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_NOT_INITIALIZED <BR>
+    SCE1394ERR_NOT_SUPPORTED <BR>
+    SCE1394ERR_NO_MEMORY <BR>
+    SCE1394ERR_RESOURCE_UNAVAILABLE <BR>
+    SCE1394ERR_INVALID_ID <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_INVALID_SIZE <BR>
+    SCE1394ERR_INVALID_ADDRESS <BR>
+    SCE1394ERR_TRANSACTION_ERROR <BR>
+    SCE1394ERR_RESET_DETECTED <BR>
+    SCE1394ERR_REQUEST_DISABLED <BR>
+    SCE1394ERR_FAILED_RESPONSE <BR>
+    SCE1394ERR_TIMEOUT <BR>
+    SCE1394ERR_ACK_MISSING <BR>
+    SCE1394ERR_RETRY_LIMIT <BR>
+    SCE1394ERR_DATA_ERROR <BR>
+    SCE1394ERR_INVALID_PARAMETER <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    トランザクションコンテクスト<I>tc</I>に設定されているパラメータに基づき、ライトトランザクションを起動し、トランザクションの終了を待つ。 <BR>
+    データはネットワークバイトオーダー（BigEndian）として扱われる。 <BR>
+    sce1394TrWrite()は分割転送サイズを最大ペイロード長として、<I>len</I>バイトに達するまでトランザクションを繰返し、総転送バイト数を返す。分割される場合、対象アドレスオフセットは自動的にインクリメントされる。ただし、<I>offH</I>へ繰上がるような指定はできない。 <BR>
+    sce1394TrWriteV()はメモリ上に分散したデータを連結し、単一のパケットとしてトランザクションを起動する。連結後のペイロードバイト数を返す。 <BR>
+    トランザクションコンテクストに設定されているgeneration numberとsce1394SbGenNumber()で得られる値とが一致しない状態でトランザクションを起動しようとすると、エラーSCE1394ERR_RESET_DETECTEDとなる。 <BR>
+    コンテクストを指定したリクエストはリエントラントではないので、同一のコンテクストを複数スレッド間で共有する場合は排他制御を行う必要がある。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>Config-ROM access support</H2></U>
+</DIV>
+</blockquote>
+<A name=sce1394CrCapability>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrCapability
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ノードのケーパビリティ情報取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrCapability</B>(
+	int <I>nodeId</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定したノードのケーパビリティを返す。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノードに実装されている機能を表す、Bus_Info_Blockの第5バイトを返す。 <BR>
+    <I>nodeId</I>の上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされたデータが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノードの指定となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrEui64>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrEui64
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        EUI64の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum Sce1394ErrorCode <B>sce1394CrEui64</B>(
+	int <I>nodeId</I>,
+	u_int *<I>eui64</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+<I>eui64</I>	EUI64を返す8バイトのバッファ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    エラーとして次のいずれかのエラーコードを返す可能性がある。 <BR>
+    SCE1394ERR_ERROR <BR>
+    SCE1394ERR_INVALID_ARGUMENT <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>nodeId</I>で指定したノードのEUI64を取得し、<I>eui64</I>が指す領域にhost byte orderで格納する。<I>nodeId</I>に0xffffを指定すると、自分自身のEUI64を取得する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrFindNode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrFindNode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ノードIDの検索
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrFindNode</B>(
+	u_int *<I>eui64</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>eui64</I>	ノードのEUI64（host byte order）を保持するバッファ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    該当するノードのノードIDを返す。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>eui64</I>で指定した64bit Extended Unique IDを持つノードのノードID（BUS-IDとPHY-IDを連結した16bit値）を返す。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrFindUnit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrFindUnit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ユニットディレクトリの検索
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrFindUnit</B>(
+	int <I>unit</I>,
+	int <I>specId</I>,
+	int <I>version</I>,
+	u_int *<I>offset</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>unit</I>	通し番号
+<I>specId</I>	Unit_Spec_ID
+<I>version</I>	Unit_SW_Version
+<I>offset</I>	ディレクトリオフセット（quadlet）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    該当するノードのノードIDを返す。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    エントリUnit_Spec_ID,Unit_SW_Versionの組が<I>specID</I>, <I>version</I>と一致するディレクトリを検索し、<I>unit</I>番目に見つかったディレクトリが存在するノードのノードID（BUS-IDとPHY-IDを連結した16bit値）を返す。 <BR>
+    <I>offset</I>には見つかったディレクトリのConfig-ROM先頭からのオフセットが設定される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrGenNumber>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrGenNumber
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Config-ROM情報のgeneration number取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrGenNumber</B>();
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Config-ROM情報のgeneration numberを取得する。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ドライバ内部のConfig-ROM情報のgeneration numberを取得する。 <BR>
+    generation numberが変化していた場合、再構成が行われる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrMaxRec>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrMaxRec
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        max_rec情報の取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrMaxRec</B>(
+	int <I>nodeId</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定したノードのmax_rec情報をバイト数に変換して返す。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>nodeId</I>で指定したノードのmax_rec情報を取得し、バイト数に変換して返す。 <BR>
+    <I>nodeId</I>の上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされたデータが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノードの指定となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrMaxSpeed>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrMaxSpeed
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        最大転送レートの取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int sce1394CrMaxSpeed(
+	int <I>nodeId</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定したノードの最大転送レートを次のいずれかの値で返す。 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>送信レート</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">S100（100Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">S200（200Mbit/sec）</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">S400（400Mbit/sec）</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>nodeId</I>で指定したノードに対して適用できる最大転送レートを返す。 <BR>
+    <I>nodeId</I>の上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされたデータが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノードの指定となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sce1394CrRead>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sce1394CrRead
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        Config-ROMの内容取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sce1394CrRead</B>(
+	int <I>nodeId</I>,
+	u_int <I>off</I>,
+	int <I>nquad</I>,
+	u_int *<I>buff</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>nodeId</I>	ノードID（BUS-IDとPHY-IDを連結した16bit値）
+<I>off</I>	Config-ROM先頭からのオフセット（quadlet）
+<I>nquad</I>	転送サイズ（quadlet）
+<I>buff</I>	バッファアドレス（4byte整合）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ノードから転送したquadlet数を返す。 <BR>
+    エラーとしてSCE1394ERR_ERRORを返す可能性がある。 <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>nodeId</I>で指定したノードのConfig-ROM内容を取得し、ノードから転送したquadlet数を返す。 <BR>
+    データ並びはhost byte orderに変換される。 <BR>
+    <I>nodeId</I>の上位10bit（BUS-ID）に0x3ffを指定すると、キャッシュされたデータが返される。下位6bit（PHY-ID）に0x3fを指定すると、自ノードの指定となる。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

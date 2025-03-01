@@ -1,5 +1,5 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4.3
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *	    iLINK socket Library Sample
@@ -23,7 +23,6 @@
  *	1.06          05/10/2000      sim        Rename sceILsock...
  *	1.07          05/11/2000      sim        Selectable USE_CYCLETIMEV
  *	1.08          05/11/2000      sim        Optimize stack size
- *	2.00          2001.11.19      oonuki     unload module
  *  --------------------------------------------------------------------
  */
 
@@ -422,7 +421,7 @@ void th_sce1394SbNodeId()
 /*******************************************************************************************/
 // 
 /*******************************************************************************************/
-/* アンロードモジュール対応 oonuki.2001.11.19 */
+
 int create_start_thread( struct ThreadParam *p, const char *name, void* f, int size, int pri )
 {
   int th;
@@ -434,136 +433,65 @@ int create_start_thread( struct ThreadParam *p, const char *name, void* f, int s
   if( th > 0 ) 
   {
     StartThread( th, 0 );
-//    #ifdef DEBUG_PRINT
+#ifdef DEBUG_PRINT
     DBGPRINTF( "0x%08x : %s\n", th , name);
-//    #endif
-    return(th); // Normal end oonuki.2001.11.19
+#endif
+    return 0; // Normal end
   } else {
     DBGPRINTF( "Error at Create thread: %s\n" , name );
-    return(th); // Abnormal end oonuki.2001.11.19
+    return 1; // Abnormal end
   }
 }
 
-/* アンロードモジュール対応 oonuki.2001.11.19 */
-int terminate_delete_thread( int id )
-{
-  int ret;
-
-  ret = TerminateThread( id );
-  if( ret != KE_OK ){
-//    #ifdef DEBUG_PRINT
-    DBGPRINTF( "0x%08x : terminate error.\n", id );
-//    #endif
-    return(-1);
-  }
-
-  ret = DeleteThread( id );
-  if( ret != KE_OK ){
-//    #ifdef DEBUG_PRINT
-    DBGPRINTF( "0x%08x : delete error.\n", id );
-//    #endif
-    return(-1);
-  }
-
-  return(0);
-}
-
-
-/*******************************************************************************************/
-//
-/*******************************************************************************************/
-typedef struct{
-  int id;
-  const char *name;
-  void ( *func )( void );
-  int size;
-  int pri;
-} THREAD_ID;
-
-#ifndef USE_CYCLETIMEV
-  #define ID_NUM 12
-#else
-  #define ID_NUM 13
-#endif
-THREAD_ID th_id[ ID_NUM ] = {
-	{ 0, "sceILsockInit"    , th_sceILsockInit    , 0x400, BASE_priority }, 
-	{ 0, "sceILsockReset"   , th_sceILsockReset   , 0x300, BASE_priority },
-	{ 0, "sceILsockOpen"    , th_sceILsockOpen    , 0x300, BASE_priority },
-	{ 0, "sceILsockClose"   , th_sceILsockClose   , 0x300, BASE_priority },
-	{ 0, "sceILsockBind"    , th_sceILsockBind    , 0x300, BASE_priority },
-	{ 0, "sceILsockConnect" , th_sceILsockConnect , 0x600, BASE_priority },
-	{ 0, "sceILsockSend"    , th_sceILsockSend    , 0x700, BASE_priority },
-	{ 0, "sceILsockSendTo"  , th_sceILsockSendTo  , 0x700, BASE_priority },
-	{ 0, "sceILsockRecv"    , th_sceILsockRecv    , 0x400, BASE_priority - 1 },
-	{ 0, "sceILsockRecvFrom", th_sceILsockRecvFrom, 0x400, BASE_priority - 1 },
-	{ 0, "sce1394SbEui64"   , th_sce1394SbEui64   , 0x300, BASE_priority },
-	{ 0, "sce1394SbNodeId"  , th_sce1394SbNodeId  , 0x300, BASE_priority },
-#ifdef USE_CYCLETIMEV
-	{ 0, "sce1394CycleTimeV", th_sce1394CycleTimeV, 0x300, BASE_priority - 1 },
-#endif
-};
-
-start ( int argc, char *argv[] )
+int start ()
 {
   struct ThreadParam p;
-  int cnt1, cnt2;
   int ret = 0;
   int EUI64[ 2 ] = { 0, 0 };
 
-  if( argc >= 0 ){
+  DBGPRINTF( "ilsample.c %s %s\n", __DATE__, __TIME__ );
 
-    DBGPRINTF( "ilsample.c %s %s\n", __DATE__, __TIME__ );
-
-    FlushDcache();
+  FlushDcache();
   
-    CpuEnableIntr();
+  CpuEnableIntr();
 
-    sce1394Initialize( NULL );
+  sce1394Initialize( NULL );
 
-    ret = sce1394SbEui64( EUI64 );
-    if( ret == SCE1394ERR_OK ) DBGPRINTF( "My GUID = 0x%08x 0x%08x\n", EUI64[ 0 ], EUI64[ 1 ] );
-    else DBGPRINTF( "Error at sce1394SbEui64: %d\n", ret );
+  ret = sce1394SbEui64( EUI64 );
+  if( ret == SCE1394ERR_OK )
+    DBGPRINTF( "My GUID = 0x%08x 0x%08x\n", EUI64[ 0 ], EUI64[ 1 ] );
+  else
+    DBGPRINTF( "Error at sce1394SbEui64: %d\n", ret );
 
-    ret = sce1394SbNodeId();
-    if( ret != SCE1394ERR_NOT_INITIALIZED )
-      DBGPRINTF( "My NodeId = 0x%04x (Bus=0x%04x, Offset=0x%03x)\n", ret, ret >> 6, ret & 0x3f );
-    else DBGPRINTF( "Error at sce1394SbNodeId: %d\n", ret );
+  ret = sce1394SbNodeId();
+  if( ret != SCE1394ERR_NOT_INITIALIZED )
+    DBGPRINTF( "My NodeId = 0x%04x (Bus=0x%04x, Offset=0x%03x)\n", ret, ret >> 6, ret & 0x3f );
+  else
+    DBGPRINTF( "Error at sce1394SbNodeId: %d\n", ret );
 
-    p.attr = TH_C;
-    p.option = 0;
+  p.attr = TH_C;
+  p.option = 0;
 
-    /* スレッドの生成とスタート */
-    for( cnt1 = 0; cnt1 < ID_NUM; cnt1++ ){
-      if(( th_id[cnt1].id = create_start_thread( &p, th_id[cnt1].name, th_id[cnt1].func,
-							th_id[cnt1].size, th_id[cnt1].pri )) <= 0){
-        /* スレッドが立ち上がらなかったら、全て削除 */
-        for( cnt2 = 0; cnt2 < cnt1+1; cnt2++ ){
-          terminate_delete_thread( th_id[cnt2].id );
-        }
-        return NO_RESIDENT_END;
-      }
-    }
+  ret = 0;
+  ret += create_start_thread( &p, "sceILsockInit",      th_sceILsockInit,     0x400, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockReset",     th_sceILsockReset,    0x300, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockOpen",      th_sceILsockOpen,     0x300, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockClose",     th_sceILsockClose,    0x300, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockBind",      th_sceILsockBind,     0x300, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockConnect",   th_sceILsockConnect,  0x600, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockSend",      th_sceILsockSend,     0x700, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockSendTo",    th_sceILsockSendTo,   0x700, BASE_priority );
+  ret += create_start_thread( &p, "sceILsockRecv",      th_sceILsockRecv,     0x400, BASE_priority - 1 );
+  ret += create_start_thread( &p, "sceILsockRecvFrom",  th_sceILsockRecvFrom, 0x400, BASE_priority - 1 );
+  ret += create_start_thread( &p, "sce1394SbEui64",     th_sce1394SbEui64,    0x300, BASE_priority );
+  ret += create_start_thread( &p, "sce1394SbNodeId",    th_sce1394SbNodeId,   0x300, BASE_priority );
 
-    #ifdef USE_CYCLETIMEV
-    if( RegisterVblankHandler( VB_START, CYCLETIME_priority, (void*)sceGetCycleTimeV, (void*)&CycleTimeV ) != 0 )
-      return NO_RESIDENT_END;
-    #endif
+#ifdef USE_CYCLETIMEV
+  ret += create_start_thread( &p, "sce1394CycleTimeV",  th_sce1394CycleTimeV, 0x300, BASE_priority - 1 );
+  if( RegisterVblankHandler( VB_START, CYCLETIME_priority, (void*)sceGetCycleTimeV, (void*)&CycleTimeV ) != 0) ret++;
+#endif
 
-    return REMOVABLE_RESIDENT_END;
-  }
-  else{
+  if ( ret > 0 ) return NO_RESIDENT_END;
 
-    argc = -argc;
-
-    #ifdef USE_CYCLETIMEV
-    if( ReleaseVblankHandler( VB_START, (void*)sceGetCycleTimeV ) != 0 ) return REMOVABLE_RESIDENT_END;
-    #endif
-
-    /* スレッドの停止と削除 */
-    for( cnt1 = 0; cnt1 < ID_NUM; cnt1++ ){
-      if( terminate_delete_thread( th_id[cnt1].id ) < 0 ) return REMOVABLE_RESIDENT_END;
-    }
-
-    return NO_RESIDENT_END;
-  }
+  return RESIDENT_END;
 }

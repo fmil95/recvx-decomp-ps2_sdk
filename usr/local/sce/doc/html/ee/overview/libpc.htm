@@ -1,0 +1,652 @@
+<HTML>
+<HEAD>
+<TITLE> パフォーマンスカウンタライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libpc.htm" SELECTED> ﾊﾟﾌｫｰﾏﾝｽｶｳﾝﾀﾗｲﾌﾞﾗﾘ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+パフォーマンスカウンタライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 計測可能なイベント<BR></A><BR>
+    <A HREF="#Heading4_1_3"> サンプルプログラム<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 各イベントの詳細<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 下位分岐発行 - SCE_PC1_LOW_BRANCH_ISSUED<BR></A><BR>
+    <A HREF="#Heading4_2_2"> プロセッササイクル - SCE_PC0_CPU_CYCLE/SCE_PC1_CPU_CYCLE<BR></A><BR>
+    <A HREF="#Heading4_2_3"> 単一命令発行 - SCE_PC0_SINGLE_ISSUE<BR></A><BR>
+    <A HREF="#Heading4_2_4"> 2命令同時発行 - SCE_PC1_DUAL_ISSUE<BR></A><BR>
+    <A HREF="#Heading4_2_5"> 分岐発行 - SCE_PC0_BRANCH_ISSUED<BR></A><BR>
+    <A HREF="#Heading4_2_6"> 分岐予測ミス - SCE_PC1_BRANCH_MISS_PREDICT<BR></A><BR>
+    <A HREF="#Heading4_2_7"> BTACミス - SCE_PC0_BTAC_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_8"> TLBミス - SCE_PC1_TLB_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_9"> ITLBミス - SCE_PC0_ITLB_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_10"> DTLBミス - SCE_PC1_DTLB_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_11"> 命令キャッシュミス - SCE_PC0_ICACHE_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_12"> データキャッシュミス - SCE_PC1_DCACHE_MISS<BR></A><BR>
+    <A HREF="#Heading4_2_13"> DTLBへのアクセス - SCE_PC0_DTLB_ACCESSED<BR></A><BR>
+    <A HREF="#Heading4_2_14"> WBBシングルリクエスト不可 - SCE_PC1_WBB_SINGLE_UNAVAIL<BR></A><BR>
+    <A HREF="#Heading4_2_15"> ノンブロッキングロード - SCE_PC0_NONBLOCK_LOAD<BR></A><BR>
+    <A HREF="#Heading4_2_16"> WBBバーストリクエスト不可(1) - SCE_PC1_WBB_BURST_UNAVAIL<BR></A><BR>
+    <A HREF="#Heading4_2_17"> WBBシングルリクエスト - SCE_PC0_WBB_SINGLE_REQ<BR></A><BR>
+    <A HREF="#Heading4_2_18"> WBBバーストリクエスト不可(2) - SCE_PC1_WBB_BURST_ALMOST<BR></A><BR>
+    <A HREF="#Heading4_2_19"> WBBバーストリクエスト - SCE_PC0_WBB_BURST_REQ<BR></A><BR>
+    <A HREF="#Heading4_2_20"> WBBバーストリクエスト不可(3) - SCE_PC1_WBB_BURST_FULL<BR></A><BR>
+    <A HREF="#Heading4_2_21"> CPUアドレスバスビジー - SCE_PC0_ADDR_BUS_BUSY<BR></A><BR>
+    <A HREF="#Heading4_2_22"> CPUデータバスビジー - SCE_PC1_DATA_BUS_BUSY<BR></A><BR>
+    <A HREF="#Heading4_2_23"> 命令完了 - SCE_PC0_INST_COMP/SCE_PC1_INST_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_24"> 非BDS命令完了 - SCE_PC0_NON_BDS_COMP/SCE_PC1_NON_BDS_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_25"> COP2命令完了 - SCE_PC0_COP2_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_26"> COP1命令完了 - SCE_PC1_COP1_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_27"> ロード完了 - SCE_PC0_LOAD_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_28"> ストア完了 - SCE_PC1_STORE_COMP<BR></A><BR>
+    <A HREF="#Heading4_2_29"> イベントなし - SCE_PC0_NO_EVENT/SCE_PC1_NO_EVENT<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    libpcは、EE Coreに内蔵されているパフォーマンスカウンタを用いて、プログラム実行中のCPUやパイプラインの内部イベントを計測するためのライブラリです。たとえばキャッシュミスの発生状況を調べるなど、プログラムをチューニングするための資料を得るために使用できます。<BR>EE Coreにはカウンタ0とカウンタ1と2つの独立したカウンタがあり、それぞれ指定されたイベントが発生するごとに値が1ずつカウントアップされます。それぞれのカウンタは、最大0x7fffffff回までのイベント発生を計測することができ、それをオーバーフローするとパフォーマンスカウンタ例外が発生します。<BR>
+    パフォーマンスカウンタで計測できるイベントの詳細については後述します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル名</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ライブラリファイル</TD>
+<TD valign="TOP">libpc.a</TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">libpc.h</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>計測可能なイベント</B>
+</A>
+</H3>
+<blockquote>
+    カウンタ0で計測可能なイベントとイベントコードは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベントコード</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベント</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_RESERVED</TD>
+<TD valign="TOP">(0  &lt;&lt;  5)</TD>
+<TD valign="TOP">(reserved)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_CPU_CYCLE</TD>
+<TD valign="TOP">(1  &lt;&lt;  5)</TD>
+<TD valign="TOP">プロセッササイクル</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_SINGLE_ISSUE</TD>
+<TD valign="TOP">(2  &lt;&lt;  5)</TD>
+<TD valign="TOP">単一命令発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_BRANCH_ISSUED</TD>
+<TD valign="TOP">(3  &lt;&lt;  5)</TD>
+<TD valign="TOP">分岐発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_BTAC_MISS</TD>
+<TD valign="TOP">(4  &lt;&lt;  5)</TD>
+<TD valign="TOP">BTACミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_ITLB_MISS</TD>
+<TD valign="TOP">(5  &lt;&lt;  5)</TD>
+<TD valign="TOP">ITLBミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_ICACHE_MISS</TD>
+<TD valign="TOP">(6  &lt;&lt;  5)</TD>
+<TD valign="TOP">命令キャッシュミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_DTLB_ACCESSED</TD>
+<TD valign="TOP">(7  &lt;&lt;  5)</TD>
+<TD valign="TOP">DTLBへのアクセス発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_NONBLOCK_LOAD</TD>
+<TD valign="TOP">(8  &lt;&lt;  5)</TD>
+<TD valign="TOP">ノンブロッキングロード発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_WBB_SINGLE_REQ</TD>
+<TD valign="TOP">(9  &lt;&lt;  5)</TD>
+<TD valign="TOP">WBBシングルリクエスト発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_WBB_BURST_REQ</TD>
+<TD valign="TOP">(10 &lt;&lt;  5)</TD>
+<TD valign="TOP">WBBバーストリクエスト発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_ADDR_BUS_BUSY</TD>
+<TD valign="TOP">(11 &lt;&lt;  5)</TD>
+<TD valign="TOP">CPUアドレスバスビジー</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_INST_COMP</TD>
+<TD valign="TOP">(12 &lt;&lt;  5)</TD>
+<TD valign="TOP">命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_NON_BDS_COMP</TD>
+<TD valign="TOP">(13 &lt;&lt;  5)</TD>
+<TD valign="TOP">非BDS命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_COP2_COMP</TD>
+<TD valign="TOP">(14 &lt;&lt;  5)</TD>
+<TD valign="TOP">COP2命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_LOAD_COMP</TD>
+<TD valign="TOP">(15 &lt;&lt;  5)</TD>
+<TD valign="TOP">ロード完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC0_NO_EVENT</TD>
+<TD valign="TOP">(16 &lt;&lt;  5)</TD>
+<TD valign="TOP">イベントなし</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    カウンタ1で計測可能なイベントとイベントコードは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベントコード</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>イベント</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_LOW_BRANCH_ISSUED</TD>
+<TD valign="TOP">(0  &lt;&lt; 15)</TD>
+<TD valign="TOP">下位分岐発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_CPU_CYCLE</TD>
+<TD valign="TOP">(1  &lt;&lt; 15)</TD>
+<TD valign="TOP">プロセッササイクル</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_DUAL_ISSUE</TD>
+<TD valign="TOP">(2  &lt;&lt; 15)</TD>
+<TD valign="TOP">二命令同時発行</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_BRANCH_MISS_PREDICT</TD>
+<TD valign="TOP">(3  &lt;&lt; 15)</TD>
+<TD valign="TOP">分岐予測ミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_TLB_MISS</TD>
+<TD valign="TOP">(4  &lt;&lt; 15)</TD>
+<TD valign="TOP">TLBミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_DTLB_MISS</TD>
+<TD valign="TOP">(5  &lt;&lt; 15)</TD>
+<TD valign="TOP">DTLBミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_DCACHE_MISS</TD>
+<TD valign="TOP">(6  &lt;&lt; 15)</TD>
+<TD valign="TOP">データキャッシュミス発生</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_WBB_SINGLE_UNAVAIL</TD>
+<TD valign="TOP">(7  &lt;&lt; 15)</TD>
+<TD valign="TOP">WBBシングルリクエスト不可</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_WBB_BURST_UNAVAIL</TD>
+<TD valign="TOP">(8  &lt;&lt; 15)</TD>
+<TD valign="TOP">WBBバーストリクエスト不可(1)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_WBB_BURST_ALMOST</TD>
+<TD valign="TOP">(9  &lt;&lt; 15)</TD>
+<TD valign="TOP">WBBバーストリクエスト不可(2)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_WBB_BURST_FULL</TD>
+<TD valign="TOP">(10 &lt;&lt; 15)</TD>
+<TD valign="TOP">WBBバーストリクエスト不可(3)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_DATA_BUS_BUSY</TD>
+<TD valign="TOP">(11 &lt;&lt; 15)</TD>
+<TD valign="TOP">CPUデータバスビジー</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_INST_COMP</TD>
+<TD valign="TOP">(12 &lt;&lt; 15)</TD>
+<TD valign="TOP">命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_NON_BDS_COMP</TD>
+<TD valign="TOP">(13 &lt;&lt; 15)</TD>
+<TD valign="TOP">非BDS命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_COP1_COMP</TD>
+<TD valign="TOP">(14 &lt;&lt; 15)</TD>
+<TD valign="TOP">COP1命令完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_STORE_COMP</TD>
+<TD valign="TOP">(15 &lt;&lt; 15)</TD>
+<TD valign="TOP">ストア完了</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PC1_NO_EVENT</TD>
+<TD valign="TOP">(16 &lt;&lt; 15)</TD>
+<TD valign="TOP">イベントなし</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>サンプルプログラム</B>
+</A>
+</H3>
+<blockquote>
+    libpcを使用するサンプルプログラムとしては、/sce/ee/sample/pc/dcacheがあります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>各イベントの詳細</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下、各イベントの発生条件などについて説明します。<BR>
+    イベントは発生した時点でただちにカウントされるため、イベントの発生とプログラムステップの進行が対応しないケースもあることに注意してください。たとえば例外が発生したときや分岐遅延スロットの命令が無効化されたときには、いくつかイベントが発生しているのにそのイベントを発生させた命令自体は実行されていない、ということが起こります。具体的には、以下それぞれのイベントで説明してあります。<BR>
+    なお、以下の説明中で分岐とは分岐予測を伴うもの、つまり条件分岐命令とJ/JAL命令を指し、JR/JALR/ERET/SYSCALL/BREAK/TRAP命令は含みません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>下位分岐発行 - SCE_PC1_LOW_BRANCH_ISSUED</B>
+</A>
+</H3>
+<blockquote>
+    下位側(偶数アドレス)で分岐が発行されるごとに発生するイベントです。下位側の命令はBTACルックアップの対象となるのでこの機能が設けられています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>プロセッササイクル - SCE_PC0_CPU_CYCLE/SCE_PC1_CPU_CYCLE</B>
+</A>
+</H3>
+<blockquote>
+    CPUクロックサイクルごとに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>単一命令発行 - SCE_PC0_SINGLE_ISSUE</B>
+</A>
+</H3>
+<blockquote>
+    EE Coreが持つ2本の論理パイプの片方のみで命令が発行されたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>2命令同時発行 - SCE_PC1_DUAL_ISSUE</B>
+</A>
+</H3>
+<blockquote>
+    EE Coreが持つ2本の論理パイプの両方で命令が発行されたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>分岐発行 - SCE_PC0_BRANCH_ISSUED</B>
+</A>
+</H3>
+<blockquote>
+    分岐が発行されたときに発生するイベントです。その前の命令が例外を引き起こすと、このイベントが発生しても分岐命令は実行されないことがあります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>分岐予測ミス - SCE_PC1_BRANCH_MISS_PREDICT</B>
+</A>
+</H3>
+<blockquote>
+    条件分岐命令で、分岐先アドレスの予測が外れたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>BTACミス - SCE_PC0_BTAC_MISS</B>
+</A>
+</H3>
+<blockquote>
+    BTAC(分岐先アドレスキャッシュ)へのルックアップがミスしたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>TLBミス - SCE_PC1_TLB_MISS</B>
+</A>
+</H3>
+<blockquote>
+    TLBミスが起こったときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_9">
+<A HREF="#Heading3_2"> 2. </A>9 <B>ITLBミス - SCE_PC0_ITLB_MISS</B>
+</A>
+</H3>
+<blockquote>
+    ITLBミスが起こったときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_10">
+<A HREF="#Heading3_2"> 2. </A>10 <B>DTLBミス - SCE_PC1_DTLB_MISS</B>
+</A>
+</H3>
+<blockquote>
+    DTLBミスが起こったときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_11">
+<A HREF="#Heading3_2"> 2. </A>11 <B>命令キャッシュミス - SCE_PC0_ICACHE_MISS</B>
+</A>
+</H3>
+<blockquote>
+    命令キャッシュミスが起こったときに発生するイベントです。アンキャッシュの命令フェッチはカウントされません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_12">
+<A HREF="#Heading3_2"> 2. </A>12 <B>データキャッシュミス - SCE_PC1_DCACHE_MISS</B>
+</A>
+</H3>
+<blockquote>
+    データキャッシュにヒットしないロード/ストアが起こったときに発生するイベントです。つまり、データキャッシュミスに加えて、アンキャッシュ/アンキャッシュアクセラレートのロード/ストアもカウントされます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_13">
+<A HREF="#Heading3_2"> 2. </A>13 <B>DTLBへのアクセス - SCE_PC0_DTLB_ACCESSED</B>
+</A>
+</H3>
+<blockquote>
+    ロード/ストアが実行されたときに発生するイベントです。ロード/ストア命令が中断された場合は発生しません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_14">
+<A HREF="#Heading3_2"> 2. </A>14 <B>WBBシングルリクエスト不可 - SCE_PC1_WBB_SINGLE_UNAVAIL</B>
+</A>
+</H3>
+<blockquote>
+    WBB(ライトバックバッファ)にシングルリクエストが発行され、十分な空きエントリがなかった場合に発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_15">
+<A HREF="#Heading3_2"> 2. </A>15 <B>ノンブロッキングロード - SCE_PC0_NONBLOCK_LOAD</B>
+</A>
+</H3>
+<blockquote>
+    ロード命令によりノンブロッキングのキャッシュミス(ひとつめのキャッシュミス)が生じたときに発生するイベントです。ブロッキングモードでは、このイベントをカウントすると不定の値を取ります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_16">
+<A HREF="#Heading3_2"> 2. </A>16 <B>WBBバーストリクエスト不可(1) - SCE_PC1_WBB_BURST_UNAVAIL</B>
+</A>
+</H3>
+<blockquote>
+    WBBにバーストリクエストが発行され、十分な空きエントリがなかった場合に発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_17">
+<A HREF="#Heading3_2"> 2. </A>17 <B>WBBシングルリクエスト - SCE_PC0_WBB_SINGLE_REQ</B>
+</A>
+</H3>
+<blockquote>
+    WBBにシングルリクエストが発行されたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_18">
+<A HREF="#Heading3_2"> 2. </A>18 <B>WBBバーストリクエスト不可(2) - SCE_PC1_WBB_BURST_ALMOST</B>
+</A>
+</H3>
+<blockquote>
+    WBBにバーストリクエストが発行され、十分な空きエントリがなかった場合に発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_19">
+<A HREF="#Heading3_2"> 2. </A>19 <B>WBBバーストリクエスト - SCE_PC0_WBB_BURST_REQ</B>
+</A>
+</H3>
+<blockquote>
+    WBBにバーストリクエストが発行されたときに発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_20">
+<A HREF="#Heading3_2"> 2. </A>20 <B>WBBバーストリクエスト不可(3) - SCE_PC1_WBB_BURST_FULL</B>
+</A>
+</H3>
+<blockquote>
+    WBBにバーストリクエストが発行され、まったく空きエントリがなかった場合に発生するイベントです。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_21">
+<A HREF="#Heading3_2"> 2. </A>21 <B>CPUアドレスバスビジー - SCE_PC0_ADDR_BUS_BUSY</B>
+</A>
+</H3>
+<blockquote>
+    CPUアドレスバスが使用不可のとき、BUSCLKごとに(CPUクロックごとではなく)発生するイベントです。CPUアドレスバスが使用不可であるとは、ビジー状態であるか、2つのアドレスが発行されて最初のアドレスに対応するデータがまだ返ってきていない状態です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_22">
+<A HREF="#Heading3_2"> 2. </A>22 <B>CPUデータバスビジー - SCE_PC1_DATA_BUS_BUSY</B>
+</A>
+</H3>
+<blockquote>
+    CPUデータバスが使用不可のとき、BUSCLKごとに(CPUクロックごとではなく)発生するイベントです。CPUデータバスが使用不可であるとは、ビジー状態であるか、2つのアドレスが発行されて最初のアドレスに対応するデータがまだ返ってきていない状態です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_23">
+<A HREF="#Heading3_2"> 2. </A>23 <B>命令完了 - SCE_PC0_INST_COMP/SCE_PC1_INST_COMP</B>
+</A>
+</H3>
+<blockquote>
+    命令が完了する、つまり終了することが確実なステージに達すると発生するイベントです。<BR>
+    例外が発生して命令が中断された場合は、このイベントは発生しません。ただしSYSCALL命令やTEQ命令などの正常な動作の一部として発生する例外は除きます。このような正常な例外は、発生してもしなくても命令完了とみなされます。<BR>
+    branch-likely命令の分岐遅延スロットにある命令については、分岐条件が成立しないために無効化された場合でも、このイベントが発生します。<BR>
+    なお、EE Coreでは各CPUサイクルごとに2つまでの命令が実行されます。2つの命令が実行されて完了するとカウンタの値は1サイクルに2ずつ増えることになります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_24">
+<A HREF="#Heading3_2"> 2. </A>24 <B>非BDS命令完了 - SCE_PC0_NON_BDS_COMP/SCE_PC1_NON_BDS_COMP</B>
+</A>
+</H3>
+<blockquote>
+    分岐遅延スロットを持たない命令、つまり分岐・ジャンプ命令以外の命令が完了すると発生するイベントです。<BR>
+    branch-likely命令の分岐遅延スロットにある命令については、分岐条件が成立しないために無効化された場合でもこのイベントが発生します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_25">
+<A HREF="#Heading3_2"> 2. </A>25 <B>COP2命令完了 - SCE_PC0_COP2_COMP</B>
+</A>
+</H3>
+<blockquote>
+    COP2命令が完了したときに発生するイベントです。COP2命令がbranch-likely命令の分岐遅延スロットにあり、分岐条件が成立せずに無効化された場合でも発生します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_26">
+<A HREF="#Heading3_2"> 2. </A>26 <B>COP1命令完了 - SCE_PC1_COP1_COMP</B>
+</A>
+</H3>
+<blockquote>
+    COP1命令が完了したときに発生するイベントです。COP1命令がbranch-likely命令の分岐遅延スロットにあり、分岐条件が成立せずに無効化された場合でも発生します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_27">
+<A HREF="#Heading3_2"> 2. </A>27 <B>ロード完了 - SCE_PC0_LOAD_COMP</B>
+</A>
+</H3>
+<blockquote>
+    ロード命令が完了したときに発生するイベントです。ロード命令がbranch-likely命令の分岐遅延スロットにあり、分岐条件が成立せずに無効化された場合でも発生します。また、バスエラーが発生した場合でも、このイベントは発生します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_28">
+<A HREF="#Heading3_2"> 2. </A>28 <B>ストア完了 - SCE_PC1_STORE_COMP</B>
+</A>
+</H3>
+<blockquote>
+    ストア命令が完了したときに発生するイベントです。ストア命令がbranch-likely命令の分岐遅延スロットにあり、分岐条件が成立せずに無効化された場合でも発生します。また、バスエラーが発生した場合でも、このイベントは発生します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_29">
+<A HREF="#Heading3_2"> 2. </A>29 <B>イベントなし - SCE_PC0_NO_EVENT/SCE_PC1_NO_EVENT</B>
+</A>
+</H3>
+<blockquote>
+    ダミーのイベントで、これを指定するとカウンタのカウントアップを禁止することになります。2つのカウンタのうちひとつだけをアクティブにしたい場合に利用します。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,695 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                             MPEGライブラリ
+                            ===============
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceMpeg                                                          [構造体]
+=========================================================================
+                                                            MPEG デコーダ
+[構造]
+        typedef struct {
+            int width;
+            int height;
+            int frameCount;
+            long pts;
+            long dts;
+            u_long flags;
+            long pts2nd;
+            long dts2nd;
+            u_long flags2nd;
+            void *sys;
+        } sceMpeg;
+        
+[メンバ]
+        width		デコード画像の幅(最初のピクチャデコード後に設定)
+        height		デコード画像の高さ(最初のピクチャデコード後に設定)
+        frameCount	デコード画像のフレーム番号(デコードに従って変化)
+        pts		Presentation Time Stamp; デコードされた画像を表示すべき時間
+        を表す
+        dts		Decoding Time Stamp; 画像をデコードすべき 時間を表す
+        flags		デコードに関連するフラグ
+        
+        
+        <pic>: picture_coding_type
+        	000: Reserved
+        	001: I picture
+        	010: P picture
+        	011: B picture
+        	100: D picture (mpeg1)
+        	101: Reserved
+        	110: Reserved
+        	111: Reserved
+        
+        <pstr>: picture_structure
+        	00: reserved
+        	01: Top Field
+        	10: Bottom Field
+        	11: Frame Picture
+        
+        <rff>: repeat_first_field
+        <tff>: top_field_first
+        <pfrm>: progressive_frame
+        <pseq>: progressive_sequence
+        
+        pts2nd		将来のために予約
+        dts2nd		将来のために予約
+        flags2nd		将来のために予約
+        sys		システムデータ(デコーダが内部で使用)
+        
+[解説]
+        sceMpeg 構造体は MPEG デコーダを実現する構造体です。width, height
+        の各メンバは、最初のピクチャがデコードされた時点で設定されます。
+        frameCount は、直前にデコードされたピクチャの先頭からの通し番号で
+        す。ピクチャのデコードが進むに従って変化します。
+        pts は、直前にデコードされたピクチャの PTS(Presentation Time Stam
+        p) を示します。dts は直前にデコードされたピクチャの DTS(Decoding
+        Time Stamp)を示します。PTS および DTS は、MPEG2 で定義されたタイ
+        ムスタンプで、表示およびデコードのタイミングを特定するために用い
+        られます。これらの値は 90KHz で動く仮想的なクロック上の値を示しま
+        す。すなわち、
+        	1sec = 90000 tick
+        となります。 flags は、デコードシーケンスおよびデコードした画像の
+        各種属性を保持します。sys は、デコード時にシステムが使用するデー
+        タです。
+        
+
+=========================================================================
+sceMpegCbData                                                    [構造体]
+=========================================================================
+                                                   MPEGコールバックデータ
+[構造]
+        typedef union {
+            sceMpegCbType type;
+            sceMpegCbDataError error;
+            sceMpegCbDataTimeStamp ts;
+            sceMpegCbDataStr str;
+        } sceMpegCbData;
+        
+[メンバ]
+        type		コールバックタイプ
+        error		sceMpegCbError に対応する構造体
+        ts		sceMpegCbTimeStamp に対応する構造体
+        str		sceMpegCbStr に対応する構造体
+        
+[解説]
+        sceMpegCbData は上記した構造体をメンバに持つ共用体です。すべての
+        メンバは、第１メンバに type を持つので、これを見ることによりどの
+        タイプのコールバックであるか判断することができます。sceMpegCbData
+         が使われるのは、特別な構造体が定義されないタイプのコールバッック
+        関数が呼ばれたときです。その際、sceMpegCbData は関数の第２引数と
+        して渡されます。
+        
+        <コールバック関数の例>
+        	int mpegNodata(sceMpeg *mp,
+        		sceMpegCbData *cbdata, void *anyData) {
+        
+        	    ... // get next data and send it to IPU
+        
+        	    return 1;
+        	}
+
+=========================================================================
+sceMpegCbDataError                                               [構造体]
+=========================================================================
+                                                  MPEG エラーコールバック
+[構造]
+        typedef struct {
+            sceMpegCbType type;
+            char *errMessage;
+        } sceMpegCbDataError;
+        
+[メンバ]
+        type		コールバックタイプ(sceMpegCbError)
+        errMessage	エラーメッセージ
+        
+[解説]
+        sceMpegCbDataError は sceMpegCbError に対応するコールバックデータ
+        構造体です。sceMpegCbError に対応するコールバック関数が呼ばれたと
+        きコールバック関数の第２引数として渡されます。
+        sceMpegCbError コールバック関数が呼ばれるのは、デコーダが何らかの
+        エラーに遭遇した場合です。errMessage には、エラーメッセージが格納
+        されます。
+        
+        <コールバック関数の例>
+        	int mpegError(sceMpeg *mp,
+        		sceMpegCbDataError *cberror, void *anyData) {
+        	   printf("%s\n", cberror->errMessage);
+        	   return 1;
+        	}
+        
+
+=========================================================================
+sceMpegCbDataStr                                                 [構造体]
+=========================================================================
+                                        MPEG ストリームコールバックデータ
+[構造]
+        typedef struct {
+            sceMpegCbType type;
+            u_char *header;
+            u_char *data;
+            u_int  len;
+            long   pts;		// PTS value; valid only when pts >= 0
+            long   dts;		// DTS value; valid only when dts >= 0
+        } sceMpegCbDataStr;
+        
+[メンバ]
+        type		コールバックタイプ(sceMpegCbStr)
+        header		パケットヘッダの先頭
+        data		パケットデータの先頭
+        len		パケットデータのサイズ
+        pts		PTS (Presentation time stamp)
+        dts		DTS (Decoding time stamp)
+        
+[解説]
+        sceMpegCbDataStr は sceMpegCbStr に対応するコールバックデータ構造
+        体です。sceMpegCbStr に対応するコールバック関数が呼ばれたときコー
+        ルバック関数の第２引数として渡されます。
+        
+        sceMpegCbStr コールバック関数が呼ばれるのは、PSS データを非多重化
+        中にあらかじめ登録されたストリームデータ見つけたときです。header
+        にはPES パケットの先頭位置、data には PES パケット中のデータ開始
+        位置、len にはデータの大きさ、pts/dts にはそれぞれ PTS/DTS が格納
+        されます。
+        コールバック関数は data、len よりデータ部分を切りだし、別領域に保
+        存します。このとき、後の処理のためにデータ位置と pts/dts を何らか
+        の方法で関連づけておく必要があります。また、コールバック関数は、
+        非多重化処理を中止させたい場合は 0 を、それ以外の場合は 1 を返す
+        ようにします。
+        
+        <コールバック関数の例>
+        	int func() {
+        	    sceMpeg theMepg;
+        
+        	    // choose MPEG video 0
+        	    sceMpegAddStrCallback(&theMpeg,
+        	    	sceMpegStrM2V,	// MPEG2 video stream
+        		0,		// stream number 0
+        		videoCallback,	// callback function; see below
+        		NULL
+        	    );
+        	}
+        
+        	// callback function for sceMpegCbStr
+        	int videoCallback(sceMpeg *mp,
+        		sceMpegCbDataStr *cbstr, void *anyData) {
+        		
+        	    if (/* video input buff is not full*/) {
+        
+        		... // copy (cbstr->data, cbstr->len)
+        		... // to video input buffer
+        		... // save cbstr->pts/cbstr->dts value
+        		return 1;
+        	    }
+        	    return 0;
+        	}
+        
+
+=========================================================================
+sceMpegCbDataTimeStamp                                           [構造体]
+=========================================================================
+                                    MPEG タイムスタンプコールバックデータ
+[構造]
+        typedef struct {
+            sceMpegCbType type;
+            long pts;		// PTS value; valid only when pts >= 0
+            long dts;		// DTS value; valid only when dts >= 0
+        } sceMpegCbDataTimeStamp;
+        
+[メンバ]
+        type	コールバックタイプ(sceMpegCbTimeStamp)
+        pts	PTS (Presentation time stamp)
+        dts	DTS (Decoding time stamp)
+        
+[解説]
+        sceMpegCbDataTimeStamp は sceMpegCbTimeStamp に対応するコールバッ
+        クデータ構造体です。sceMpegCbTimeStamp に対応するコールバック関数
+        が呼ばれたときコールバック関数の第２引数として渡されます。
+        
+        sceMpegCbTimeStamp コールバック関数が呼ばれるのは、デコーダがその
+        時点でデコード中のデータに対応する PTS, DTS を知りたいときです。
+        コールバック関数側では、D4_MADR, IPU_CTRL, IPU_BP 等から、デコー
+        ド中のデータ位置を解析し、その位置に対応する PTS/DTS を返す必要が
+        あります。
+        このとき メンバ pts および dts を使用します。
+        
+        <コールバック関数の例>
+        	int mpegTimeStamp(sceMpeg *mp,
+        	    sceMpegCbDataTimeStamp *cbts, void *anyData) {
+        	    long pts_value, dts_value;
+        
+        	    pts_value = ....
+        	    dts_value = ....
+        
+        	    cbts->pts = pts_value;
+        	    cbts->dts = dts_value;
+        	    return 1;
+        	}
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceMpegAddBs                                                       [関数]
+=========================================================================
+                              MPEG デコーダに入力ビットストリームを加える
+[形式]
+        int sceMpegAddBs(
+        	sceMpeg *mp,
+        	u_long128 *bs,
+        	int bs_size
+        );
+        
+[引数]
+        mp	MPEG デコーダ
+        bs	デコードするビットストリーム
+        bs_size	デコードするビットストリームの大きさ
+        
+[返り値]
+        なし
+        
+[解説]
+        デコードする MPEG2/MPEG1 ビットストリームをデコーダに設定します。
+        デコーダは内部で DMA ch4 の設定をします。
+        
+
+=========================================================================
+sceMpegAddCallback                                                 [関数]
+=========================================================================
+                                               コールバック関数を設定する
+[形式]
+        sceMpegCallback sceMpegAddCallback(
+        	sceMpeg *mp,
+        	sceMpegCbType type,
+        	sceMpegCallback callback,
+        	void *anyData
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        type		コールバックタイプ	
+        callback		登録するコールバック関数
+        anyData		任意データ
+        
+[返り値]
+        すでに登録されているコールバック
+        
+[解説]
+        MPEG デコーダにコールバック関数を登録します。type は、登録するコ
+        ールバックのタイプ、callback は登録するコールバック関数を示します。
+        anyData は、任意のデータで、コールバック関数の第３引数として渡さ
+        れます。
+        anyData は、アプリケーションで自由に使うことができます。
+        
+
+=========================================================================
+sceMpegAddStrCallback                                              [関数]
+=========================================================================
+                                         ストリームコールバックを設定する
+[形式]
+        sceMpegCallback sceMpegAddStrCallback(
+        	sceMpeg *mp,
+        	sceMpegStrType strType,
+        	int strNumber,
+        	sceMpegCallback callback,
+        	void *anyData
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        strType		ストリームタイプ	
+        strNumber	ストリーム番号
+        callback		登録するコールバック関数
+        anyData		任意データ
+        
+[返り値]
+        すでに登録されているコールバック
+        
+[解説]
+        MPEG デコーダにコールバック関数を登録します。コールバックのタイプ
+        は、sceMpegCbStr です。関数は、ストリームの種類ごとに登録すること
+        ができます。ストリームの種類は、strType と strNumber で特定します。
+        callback は登録するコールバック関数を示します。 anyData は、任意
+        のデータで、コールバック関数の第３引数として渡されます。 anyData
+        は、アプリケーションで自由に使うことができます。
+        
+
+=========================================================================
+sceMpegCreate                                                      [関数]
+=========================================================================
+                                                      MPEG デコーダの生成
+[形式]
+        int sceMpegCreate(
+        	sceMpeg *mp,
+        	u_char *work_area,
+        	int work_area_size
+        )
+        
+[引数]
+        mp		作成するデコーダに関連する構造体
+        work_area	デコーダのワークエリア
+        work_area_size	デコーダのワークエリアサイズ
+        
+[返り値]
+        なし
+        
+[解説]
+        sceMpegCreate() は、MPEG デコーダを生成します。引数 mp には、アプ
+        リケーションで割り当てた sceMpeg 構造体へのポインタを渡します。
+        引数 work_area および work_area_size には MPEG デコード用のワーク
+        エリアとそのサイズを指定します。ワークエリアはアプリケーション側
+        で割り当てる必要があります。ワークエリアのサイズはマクロ、
+        	SCE_MPEG_BUFFER_SIZE(w, h)    // w: max_width, h: max_height
+        を用いて知ることができます。
+        
+        sceMpegCreate() によってデコーダが生成された後は、アプリケーショ
+        ンはmp に指定した sceMpeg 構造体によって MPEG デコーダを識別しま
+        す。
+        
+[備考]
+         現在のインプリメントでは MPEG デコーダはアプリケーションで一つし
+        か生成できません。複数生成した場合の動作は保証されません。
+        
+
+=========================================================================
+sceMpegDelete                                                      [関数]
+=========================================================================
+                                                      MPEG デコーダの消去
+[形式]
+        int sceMpegDelete(
+        	sceMpeg *mp
+        )
+        
+[引数]
+        mp	MPEG デコーダ
+        
+[返り値]
+        なし
+        
+[解説]
+        指定された MPEG デコーダを消去します。
+        
+
+=========================================================================
+sceMpegDemuxPss                                                    [関数]
+=========================================================================
+                                                           PSS の非多重化
+[形式]
+        int sceMpegDemuxPss(
+        	sceMpeg *mp,
+        	u_char *pss,
+        	int pss_size
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        pss		PSS データへのポインタ	
+        pss_size		PSS データのサイズ	
+        
+[返り値]
+        処理したデータ長(バイト)
+        
+[解説]
+        pss, pss_size で与えられたデータ領域を解析し、登録されたストリー
+        ムデータを見つけた際には、それに対応するコールバック関数を呼び出
+        します。目的のストリームとそれに対応するコールバック関数はあらか
+        じめ sceMpegAddStrCallback() を使って登録されている必要があります。
+        sceMpegDemuxPss() は、通常 PSS を非多重化するために用いられます。
+        
+        sceMpegDemuxPss() は、指定された領域の最後に達するか、または、途
+        中で呼ばれたコールバック関数が 0 を返すまで処理を続けます。
+        返り値は、処理したデータの大きさをバイト単位で表したものです。
+        
+
+=========================================================================
+sceMpegDemuxPssRing                                                [関数]
+=========================================================================
+                                        リングバッファ上の PSS の非多重化
+[形式]
+        int sceMpegDemuxPssRing(
+        	sceMpeg *mp,
+        	u_char *pss,
+        	int pss_size,
+        	u_char *buf_top,
+        	int buf_size
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        pss		PSS データへのポインタ	
+        pss_size		PSS データのサイズ	
+        buf_top		リングバッファの先頭ポインタ
+        buf_size		リングバッファのサイズ
+        
+[返り値]
+        処理したデータ長(バイト)
+        
+[解説]
+        pss, pss_size, buf_top, buf_size で与えられたデータ領域を解析し、
+        登録されたストリームデータを見つけた際には、それに対応するコール
+        バック関数を呼び出します。データは buf_top,
+        buf_size で指定されるリングバッファ上に置かれていることを想定しま
+        す。すなわち、buf_top + buf_size - 1 の位置にあるデータを処理した
+        後は、buf_top に戻って処理を続けます。目的のストリームとそれに対
+        応するコールバック関数はあらかじめsceMpegAddStrCallback() を使っ
+        て登録されている必要があります。
+        sceMpegDemuxPssRing() は、通常 PSS を非多重化するために用いられま
+        す。
+        
+        sceMpegDemuxPssRing() は、指定された領域の最後に達するか、または、
+        途中で呼ばれたコールバック関数が 0 を返すまで処理を続けます。返り
+        値は、処理したデータの大きさをバイト単位で表したものです。
+        
+
+=========================================================================
+sceMpegGetDecodeMode                                               [関数]
+=========================================================================
+                                                 デコードモードを取得する
+[形式]
+        void sceMpegGetDecodeMode(
+        	sceMpeg *mp,
+        	int *ni,
+        	int *np,
+        	int *nb
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        ni		1 GOP 中で再生する I-picture の数を格納する領域
+        np		1 GOP 中で再生する P-picture の数を格納する領域
+        nb		1 GOP 中で再生する B-picture の数を格納する領域
+        
+[返り値]
+        なし	
+        
+[解説]
+        デコードモードを取得します。デコードモードに関してはsceMpegeSetDe
+        codeMode() の解説を参照してください。
+        
+
+=========================================================================
+sceMpegGetPicture                                                  [関数]
+=========================================================================
+                          MPEG デコーダで 1 ピクチャ分デコードする(RGB32)
+[形式]
+        int sceMpegGetPicture(
+        	sceMpeg *mp,
+        	sceIpuRGB32 *rgb32,
+        	int mbcount
+        );
+        
+[引数]
+        mp		MPEG デコーダ
+        rgb32		デコードされたピクチャデータを格納する領域
+        mbcount		デコードされたピクチャデータを格納する領域の大きさ
+        		(単位: sceIpuRGB32 の数 = マクロブロック数)
+        
+[返り値]
+        正数または 0	正常終了
+        負数		異常終了
+        
+[解説]
+        sceMpegGetPicture() は、1 ピクチャ分のデコードを行います。デコー
+        ドされたピクチャは sceIpuRGB32 フォーマットのデータ系列としてメモ
+        リ上に格納されます。データを格納する領域は、引数 rgb32 で指定しま
+        す。
+        格納される sceIpuRGB32 のメモリ上の順番とそれに対応するマクロブロ
+        ックの画像上の順番は以下の関係を持ちます。
+        
+
+    ex.128x96 の場合
+
+        
+        <メモリ上の順番>
+        
+        <画像上のマクロブロックの順番>
+        
+        デコードされたピクチャデータを正しく表示するためには、Source Chai
+        n DMA を用いて正しく並べ直す必要があります。sceIpuRGB32 自体のフ
+        ォーマットに関しては libipu のドキュメントを参照してください。
+        
+
+=========================================================================
+sceMpegGetPictureRAW8                                              [関数]
+=========================================================================
+                           MPEG デコーダで 1 ピクチャ分デコードする(RAW8)
+[形式]
+        int sceMpegGetPictureRAW8(
+        	sceMpeg *mp,
+        	sceIpuRAW8 *raw8,
+        	int mbcount
+        );
+        
+[引数]
+        mp		MPEG デコーダ
+        raw8		デコードされたピクチャデータを格納する領域
+        mbcount		デコードされたピクチャデータを格納する領域の大きさ
+        		(単位: sceIpuRAW8 の数 = マクロブロック数)
+        
+[返り値]
+        正数または 0	正常終了
+        負数		異常終了
+        
+[解説]
+        sceMpegGetPictureRAW8() は、1 ピクチャ分のデコードを行います。デ
+        コードされたピクチャは sceIpuRAW8 フォーマットのデータ系列として
+        メモリ上に格納されます。データを格納する領域は、引数 raw8 で指定
+        します。
+        格納される sceIpuRAW8 のメモリ上の順番とそれに対応するマクロブロ
+        ックの画像上の順番は sceMpegGetPicture() の sceIpuRGB32 の並びと
+        同じです。
+        
+
+=========================================================================
+sceMpegInit                                                        [関数]
+=========================================================================
+                                                         libmpeg の初期化
+[形式]
+        int sceMpegInit(void);
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        MPEG ライブラリを初期化します。
+        DMA ch3, ch4 を初期化します。
+        
+
+=========================================================================
+sceMpegIsEnd                                                       [関数]
+=========================================================================
+                                    MPEG ビットストリームの終了をチェック
+[形式]
+        int sceMpegIsEnd(
+        	sceMpeg *mp
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        
+[返り値]
+        非0:	ビットストームの最後までデコードし終わった
+        0:	ビットストームの最後までデコードし終わっていない
+        
+[解説]
+        ビットストリームを最後(sequence_end_code)までデコードしたかどうか
+        を判断します。
+        
+
+=========================================================================
+sceMpegIsRefBuffEmpty                                              [関数]
+=========================================================================
+                    MPEG デコーダ内部の参照画像バッファが空かどうかを判断
+[形式]
+        int sceMpegIsRefBuffEmpty(
+        	sceMpeg *mp
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        
+[返り値]
+        非0:	参照画像バッファが空
+        0:	参照画像バッファが空でない
+        
+[解説]
+        MPEG デコーダ内部の参照画像バッファが空かどうかを判断します。
+        MPEG デコーダは、デコードの際に使用される参照画像を内部の参照画像
+        バッファに保持しています。デコードが開始される前、およびデコード
+        が完了しすべての画像が出力された後に参照画像バッファは空になりま
+        す。
+        
+
+=========================================================================
+sceMpegReset                                                       [関数]
+=========================================================================
+                                                  MPEG デコーダの再初期化
+[形式]
+        int sceMpegReset(
+        	sceMpeg *mp
+        )
+        
+[引数]
+        mp	MPEG デコーダ
+        
+[返り値]
+        なし
+        
+[解説]
+        指定された MPEG デコーダを再初期化します。
+        
+
+=========================================================================
+sceMpegSetDecodeMode                                               [関数]
+=========================================================================
+                                                 デコードモードを設定する
+[形式]
+        void sceMpegSetDecodeMode(
+        	sceMpeg *mp,
+        	int ni,
+        	int np,
+        	int nb
+        )
+        
+[引数]
+        mp		MPEG デコーダ
+        ni		1 GOP 中で再生する I-picture の数
+        		定数 SCE_MPEG_DECODE_ALL または 0
+        np		1 GOP 中で再生する P-picture の数
+        		定数 SCE_MPEG_DECODE_ALL または 0 以上の数
+        nb		1 GOP 中で再生する B-picture の数
+        		定数 SCE_MPEG_DECODE_ALL または 0 以上の数
+        
+[返り値]
+        なし
+        
+[解説]
+        デコードモードを設定します。デコードモードは 1 GOP 中の I/P/Bの各
+        ピクチャをそれぞれ何枚再生するかを決定するモードです。
+        通常の再生では、ni, np, nb ともに定数 SCE_MPEG_DECODE_ALLを指定し
+        てください。sceMpegSetDecodeMode() を呼ばなければ、デコーダのデフ
+        ォルト値はこの値になります。
+        早送り再生するときには、例えば次のように設定すると、途中の画像の
+        デコードをスキップすることができます。
+        
+        < B-picture をスキップ >
+        	ni = SCE_MPEG_DECODE_ALL
+        	np = SCE_MPEG_DECODE_ALL
+        	nb = 0
+        
+        < B-picture をスキップ, P-picture を 2 枚だけデコード >
+        	ni = SCE_MPEG_DECODE_ALL
+        	np = 2
+        	nb = 0

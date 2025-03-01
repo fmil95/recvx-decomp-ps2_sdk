@@ -1,0 +1,7520 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> パケットライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>パケットライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPacket>sceDmaPacket </A><BR>
+</TD><TD> </TD>
+<TD>		パケットの管理情報</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPacket>sceGifPacket </A><BR>
+</TD><TD> </TD>
+<TD>パケットの管理情報</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0Packet>sceVif0Packet </A><BR>
+</TD><TD> </TD>
+<TD>パケットの管理情報</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1Packet>sceVif1Packet </A><BR>
+</TD><TD> </TD>
+<TD>パケットの管理情報</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkAddData>sceDmaPkAddData </A><BR>
+</TD><TD> </TD>
+<TD>データの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkAddDataN>sceDmaPkAddDataN </A><BR>
+</TD><TD> </TD>
+<TD>複数データの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkCall>sceDmaPkCall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkCnt>sceDmaPkCnt </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkDump>sceDmaPkDump </A><BR>
+</TD><TD> </TD>
+<TD>パケットのダンプ出力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkEnd>sceDmaPkEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkInit>sceDmaPkInit </A><BR>
+</TD><TD> </TD>
+<TD>パケットの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkNext>sceDmaPkNext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkRef>sceDmaPkRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkRefe>sceDmaPkRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkRefs>sceDmaPkRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkReserve>sceDmaPkReserve </A><BR>
+</TD><TD> </TD>
+<TD>データ領域の追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkReset>sceDmaPkReset </A><BR>
+</TD><TD> </TD>
+<TD>パケット管理情報のリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkRet>sceDmaPkRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkSize>sceDmaPkSize </A><BR>
+</TD><TD> </TD>
+<TD>パケットの使用サイズ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDmaPkTerminate>sceDmaPkTerminate </A><BR>
+</TD><TD> </TD>
+<TD>パケットのターミネート</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkAddGsAD>sceGifPkAddGsAD </A><BR>
+</TD><TD> </TD>
+<TD>GS packed mode A+Dコマンドの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkAddGsData>sceGifPkAddGsData </A><BR>
+</TD><TD> </TD>
+<TD>GSデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkAddGsDataN>sceGifPkAddGsDataN </A><BR>
+</TD><TD> </TD>
+<TD>GSデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkAddGsPacked>sceGifPkAddGsPacked </A><BR>
+</TD><TD> </TD>
+<TD>GS packed modeデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkAddGsPackedN>sceGifPkAddGsPackedN </A><BR>
+</TD><TD> </TD>
+<TD>GS packed modeデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkCall>sceGifPkCall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkCloseGifTag>sceGifPkCloseGifTag </A><BR>
+</TD><TD> </TD>
+<TD>GIFtagのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkCnt>sceGifPkCnt </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkDump>sceGifPkDump </A><BR>
+</TD><TD> </TD>
+<TD>パケットのダンプ出力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkEnd>sceGifPkEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkInit>sceGifPkInit </A><BR>
+</TD><TD> </TD>
+<TD>パケットの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkNext>sceGifPkNext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkOpenGifTag>sceGifPkOpenGifTag </A><BR>
+</TD><TD> </TD>
+<TD>GIFtagのオープンと追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkRef>sceGifPkRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkRefe>sceGifPkRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkRefLoadImage>sceGifPkRefLoadImage </A><BR>
+</TD><TD> </TD>
+<TD>REFタグおよびGSへ転送するイメージデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkRefs>sceGifPkRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkReserve>sceGifPkReserve </A><BR>
+</TD><TD> </TD>
+<TD>データ領域の追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkReset>sceGifPkReset </A><BR>
+</TD><TD> </TD>
+<TD>パケット管理情報のリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkRet>sceGifPkRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkSize>sceGifPkSize </A><BR>
+</TD><TD> </TD>
+<TD>パケットの使用サイズ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceGifPkTerminate>sceGifPkTerminate </A><BR>
+</TD><TD> </TD>
+<TD>パケットのターミネート</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddCode>sceVif0PkAddCode </A><BR>
+</TD><TD> </TD>
+<TD>VIFコードの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddData>sceVif0PkAddData </A><BR>
+</TD><TD> </TD>
+<TD>VIFデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddDataN>sceVif0PkAddDataN </A><BR>
+</TD><TD> </TD>
+<TD>VIFデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData128>sceVif0PkAddUpkData128 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData128N>sceVif0PkAddUpkData128N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData32>sceVif0PkAddUpkData32 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData32N>sceVif0PkAddUpkData32N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData64>sceVif0PkAddUpkData64 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAddUpkData64N>sceVif0PkAddUpkData64N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkAlign>sceVif0PkAlign </A><BR>
+</TD><TD> </TD>
+<TD>VIFコードのアライメント調整</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkCall>sceVif0PkCall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkCloseUpkCode>sceVif0PkCloseUpkCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF UNPACKパケットのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkCnt>sceVif0PkCnt </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkDump>sceVif0PkDump </A><BR>
+</TD><TD> </TD>
+<TD>パケットのダンプ出力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkEnd>sceVif0PkEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkInit>sceVif0PkInit </A><BR>
+</TD><TD> </TD>
+<TD>パケットの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkNext>sceVif0PkNext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkOpenUpkCode>sceVif0PkOpenUpkCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF UNPACKパケットのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkRef>sceVif0PkRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkRefe>sceVif0PkRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkRefMpg>sceVif0PkRefMpg </A><BR>
+</TD><TD> </TD>
+<TD>REFタグおよびマイクロプログラムの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkRefs>sceVif0PkRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkReserve>sceVif0PkReserve </A><BR>
+</TD><TD> </TD>
+<TD>データ領域の追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkReset>sceVif0PkReset </A><BR>
+</TD><TD> </TD>
+<TD>パケット管理情報のリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkRet>sceVif0PkRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkSize>sceVif0PkSize </A><BR>
+</TD><TD> </TD>
+<TD>パケットの使用サイズ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif0PkTerminate>sceVif0PkTerminate </A><BR>
+</TD><TD> </TD>
+<TD>パケットのターミネート</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddCode>sceVif1PkAddCode </A><BR>
+</TD><TD> </TD>
+<TD>VIFコードの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddData>sceVif1PkAddData </A><BR>
+</TD><TD> </TD>
+<TD>VIFデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddDataN>sceVif1PkAddDataN </A><BR>
+</TD><TD> </TD>
+<TD>VIFデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddDirectData>sceVif1PkAddDirectData </A><BR>
+</TD><TD> </TD>
+<TD>DIRECTデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddDirectDataN>sceVif1PkAddDirectDataN </A><BR>
+</TD><TD> </TD>
+<TD>DIRECTデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddGsAD>sceVif1PkAddGsAD </A><BR>
+</TD><TD> </TD>
+<TD>GS packed mode A+Dコマンドの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddGsData>sceVif1PkAddGsData </A><BR>
+</TD><TD> </TD>
+<TD>GSデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddGsDataN>sceVif1PkAddGsDataN </A><BR>
+</TD><TD> </TD>
+<TD>GSデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddGsPacked>sceVif1PkAddGsPacked </A><BR>
+</TD><TD> </TD>
+<TD>GS packed modeデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddGsPackedN>sceVif1PkAddGsPackedN </A><BR>
+</TD><TD> </TD>
+<TD>GS packed modeデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData128>sceVif1PkAddUpkData128 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData128N>sceVif1PkAddUpkData128N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData32>sceVif1PkAddUpkData32 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData32N>sceVif1PkAddUpkData32N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData64>sceVif1PkAddUpkData64 </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAddUpkData64N>sceVif1PkAddUpkData64N </A><BR>
+</TD><TD> </TD>
+<TD>UNPACKデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkAlign>sceVif1PkAlign </A><BR>
+</TD><TD> </TD>
+<TD>VIFコードのアライメント調整</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCall>sceVif1PkCall </A><BR>
+</TD><TD> </TD>
+<TD>CALLタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCloseDirectCode>sceVif1PkCloseDirectCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF DIRECTパケットのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCloseDirectHLCode>sceVif1PkCloseDirectHLCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF DIRECTHLパケットのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCloseGifTag>sceVif1PkCloseGifTag </A><BR>
+</TD><TD> </TD>
+<TD>GIFtagのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCloseUpkCode>sceVif1PkCloseUpkCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF UNPACKパケットのクローズ</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkCnt>sceVif1PkCnt </A><BR>
+</TD><TD> </TD>
+<TD>CNTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkDump>sceVif1PkDump </A><BR>
+</TD><TD> </TD>
+<TD>パケットのダンプ出力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkEnd>sceVif1PkEnd </A><BR>
+</TD><TD> </TD>
+<TD>ENDタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkInit>sceVif1PkInit </A><BR>
+</TD><TD> </TD>
+<TD>パケットの初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkNext>sceVif1PkNext </A><BR>
+</TD><TD> </TD>
+<TD>NEXTタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkOpenDirectCode>sceVif1PkOpenDirectCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF DIRECTパケットのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkOpenDirectHLCode>sceVif1PkOpenDirectHLCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF DIRECTHLパケットのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkOpenGifTag>sceVif1PkOpenGifTag </A><BR>
+</TD><TD> </TD>
+<TD>GIFtagのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkOpenUpkCode>sceVif1PkOpenUpkCode </A><BR>
+</TD><TD> </TD>
+<TD>VIF UNPACKパケットのオープン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRef>sceVif1PkRef </A><BR>
+</TD><TD> </TD>
+<TD>REFタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRefe>sceVif1PkRefe </A><BR>
+</TD><TD> </TD>
+<TD>REFEタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRefLoadImage>sceVif1PkRefLoadImage </A><BR>
+</TD><TD> </TD>
+<TD>REFタグおよびGSへ転送するイメージデータの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRefMpg>sceVif1PkRefMpg </A><BR>
+</TD><TD> </TD>
+<TD>REFタグおよびマイクロプログラムの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRefs>sceVif1PkRefs </A><BR>
+</TD><TD> </TD>
+<TD>REFSタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkReserve>sceVif1PkReserve </A><BR>
+</TD><TD> </TD>
+<TD>データ領域の追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkReset>sceVif1PkReset </A><BR>
+</TD><TD> </TD>
+<TD>パケット管理情報のリセット</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkRet>sceVif1PkRet </A><BR>
+</TD><TD> </TD>
+<TD>RETタグの追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkSize>sceVif1PkSize </A><BR>
+</TD><TD> </TD>
+<TD>パケットの使用サイズ取得</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceVif1PkTerminate>sceVif1PkTerminate </A><BR>
+</TD><TD> </TD>
+<TD>パケットのターミネート</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceDmaPacket>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPacket
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        		パケットの管理情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct _DMAPACKET{
+	u_int *<I>pCurrent</I>;
+	u_long128 *<I>pBase</I>;
+	u_long128 *<I>pDmaTag</I>;
+	u_int pad03;
+} <B>sceDmaPacket</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pCurrent</I>	パケットの最後尾アドレス
+<I>pBase</I>		パケットの領域の先頭アドレス
+<I>pDmaTag</I>	有効なDMAtagのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの管理情報です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPacket>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPacket
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの管理情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct _{
+	u_int *<I>pCurrent</I>;
+	u_long128 *<I>pBase</I>;
+	u_long128 *<I>pDmaTag</I>;
+	u_long *<I>pGifTag</I>;
+} <B>sceGifPacket</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pCurrent</I>	パケットの最後尾アドレス
+<I>pBase</I>		パケット領域の先頭アドレス
+<I>pDmaTag</I>	有効なDMAtagのアドレス
+<I>pGifTag</I>		オープンされているGIFtag
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの管理情報です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0Packet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0Packet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの管理情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct{
+	u_int *<I>pCurrent</I>;
+	u_long128 *<I>pBase</I>;
+	u_long128 *<I>pDmaTag</I>;
+	u_int *<I>pVifCode</I>;
+	u_int numlen;
+	u_int pad11;
+	u_int pad12;
+	u_int pad13;
+} <B>sceVif0Packet</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pCurrent</I>	パケットの最後尾アドレス
+<I>pBase</I>		パケット領域の先頭アドレス
+<I>pDmaTag</I>	有効なDMAtagのアドレス
+<I>pVifCode</I>		オープンされているVIFcodeのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの管理情報です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1Packet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1Packet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの管理情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct{
+	u_int *<I>pCurrent</I>;
+	u_long128 *<I>pBase</I>;
+	u_long128 *<I>pDmaTag</I>;
+	u_int *<I>pVifCode</I>
+	u_int numlen;
+	u_long *<I>pGifTag</I>;
+	u_int pad12;
+	u_int pad13;
+} <B>sceVif1Packet</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pCurrent</I>	パケットの最後尾アドレス
+<I>pBase</I>		パケット領域の先頭アドレス
+<I>pDmaTag</I>	有効なDMAtagのアドレス
+<I>pVifCode</I>		オープンされているVIFcodeのアドレス
+<I>pGifTag</I>		オープンされているGIFtagのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの管理情報です。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceDmaPkAddData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkAddData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkAddData</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		パケットに追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1qwordのデータをパケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkAddDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkAddDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        複数データの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkAddDataN</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		パケットに追加するデータ列へのポインタ
+<I>count</I>		パケットに追加するデータの数(qword単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    count個のqwordデータをパケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkCall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkCall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkCall</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pCall</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pCall</I>		次のDMAtagのアドレス
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CALLタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkCnt>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkCnt
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkCnt</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CNTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkDump>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkDump
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのダンプ出力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkDump</B>(
+	sceDmaPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録されているパケットを標準出力に16進ダンプします。 <BR>
+    この関数はデバッグ用に用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkEnd</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ENDタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkInit</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pBase</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pBase</I>		パケット領域の先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットを初期化します。 <BR>
+    パケット管理情報のうちpBase,pDmaTag,pCurrentが初期化されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット領域としては、あらかじめ充分なメモリを確保しておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkNext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkNext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkNext</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pNext</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pNext</I>		次のタグのアドレス
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NEXTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkRef</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkRefe</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFEタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkRefs</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFSタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkReserve>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkReserve
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ領域の追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int *<B>sceDmaPkReserve</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>count</I>		リザーブする大きさ(word単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リザーブされた領域の先頭アドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット領域の末尾にcount(word単位)の領域をリザーブします。 <BR>
+    有効なDMAtagがあれば、リザーブした領域のサイズがそのDMAtagのサイズ情報に加えられます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケット管理情報のリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkReset</B>(
+	sceDmaPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		リセットするパケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット管理情報をリセットします。 <BR>
+    パケットの末尾を示すpCurrentにpBaseの値がコピーされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceDmaPkRet</B>(
+	sceDmaPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    RETタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの使用サイズ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceDmaPkSize</B>(
+	sceDmaPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット領域のサイズ（qword単位）を返します。 <BR>
+    式で表すとpCurrnet-pBaseです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDmaPkTerminate>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDmaPkTerminate
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのターミネート
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long128 *<B>sceDmaPkTerminate</B>(
+	sceDmaPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ターミネートされた次のアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートします。 <BR>
+    すなわち、そのとき有効なDMAtagのサイズ管理を終えます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkAddGsAD>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkAddGsAD
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed mode A+Dコマンドの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkAddGsAD</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_int <I>address</I>,
+	u_long <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>address</I>		追加するGSコマンド（レジスタアドレス）
+<I>data</I>		追加するGSコマンドのパラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked mode A+Dコマンドをパケットに追加します。 <BR>
+    GIFtagがpacked modeのA+Dでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkAddGsData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkAddGsData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GSデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkAddGsData</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのデータをパケットに追加します。 <BR>
+    GIFtagがオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkAddGsDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkAddGsDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GSデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkAddGsDataN</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数(64bit単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのデータをパケットに追加します。 <BR>
+    GIFtagがオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkAddGsPacked>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkAddGsPacked
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed modeデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkAddGsPacked</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するGSコマンドパラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked modeで転送するデータ（A+D以外のコマンド）をパケットに追加します。 <BR>
+    GIFtagがpacked modeでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkAddGsPackedN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkAddGsPackedN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed modeデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkAddGsPackedN</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するGSコマンドパラメータのアドレス
+<I>count</I>		追加するGSコマンドパラメータの個数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked modeで転送するデータ（A+D以外のコマンド）を複数個パケットに追加します。 <BR>
+    GIFtagがpacked modeでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkCall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkCall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkCall</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pCall</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pCall</I>		次のDMAtagのアドレス
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CALLタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkCloseGifTag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkCloseGifTag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GIFtagのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkCloseGifTag</B>(
+	sceGifPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GIFtagをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートする前にGIFtagをクローズしておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkCnt>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkCnt
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkCnt</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CNTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkDump>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkDump
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのダンプ出力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkDump</B>(
+	sceGifPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録されているパケットを標準出力に16進ダンプします。 <BR>
+    この関数はデバック用に用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkEnd</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ENDタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkInit</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pBase</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット構造体のポインタ
+<I>pBase</I>		パケット領域の先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットを初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkNext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkNext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkNext</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pNext</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pNext</I>		次のDMAtagのアドレス
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Nextタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkOpenGifTag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkOpenGifTag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GIFtagのオープンと追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkOpenGifTag</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 <I>gifTag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>gifTag</I>		追加するGIFtag
+		NLOOPフィールドは0に設定しておくこと。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GIFtagをオープンし、パケットの末尾に追加します。 <BR>
+    このあと、GIFtagがクローズされるまで、GIFtagのサイズ管理が行われます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GIFtagをオープンする前に適切なDMAtagをオープンしておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkRef</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkRefe</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFEタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkRefLoadImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkRefLoadImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグおよびGSへ転送するイメージデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkRefLoadImage</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_short <I>bp</I>,
+	u_char <I>psm</I>,
+	u_short <I>bw</I>,
+	u_long128 *<I>image</I>,
+	u_int <I>size</I>,
+	u_int <I>x</I>,
+	u_int <I>y</I>,
+	u_int <I>w</I>,
+	u_int <I>h</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報へのポインタ
+<I>bp</I>		転送先バッファの先頭アドレス
+		(bp x 64が実際のアドレスになる)
+<I>psm</I>		データフォーマット
+</PRE>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP"><B>定数</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>フォーマット</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMCT32</TD>
+<TD valign="TOP">0</TD>
+<TD valign="TOP">PSMCT32</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMCT24</TD>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">PSMCT24</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMCT16</TD>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">PSMCT16</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMCT16S</TD>
+<TD valign="TOP">10</TD>
+<TD valign="TOP">PSMCT16S</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMT8</TD>
+<TD valign="TOP">19</TD>
+<TD valign="TOP">PSMT8</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMT4</TD>
+<TD valign="TOP">20</TD>
+<TD valign="TOP">PSMT4</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMT8H</TD>
+<TD valign="TOP">27</TD>
+<TD valign="TOP">PSMT8H</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMT4HL</TD>
+<TD valign="TOP">36</TD>
+<TD valign="TOP">PSMT4HL</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMT4HH</TD>
+<TD valign="TOP">44</TD>
+<TD valign="TOP">PSMT4HH</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMZ32</TD>
+<TD valign="TOP">48</TD>
+<TD valign="TOP">PSMZ32</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMZ24</TD>
+<TD valign="TOP">49</TD>
+<TD valign="TOP">PSMZ24</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMZ16</TD>
+<TD valign="TOP">50</TD>
+<TD valign="TOP">PSMZ16</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GS_PSMZ16S</TD>
+<TD valign="TOP">58</TD>
+<TD valign="TOP">PSMZ16S</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<PRE>
+<I>bw</I>		転送先バッファ幅
+		(bw x 64が実際の幅になる)
+<I>image</I>		転送するデータの先頭アドレス
+<I>size</I>		転送するデータのサイズ	qword単位
+<I>x</I>, <I>y</I>		転送先領域の左上端点
+<I>w</I>, <I>h</I>		転送領域の幅、高さ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのローカルメモリに転送するイメージデータをパケットに追加します。 <BR>
+    サイズが大きいと自動的に分割して転送します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャデータをGSに転送したときには、テクスチャページバッファの無効化を行う必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkRefs</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFSタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkReserve>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkReserve
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ領域の追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int *<B>sceGifPkReserve</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>count</I>		リザーブする大きさ(word単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リザーブされた領域の先頭アドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの末尾にcount(word単位)の領域をリザーブします。 <BR>
+    リザーブされた領域のサイズは、有効なDMAtag,オープンされているGIFtagがあれば、それぞれのサイズ情報(qwc,NLOOP)に加算されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケット管理情報のリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkReset</B>(
+	sceGifPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをリセットします。 <BR>
+    パケットに登録されている内容は破棄されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceGifPkRet</B>(
+	sceGifPacket *<I>pPacket</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    RETタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの使用サイズ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceGifPkSize</B>(
+	sceGifPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットのサイズ（qword単位）を返します。 <BR>
+    式で表すとpCurrnet-pBaseです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceGifPkTerminate>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceGifPkTerminate
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのターミネート
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long128 *<B>sceGifPkTerminate</B>(
+	sceGifPacket *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ターミネートされた次のアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートします。 <BR>
+    つまり、そのとき有効なDMAtagのサイズ管理を終えます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートする前に、オープンしているGIFtagがあればクローズする必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFコードの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddCode</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>code</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>code</I>		追加するVIFcode
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIFコードをパケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddData</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIFデータをパケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddDataN</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの末尾にVIFデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData128>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData128
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData128</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに128bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData128N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData128N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData128N</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の128bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData32>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData32
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData32</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに32bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData32N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData32N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData32N</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の32bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData64>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData64
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData64</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに64bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAddUpkData64N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAddUpkData64N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAddUpkData64N</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の64bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkAlign>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkAlign
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFコードのアライメント調整
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkAlign</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>bit</I>,
+	u_int <I>pos</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>bit</I>		アラインの単位
+		0 : 32bit
+		1 : 64bit
+		2 : 128bit
+<I>pos</I>		アラインの位置
+		0- 3 (32bit単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アライメント調整のために必要な個数のVIF NOPを、パケットの末尾に追加します。VIF MPGコマンドをパケットに追加する際には、直前にこの関数を使用してアライメント調整を行う必要があります。bit,posはアライメント調整の条件を指定するパラメータで、次のように指定します。 <BR>
+<BR>
+    次のVIFcode	bit	pos <BR>
+    MPG		1	1 <BR>
+    そのほか		アライメント調整不要 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkCall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkCall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkCall</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pCall</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pCall</I>		次のDMAtagのアドレス
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CALLタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkCloseUpkCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkCloseUpkCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF UNPACKパケットのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkCloseUpkCode</B>(
+	sceVif0Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF UNPACKコマンドをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkCnt>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkCnt
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkCnt</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CNTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkDump>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkDump
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのダンプ出力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkDump</B>(
+	sceVif0Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録されているパケットを標準出力に16進ダンプします。 <BR>
+    この関数はデバッグ用に用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkEnd</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ENDタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkInit</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pBase</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pBase</I>		パケット領域の先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットを初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkNext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkNext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkNext</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pNext</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pNext</I>		次のDMAtagのアドレス
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NEXTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkOpenUpkCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkOpenUpkCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF UNPACKパケットのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkOpenUpkCode</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_short <I>vuaddr</I>,
+	u_int <I>upkcmd</I>,
+	u_int <I>cl</I>,
+	u_int <I>wl</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>vuaddr</I>		データ転送先のVU Mem0アドレス
+<I>upkcmd</I>		UNPACKのコマンドコード(8bit)
+<I>cl</I>		サイクルレジスタ(cl)の数
+<I>wl</I>		サイクルレジスタ(wl)の数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF UNPACKコマンドをオープンし、パケットの末尾に追加します。 <BR>
+    これ以降sceVif0PkCloseUpkCode()によってクローズするまでVIFcodeのNUMフィールドは管理され、sceVif0PkAddUpkData32()などを用いてデータをパケットに追加すればそのサイズに基づいて適切に設定されるようになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    あらかじめ適切なDMAtagをパケットに追加しておく必要があります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkRef</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkRefe</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFEタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkRefMpg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkRefMpg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグおよびマイクロプログラムの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkRefMpg</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_short <I>vuaddr</I>,
+	u_long128 *<I>pMicro</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>vuaddr</I>		転送先のμMem0アドレス(64bit単位)
+<I>pMicro</I>		転送元アドレス
+<I>size</I>		マイクロプログラムのサイズ(64bit単位)
+<I>opt1</I>		空き領域に入れるVIFcode。通常はVIF NOPを入れる。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたマイクロプログラムをMicroMem0へロードします。 <BR>
+    REFタグを生成し、パケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkRefs</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFSタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkReserve>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkReserve
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ領域の追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int *<B>sceVif0PkReserve</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>count</I>		リザーブするデータの数(word単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リザーブされた領域の先頭アドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの末尾にcount(word単位)の領域をリザーブします。 <BR>
+    リザーブされた領域のサイズは、有効なDMAtagおよびオープンされているVIF UNPACKコマンドがあれば、それぞれのサイズ情報(qwc,NUM)に反映されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケット管理情報のリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkReset</B>(
+	sceVif0Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット管理情報をリセットします。 <BR>
+    パケットの末尾を示すpCurrentにpBaseの値がコピーされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif0PkRet</B>(
+	sceVif0Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    RETタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの使用サイズ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceVif0PkSize</B>(
+	sceVif0Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットに登録されているデータのサイズ(qword単位)を返します。 <BR>
+    式で表すとpCurrent-pBaseです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif0PkTerminate>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif0PkTerminate
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのターミネート
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long128 *<B>sceVif0PkTerminate</B>(
+	sceVif0Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ターミネートされた次のアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートします。 <BR>
+    つまり、そのとき有効なDMAtagのサイズ管理を終えます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートする前に、VIF UNPACKコードがオープンされていればクローズしなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFコードの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddCode</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>code</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>code</I>		追加するVIFcode
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIFコードをパケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddData</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの末尾にVIFデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddDataN</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットの末尾に複数個のVIFデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddDirectData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddDirectData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DIRECTデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddDirectData</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF DIRECTコマンドにデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddDirectDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddDirectDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DIRECTデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddDirectDataN</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF DIRECTコマンドに複数個のデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddGsAD>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddGsAD
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed mode A+Dコマンドの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddGsAD</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>address</I>,
+	u_long <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報へのポインタ
+<I>address</I>		GSのコマンド番号
+<I>data</I>		GSのコマンドパラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked mode A+Dコマンドをパケットに追加します。 <BR>
+    GIFtagがpacked modeのA+Dでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddGsData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddGsData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GSデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddGsData</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するデータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのデータをパケットに追加します。 <BR>
+    GIFtagがオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddGsDataN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddGsDataN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GSデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddGsDataN</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long* <I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数(64bit単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのデータを複数個パケットに追加します。 <BR>
+    GIFtagがオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddGsPacked>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddGsPacked
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed modeデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddGsPacked</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		追加するGSコマンドパラメータ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked modeで転送するデータ（A+D以外のコマンド）をパケットに追加します。 <BR>
+    GIFtagがpacked modeでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddGsPackedN>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddGsPackedN
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GS packed modeデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddGsPackedN</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するGSコマンドパラメータのアドレス
+<I>count</I>		追加するGSコマンドパラメータの個数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのpacked modeで転送するデータ（A+D以外のコマンド）を複数個パケットに追加します。 <BR>
+    GIFtagがpacked modeでオープンされている必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData128>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData128
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData128</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 <I>data</I>,
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに128bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData128N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData128N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData128N</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の128bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData32>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData32
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData32</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>data</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに32bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData32N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData32N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData32N</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の32bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData64>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData64
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData64</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long <I>data</I>,
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>data</I>		データ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに64bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAddUpkData64N>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAddUpkData64N
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        UNPACKデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAddUpkData64N</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long *<I>pData</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pData</I>		追加するデータの先頭アドレス
+<I>count</I>		追加するデータの数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    オープンされているVIF UNPACKコマンドに複数個の64bitデータを追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkAlign>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkAlign
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIFコードのアライメント調整
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkAlign</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>bit</I>,
+	u_int <I>pos</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>bit</I>		アラインの単位
+		0 : 32bit
+		1 : 64bit
+		2 : 128bit
+<I>pos</I>		アラインの位置
+		0- 3 (32bit単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アライメント調整のために必要な個数のVIF NOPを、パケットの末尾に追加します。 <BR>
+    VIF MPG / VIF DIRECT / VIF DIRECTHLをパケットに追加する際には、その直前にこの関数を用いてアライメント調整を行う必要があります。アライメント調整の条件はVIFcodeによって異なりますので、bit,posで次のように指定します。 <BR>
+<BR>
+    次のVIFcode	bit	pos <BR>
+    MPG		1	1 <BR>
+    DIRECT		2	3 <BR>
+    DIRECTHL	2	3 <BR>
+    そのほか		アライメント調整不要 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCall>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCall
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CALLタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCall</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pCall</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pCall</I>		次のDMAtagのアドレス
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CALLタグを追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCloseDirectCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCloseDirectCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF DIRECTパケットのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCloseDirectCode</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF DIRECTコマンドをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数を用いてVIF DIRECTコマンドをクローズする前に、オープンされているGIFtagがあればクローズしておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCloseDirectHLCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCloseDirectHLCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF DIRECTHLパケットのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCloseDirectHLCode</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF DIRECTHLコマンドをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数を用いてVIF DIRECTHLコマンドをクローズする前に、オープンされているGIFtagがあればクローズしておく必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCloseGifTag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCloseGifTag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GIFtagのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCloseGifTag</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GIFtagをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCloseUpkCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCloseUpkCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF UNPACKパケットのクローズ
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCloseUpkCode</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF UNPACKコマンドをクローズします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkCnt>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkCnt
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CNTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkCnt</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    CNTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkDump>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkDump
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのダンプ出力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkDump</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    登録されているパケットを標準出力に16進ダンプします。 <BR>
+    この関数はデバッグ用に用意されています。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkEnd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkEnd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ENDタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkEnd</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ENDタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkInit</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pBase</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pBase</I>		パケット領域の先頭アドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットを初期化します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkNext>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkNext
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NEXTタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkNext</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pNext</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pNext</I>		次のDMAtagのアドレス
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NEXTタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkOpenDirectCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkOpenDirectCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF DIRECTパケットのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkOpenDirectCode</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	int <I>stall</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>stall</I>		割り込み制御ビット(iビット)の設定
+		0:割り込みなし(i=0)
+		1:割り込み発生(i=1)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アライメント調整のうえVIF DIRECTコマンドをオープンし、パケットの末尾に追加します。 <BR>
+    これ以降sceVif1PkCloseDirectCode()でクローズするまで、VIFcodeのNUMフィールドは管理され、sceVif1PkAddDirectData()などを用いて追加したデータのサイズに基づいて、適切に設定されるようになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkOpenDirectHLCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkOpenDirectHLCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF DIRECTHLパケットのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkOpenDirectHLCode</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	int <I>stall</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>stall</I>		割り込み制御ビット(iビット)の設定
+		0:割り込みなし(i=0)
+		1:割り込み発生(i=1)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    アライメント調整のうえVIF DIRECTHLコマンドをオープンし、パケットの末尾に追加します。 <BR>
+    これ以降sceVif1PkCloseDirectHLCode()でクローズするまで、VIFcodeのNUMフィールドは管理され、sceVif1PkAddDirectData()などを用いて追加したデータのサイズに基づいて、適切に設定されるようになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkOpenGifTag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkOpenGifTag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        GIFtagのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkOpenGifTag</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 <I>gifTag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>gifTag</I>		追加するGIFtag
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GIFtagをオープンし、すでにオープンされているVIF DIRECTコマンドに追加します。 <BR>
+    これ以降sceVif1PkCloseGifTag()でクローズするまで、GIFtagのqwcフィールドは管理され、sceVif1PkAddGsData()などを用いて追加したデータサイズに基づいて適切に設定されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkOpenUpkCode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkOpenUpkCode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        VIF UNPACKパケットのオープン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkOpenUpkCode</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_short <I>vuaddr</I>,
+	u_int <I>upkcmd</I>,
+	u_int <I>cl</I>,
+	u_int <I>wl</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>vuaddr</I>		データ転送先のVU Mem1アドレス
+<I>upkcmd</I>		UNPACKのコマンドコード(8bit)
+<I>cl</I>		サイクルレジスタ(cl)の数
+<I>wl</I>		サイクルレジスタ(wl)の数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    VIF UNPACKコマンドをオープンし、パケットの末尾に追加します。 <BR>
+    これ以降sceVif1PkCloseUpkCode()によってクローズするまでVIFcodeのNUMフィールドは管理され、sceVif1PkAddUpkData32()などを用いてデータをパケットに追加すればそのサイズに基づいて適切に設定されるようになります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    あらかじめ適切なDMAtagをパケットに追加しておく必要があります。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRef>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRef
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRef</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRefe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRefe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFEタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRefe</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFEタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRefLoadImage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRefLoadImage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグおよびGSへ転送するイメージデータの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRefLoadImage</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_short <I>bp</I>,
+	u_char <I>psm</I>,
+	u_short <I>bw</I>,
+	u_long128 *<I>image</I>,
+	u_int <I>size</I>,
+	u_int <I>x</I>,
+	u_int <I>y</I>,
+	u_int <I>w</I>,
+	u_int <I>h</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報へのポインタ
+<I>bp</I>		転送先バッファの先頭アドレス
+		(bp x 64が実際のアドレスになる)
+<I>psm</I>		データフォーマット
+		定数			値	フォーマット
+		SCE_GS_PSMCT32	0	PSMCT32
+		SCE_GS_PSMCT24	1	PSMCT24
+		SCE_GS_PSMCT16	2	PSMCT16
+		SCE_GS_PSMCT16S	10	PSMCT16S
+		SCE_GS_PSMT8		19	PSMT8
+		SCE_GS_PSMT4		20	PSMT4
+		SCE_GS_PSMT8H	27	PSMT8H
+		SCE_GS_PSMT4HL	36	PSMT4HL
+		SCE_GS_PSMT4HH	44	PSMT4HH
+		SCE_GS_PSMZ32		48	PSMZ32
+		SCE_GS_PSMZ24		49	PSMZ24
+		SCE_GS_PSMZ16		50	PSMZ16
+		SCE_GS_PSMZ16S	58	PSMZ16S
+<I>bw</I>		転送先バッファ幅
+		(bw x 64が実際の幅になる)
+<I>image</I>		転送するデータの先頭アドレス
+<I>size</I>		転送するデータのサイズ	qword単位
+<I>x</I>, <I>y</I>		転送先領域の左上端点
+<I>w</I>, <I>h</I>		転送領域の幅、高さ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    GSのローカルメモリに転送するイメージデータをREFタグとともにパケットに追加します。 <BR>
+    サイズが大きいと自動的に分割して転送します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    テクスチャデータをGSに転送したときには、テクスチャページバッファの無効化を行う必要があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRefMpg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRefMpg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFタグおよびマイクロプログラムの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRefMpg</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_short <I>vuaddr</I>,
+	u_long128 *<I>pMicro</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>vuaddr</I>		転送先のμMem1アドレス(64bit単位)
+<I>pMicro</I>		転送元アドレス
+<I>size</I>		マイクロプログラムのサイズ(64bit単位)
+<I>opt1</I>		空き領域に入れるVIFcode。通常はVIF NOPを入れる。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定されたマイクロプログラムをMicroMem1へロードします。 <BR>
+    REFタグを生成し、パケットの末尾に追加します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRefs>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRefs
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        REFSタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRefs</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_long128 *<I>pRef</I>,
+	u_int <I>size</I>,
+	u_int <I>opt1</I>,
+	u_int <I>opt2</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>pRef</I>		転送データのアドレス
+<I>size</I>		転送データのサイズ(qword単位)
+<I>opt1</I>		DMAtag上位（bit95-64）に入れるデータ
+<I>opt2</I>		DMAtag上位（bit127-96）に入れるデータ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    REFSタグをパケットの末尾に追加します。 <BR>
+    opt1,opt2はDMAtagの上位64bitに入れるデータです。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkReserve>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkReserve
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        データ領域の追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int *<B>sceVif1PkReserve</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>count</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>count</I>		リザーブするデータの数(word単位)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リザーブされた領域の先頭アドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    リザーブされた領域のサイズは、有効なDMAtagやオープンしているVIFcode/GIFtagがあればそれぞれのサイズ情報に反映されます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケット管理情報のリセット
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkReset</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケット管理情報をリセットします。 <BR>
+    パケットの末尾を示すpCurrentにpBaseの値がコピーされます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkRet>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkRet
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RETタグの追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceVif1PkRet</B>(
+	sceVif1Packet *<I>pPacket</I>,
+	u_int <I>flag</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+<I>flag</I>		IRQ,PCEを指定するビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    RETタグをパケットの末尾に追加します。 <BR>
+    これ以後パケットに追加するデータのサイズはカウントされ、サイズ情報（QWCフィールド）に反映されます。 <BR>
+    flagは、bit31でIRQ、bit26-27でPCEを指定します。DMAtagの下位32bitにOr-setされるので、その他のビットは0にしておかなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkSize>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkSize
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットの使用サイズ取得
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_int <B>sceVif1PkSize</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットに追加されているサイズ(qword単位)を返します。 <BR>
+    式で表すとpCurrnet-pBaseです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceVif1PkTerminate>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceVif1PkTerminate
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パケットのターミネート
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>u_long128 *<B>sceVif1PkTerminate</B>(
+	sceVif1Packet *<I>pPacket</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pPacket</I>		パケット管理情報のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ターミネートされた次のアドレス <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートします。 <BR>
+    つまり、そのとき有効なDMAtagのサイズ管理を終えます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    パケットをターミネートする前に、オープンされているVIFcodeやGIFtagがあればクローズしておかなければなりません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

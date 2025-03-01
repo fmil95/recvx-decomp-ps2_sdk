@@ -1,0 +1,872 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> ソケットライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>ソケットライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceILsock_addr>sceILsock_addr </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockBind>sceILsockBind </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockClose>sceILsockClose </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockConnect>sceILsockConnect </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockInit>sceILsockInit </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockOpen>sceILsockOpen </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockRecv>sceILsockRecv </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockRecvFrom>sceILsockRecvFrom </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockReset>sceILsockReset </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockSend>sceILsockSend </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceILsockSendTo>sceILsockSendTo </A><BR>
+</TD><TD> </TD>
+<TD></TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceILsock_addr>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsock_addr
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef unsigned int sceILsock_addr_t;
+typedef unsigned short sceILsock_port_t;
+struct sceILsock_addr {
+	unsigned char	<I>sock_len</I>;
+	unsigned char	<I>sock _family</I>;
+	sceILsock_port_t	<I>sock _port</I>;
+	struct	eui64 {
+		sceILsock_addr_t	<I>eui64_hi</I>;
+		sceILsock_addr_t	<I>eui64_lo</I>;
+	} <I>sock_addr</I>;
+	char	<I>sock_zero [4]</I>;
+};
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock _len</I>	  アドレス構造体サイズ 
+   sizeof(struct sceILsock_addr)
+<I>sock _family</I>  アドレスファミリー 
+   SCEILSOCK_AF のみが指定可能。
+<I>sock _port    </I>ポート番号
+   0 から 1024 までの値はシステムサービス用途等に予約される。
+   SCEILSOCK_PORT_ANONMIN から SCEILSOCK_PORT _ANONMAX までの
+   値は、システムによって一時的に使用される。
+<I>sock _addr</I>　ノードユーニークID (64bit)
+   SCEILSOCK_ADDR_ANY_HI, SCEILSOCK_ADDR_ANY_LO:自分自身のノード
+　ユーニークIDを意味する。
+   SCEILSOCK_ADDR_BROADCAST_HI, SCEILSOCK_ADDR_BROADCAST_LO:
+   送信においてブロードキャストを意味する。
+2バイト以上のメンバはいずれも network byte order (big-endian) で設定しなければならない。
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</PRE>
+</blockquote>
+<A name=sceILsockBind>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockBind
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum sceILsockErrorCode <B>sceILsockBind</B>(
+	int <I>sock</I>,
+	struct sceILsock_addr *<I>name</I>,
+	int <I>namelen</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>name</I>		アドレス構造体へのポインタ。
+<I>namelen</I>		アドレス構造体のサイズ。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_OK <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_REQUEST <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    socketにアドレスを割り当てる。これにより、他のソケットからこのアドレスへ送信された <BR>
+    データグラムを受信することが出来るようになる。 <BR>
+    また、送信時にはこのアドレスが送信元アドレスとして使われるようになる。 <BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> sock_port に 0 が指定された場合<BR>SCEILSOCK_PORT_ANONMIN から SCEILSOCK_PORT_ANONMAX までの間で使われていない port 番号が探され、その値が指定されたものとして扱われる。
+         <LI> sceILsockBind() が省略された場合<BR>sceILsockSend()/sceILsockSendTo() の呼びだし毎にSCEILSOCK_PORT_ANONMIN から SCEILSOCK_PORT_ANONMAX までの間で、使われていない port 番号が探され、送信元 port 番号として使われる。
+         <LI> 指定された port 番号が既に使われている場合エラーとなる。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    尚、sceILsockBindと sceILsockConnect はどちらが先でも差はない。 <BR>
+    sock_addr には SCEILSOCK_ADDR_ANY_HI/LO または <BR>
+    自分自身の eui64 のみ指定できる。 <BR>
+    前者は自分自身の eui64 として解釈される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockClose>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockClose
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum sceILsockErrorCode <B>sceILsockClose</B>(
+	int <I>sock</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_OK <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    通信用 socket を閉じ、資源を解放する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockConnect>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockConnect
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum sceILsockErrorCode <B>sceILsockConnect</B>(
+	int <I>sock</I>,
+	struct sceILsock_addr *<I>name</I>,
+	int <I>namelen</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>name</I>		名前構造体へのポインタ。内部でコピーされる。
+<I>namelen	</I>	名前構造体のサイズ。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_OK <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_... <BR>
+    KE_... <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceILsockSend() によってこの socket から送られるデータグラムの送り先、また sceILsockRecv() でこの socket が受取るデータグラムの送り元のアドレスを設定する。 <BR>
+    name の sock_family に SCEILSOCK_AF_UNSPEC が指定された場合、connect 状態が解除される。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockInit>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockInit
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>enum sceILsockErrorCode <B>sceILsockInit</B>(
+	int <I>maxsock</I>,
+<I>	</I>int<I> maxsize</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>maxsock</I>		同時にオープンできるソケット数。
+<I>maxsize</I>		扱うデータグラムの最大サイズ(バイト)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_OK <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCE1394ERR_... <BR>
+    KE_... <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ソケットドライバを初期化する。 <BR>
+    ドライバで使用するメモリを確保し、イベントフラグ等を作成する。 <BR>
+    二回目以降の呼出しは何もせず SCEILSOCKERR_OK を返す。 <BR>
+    maxsizeに0を指定した場合は、SCEILSOCK_MAX_PAYLOAD_SIZE_DEFAULT(=44)を指定したものと見なされる。 <BR>
+    負の場合は、SCEILSOCK_MAX_PAYLOAD_SIZE(=492)を指定したものと見なされる。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockOpen>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockOpen
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceILsockOpen</B>(
+	int <I>domain</I>,
+	int <I>type</I>,
+	int <I>protocol</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>domain</I>	通信ドメイン
+   SCEILSOCK_PF のみが指定可能。
+<I>type</I>	通信セマンティクス
+   SCEILSOCK_DGRAM のみが指定可能。
+   データグラムの最大サイズは sceILsockInit()で指定した値。
+   順序、到達性等は保証されないが、データ化けの無いことは保証される
+   (これはグローバルなネットワークでのはなし。家庭内ネットワークなら、実際上は順序、
+   到達性共に保証されると考えて良い）
+<I>protocol</I>	プロトコル番号
+   0 のみが指定可能。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCEILSOCKERR_RESOURCE_UNAVAILABLE <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    SCE1394ERR_... <BR>
+    KE_... <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    通信用 socket を作成し、ディスクリプタ(&gt;=0)を返す。 <BR>
+    ディスクリプタに対する操作は再入可能ではないため、複数のスレッド間でディスクリプタの同じソケットを共有することは出来ない。 <BR>
+    共有する必要がある場合には排他的に操作しなければならない。 <BR>
+    単一のスレッドで送信と受信がsocketを共有することは構わない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockRecv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockRecv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceILsockRecv</B>(
+	int <I>sock,</I> 
+	char *<I>buf</I>, 
+	int <I>len,</I> 
+	int <I>flags</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>buff</I>		転送先バッファの先頭アドレス。
+<I>len</I>		転送先バッファのバイト数。
+<I>flags</I>		0 を指定する。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    KE_... <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    socket に受信したデータグラムを取出し、そのバイト数を返す。 <BR>
+    sceILsockConnect() 済の場合、対象アドレスからのみ受信する。 <BR>
+    バッファに入り切らない部分は捨てられる。 <BR>
+    受信したデータのバイト並びは変換されない。 <BR>
+    受信済のデータが無い場合、受信するまでブロックする。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockRecvFrom>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockRecvFrom
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceILsockRecvFrom</B>(
+	int <I>sock</I>,
+	char *<I>buf</I>,
+	int <I>len</I>,
+	int <I>flags</I>,
+	struct sceILsock_addr *<I>from</I>,
+	int *<I>fromlen</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>buff</I>		転送先バッファの先頭アドレス。
+<I>len</I>		転送先バッファのバイト数。
+<I>flags</I>		0 を指定する。
+<I>from</I>		相手アドレスバッファの先頭アドレス。
+<I>fromlen</I>		アドレスバッファのバイト数を指定する変数のアドレス。
+		戻り時には受信アドレスの有効バイト数が返る。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    KE_... <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    受信したデータグラムとその送信元アドレスを取出し、転送バイト数を返す。 <BR>
+    sceILsockConnect() 済の場合、対象アドレスからのみ受信する。 <BR>
+    バッファに入り切らない部分は捨てられる。 <BR>
+    受信したデータのバイト並びは変換されない。 <BR>
+    受信済のデータが無い場合、受信するまでブロックする。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockReset>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockReset
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceILsockReset</B>(void);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ソケットドライバを使用不可にする。 <BR>
+    ドライバで使用していたメモリやイベントフラグ等を解放する。 <BR>
+    オープンされているソケットはクローズされる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockSend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockSend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceILsockSend</B>(
+	int <I>sock</I>, 
+	char *<I>buf</I>,
+	int <I>len</I>,
+	int <I>flags</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>buff</I>		送信するデータグラムバッファの先頭アドレス。
+<I>len</I>		送信するデータグラムのバイト数。
+<I>flags</I>		0 を指定する。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    SCEILSOCKERR_INVALID_REQUEST <BR>
+    SCEILSOCKERR_INVALID_SIZE <BR>
+    SCEILSOCKERR_NO_SUCH_NODE <BR>
+    SCE1394ERR_... <BR>
+    KE_... <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    sceILsockConnect() 済の socket からデータグラムを送信し、送信したバイト数を返す。 <BR>
+    送信すべきデータはnetwork byte orderのバイト並びとして解釈される。 <BR>
+    ブロードキャストの場合、送信途中で bus-reset が発生するとエラーを返す。 <BR>
+    ack_data_errorやack_busyを検出した場合、32回までリトライする。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceILsockSendTo>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceILsockSendTo
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceILsockSendTo</B>(
+	int <I>sock</I>,
+	char *<I>buf</I>,
+	int <I>len</I>,
+	int <I>flags</I>,
+	struct sceILsock_addr *<I>to</I>,
+	int <I>tolen</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>sock</I>		sceILsockOpen() で得たディスクリプタ。
+<I>buff</I>		送信するデータグラムの先頭アドレス。
+<I>len</I>		送信するデータグラムのバイト数。
+<I>flags</I>		0 を指定する。
+<I>to</I>		相手アドレス構造体のアドレス。
+<I>tolen</I>		アドレス構造体バイト数。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    次のいずれかの値を返す。 <BR>
+    SCEILSOCKERR_NOT_INITIALIZED <BR>
+    SCEILSOCKERR_NO_MEMORY <BR>
+    SCEILSOCKERR_INVALID_ID <BR>
+    SCEILSOCKERR_INVALID_ARGUMENT <BR>
+    SCEILSOCKERR_INVALID_REQUEST <BR>
+    SCEILSOCKERR_INVALID_SIZE <BR>
+    SCEILSOCKERR_NO_SUCH_NODE <BR>
+    SCE1394ERR_... <BR>
+    KE_... <BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    相手アドレスを指定して socket からデータグラムを送信し、送信したバイト数を返す。 <BR>
+    送信すべきデータはnetwork byte orderのバイト並びとして解釈される。 <BR>
+    ブロードキャストの場合、送信途中で bus-reset が発生するとエラーを返す。 <BR>
+    ack_data_errorやack_busyを検出した場合、32回までリトライする。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

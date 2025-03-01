@@ -1,0 +1,568 @@
+<HTML>
+<CENTER>
+
+<!-- 見出し 2,章見出し -->
+<HEAD>
+<TITLE> メモリーカードファイルシステム<BR>(FAT)仕様</TITLE>
+</HEAD>
+<BODY BGCOLOR=#ffffff>
+<A NAME="Top"></A>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM>
+<SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="pdaspec1.htm">FAT仕様
+<OPTION VALUE="index.htm"> PDA
+<OPTION VALUE="../arm/arm_gtoc.htm">ARM
+<OPTION VALUE="../../deci2/index.htm"> DECI2
+<OPTION VALUE="../../ee/libref/index.htm"> EE Library Reference
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../ee/overview/index.htm"> EE Overview
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../index.htm">TOP MENU
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<P>
+<A NAME="Heading2_1">
+<H1>
+メモリーカードファイルシステム<BR>(FAT)仕様
+</H1>
+</A>
+
+</CENTER>
+<blockquote>
+<H2>
+        <B>目次</B>
+</H2>
+</blockquote>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1_1"> 1 ファイルシステム(FAT)仕様</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_1_1"> メモリーカードのブロック構成</A><BR>
+    <A HREF="#Heading4_1_1_2"> FATブロック フォーマット</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_2"> 2 FAT操作</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_2_1"> フォーマット</A><BR>
+    <A HREF="#Heading4_1_2_2"> アンフォーマット</A><BR>
+    <A HREF="#Heading4_1_2_3"> デリート</A><BR>
+    <A HREF="#Heading4_1_2_4"> アンデリート</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_3"> 3 PDAにおける特殊な処理</A><BR>
+    <UL>
+    <A HREF="#Heading4_1_3_1"> 実行中PDAアプリケーションのFATセクタへの書き込み</A><BR>
+    <A HREF="#Heading4_1_3_2"> 代替セクタ書き込み禁止期間</A><BR>
+    </UL>
+<P><A HREF="#Heading3_1_4"> 4 メモリーカードフォーマットイメージ</A><BR>
+</UL>
+<HR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_1">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 1 <B>ファイルシステム(FAT)仕様</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_1">
+<A HREF="#Heading3_1_1"> 1. </A>1 <B>メモリーカードのブロック構成</B>
+</A>
+</H3>
+<blockquote>
+    メモリーカードは1Mビット(128キロバイト)のフラッシュメモリで構成されている。メモリーカードは、独自のファイルシステム（以下FAT）によって、ブロック(8キロバイト)単位で管理される。PDAアプリケーションのデータも、このブロック単位で管理される。<BR>
+    <BR>
+<CENTER>
+        <H4><B>表 1 メモリーカードのブロック構成</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">ブロック番号</TD><TD ALIGN="center">内容</TD><TR>
+    <TD ALIGN="center">0</TD><TD>FATブロック</TD><TR>
+    <TD ALIGN="center">1</TD><TD>データブロック1</TD><TR>
+    <TD ALIGN="center">2</TD><TD>データブロック2</TD><TR>
+    <TD ALIGN="center">.<BR>.</TD><TD ALIGN="center">.<BR>.</TD><TR>
+    <TD ALIGN="center">14</TD><TD>データブロック14</TD><TR>
+    <TD ALIGN="center">15</TD><TD>データブロック15</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+    フラッシュメモリへの書き込みは、セクタ(128バイト)単位で行われる。1ブロックは64セクタから成る。<BR>
+    "PlayStation 2"で、PDAのセクタを読む場合、sceMcxGetMem(port,slot,buff,0x8000000 + 0x80 x sect,0x80)
+    としてください。buffに1セクタ(128バイト)のデータが読み込まれます。<BR>
+    なお、セクタ書き込みはできません。
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1_2">
+<A HREF="#Heading3_1_1"> 1. </A>2 <B>FATブロック フォーマット</B>
+</A>
+</H3>
+<blockquote>
+    FATブロックは、下図の様な構成になっている。<BR>
+    <BR>
+<CENTER>
+        <H4><B>表 2 FATブロック メモリマップ</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">セクタ番号</TD><TD ALIGN="center">内容</TD><TR>
+    <TD ALIGN="center">0</TD><TD>フォーマット認識セクタ</TD><TR>
+    <TD ALIGN="center">1</TD><TD>ブロック情報セクタ1</TD><TR>
+    <TD ALIGN="center">・</TD><TD ALIGN="center">・・・</TD><TR>
+    <TD ALIGN="center">15</TD><TD>ブロック情報セクタ15</TD><TR>
+    <TD ALIGN="center">16</TD><TD>代替情報セクタ1</TD><TR>
+    <TD ALIGN="center">・</TD><TD ALIGN="center">・・・</TD><TR>
+    <TD ALIGN="center">35</TD><TD>代替情報セクタ20</TD><TR>
+    <TD ALIGN="center">36</TD><TD>代替セクタ1</TD><TR>
+    <TD ALIGN="center">・</TD><TD ALIGN="center">・・・</TD><TR>
+    <TD ALIGN="center">55</TD><TD>代替セクタ20</TD><TR>
+    <TD ALIGN="center">56</TD><TD>予約セクタ1</TD><TR>
+    <TD ALIGN="center">・</TD><TD ALIGN="center">・・・</TD><TR>
+    <TD ALIGN="center">62</TD><TD>予約セクタ7</TD><TR>
+    <TD ALIGN="center">63</TD><TD>ダミー書き込みセクタ</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2_1">
+(1) <B>フォーマット認識セクタ</B>
+</A>
+</H4>
+    <BR>
+<CENTER>
+<TABLE BORDER>
+    <TD>'M'</TD><TD>'C'</TD><TD>0</TD><TD>0</TD><TD>･･･</TD><TD>sum</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+      <BLOCKQUOTE>
+      <BR>
+      初めの2バイトが 'M','C'で残りはすべて0。ただし128バイト目はチェックサムであり、1～127バイトまでの総XORを格納する。<BR>
+      <BR>
+      初めの2バイトが"MC"であると、フォーマット済みのメモリーカードであると認識される。それ以外ではフォーマットされていない（アンフォーマット）と認識される。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2_2">
+(2) <B>ブロック情報セクタ</B>
+</A>
+</H4>
+    <BR>
+<CENTER>
+        <H4><B>表 3 ブロック情報セクタの構成</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">内容</TD><TD ALIGN="center">データ型</TD><TD ALIGN="center">サイズ(バイト)</TD><TR>
+    <TD>ブロック並び情報</TD><TD>(unsigned long)</TD><TD>4</TD><TR>
+    <TD>ファイルサイズ</TD><TD>(long)</TD><TD>4</TD><TR>
+    <TD>次のブロック</TD><TD>(unsigned short)</TD><TD>2</TD><TR>
+    <TD>ファイル名</TD><TD>(char)×21</TD><TD>21</TD><TR>
+    <TD>予約済み</TD><TD>(unsigned char)</TD><TD>1</TD><TR>
+    <TD>未使用</TD><TD>unknown</TD><TD>94</TD><TR>
+    <TD>PDAアプリケーション</TD><TD>(unsigned char)</TD><TD>1</TD><TR>
+    <TD>チェックサム</TD><TD>(unsigned char)</TD><TD>1</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+    <BR>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>ブロック並び情報</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+      </BLOCKQUOTE>
+        <H4><B>表 4 ブロック並び情報の意味</B></H4>
+
+<CENTER>
+<TABLE BORDER>
+    <TD ALIGN="center">値</TD><TD ALIGN="center">内容</TD><TR>
+    <TD ALIGN="center">51</TD><TD>先頭ブロック</TD><TR>
+    <TD ALIGN="center">52</TD><TD>中間ブロック</TD><TR>
+    <TD ALIGN="center">53</TD><TD>最終ブロック</TD><TR>
+    <TD ALIGN="center">A0</TD><TD>空きブロック</TD><TR>
+    <TD ALIGN="center">A1</TD><TD>削除マーク付き先頭ブロック</TD><TR>
+    <TD ALIGN="center">A2</TD><TD>削除マーク付き中間ブロック</TD><TR>
+    <TD ALIGN="center">A3</TD><TD>削除マーク付き最終ブロック</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+</CENTER>
+      <BLOCKQUOTE>
+      <BR>
+      フォーマット直後は、すべてのブロック並び情報がA0である。ファイルを生成すると、そのファイルで使用されるブロック並び情報が51～53になる。ファイルを削除すると、削除されたファイルで使用されていたブロック並び情報がA1～A3になる。ファイル削除の直後であれば、このブロック並び情報を元に戻すだけで、削除したファイルが復活する。ただし、ファイルの削除後に、他のファイルの生成等を行い、｢先頭ブロック－中間ブロック－最終ブロック｣のチェーンが破損されると、次回のFAT読み込みの際のチェックで、破損チェーンのブロックはすべてA0に戻される。<BR>
+      <BR>
+      ファイルサイズが1ブロックの場合は、ブロック並び情報は51(またはA1)のみとなる。またファイルサイズが2ブロックの場合は、ブロック並び情報は51と53(またはA1とA3)のみとなり、52(またはA2)のブロックは存在しない。<BR>
+      </BLOCKQUOTE>
+    <BR>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>ファイルサイズ</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      単位はバイトであり、新規作成のときに指定されたブロック数×8192バイトの値が格納される。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>次のブロック</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      ファイルが複数ブロックにまたがっている場合、次のデータが入っているブロックを示す値が格納される。次がブロック1のときは0、ブロック2のときは1、... ブロック15のときは14が格納される。次のブロックがない場合は0xFFFFが格納される。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>ファイル名</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      ファイル名を格納する。文字列の最後にNULL(0x00)が必要である。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>PDAアプリケーション</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      PDAアプリケーションの場合は、sceMcSetFileInfo()を使ってファイル属性にビット
+      sceMcFileAttrPDAExecを立てておきます。それ以外は0のままにしておきます。
+      "PlayStation 2"のファイル管理画面では、この情報はコピーされないので、
+      PDAアプリケーションを"PlayStation 2"からダウンロードしないで、
+      コピーしたときは0になる。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>チェックサム</B>
+</H4></BLOCKQUOTE>
+      <BLOCKQUOTE>
+      1～127バイトの総XOR。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2_3">
+(3) <B>代替情報セクタ</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      <BR>
+<CENTER>
+<TABLE BORDER>
+    <TD>(long)代替されるセクタ番号</TD><TD>0</TD><TD>･･･</TD><TD>sum</TD><TR>
+</TABLE>
+<BR>
+</CENTER>
+      </BLOCKQUOTE>
+    <BR>
+      <BLOCKQUOTE>
+      ここにセクタ番号が指定されていると、指定されたセクタをアクセスする代わりに、
+      代替セクタをアクセスする。例えば、代替情報セクタ3に、代替されるセクタ番号と
+      して123が入っていた場合、セクタ123に読み書きを行おうとすると、代替情報セクタ
+      と同じ番号の代替セクタ3がその代わりに読み書きされる。<BR>
+      セクタ番号に0x1000000がついている場合は、代替に失敗しているセクタなので
+      代替情報は無視します。同じ代替セクタ番号が代替情報の中にある場合、若い
+      セクタで見つかった代替情報を優先します。
+      <BR>
+      128バイト目のチェックサムデータは、1～127バイトまでの総XORである。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2_4">
+(4) <B>代替セクタ</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      代替情報セクタで指定されたセクタの実体が、書き込まれる場所。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_1_2_5">
+(5) <B>ダミー書き込みセクタ</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      未確認フラグをクリアするために、ダミーで書き込みを行う為のセクタ。<BR>
+      <BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_2">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 2 <B>FAT操作</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ここでは、PlayStationライブラリ等による、FATに対する操作の意味を説明する。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_1">
+<A HREF="#Heading3_1_2"> 2. </A>1 <B>フォーマット</B>
+</A>
+</H3>
+<blockquote>
+    フォーマット操作によって、下表の通り各セクタが設定される。<BR>
+<CENTER>
+        <H4><B>表 5 フォーマットされたFATの状態</B></H4>
+
+<P>
+<IMG SRC ="gif/fatn1.gif">
+<P>
+    *表中の値は１６進数標記<BR>
+</CENTER>
+    <BR>
+    127バイト目のsumとは、チェックサムのことであり、0～126バイトの総XORである。<BR>
+    フォーマットされたFATのイメージを、4 メモリーカードフォーマットイメージに示す。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_2">
+<A HREF="#Heading3_1_2"> 2. </A>2 <B>アンフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    セクタ0の初めの2バイトが、"MC"以外の場合に、アンフォーマット状態として認識される。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_3">
+<A HREF="#Heading3_1_2"> 2. </A>3 <B>デリート</B>
+</A>
+</H3>
+<blockquote>
+    当該ファイルのブロック情報セクタ全てについて、最初の1バイトの上位4ビットを5からAに書き替える操作を意味する。その他の(127バイト目のチェックサムを除く)全てのデータは変更されない。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2_4">
+<A HREF="#Heading3_1_2"> 2. </A>4 <B>アンデリート</B>
+</A>
+</H3>
+<blockquote>
+    デリート操作の直後に、当該ファイルのブロック情報セクタ全てについて、最初の1バイトの上位4ビットをAから5に書き替える操作を意味する。その他の(127バイト目のチェックサムを除く)全てのデータは何も変更されない。この操作によって、一度デリートされたデータファイルを復活できる。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_3">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 3 <B>PDAにおける特殊な処理</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3_1">
+<A HREF="#Heading3_1_3"> 3. </A>1 <B>実行中PDAアプリケーションのFATセクタへの書き込み</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"からライブラリ等を介して、実行中のPDAアプリケーションが保存されているブロックに対応するFATセクタへ書き込みを行おうとすると、書き込みは行われずエラーとなる。さらに、ライブラリからは、メモリーカードが差し替えられた状態として認識されるようになる。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3_2">
+<A HREF="#Heading3_1_3"> 3. </A>2 <B>代替セクタ書き込み禁止期間</B>
+</A>
+</H3>
+<blockquote>
+    ライブラリlibmcxのファイル転送中表示コマンド実行中は、PDAアプリケーションファイルおよびPDA用アイコンの保護のため、代替情報セクタ(16～35セクタ)および代替セクタ(36～55セクタ)が書込み禁止となり、書き込みを行ってもエラーとなる。<BR>
+    <BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1_4">
+<H2>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A> 4 <B>メモリーカードフォーマットイメージ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    以下に、フォーマットされたメモリーカードのFATの状態を示す。<BR>
+    代替セクタ１からダミー書き込みセクターまでは、特定の初期値を設定する必要はない。<BR>
+    <BR>
+<PRE>        00000  4D 43 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   MC	フォーマット認識セクター
+        00010  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00020  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00030  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00040  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00050  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00060  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00070  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 0E   
+        00080  A0 00 00 00 00 00 00 00 - FF FF 00 00 00 00 00 00   	ブロック情報セクター1
+        00090  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000A0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000B0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000C0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000D0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000E0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        000F0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 A0   
+        00100  A0 00 00 00 00 00 00 00 - FF FF 00 00 00 00 00 00   	ブロック情報セクター2
+        00110  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00120  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00130  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00140  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00150  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00160  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00170  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 A0   
+        			:
+        			:
+        00780  A0 00 00 00 00 00 00 00 - FF FF 00 00 00 00 00 00   	ブロック情報セクター15
+        00790  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007A0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007B0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007C0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007D0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007E0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        007F0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 A0   
+        00800  FF FF FF FF 00 00 00 00 - FF FF 00 00 00 00 00 00   	代替情報セクタ1
+        00810  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00820  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00830  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00840  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00850  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00860  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00870  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        00880  FF FF FF FF 00 00 00 00 - FF FF 00 00 00 00 00 00   	代替情報セクタ2
+        00890  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008A0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008B0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008C0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008D0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008E0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        008F0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        			:
+        			:
+        01180  FF FF FF FF 00 00 00 00 - FF FF 00 00 00 00 00 00   	代替情報セクタ20
+        01190  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011A0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011B0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011C0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011D0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011E0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        011F0  00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00   
+        01200  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	代替セクタ1
+        01210  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01220  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01230  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01240  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01250  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01260  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01270  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01280  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	代替セクタ2
+        01280  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01290  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012A0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012B0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012C0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012D0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012E0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        012F0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        			:
+        			:
+        01B80  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	代替セクタ20
+        01B90  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BA0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BB0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BC0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BD0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BE0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01BF0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C00  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	予約セクタ1
+        01C10  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C20  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C30  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C40  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C50  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C60  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C70  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01C80  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	予約セクタ2
+        01C90  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CA0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CB0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CC0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CD0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CE0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01CF0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        			:
+        			:
+        01F00  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	予約セクタ7
+        01F10  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F20  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F30  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F40  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F50  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F60  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F70  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01F80  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   	ダミー書き込みセクタ
+        01F90  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FA0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FB0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FC0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FD0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FE0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+        01FF0  FF FF FF FF FF FF FF FF - FF FF FF FF FF FF FF FF   
+</PRE>
+</blockquote>
+<A HREF="#Top"><IMG SRC= gif/link.gif BORDER=0></A>
+<HR>
+
+<DIV ALIGN=right>
+Copyright (c) 2000 Sony Computer Entertainment Inc. All Rights Reserved.<BR>
+SCEI CONFIDENTIAL</DIV>
+</BODY>
+</HTML>

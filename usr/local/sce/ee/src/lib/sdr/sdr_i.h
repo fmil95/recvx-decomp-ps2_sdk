@@ -1,9 +1,9 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5.3
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *
- *      Copyright (C) 1998-2002 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  *
  *                       libsdr - sdr_i.h
@@ -23,9 +23,9 @@
 #define sce_SDR_DEV   0x80000701
 #define sce_SDRST_CB  0x80000704
 
-extern int (*_sce_sdr_gDMA0CB)(void);
-extern int (*_sce_sdr_gDMA1CB)(void);
-extern int (*_sce_sdr_gIRQCB)(void);
+extern int  (*_sce_sdr_gDMA0CB)( void );
+extern int  (*_sce_sdr_gDMA1CB)( void );
+extern int  (*_sce_sdr_gIRQCB)( void );
 
 extern sceSdTransIntrHandler _sce_sdr_transIntr0Hdr;
 extern sceSdTransIntrHandler _sce_sdr_transIntr1Hdr;
@@ -41,7 +41,7 @@ typedef struct {
     int		voice_bit;
     int		status;	
     int		opt;
-    int         pad [12];  // キャッシュラインサイズ(64Byte)になるように
+    int         pad[12];  // キャッシュラインサイズ(64Byte)になるように
 } SdrEECBData;
 
 #ifdef __DEBUG

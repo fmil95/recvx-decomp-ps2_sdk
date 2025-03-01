@@ -1,0 +1,481 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                               Feb 15, 2000
+
+DECI2 Library
+=================
+
+  Overview
+-----------
+    The DECI2 library is a group of functions to control the DECI2 
+    Manager and communicate between the host and target.  It is 
+    prepared for the purpose of supporting the creating of protocol 
+    drivers on the target.
+
+    The protocol driver consists of the event handler which handles the 
+    event posted by the DECI2 Manager and the others.  Since the event
+    handler is called in a system status different to the normal one, 
+    some limitations are imposed on its programming.  Among functions
+    prepared for the DECI2 Manager, the ones which can be called from the
+    event handler is named with 'Ex' to be distinguished from the function
+    which are called from the outside of the event handler.
+    The DCMP packet is posted as an event. 
+
+    In the case of EE 
+    -----------------
+	The event handler is called in a same method of the interrupt
+	handler.  However, functions provided by the EE kernel is not
+	available while the event handler is running.
+
+    In the case of IOP 
+    ------------------
+	The event handler is called in a special status which is outside
+	of the IOP system software management.  Therefore, the system has 
+	the following three conditions seen in the protocol driver:
+	
+	
+1) During execution in thread.
+   Normal system service is available.
+
+2) Thread-independent part is in execution (eg. interrupt handling routine).
+   Limited system services specific to thread-independent part is 
+   available.
+
+3) DECI2 event handler is in execution.
+
+The system service function is not available while the DECI2 event handler
+is in execution (except library functions declared in ctype.h, memory.h, 
+and string.h).  At this time, CPU is in kernel mode and the
+interrupt is disabled.  In the event handler, the stack in use should be
+kept as small as possible.
+
+
+  Related Files
+----------------
+    The files necessary for the DECI2 library are as follows.
+    
+    Category            File Name
+    ===============================
+    Library File	libkernl.a (EE only)
+    Header File		deci2.h
+     
+
+  Function List
+----------------
+    The DECI2 library has the following functions.
+
+    Registration/Control of Protocol
+    ================================
+    Function Name	Function
+    sceDeci2Open        Registration of protocol driver
+    sceDeci2Close       Deletion of protocol driver
+    sceDeci2ExLock      Lock on other protocols
+    sceDeci2ExUnLock    Release of lock
+
+    Transmission/Reception of DECI2 Packet
+    ======================================
+    Function Name	Function
+    sceDeci2ExRecv      Reception of DECI2 packet
+    sceDeci2ExSend      Transmission of DECI2 packet
+    sceDeci2ReqSend     Request for DECI2_WRITE event
+    sceDeci2ExReqSend   Request for DECI2_WRITE event
+
+    Thread Synchronization from the Event Handler (IOP only)
+    ========================================================
+    Function Name		Function
+    sceDeci2ExWakeupThread	Wake up of sleeping thread
+    sceDeci2ExSignalSema	Issue of signal to semaphore
+    sceDeci2ExSetEventFlag	Set of event flag
+
+    Print for Debugging in the Event Handler (IOP only)
+    ===================================================
+    Function Name	Function
+    sceDeci2ExPanic     printf in the event handler
+
+
+  Error Code
+----------------
+    DECI2_ERR_INVALID     -1  // invalid argument
+    DECI2_ERR_INVALSOCK   -2  // invalid socket descriptor
+    DECI2_ERR_ALREADYUSE  -3  // protocol number already used
+    DECI2_ERR_MFILE       -4  // too many open protocols
+    DECI2_ERR_INVALADDR   -5  // invalid address for buffer
+    DECI2_ERR_PKTSIZE     -6  // buffer is too small
+    DECI2_ERR_WOULDBLOCK  -7  // blocks inspite of asynchronous
+    DECI2_ERR_ALREADYLOCK -8  // already locked
+    DECI2_ERR_NOTLOCKED   -9  // not locked
+    DECI2_ERR_NOROUTE    -10  // no route to host
+    DECI2_ERR_NOSPACE    -11  // no room left on manager
+    DECI2_ERR_INVALHEAD  -12  // invalid deci2 header
+    DECI2_ERR_NOHOSTIF   -13  // No interface to Host
+
+
+  Function
+--------------
+=============================================================================
+sceDeci2Open        Registration of Protocol Driver
+=============================================================================
+    
+[Format]
+    int sceDeci2Open(
+        unsigned short protocol,
+        void *opt,
+        void (*handler)(int event, int param, void *opt)
+    )
+        
+[Argument]
+    protocol    Protocol number
+    opt         Pointer to data, which is freely set to each protocol 
+		driver.  The event handler is notified of it.
+    handler     The handler the event notification is given to.
+        
+[Return Value]
+     1 or more	Socket descriptor
+    -1 or less	Error code (INVALID, ALREADYUSE, MFILE)
+
+[Explanation]
+    This function registers the protocol driver specifying the desired 
+    protocol number.  The socket descriptor returned here is used when 
+    the function is called afterward.  When using a variable, which is 
+    common to all the functions called from the event handler and the 
+    other functions, be sure to pass the variable to the event handler 
+    by using the opt, not by using the global variable. 
+    
+   The event handler is notified of the following events.
+
+        DECI2_READ       1
+        DECI2_READDONE   2
+        DECI2_WRITE      3
+        DECI2_WRITEDONE  4
+        DECI2_CHSTATUS   5
+        DECI2_ERROR      6
+
+    The DECI2_READ event occurs from the first time the protocol driver 
+    receives a packet until it finishes the reception of all the packet 
+    data.  The DECI2_READDONE event occurs when the reception of 1 packet 
+    ends. 
+
+    The DECI2_WRITE event occurs when the DECI2 Manager receives a 
+    request to transmit data from the protocol driver and is actually 
+    ready for transmitting data.  The DECI2_WRITEDONE event occurs when 
+    the transmission of one packet ends. 
+
+    The DECI2_CHSTATUS/DECI2_ERROR event occurs when there is a 
+    DCMP-related status/error message the protocol driver should be 
+    notified of. 
+
+    One parameter varying in event type and each event and the pointer to 
+    the data set by the protocol driver are passed to the event handler.  
+    Details of the parameters are as follows. 
+
+        DECI2_READ:       Size of the fragment of arrived packet
+        DECI2_READDONE:   0
+        DECI2_WRITE:      0
+        DECI2_WRITEDONE:  0
+        DECI2_CHSTATUS:   Pointer to DCMP status message
+        DECI2_ERROR:      Pointer to DCMP error message
+
+
+=============================================================================
+sceDeci2Close       Deletion of Protocol Driver
+=============================================================================
+    
+[Format]
+    int sceDeci2Close(
+        int s
+    )
+
+[Argument]
+    s    Socket descriptor
+
+[Returned Value]
+     1       	Success
+    -1 or less  Error code (INVALSOCK)
+
+[Explanation]
+    This function deletes the protocol driver.
+
+
+=============================================================================
+sceDeci2ExLock      Lock on Other Protocols
+=============================================================================
+    
+[Format]
+    int sceDeci2ExLock(
+        int s
+    )
+
+[Argument]
+    s      Socket descriptor
+
+[Returned Value]
+     1       	Success
+    -1 or less  Error code (INVALSOCK, ALREADYLOCK)
+
+[Explanation]
+    This function locks protocols other than the one in use by 
+    the protocol driver to perform this request. 
+
+
+=============================================================================
+sceDeci2ExUnLock    Release of Lock
+=============================================================================
+    
+[Format]
+    int sceDeci2ExUnLock(
+        int s
+    )
+
+[Argument]
+    s      Socket descriptor
+
+[Returned Value]
+     1       	Success
+    -1 or less 	Error code (INVALSOCK, NOTLOCKED)
+
+[Explanation]
+    This function releases the lock.
+
+
+=============================================================================
+sceDeci2ExRecv      Reception of DECI2 Packet
+=============================================================================
+    
+[Format]
+    int sceDeci2ExRecv(
+        int s,
+        void *buf,
+        unsigned short len
+    )
+
+[Argument]
+    s      Socket descriptor
+    buf    Pointer to buffer
+    len    Size of data to be received
+
+[Return Value]
+     1 or more	Size of received data
+    -1 or less	Error code (INVALSOCK, INVALADDR, PKTSIZE, WOULDBLOCK)
+
+[Explanation]
+    This function can only be called when the DECI2_READ event 
+    notification is given.  It results in WOULDBLOCK error when called 
+    at all other times.
+
+    The DECI2_READ event is issued every time a fragment of the packet, 
+    which should be passed to the protocol driver, arrives.  This event 
+    is issued repeatedly until this function finishes reading all 
+    the data for one packet.  The DECI2_READDONE event occurs after this 
+    function has finished reading all the data for one packet.
+
+    Actual reception is not performed when the DECI2_READ event occurs.  
+    Reading is started only after the buffer to be read by this function 
+    is directed. 
+    
+    The size of the fragment of the arrived packet is passed as a 
+    parameter of the DECI2_READ event.  (It might be rounded up to 
+    the multiple of four for the last fragment of the packet.)
+
+    A size smaller than the one notified as a parameter can be specified 
+    for the len.  In that case, the DECI2_READ event occurs again.  To 
+    specify a smaller size, the data should be a multiple of 128. 
+
+    The buf should be aligned on the 16-byte boundary on the EE. 
+
+=============================================================================
+sceDeci2ExSend      Transmission of DECI2 Packet
+=============================================================================
+    
+[Format]
+    int sceDeci2ExSend(
+        int s,
+        void *buf,
+        unsigned short len
+    )
+
+[Argument]
+    s      Socket descriptor
+    buf    Pointer to buffer
+    len    Size of data to be transmitted
+
+[Return Value]
+     1 or more	Size of data accepted by DECI2 Manager 
+		(Not the size of transmitted data)
+    -1 or less	Error code (INVALSOCK, INVALADDR, PKTSIZE, WOULDBLOCK)
+
+[Explanation]
+    This function can only be called when the DECI2_WRITE event 
+    notification is given.  It results in WOULDBLOCK error when called 
+    at all other times.
+    
+    The DECI2_WRITE event occurs when the DECI2 Manager receives 
+    the sceDeci2ReqSend() issued and is ready for transmitting data.  
+    The WRITEDONE event occurs when reception and transmission of all 
+    the data for one packet are finished. 
+
+    A size, which is smaller than the size of the packet to be 
+    transmitted actually, can be specified for the len.  In that case, 
+    the DECI2_WRITE event occurs again. In the first call, however, a 
+    size smaller than the DECI2 header cannot be specified for 
+    the len.  (If specified, it results in PKTSIZE error.)
+
+    The size of the data the DECI2 Manager accepted is returned to 
+    the return value.  Until the next DECI2_WRITE or DECI2_WRITEDONE 
+    event occurs, however, there is a possibility that the transmission 
+    has not been completed and it is necessary to maintain data. 
+
+    The buf should be aligned on the 16-byte boundary on the EE. 
+
+
+=============================================================================
+sceDeci2ReqSend     Request for DECI2_WRITE Event
+=============================================================================
+    
+[Format]
+    int sceDeci2ReqSend(
+        int s,
+        char dest
+    )
+
+[Argument]
+    s      Socket descriptor
+    dest   Destination node of the packet
+
+[Return Value]
+     1       	Success
+    -1 or less	Error code (INVALSOCK, WOULDBLOCK, NOROUTE)
+
+[Explanation]
+    This function requests data transmission for one packet of the DECI2 
+    Manager.  The DECI2_WRITE event occurs when the DECI2 Manager 
+    receives this call and is ready for transmitting data. 
+
+    Since there is a possibility that the DECI2_WRITE event may occur 
+    before calling this function and returning from it, it is necessary 
+    to call this function after the transmission data becomes complete. 
+
+    It is possible to make two or more calls on the EE, but 
+    the DECI2_WRITE event occurs for the number of the calls.  It is 
+    impossible to make two or more transmission requests continuously 
+    on the IOP. 
+
+=============================================================================
+sceDeci2ExReqSend   Request for DECI2_WRITE Event
+=============================================================================
+    
+[Format]
+    int sceDeci2ExReqSend(
+        int s,
+        char dest
+    )
+
+[Argument]
+    s      Socket descriptor
+    dest   Destination node of the packet
+
+[Return Value]
+     1       	Success
+    -1 or less  Error code (INVALSOCK, WOULDBLOCK, NOROUTE)
+
+[Explanation]
+  This function is used to request data transmission of the DECI2 Manager
+  in the event handler. 
+
+=============================================================================
+sceDeci2ExWakeupThread  Wake Up of Sleeping Thread (IOP only)
+=============================================================================
+
+[Format]
+    int sceDeci2ExWakeupThread(
+        int s,
+        int thid
+    )
+
+[Argument]
+    s      Socket descriptor
+    thid   Wake up thread ID
+
+[Return Value]
+     1          Success
+    -1 or less  Error code (INVALSOCK, INVALID)
+
+[Explanation]
+    This function is used to wake the sleeping thread up in the event
+    handler.  In the same socket, sceDeci2ExSignalSema() and 
+    sceDeci2ExSetEventFlag() cannot be used together, nor can it wake up 
+    multiple threads.
+    Specify a single thread to a specific socket.
+
+
+=============================================================================
+sceDeci2ExSignalSema    Issue of Signal to Semaphore (IOP only)
+=============================================================================
+
+[Format]
+    int sceDeci2ExSignalSema(
+        int s,
+        int semid
+    )
+
+[Argument]
+    s      Socket descriptor
+    semid  Semaphore ID which transmits signals
+
+[Return Value]
+     1          Success
+    -1 or less  Error code (INVALSOCK, INVALID)
+
+[Explanation]
+    This function is used to send a signal to the semaphore in the 
+    event handler.  In the same socket, sceDeci2ExWakeupThread(), 
+    sceDeci2ExSetEventFlag() cannot be used together, nor can it handle
+    multiple semaphores.
+    Alwasy use a single semaphore for a specific socket.
+
+
+=============================================================================
+sceDeci2ExSetEventFlag  Set of Event Flag (IOP only)
+=============================================================================
+
+[Format]
+    int sceDeci2ExSetEventFlag(
+        int s,
+        int evfid,
+        unsigned long bitpattern
+    )
+
+[Argument]
+    s      Socket descriptor
+    evfid  Event flag ID
+    bitpattern  Bit pattern to be set 
+
+[Return Value]
+     1          Success
+    -1 or less  Error code (INVALSOCK, INVALID)
+
+[Explanation]
+    This functinon is used to set the event flag in the event handler. 
+    In the same socket, sceDeci2ExWakeupThread(), sceDeci2ExSignalSema() 
+    cannot be used together, nor can it set multiple event flags.  
+    Alwasy use a single event flag for a specific socket.
+
+=============================================================================
+sceDeci2ExPanic     printf from the Event Handler (IOP only)
+=============================================================================
+
+[Format]
+    int sceDeci2ExPanic(const char *format, ...)
+
+[Argument]
+    format 	Character string of output format (same as printf)
+
+[Return Value]
+    Number of output characters
+
+[Explanation]
+    This function is equivalent to printf to call from the event handler.
+    It can be called from the outside of the event handler. The string of 
+    output characters with sceDeci2ExPanic() is displayed by the dscomp 
+    command in the host.

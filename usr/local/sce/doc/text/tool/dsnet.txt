@@ -1,0 +1,350 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+dsnet概要
+==========
+
+
+ 1 概要
+--------
+
+    dsnetは、ターゲット（DTL-T10000）を操作する、デバッガ、ドライバ、マネ
+    ージャなどのパッケージです。
+    
+    dsnetパッケージでは、ターゲットとのデータ転送を管理するdsnetmと、デバ
+    ッガなどのクライアントプログラムで各種機能を実現しています。以下は
+    dsnetm、クライアント、ターゲットの関連図です。
+    
+    
+    クライアントとdsnetmの間のやり取りはsocketを使用します。
+    dsnetmとターゲットの間はデバイスファイルを用いて直接やり取りします。
+    
+
+ 2 インストール
+----------------
+
+    このパッケージが正しくインストールされていれば、以下のファイルが/usr/
+    local/sce/bin以下にインストールされているはずです。
+    
+    +---------+----------------------------+
+    |コマンド  機能                        |
+    +         +                            +
+    |mrp       device driver loading script|
+    |dsnetm    dsnet manager               |
+    |dsmcons   dsnet manager console       |
+    |dsreset   reset client                |
+    |dsstat    status client               |
+    |dskill    kill client                 |
+    |dssim     dsnet simulator             |
+    |dscomp    Communication port console  |
+    |dsedb     EE debugger                 |
+    |dsecons   EE console server           |
+    |dsefilesv EE file server              |
+    |dseping   EE ping client              |
+    |dsidb     IOP debugger                |
+    |dsicons   IOP console server          |
+    |dsifilesv IOP file server             |
+    |dsiping   IOP ping client             |
+    |dsflash   flash ROM update script     |
+    |dsistart  IOP module start client     |
+    |dsilist   IOP module list client      |
+    +---------+----------------------------+
+    
+
+ 3 各クライアントの共通オプション
+----------------------------------
+
+    以下は各クライアントプログラムに共通する -d オプションの説明です。
+    
+    +----------------------------+------------+--------------------+
+    |-d オプション                ホスト名     ポート番号          |
+    +                            +            +                    +
+    |-d <host>                    <host>       8510                |
+    |-d <host>[/<port_offset>]    <host>       8510 + <port_offset>|
+    |-d <host>[:<port>]           <host>       <port>              |
+    |-d /<port_offset>            default-host 8510 + <port_offset>|
+    |-d :<port>                   default-host <port>              |
+    |-d <host>[:+<port_offset>]※ <host>       8510 + <port_offset>|
+    |-d :+<port_offset>※         default-host 8510 + <port_offset>|
+    +----------------------------+------------+--------------------+
+      ※以前のバージョンとの互換性を保つために指定可能になっています。
+      
+    -dオプションは、通信先となるdsnetmのホスト名およびポートの指定です。
+    -dオプションを指定しない場合にはクライアントプログラムを実行したマシ
+    ンと同じマシン
+    （default-host）のデフォルトポート（8510）の指定となります。
+
+ 4 dsreset
+-----------
+
+    dsresetは、ターゲット全体をリセットするクライアントプログラムです。
+
+    実行方法
+
+      dsreset [-d <host>[:<port>]]
+    
+
+    オプション
+
+      共通オプション-dのみ。
+
+ 5 dsedb - Debugger for EE
+---------------------------
+
+    dsedbは、EE用のソースレベルではなくインストラクションレベルのデバッガ
+    です。ターゲットからの標準入出力、ファイルアクセスにも対応しています。
+    使いかたの詳細は「dsedb / dsidbコマンドリファレンス」を参照してくださ
+    い。
+
+    実行方法
+
+      dsedb [<options>] <cmd> [<arg>]...]
+    
+      dsedb run main.elf などのように、起動時にターゲットプログラムを指定
+      して直接実行することも可能です。
+    
+
+    オプション
+
+      dsedbの主なオプションを次に示します。コマンドリファレンス「6. dsedb
+       のオプション詳細」も参照してください。
+      
+    +------------------+---------------------------------------+
+    |オプション         機能                                   |
+    +                  +                                       +
+    |-d <host>[:<port>] dsnetm のホスト、ポートの指定          |
+    |-r                 起動時にターゲットを reset する        |
+    |-nr                起動時にターゲットを reset しない      |
+    |-nx                起動時に自動実行ファイルの実行をしない |
+    |-tex               ターゲット実行制御の有効への上書き     |
+    |-ntex              ターゲット実行制御の無効への上書き     |
+    |-ebootp <ebootp>   EE 用ブートパラメータの初期値指定      |
+    |-ibootp <ibootp>   IOP 用ブートパラメータの初期値指定     |
+    |-nokbd             <arg>... の指定時に keyboard を使わない|
+    |-noexit            <arg>... の指定時にexitしない          |
+    |-ncmv              manager の version をチェックしない    |
+    |-p <port>          リモートコンソールポートの指定         |
+    +------------------+---------------------------------------+
+    
+
+    使用例
+
+      通常は、次に示すようにdsedbを起動して対話的にデバッグを行います。
+    
+      $ dsedb -r			デバッガを起動
+         ...
+      dsedb S> help			コマンドのヘルプ表示
+         ...
+      dsedb S> pload main.elf		プログラムのロード
+         ...
+      dsedb S> bp main			mainにブレークポイントを設定
+      dsedb S> run			プログラムを実行
+         ...
+      at=00010000 v0=...
+         ...
+      dsedb S> db 0x100000		0x1000000番地をダンプ
+         ...
+      dsedb S> step			ステップ実行
+         ...
+      dsedb S> cont			継続実行
+         ... ^C				CTRL-Cで強制中断
+      dsedb S> dr			レジスタの表示
+      dsedb S> reset			ターゲットをリセット
+      dsedb S> quit			dsedbの終了
+      $
+
+ 6 dsidb - Debugger for IOP
+----------------------------
+
+    dsidbは、IOPをターゲットとするデバッガです。使いかたはdsedbとほぼ同じ
+    ですが、EEとIOPの相違に基づいて、専用のコマンドや仕様の異なるコマンド
+    があります。
+    
+
+    実行方法
+
+      dsidb [<options>] <cmd> [<arg>]...]
+    
+
+ 7 dsecons / dsicons
+---------------------
+
+    dsecons / dsiconsは、ターゲットプログラムのTTYP入出力の相手となるコン
+    ソールプログラムです。通常はdsedb / dsidbが、TTYP入出力もサポートして
+    いますので、TTYP入出力を別のウィンドウに表示したい場合以外は使用する
+    必要はありません。dsecons / dsiconsを使用しdsedb / dsidbでのTTYP入出
+    力の扱いを禁止するには、dsedbのスタートアップファイル（~/.dsedbrcもし
+    くは./.dsedbrc）、dsidbのスタートアップファイル（~/.dsidbrcもしくは./.
+    dsidbrc）に以下の行を設定してください。
+    
+      option tty_mask=0
+    
+
+    実行方法
+
+      dsecons [-d <host>[:<port>]] [-e <escape>] -nokbd -ns [0-9k]...
+      dsicons [-d <host>[:<port>]] [-e <escape>] -nokbd -ns[0-9k]...
+    
+
+    オプション
+
+      TTYPはEE用とIOP用のそれぞれに11個ずつ、以下のプロトコルがあります。
+      
+        E0TTYP, E1TTYP, ..., E9TTYP, EKTTYP
+        I0TTYP, I1TTYP, ..., I9TTYP, IKTTYP
+      
+      引数 [0-9k]... は、このうちどのプロトコルを使用するかを指定するもの
+      で、次のように指定します。
+      
+    +-------------+---------------------------+
+    |指定          プロトコル                 |
+    +             +                           +
+    |dsecons 1 2 3 E1TTYP,E2TTYP,E3TTYP       |
+    |dsecons 1-3 k E1TTYP,E2TTYP,E3TTYP,EKTTYP|
+    +-------------+---------------------------+
+      
+      dsecons / dsiconsは指定があれば指定されたプロトコルのみを、指定がな
+      ければ11個のプロトコルすべてを受信して、受信データを画面に表示しま
+      す。
+      キー入力データは一番最初に指定されたプロトコルを使用してターゲット
+      に送ります。指定がない場合にはE0TTYP（dsecons）, I0TTYP（dsicons）
+      で送ります。
+      -nokbdオプションが指定されている場合には<escape>以外のキー入力はす
+      べて無視します。
+      -nsオプションが指定されている場合にはRemote File Accessサーバからの
+      エラーメッセージの表示を行いません。
+      -eオプションはエスケープキーの指定です。キー入力が<escape>の場合は
+      終了しますが、それ以外はすべて標準入力としてターゲットプログラムに
+      送ります。<escape> のデフォルトは CTRL-] （0x1d）です。<escape>にコ
+      ントロールコードを指定するには「^」 を文字の前に付けて、たとえば「
+      -e ^C」というように指定します。
+
+ 8 dsefilesv / dsifilesv
+-------------------------
+
+    dsefilesv / dsifilesvはターゲットプログラムから送られてくるRemote 
+    File Access要求を処理するファイルサーバプログラムです。通常はdsedb / 
+    dsidbがRemote File Access要求を処理するので、Remote File Access時のカ
+    レントディレクトリをdsedb / dsidbのカレントディレクトリに依存しない固
+    定の場所としたい場合以外には、使用する必要はありません。
+    dsefilesv / dsifilesvを使用する場合はdsedb / dsidbでのRemote File 
+    Access処理を禁止する必要があります。dsedbのスタートアップファイル（~/.
+    dsedbrcもしくは ./.dsedbrc）、dsidbのスタートアップファイル（~/
+    .dsidbrcもしくは ./.dsidbrc）に以下の行を設定してください。
+    
+      option file_priority=-1
+    
+
+    実行方法
+
+      dsefilesv [-d <host>[:<port>]] [-i][-c <cmd>][-t <sec>]
+      dsifilesv [-d <host>[:<port>]] [-i] [-c <cmd>][-t <sec>]
+      
+      -iオプションを指定しない限り、dsefilesv / dsifilesvはバックグラウン
+      ドで動作します。
+      dsefilesv / dsifilesvを終了するにはkillコマンドを使います。
+
+    オプション
+
+    -c <cmd>オプションを指定すると、指定されたシェルコマンド（<cmd>）を実
+    行し、以下の条件が揃った時にプログラムを終了します。
+    
+          (a) Remote File Accessによってオープンされたファイルがすべてクロ
+              ーズされている。
+          (b) シェルコマンド（<cmd>）が終了した。
+          (c) -t <sec>によって指定された秒数（デフォルトは1秒）の間、上記
+              (a)の状態が続いている。
+
+ 9 dsistart
+------------
+
+    dsistartはIOPのプログラムモジュールを実行開始します。
+
+    実行方法
+
+      dsistart [<options>] <fname> [<arg>...]
+    
+    指定されたプログラムモジュール<fname>に指定引数<arg>...を渡して実行開
+    始し、IOP側からRemovedもしくはResidentの終了報告が来るまで待ちます。
+
+    オプション
+
+    +------------------+------------------------------------------------+
+    |オプション名       説明                                            |
+    +                  +                                                +
+    |-d <host>[:<port>] dsnetmのホスト、ポートの指定                    |
+    |-v                 送受信パケットを表示する                        |
+    |-ncmv              managerのversionをチェックしない                |
+    |-nt                I[0-9K]TTYPを扱わない                           |
+    |-nf                DRFP1を扱わない                                 |
+    |-ns                Remote File Accessサーバからのエラーを表示しない|
+    +------------------+------------------------------------------------+
+    
+
+ 10 dsilist
+------------
+
+    dsilistは、IOPのメモリにロードされているプログラムモジュールの一覧を
+    表示します。
+
+    実行方法
+
+      dsilist [-d <host>[:<port>]] [-v] [-l] [-ncmv]
+
+    オプション
+
+    
+    +------------------+--------------------------------+
+    |オプション名       説明                            |
+    +                  +                                +
+    |-d <host>[:<port>] dsnetmのホスト、ポートの指定    |
+    |-v                 送受信パケットを表示する        |
+    |-l                 long形式で表示する              |
+    |-ncmv              managerのversionをチェックしない|
+    +------------------+--------------------------------+
+    
+
+ 11 ブートパラメータ
+---------------------
+
+    dsresetコマンド、およびdsedb / dsidbのresetコマンドはパラメータを２つ
+    とります。どちらも数値で、最初の数値がEEのブートパラメータ、２番目の
+    数値がIOPのブートパラメータです。
+    
+    EEのブートパラメータは未定義のため、0を指定してください。
+    IOPのブートパラメータは３ビットで定義されており、その意味は以下のとお
+    りです。
+    
+    +-----+----------------------------------------+
+    |Bit   説明                                    |
+    +     +                                        +
+    |bit 0 EEスタート（SIFの初期化）               |
+    |      EEをスタートする（SIFを初期化する）     |
+    |      EEをスタートしない（SIFを初期化しない） |
+    |bit 1 FILEIOサービス                          |
+    |      FILEIOサービスを行う                    |
+    |      FILEIOサービスを行わない                |
+    |bit 2 Auto Load                               |
+    |      Auto Loadを行う                         |
+    |      Auto Loadを行わない                     |
+    +-----+----------------------------------------+
+    
+    FILEIOサービスとは、EEからのファイル入出力リクエストに応えるためのIOP
+    上のサービスプログラムです。またAuto Loadとは、容量不足などによりフラ
+    ッシュROMに載らなかったIOPの機能モジュールをdsnetmが稼動しているマシ
+    ンからロードする機能です。
+    
+    代表的な設定例を以下に示します。
+    
+    +-------------+-------------------------------------------+
+    |設定例        説明                                       |
+    +             +                                           +
+    |% dsreset 0 0 EE,IOPが同時に起動する                     |
+    |% dsreset 0 7 IOPのみが起動する（EEは起動しない）        |
+    |% dsreset 0 2 FILEIOサービスが行われない                 |
+    |% dsreset 0 4 Auto Loadが行われない（スレッドマネージャと|
+    |              FILEIOプログラムがロードされない）         |
+    +-------------+-------------------------------------------+
+    

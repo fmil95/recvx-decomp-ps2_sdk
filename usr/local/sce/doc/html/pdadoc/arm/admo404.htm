@@ -1,0 +1,179 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>admo402</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo403.htm">[前]</A> <A HREF="arm320.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">Addressing Mode 4</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <A NAME="anchor2232958"></A><B>Decrement before</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">LDM|STM{&lt;cond&gt;}DB Rd{!}, &lt;registers&gt;{^}</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>このアドレッシング・モードは、ロードおよびストア・マルチプル命令用で、アドレスの範囲を形成します。</P>
+  <P>最初に形成されるアドレスは&lt;start_address&gt;で、これはベース・レジスタRnの値から&lt;register_list&gt;に指定されたレジスタ数×4を減算した値です。以降のアドレスは前のアドレスを4だけインクリメントして形成されます。&lt;register_list&gt;に指定された各レジスタに対して1つのアドレスが生成されます。</P>
+  <P>最後に生成されるアドレスは&lt;end_address&gt;です。この値はベース・レジスタRnから4を減算した値です。</P>
+  <P>命令で指定された条件がコンディション・コードのステータスと一致し、Wビットがセットされている場合、Rnは&lt;register_list&gt;のレジスタ数×4だけデクリメントされます。条件は、<A
+  HREF="arm303.htm">3.3</A>「コンディション・フィールド」で定義されています。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1034385"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034387"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034389"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034391"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034393"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034395"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034397"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034399"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034401"></A><B>23</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034403"></A><B>22</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034405"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034407"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034409"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034411"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034413"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034415"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034417"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034419"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034421"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034423"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034425"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034427"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034429"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034431"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034433"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034435"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034437"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034439"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034441"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034443"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034445"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1034447"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1034449"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034457"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034459"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034461"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034463"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034465"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034467"></A><BR>
+    S</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034469"></A><BR>
+    W</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1034471"></A><BR>
+    L</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1034473"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="16">
+    <P><CENTER><A NAME="1034481"></A><BR>
+    register list</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <BLOCKQUOTE>
+    <BLOCKQUOTE>
+      <PRE>&lt;start_address&gt; = Rn - (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4)
+&lt;end_address&gt; = Rn - 4
+if ConditionPassed(&lt;cond&gt;) and W == 1 then
+      Rn = Rn - (Number_Of_Set_Bits_In(&lt;register_list&gt;) * 4)</PRE>
+    </BLOCKQUOTE>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<H4>修飾子</H4>
+
+<BLOCKQUOTE>
+  <P>！はWビットをセットし、ベース・レジスタを更新します。<BR>
+  ＾はSビットをセットするのに使用します。下記参照。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>Lビット：</B>ロード・マルチプルとストア・マルチプルを区別します。</P>
+  <P><B>Sビット：</B>Sビットの作用は、<A HREF="arm319.htm">3.19</A>「ロードおよびストア・マルチプル・アドレッシング・モード｣で説明されています。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo403.htm">[前]</A> <A HREF="arm320.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

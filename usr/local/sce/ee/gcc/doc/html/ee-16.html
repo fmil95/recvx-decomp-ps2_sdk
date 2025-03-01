@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Compiler</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Compiler</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-17.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-525020"></A><A NAME="marker-525018"></A><A NAME="32057"></A>Compiler</H2>
+<P CLASS="Body">
+<A NAME="pgfId-525021"></A>This section describes Emotion Engine-specific features of the GNUPro Compiler.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465448"></A>Emotion Engine-specific command-line options</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465449"></A>For a list of available generic compiler options, refer to &quot;GNU CC Command Options&quot; in <EM CLASS="Emphasis">
+Using GNU CC</EM>
+ in <STRONG CLASS="BoldEmphasis">
+GNUPro Compiler Tools</STRONG>
+. The defaults for the following Emotion Engine-specific command-line options have changed:</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465450"></A><TT CLASS="Code">
+-mhard-float</TT>
+<A NAME="marker-515562"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-501271"></A>This option is on by default. It causes the compiler to generate output containing floating point instructions.</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-508337"></A>To turn this option off, specify <TT CLASS="Code">
+-msoft-float</TT>
+<A NAME="marker-515563"></A>. This causes the compiler to generate output containing library calls for floating point operations. </P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-508346"></A><TT CLASS="Code">
+-msingle-float</TT>
+<A NAME="marker-515564"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-525208"></A>This option is on by default. It tells GCC to assume that the floating point co-processor only supports single precision operations. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-525210"></A>To turn this option off, specify <TT CLASS="Code">
+-mdouble-float</TT>
+<A NAME="marker-525209"></A>. This permits GCC to use double precision operations. </P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465452"></A><TT CLASS="Code">
+-EL</TT>
+<A NAME="marker-515566"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-465453"></A>This option is on by default. Compiles code for the processor in little endian mode.</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-525329"></A><TT CLASS="Code">
+-G </TT>
+<A NAME="marker-525355"></A><VAR CLASS="CodeVariant">
+num</VAR>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-525420"></A>Puts global and static items less than or equal to <VAR CLASS="CodeVariant">
+num </VAR>
+bytes into the <TT CLASS="Code">
+small data</TT>
+ or <TT CLASS="Code">
+bss </TT>
+section, instead of the <TT CLASS="Code">
+normal data</TT>
+ or <TT CLASS="Code">
+bss</TT>
+ section. This allows the assembler to emit one word memory reference instructions based on the global pointer (<TT CLASS="Code">
+gp</TT>
+ or <TT CLASS="Code">
+$28</TT>
+), instead of the normal two words used. By default, <VAR CLASS="CodeVariant">
+num</VAR>
+  is set at 8 bytes. The <TT CLASS="Code">
+-G </TT>
+<VAR CLASS="CodeVariant">
+num </VAR>
+switch is also passed to the assembler and linker. All modules should be compiled with the same <TT CLASS="Code">
+-G </TT>
+<VAR CLASS="CodeVariant">
+num</VAR>
+<TT CLASS="Code">
+ </TT>
+value.</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-533257"></A><TT CLASS="Code">
+-fno-edge-lcm</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-533280"></A>Turns off all the new optimization work added for the flow graph edge based global common sub-expression elimination (gcse) load motion and store motion.</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-533259"></A><TT CLASS="Code">
+-fno-edge-lm</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-533287"></A>Turns off just the new load motion work, but still performs the edge based gcse optimization.
+</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-533261"></A><TT CLASS="Code">
+-fno-edge-sm</TT>
+</P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-533294"></A>Turns off just the new store motion work, but still performs the edge based gcse optimization.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-525422"></A><A NAME="marker-525421"></A>Preprocessor symbols</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465455"></A>The compiler supports the following preprocessor symbols:</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465456"></A><TT CLASS="Code">
+__mips__</TT>
+<A NAME="marker-524468"></A></P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465457"></A><TT CLASS="Code">
+__ee__</TT>
+<A NAME="marker-524469"></A></P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465458"></A><TT CLASS="Code">
+__MIPSEL__</TT>
+<A NAME="marker-524470"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-465459"></A>Each of these is always defined.</P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465460"></A><TT CLASS="Code">
+__mips_single_float</TT>
+<A NAME="marker-515567"></A></P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-465461"></A><TT CLASS="Code">
+__mips_soft_float</TT>
+<A NAME="marker-515568"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-508310"></A>One of these will be defined depending on the floating point compilation mode. The default is <TT CLASS="Code">
+__mips_single_float.</TT>
+</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-465463"></A>Emotion Engine-specific attributes</H3>
+<P CLASS="Body">
+<A NAME="pgfId-465464"></A>There are no Emotion Engine-specific attributes. See &quot;Declaring Attributes of Functions&quot; and &quot;Specifying Attributes of Variables&quot; in &quot;Extensions to the C Language Family&quot; in <EM CLASS="Emphasis">
+Using GNU CC</EM>
+ in <STRONG CLASS="BoldEmphasis">
+GNUPro Compiler Tools</STRONG>
+ for more information.</P>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Compiler</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-17.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

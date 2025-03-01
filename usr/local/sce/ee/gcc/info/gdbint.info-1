@@ -44,7 +44,6 @@ the mechanisms that adapt GDB to specific hosts and targets.
 * Support Libraries::
 * Coding::
 * Porting GDB::
-* Testsuite::
 * Hints::
 
 
@@ -93,7 +92,7 @@ Overall Structure
 handling (the "symbol side"), and target system handling (the "target
 side").
 
-   The user interface consists of several actual interfaces, plus
+   Ther user interface consists of several actual interfaces, plus
 supporting code.
 
    The symbol side consists of object file readers, debugging info
@@ -227,10 +226,10 @@ limited in number; when the user asks for more, GDB will start trying to
 set software breakpoints.
 
    Software breakpoints require GDB to do somewhat more work.  The basic
-theory is that GDB will replace a program instruction with a trap,
-illegal divide, or some other instruction that will cause an exception,
-and then when it's encountered, GDB will take the exception and stop the
-program. When the user says to continue, GDB will restore the original
+theory is that GDB will replace a program instruction a trap, illegal
+divide, or some other instruction that will cause an exception, and then
+when it's encountered, GDB will take the exception and stop the program.
+When the user says to continue, GDB will restore the original
 instruction, single-step, re-insert the trap, and continue on.
 
    Since it literally overwrites the program being tested, the program
@@ -308,18 +307,6 @@ main command list, and should be used for those commands.  The usual
 place to add commands is in the `_initialize_XYZ' routines at the ends
 of most source files.
 
-   Before removing commands from the command set it is a good idea to
-deprecate them for some time.  Use `deprecate_cmd' on commands or
-aliases to set the deprecated flag.  `deprecate_cmd' takes a `struct
-cmd_list_element' as it's first argument.  You can use the return value
-from `add_com' or `add_cmd' to deprecate the command immediately after
-it is created.
-
-   The first time a comamnd is used the user will be warned and offered
-a replacement (if one exists). Note that the replacement string passed
-to `deprecate_cmd' should be the full name of the command, i.e. the
-entire string the user should type at the command line.
-
 Console Printing
 ================
 
@@ -352,7 +339,7 @@ commands, or while reading symbols from shared libraries.
 
    Symbol files are initially opened by code in `symfile.c' using the
 BFD library.  BFD identifies the type of the file by examining its
-header.  `find_sym_fns' then uses this identification to locate a set
+header.  `symfile_init' then uses this identification to locate a set
 of symbol-reading functions.
 
    Symbol reading modules identify themselves to GDB by calling
@@ -883,9 +870,6 @@ indicated) are:
      `memcpy' and `memset'.  Define this to avoid conflicts between the
      native include files and the declarations in `defs.h'.
 
-`NO_STD_REGS'
-     This macro is deprecated.
-
 `NO_SYS_FILE'
      Define this if your system does not have a `<sys/file.h>'.
 
@@ -997,6 +981,10 @@ indicated) are:
      bfd_seek).  FIXME, should be replaced by SEEK_SET instead, which
      is the POSIX equivalent.
 
+`MAINTENANCE_CMDS'
+     If the value of this is 1, then a number of optional maintenance
+     commands are compiled in.
+
 `MALLOC_INCOMPATIBLE'
      Define this if the system's prototype for `malloc' differs from the
      ANSI definition.
@@ -1024,10 +1012,6 @@ indicated) are:
      of functions to indicate that they never return.  The default is
      already set correctly if compiling with GCC.  This will almost
      never need to be defined.
-
-`USE_GENERIC_DUMMY_FRAMES'
-     Define this to 1 if the target is using the generic inferior
-     function call code.  See `blockframe.c' for more information.
 
 `USE_MMALLOC'
      GDB will use the `mmalloc' library for memory allocation for symbol

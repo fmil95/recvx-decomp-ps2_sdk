@@ -1,12 +1,12 @@
-/* SCE CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.5
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /*
  *                     Emotion Engine Library
  *                          Version 0.60
  *                           Shift-JIS
  *
- *      Copyright (C) 1998,1999,2000,2002 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                       All Rights Reserved.
  *
  *                       libssyn - libssyn.h
@@ -51,9 +51,6 @@ typedef struct {
 	unsigned int	system[(sceSSynEnvSize+sizeof(int)-1)/sizeof(int)];
 } sceSSynEnv;
 
-#if defined(_LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
-extern "C" {
-#endif
 int sceSSyn_Init(sceCslCtx *pCtx, unsigned int interval );
 int sceSSyn_ATick(sceCslCtx*);
 int sceSSyn_Load(sceCslCtx*,unsigned int,void*);
@@ -95,9 +92,6 @@ int sceSSyn_SetOutputMode(int);
 #define sceSSynTvaEnvMode_Fixed				0
 #define sceSSynTvaEnvMode_ChangeByLevel		1
 int sceSSyn_SetTvaEnvMode(int);
-#if defined(_LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
-}
-#endif
 #endif //!_libssyn_h_
-/* $Id: libssyn.h,v 1.7.2.1 2002/02/19 09:17:15 xokano Exp $ */
+/* $Id: libssyn.h,v 1.6 2000/07/07 10:04:35 kaol Exp $ */
 

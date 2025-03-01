@@ -1,0 +1,274 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CSLラインアウト</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CSLラインアウト</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceLoutConf>sceLoutConf </A><BR>
+</TD><TD> </TD>
+<TD>初期化データ</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceLout_Atick>sceLout_Atick </A><BR>
+</TD><TD> </TD>
+<TD>割り込み処理</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceLout_Init>sceLout_Init </A><BR>
+</TD><TD> </TD>
+<TD>初期化</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceLoutConf>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceLoutConf
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化データ
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char	<I>attrib</I>;
+	unsigned char	<I>lineAssign</I>[sceLoutMaxLine];
+	unsigned int	<I>iopBufSize</I>;
+	void*		<I>iopBuf</I>[2];
+	unsigned int	<I>nDmaBuf</I>;
+	sceSifDmaData	<I>dma</I>[0];
+} <B>sceLoutConf</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>attrib  </I>アトリビュート
+        sceLoutDmaPreWait を指定する。
+        sceLoutDmaPreWait: DMA 転送開始後その終了を待たない。
+      （次回 DMA転送起動時に終了しているか調べ、動作中の場合終了まで待つ。）
+<I>lineAssign    </I>SPU2 の出力に対する入力バッファの割り当て
+             以下のように、各チャンネルに対応する入力バッファ番号を設定する。
+             使用しない場合は、sceLoutNoOutPut とする。
+                 lineAssign[0]	CH 0 L
+                 lineAssign[1]	CH 0 R
+                 lineAssign[2]	CH 1 L
+                 lineAssign[3]	CH 1 R
+<I>iopBufSize</I>  IOP 上に取得した SPU2 へのデータ転送用バッファのサイズ
+            用意するバッファのサイズは入力 PCM バッファのサイズの
+            ４倍以上必要でかつsceLoutInputUnit の整数倍でなければならない。
+          （チャンネル毎に L/R の出力を行なうために２倍更にダブルバッファとし
+            て動作させるために２倍計４倍のサイズが必要となる。）
+<I>iopBuf</I>:    IOP 上のSPU2 へのデータ転送用バッファアドレス
+              iopBuf[0]:  CH 0 用
+              iopBuf[1]:  CH 1 用
+            バッファが用意されない(NULL)のチャンネルへの出力は行なわない。
+            バッファのサイズは iopBufSize でなければならない。
+<I>nDmaBuf</I>   DMA Operation 用バッファ dma 配列の数
+            ATick()時には複数回の DMA転送が発生するため一回の 
+            sceSifSetDma()でキューに積む要求の上限をここで設定する。
+            1 以上の値を設定しなければならない。
+            sceLoutDmaPreWait が設定されていない場合、1 で十分である。
+            sceLoutDmaPreWait が設定されている場合、大きな値を設定するほうが待
+            ち時間が少なくなる。上限は sifdma を参照のこと。
+<I>dma</I>       DMA Operation 用バッファ
+           nDmaBuf 個の配列でなければならない。
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    liblout の初期化用構造体です。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceLout_Atick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceLout_Atick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込み処理
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceLout_ATick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context	</I>Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP 側にバッファの空きがあれば、PCM Stream Data をIOP 上のバッファに DMA 転送す <BR>
+    る。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceLout_Init>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceLout_Init
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceLout_Init</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>interval</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>interval</I>		ATick() が呼び出される周期をマイクロ秒で表したもの
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    内部変数を初期化し、librsd の autoDma 転送を開始する。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

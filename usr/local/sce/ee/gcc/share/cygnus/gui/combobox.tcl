@@ -451,23 +451,14 @@ proc ::combobox::handleEvent {w event} {
 # this cleans up the mess that is left behind when the widget goes away 
 proc ::combobox::destroyHandler {w} {
 
-    # kill any trace or after we may have started...
+    # kill any trace we may have started...
     namespace eval ::combobox::$w {
 	variable options
-        variable widgets
-
 	if {[string length $options(-textvariable)]} {
 	    trace vdelete $options(-textvariable) w \
 		    [list ::combobox::vTrace $widgets(this)]
 	}
-        
-        # CYGNUS LOCAL - kill any after command that may be registered.
-        if {[info exists widgets(after)]} {
-            after cancel $widgets(after)
-	    unset widgets(after)
-        }
     }
-
 #    catch {rename ::combobox::${w}::$w {}}
     # kill the namespace
     catch {namespace delete ::combobox::$w}
@@ -619,12 +610,12 @@ proc ::combobox::computeGeometry {w} {
     set height [expr [winfo reqheight $widgets(listbox)] + $bd + $bd]
     #set height [winfo reqheight $widgets(popup)]
 
-    set width [winfo reqwidth $widgets(this)]
+    set width [winfo reqwidth $widgets(popup)]
 
     # Compute size of listbox, allowing larger entries to expand
     # the listbox, clipped by the screen
     set x [winfo rootx $widgets(this)]
-    set sw [winfo screenwidth $widgets(this)]
+    set sw [winfo screenwidth $widgets(popup)]
     if {$width > $sw - $x} {
         # The listbox will run off the side of the screen, so clip it
         # (and keep a 10 pixel margin).
@@ -925,7 +916,11 @@ proc ::combobox::configure {w action {option ""} {newValue ""}} {
 		    global tcl_platform
 
 		    $widgets(entry) configure -state disabled
-		    $widgets(entry) configure -bg white
+
+		    #Windows look'n'feel, use normal bg
+		    if {$tcl_platform(platform) != "windows"} {
+			$widgets(entry) configure -bg gray
+		    }
 		}
 	    }
 
@@ -1079,17 +1074,11 @@ proc ::combobox::setValue {w newValue {call 1}} {
     # first, but sometimes we want to execute the command even
     # if the value didn't change...
     # CYGNUS LOCAL
-    # Call it after idle, so the menu gets unposted BEFORE
-    # the command gets run...  Make sure to clean up the afters
-    # so you don't try to access a dead widget...
-
+    # Also update idletasks, so the menu gets unposted BEFORE
+    # the command gets run...
     if {$call && [string length $options(-command)] > 0} {
-        if {[info exists widgets(after)]} {
-            after cancel $widgets(after)
-        }
-        set widgets(after) [after idle $options(-command) \
-                                   [list $widgets(this) $newValue]\;\
-                               unset ::combobox::${w}::widgets(after)]
+      update idletasks
+      uplevel \#0 $options(-command) [list $widgets(this) $newValue]
     }
     set oldValue $newValue
 }

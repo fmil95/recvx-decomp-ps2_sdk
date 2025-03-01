@@ -1,0 +1,402 @@
+<HTML>
+<HEAD>
+<TITLE> i.LINKドライバライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="iLink.htm" SELECTED> i.LINKドライバライブラリ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+i.LINKドライバライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 関連ファイル<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 参考資料<BR></A><BR>
+    <A HREF="#Heading4_1_4"> ハブ／リピータ／その他のデバイスとの接続について<BR></A><BR>
+    <A HREF="#Heading4_1_5"> 1394バスプロトコルアナライザについて<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 i.LINKドライバの仕様<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> ノードケイパビリティ<BR></A><BR>
+    <A HREF="#Heading4_2_2"> 制限事項<BR></A><BR>
+    <A HREF="#Heading4_2_3"> コンフィグレーションROM<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 使い方<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> 通信の準備<BR></A><BR>
+    <A HREF="#Heading4_3_2"> トランザクションの発行<BR></A><BR>
+    <A HREF="#Heading4_3_3"> 終了処理<BR></A><BR>
+    <A HREF="#Heading4_3_4"> リトライ<BR></A><BR>
+    <A HREF="#Heading4_3_5"> スレッドプライオリティの変更手順<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 PCとの接続<BR></A>
+    <UL>
+    <A HREF="#Heading4_4_1"> コンフィグレーションROM<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバライブラリは1394バスを監視する常駐ドライバとそれと通信を行なうための関数群から構成されています。これらはLINK層のすぐ上の階層に位置し、アプリケーションプログラマはこれを使って<BR>
+<UL>
+         <LI> i.LINK常駐ドライバの各種パラメータの設定<BR>
+         <LI> バスの制御と情報の取得<BR>
+         <LI> イベント処理<BR>
+         <LI> コールバック関数によるアシンクロナスリクエストパケットへの応答<BR>
+         <LI> トランザクションコンテクストを使ったアシンクロナスリクエストパケットの送信<BR>
+         <LI> コンフィグレーションROMへのアクセス<BR>
+</UL>
+    等の基本的な操作を行なうことができます。<BR>
+    <BR>
+    i.LINKドライバライブラリの各関数はIOP側にのみインプリメントされています。EE上のプログラムから利用するためには必要な関数についてRPCクライアント／サーバーを各自で実装する必要があります。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/iLinn1.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>関連ファイル</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバライブラリを利用するために必要なファイルは次のとおりです。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>カテゴリ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ファイル</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">ヘッダファイル</TD>
+<TD valign="TOP">ilink.h</TD>
+</TR>
+<TR>
+<TD valign="TOP">IOPモジュール</TD>
+<TD valign="TOP">ilink.irx</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>参考資料</B>
+</A>
+</H3>
+<blockquote>
+<UL>
+         <LI> 1394規格全般について<BR>URL：http://www.1394ta.org/<BR>
+         <LI> 各規格の位置付けと概要について<BR>IEEE1394規格群の構成と各仕様の概要、インターフェース、2000年９月号、CQ出版社<BR>
+         <LI> 1394評価用ボードのためのWindows用ソフト開発について<BR>特集IEEE1394のハード＆ソフト入門、インターフェース、1999年７月号、CQ出版社<BR>
+         <LI> PC（Windows）との接続について<BR>文書名：Plug and Play Design Specification for IEEE 1394 v. 1.0c<BR>入手先：http://www.microsoft.com/HWDEV/respec/pnpspecs.htm<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>ハブ／リピータ／その他のデバイスとの接続について</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"と市販されている1394ハブ/リピータ/1394カード（PCを含む）などとの相互接続性については、未だ十分な検証が実施されておりません。i.LINKを使用するタイトルのパッケージやマニュアル等には「"PlayStation 2"以外の装置と接続すると、正常に動作しない場合がある」等の記載が必要です。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>1394バスプロトコルアナライザについて</B>
+</A>
+</H3>
+<blockquote>
+    1394バスプロトコルアナライザは1394バス上を流れる任意のパケットをトレース・解析し、また機種によってはパケットの送信もできる装置です。<BR>
+    別項のソケットライブラリを使って"PlayStation 2"どうしで通信をする限り、特にアナライザが必要となることはありません。しかし、"PlayStation 2"以外のデバイスと通信を行うプログラムの開発に際しては、解析のためにアナライザが必要となる場合もあります。<BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>i.LINKドライバの仕様</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>ノードケイパビリティ</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバ（ver 2.9）が提供するノードケイパビリティはトランザクションレベルです。<BR>
+    すなわち次のレベルに位置します。<BR>
+    <OL>
+         <LI VALUE= 1> バスマネージャ（BM）：			×<BR>
+         <LI VALUE= 2> アイソクロナスリソースマネージャ（IRM）：	×<BR>
+         <LI VALUE= 3> アイソクロナス送受信：			×<BR>
+         <LI VALUE= 4> トランザクション：				○<BR>
+    </OL>
+    <BR>
+    なお、デフォルトでは機能しませんが、sce1394ConfSet()でSCE1394CF_NODE_CMCを指定するとサイクルマスタ（CM）capableとなります。<BR>
+    ただし、アイソクロナス通信機能、IRM、共に実装していないため、"PlayStation 2"だけで構成されたネットワークにおいてはCM capableにしても意味がありません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>制限事項</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバ（ver 2.9）には以下の制限事項があります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      リトライはsingle-phase retryのみに対応しています。（ハードウェアの仕様です）。<BR>
+      force-rootでバスリセットする(ルートノードを変更する)ことはできません。<BR>
+      ルートノードを変更するためには、<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> sce1394SbPhyPacket()で PHYコンフィグレーションパケットを送信する<BR>
+         <LI VALUE= 2> sce1394SbReset()でバスリセットする<BR>
+    </OL>
+      <BLOCKQUOTE>
+      という手順が必要ですが、現在のところsce1394SbPhyPacket()が実装されていないためです。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>コンフィグレーションROM</B>
+</A>
+</H3>
+<blockquote>
+    デフォルトでi.LINKドライバが提供するコンフィグレーションROMの例を示します。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/iLinn2.gif">
+<P>
+    <BR>
+    <OL>
+         <LI VALUE= 1> Chip_Id_Loには１台毎にユニークな識別番号が設定されます。<BR>
+         <LI VALUE= 2> Model_Id, Model_Nameには"PlayStation 2"の機種名に応じたIDと文字列が設定されます。上記の例はSCPH-10000の場合です。<BR>
+    </OL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>使い方</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>通信の準備</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバライブラリを使って通信を行なうための準備はおおよそ次のようになります。<BR>
+    <OL>
+         <LI VALUE= 1> ドライバライブラリの初期化<BR>sce1394Initialize ()を用いてi.LINKドライバライブラリを初期化します。<BR>
+         <LI VALUE= 2> Unit_Directoryの追加（必要に応じて）<BR>sce1394UnitAdd ()を用いてコンフィグレーションROMのRoot_DirectoryにUnit_Directoryを追加します。追加されるUnit_DirectoryのCRCはライブラリにより自動的に計算されます。<BR>
+         <LI VALUE= 3> コールバック関数の登録（必要に応じて）<BR>sce1394TrDataInd()を用いて他ノードからのRead/Write/Lockリクエストに応えるためのコールバック関数を登録します。<BR>
+         <LI VALUE= 4> イベント処理用スレッドの登録（必要に応じて）<BR>バスリセットの開始や終了、ある種のエラーなどは関数の戻り値ではなく、イベントとしてのみ検出可能です。このためこれらのイベントを検出したい場合にはイベント検出専用のスレッドを別に用意することになります。<BR>
+         <LI VALUE= 5> バスへの接続<BR>すべての準備が整ったらsce1394SbEnable()を用いてパケットの送受信が可能な状態にします。パケットの送受信が可能な状態になったことを直ちに他ノードに認識させたい場合には、sce1394SbReset()を用いてバスリセットを発行します。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>トランザクションの発行</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバライブラリではRead/Write/Lock等のリクエストはトランザクションコンテクストを利用して発行します。そのための手順はおおよそ次のようになります。<BR>
+    <BR>
+    ここで大切なことは「バスのgeneration numberがノードIDを取得した時点とトランザクションを発行する時点で同じでなければならない」ということです。実装にあたってはこの点に注意してください。なお、sce1394TrRead()等は内部でトランザクションコンテクストのgeneration numberと最新のgeneration numberを比較して、一致するときだけトランザクションを発行するようになっています。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> トランザクションコンテクストの作成<BR>sce1394TrAlloc()を用いてトランザクションコンテクストを作成します。<BR>
+         <LI VALUE= 2> generation numberの取得<BR>sce1394SbGenNumber()で現在のバスのgeneration numberを取得します。<BR>
+         <LI VALUE= 3> 相手のノードIDの取得<BR>通信相手のノードIDを取得します。取得する方法はプロトコルによって異なり、自分でバス上の全デバイスのコンフィグレーションROMをスキャンする、相手が教えてくれる、などの場合があります。<BR>
+         <LI VALUE= 4> トランザクションコンテクストの設定<BR>(1)で作成したトランザクションコンテクストにgeneration numberと相手のノードIDを設定します。必要に応じて送信スピードや分割サイズも設定します。<BR>
+         <LI VALUE= 5> トランザクションの発行<BR>sce1394TrRead()等を用いてトランザクションを発行します。これらは通信処理が完了するまでブロックしますが、内部ではWaitEventFlag()で待っているので、他のスレッドは実行することができます。<BR>
+         <LI VALUE= 6> トランザクション完了後の処理<BR>sce1394Read()等の返り値に応じて以下のように分岐します。<BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> ０以上：通信成功です。繰り返しsce1394TrRead()等を呼ぶことができます。ただし、分割サイズを指定している場合は途中で起きたエラーによって要求と異なるサイズが返ることがあります。このときはsce1394TrStatus()でエラーの原因に関係する情報を取得できます。<BR>
+         <LI VALUE= 2> SCE1394ERR_RESET_DETECTED：バスリセットによってバスのgeneration numberが変わり、コンテクストのバス情報が古くなっています。(2)からやり直す必要があります。<BR>
+         <LI VALUE= 3> SCE1394ERR_FAILED_RESPONSE：相手からresp_complete以外のresponse-codeか、またはack_data_err, ack_type_err等が返って来ました。sce1394TrStatus()でresponse-codeが判ります。(ack_xxx_errは相当するresponse-code に変換されます)。<BR>
+         <LI VALUE= 4> SCE1394ERR_ACK_MISSING：ackパケットを受信できませんでした。<BR>
+         <LI VALUE= 5> SCE1394ERR_RETRY_LIMIT：ack_busyのリトライが制限回数を越えました。<BR>
+         <LI VALUE= 6> SCE1394ERR_TIMEOUT：時間内にレスポンスパケットが返って来ませんでした。<BR>
+         <LI VALUE= 7> SCE1394ERR_REQUEST_DISABLED：sce1394SbEnable()が呼ばれていません。<BR>
+    </OL>
+         <LI VALUE= 7> トランザクションコンテクストの解放<BR>不要になったトランザクションコンテクストはsce1394TrFree()を用いて解放します。<BR>
+    </OL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>終了処理</B>
+</A>
+</H3>
+<blockquote>
+    すべての通信を完了し、i.LINKドライバの使用を止めるための手順は次のようになります。<BR>
+    <OL>
+         <LI VALUE= 1> sce1394SbDisable(1)を用いてパケットの送受信を禁止し、また外部からの要求に応答しないようにします。引数を１に指定することで「バスリセットの同時発行」を行ってください。<BR>
+         <LI VALUE= 2> sce1394Destroy()を用いてドライバをリセットし、sce1394Initialize()で確保したリソースを解放します。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>リトライ</B>
+</A>
+</H3>
+<blockquote>
+    ack_busyに対するリトライ回数はデフォルトでは０(リトライしない)になっています。<BR>
+    これを変更したい場合はCSRのBUSY_TIMEOUTレジスタを書き換えてください。CSRの書き換えは、自ノードのCSRの読み出し・書き込みであってもRead/Writeトランザクションを発行することによって行います。<BR>
+    また、バスリセットが起こるとBUSY_TIMEOUTレジスタはクリアされます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_5">
+<A HREF="#Heading3_3"> 3. </A>5 <B>スレッドプライオリティの変更手順</B>
+</A>
+</H3>
+<blockquote>
+    i.Linkが使用するスレッドプライオリティはHighとLowの2種類があります。<BR>
+    デフォルト値は High = 28, Low = 34 となっています。<BR>
+    <BR>
+    スレッドプライオリティを上記のデフォルト値以外に設定したい場合はsceSifLoadModule()でilink.irxをロードする際に、第3引数で指定することができます。次に示すのは、High = 20, Low = 28と設定する例です。<BR>
+    <BR>
+<PRE>        char* mes = "thpri=20,28";
+        sceSifLoadModule( "host0:/usr/local/sce/iop/modules/ilink.irx", strlen(mes)+1, mes );
+</PRE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>PCとの接続</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    ここではWindows 98 Second Edition(SE)と接続する際に注意しなければならない事項について説明します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_4_1">
+<A HREF="#Heading3_4"> 4. </A>1 <B>コンフィグレーションROM</B>
+</A>
+</H3>
+<blockquote>
+    i.LINKドライバが提供するデフォルトのコンフィグレーションROMでは、Windows 98 SEは"PlayStation 2"を1394デバイスとして認識できません。Windowsから認識されるためにはRoot_Directoryに以下のエントリを持ったUnit_Directoryを追加する必要があります。<BR>
+    <BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>key (hex)</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>value</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">Unit_Spec_Id (0x12)</TD>
+<TD valign="TOP">0x080046（＊）</TD>
+</TR>
+<TR>
+<TD valign="TOP">Unit_Sw_Version (0x13)</TD>
+<TD valign="TOP">0xFFFFFF（＊）</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+    <BR>
+    WindowsはUnit_Spec_IdとUnit_Sw_Versionの値から使用すべきドライバを判別します。<BR>
+    "PlayStation 2"とPCを実験的に接続する限りにおいては上記の値を使用することができますが、Windowsとの接続を前提としたプログラムを商品化する場合には然るべき値を設定する必要があります。
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,290 @@
+<HTML>
+<HEAD>
+<TITLE> DECI2(ホスト ⇔ ターゲット間通信環境)</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="deci2.htm" SELECTED> DECI2 Manager
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+DECI2<BR>(ホスト ⇔ ターゲット間通信環境)<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+<P><A HREF="#Heading3_2">  2 ホスト ⇔ ターゲット間通信<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> DECI2 Manager<BR></A><BR>
+    <A HREF="#Heading4_2_2"> dsnetm と dsnet パッケージ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 DECI2 プロトコル<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> DECI2 プロトコルの特徴<BR></A><BR>
+    <A HREF="#Heading4_3_2"> ヘッダフォーマット<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_4">  4 SCE が定義している上位プロトコル<BR></A>
+<P><A HREF="#Heading3_5">  5 アプリケーションの作成<BR></A>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントは、ホスト上で動作する各種アプリケーションプログラムとターゲット上で動作するアプリケーションプログラムとの DECI2 プロトコルによる通信方法を概説し、DECI2 プロトコルを使用したアプリケーションを効率よく開発していただけるよう、プロトコルの特徴及びその背景となるコンセプトなどについて説明しています。<BR>
+    <BR>
+    ※このドキュメントの内容は99年5月現在の情報に基づいています。<BR>
+      記載されている事項について今後変更される可能性がありますので、あらかじめご了承ください。<BR>
+    <BR>
+    ※このドキュメントでは、PCやワークステーションのことをホストと呼び、開発ツールハード<BR>
+      ウェア(EB2000 など)のことをターゲットと呼ぶことにします。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>ホスト ⇔ ターゲット間通信</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    DECI2 環境では、ホストとターゲット上の各プロセッサ間で一般的なデータを送受信することができます。ホスト ⇔ ターゲット間の通信は、DECI2 プロトコルと上位プロトコルからなる DECI2 パケット" を単位として行われます。以下にホスト ⇔ ターゲット間通信のブロックダイヤグラムを示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/decif1.gif">
+<P>
+    <B>図 1  ホスト ⇔ ターゲット間通信のブロックダイヤグラム</B>
+</DIV>
+    "DECI2 Manager" は SCE が提供するモジュールで、ターゲット上の各プロセッサで動作し、ターゲット上のアプリケーションプログラムに API 関数を提供します。<BR>
+    ターゲット上のアプリケーションプログラムは提供されている API 関数を使用してホストとの通信を行います。<BR>
+    <BR>
+    "protocol driver" とは、ターゲット上のアプリケーションプログラムまたはその一部のモジュールのことで、上位のプロトコルをハンドリングします。<BR>
+    protocol driver は、ユーザーが自由に作成することができます。また、SCE があらかじめ提供しているものもあります。<BR>
+    <BR>
+    "dsnetm" は、SCE が提供するホスト上のアプリケーションプログラム群 "dsnet パッケージ" のなかのアプリケーションプログラムのひとつです。ホスト上のアプリケーションはすべて、 dsnetm との TCP/IP ソケット間通信によってターゲットとの通信を行います。<BR>
+    <BR>
+    ホスト上のアプリケーションは、まず dsnetm とのコネクションを確立し、その上でターゲット上の protocol driver と通信を行います。ホスト上のアプリケーションはターゲット上の複数の protocol driver と通信することが可能です。たとえば、図 1 の(a)が(e)(f)と通信し、(b)が(c)(d)と通信するといったようなことができます。しかしながら、複数のアプリケーションが同時にひとつの protocol driver と通信することは基本的にはできません。たとえば、図 1 の(a)が(e)と通信している時に、(b)が(e)との通信を行うことはできません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>DECI2 Manager</B>
+</A>
+</H3>
+<blockquote>
+    ターゲット上の各プロセッサには、DECI2 Manager がひとつずつ存在します。DECI2 Manager と各種 protocol driver の関係は以下の図のようになります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/decif2.gif">
+<P>
+    <B>図 2 DECI2 Manager と各種 protocol driver</B>
+</DIV>
+    ここで "DBGP"、"TTYP"、"DRFP"、"DCMP" などは、SCE が提供している上位プロトコルの名称です。"DCMP"(DECI2 Control Message Protocol)は特別なプロトコルで、その protocol driver は DECI2 Manager の一部として実装されています。<BR>
+    <BR>
+    DECI2 Manager は、以下のような機能を提供します。<BR>
+    <BR>
+<UL>
+         <LI> 各種 protocol driver の登録(MAX 16)、削除<BR>
+         <LI> DECI2 パケットの送受信<BR>
+         <LI> 受信した DECI2 パケットの protocol driver への配送<BR>
+         <LI> protocol driver からの DECI2 パケット送信要求への応答<BR>
+         <LI> エラーイベントやステータスイベントの通知<BR>
+         <LI> ホストとのコネクションの確立、ルート制御<BR>
+         <LI> 他の上位プロトコルのロック、ロック解除要求への応答<BR>
+</UL>
+    <BR>
+    他の上位プロトコルのロックとは、図 2 のようにターゲット上に複数の protocol driver が存在する場合、ひとつの protocol driver が DECI2 Manager に対し、その protocol driver がハンドリングする上位プロトコル以外のすべての上位プロトコルの DECI2 パケットの送受信を拒否するように指示することをいいます。<BR>
+    このロック機能は本来、デバッガがユーザープログラムの実行を停止している最中に DECI2 パケットの送受信を拒否しなければならないために存在しています。<BR>
+    一般の protocol driver でもこの機能を使用することが可能ですが、その場合、デバッガからのプログラム停止コマンド等も受け付けなくなる可能性があるので注意が必要です。<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>dsnetm と dsnet パッケージ</B>
+</A>
+</H3>
+<blockquote>
+    dsnet パッケージは、DECI2 環境でターゲットを操作するための、デバッガ、ドライバ、マネージャなどのアプリケーション群です。このドキュメントでは、dsnet パッケージに関する使い方などの説明は行いませんので、詳しくは dsnet.txt をご覧下さい。<BR>
+    <BR>
+    dsnetm は、ターゲットとホスト上のアプリケーションとの間に位置し、ターゲットからの DECI2 パケットを各アプリケーションに配送し、またその逆を行う、ホスト上の DECI2 Manager プログラムで、 dsnet パッケージに含まれています。<BR>
+    <BR>
+    ホスト上のアプリケーションはすべて dsnetm との TCP/IP ソケット間通信によってターゲットとの通信を行います。アプリケーションから dsnetm への指示は、dsnetm とアプリケーションとの間でのみ使用される "NETMP" という上位プロトコルを用いて行います。<BR>
+    <BR>
+    dsnetm は、以下のような機能を提供します。<BR>
+    <BR>
+<UL>
+         <LI> アプリケーションの登録、削除<BR>
+         <LI> アプリケーションから指定された上位プロトコルの DECI2 パケットの<BR>
+         <LI> 配送要求への応答(受信配送要求のみ、送信は要求不要で常に許可)<BR>
+         <LI> ターゲットのリセット<BR>
+         <LI> ターゲットとのコネクションの確立、ルート制御<BR>
+         <LI> エラーやステータスの通知<BR>
+         <LI> ステータス情報管理<BR>
+         <LI> 指定された上位プロトコル番号を使用しているアプリケーションとの接続解除<BR>
+         <LI> 要求への応答<BR>
+</UL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>DECI2 プロトコル</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    DECI2 プロトコルは、ホストとターゲット上の各プロセッサ間で一般的なデータを送受信するためのプロトコルです。DECI2 プロトコルは、上位プロトコルと組み合わせて使用されることを想定しています。プログラマが自由に上位プロトコルを定義し、そのプロトコルを扱うアプリケーションをホスト上とターゲット上で作成することで通信を行うことができます。以下の図は、DECI2 プロトコルと上位プロトコルとの関係を示したものです。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/decif3.gif">
+<P>
+    <B>図 3 DECI2 プロトコル階層</B>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>DECI2 プロトコルの特徴</B>
+</A>
+</H3>
+<blockquote>
+    DECI2 プロトコルでは、プロトコルヘッダの source/destination フィールドにホストや各プロセッサを表す "node ID" を指定することによって、 DECI2 パケットを source node からdestination node に送信することができます。<BR>
+    <BR>
+    DECI2 プロトコルは、非常にシンプルで自由度の高いプロトコルですが、それ故に限られた機能しか持っていません。それは上記のアドレッシングだけであり、フラグメンテーション、フローコントロール、シーケンシングなどは一切行いません。<BR>
+    また、インオーダーは保証しますが、チェックサムなどのエラー検出系はなく unreliable です。ただし、DCMP(DECI2 Control Message Protocol) を併用することによって reliable な通信を行うことができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>ヘッダフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    DECI2 プロトコルのヘッダフォーマットは、リトルエンディアンで以下のようになります。このヘッダを、DECI2 Manager や dsnetm が生成することはありません。<BR>
+    アプリケーションや protocol driver が生成して、DECI2 Manager や dsnetm に渡す必要があります。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/decif4.gif">
+<P>
+    <B>図 4 DECI2 プロトコルヘッダフォーマット</B>
+</DIV>
+    Length は、DECI2 プロトコルヘッダを含むパケット全体の長さをバイト単位で表します。パケットの最大長は 64kbytes です。<BR>
+    <BR>
+    Protocol は、上位プロトコルの番号を表します。プロトコル番号は、SCE、ツールメーカー、ローカルユースなどで以下のように割り当てます。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      0x0000		: reserved(使用不可)<BR>
+      0x0001		 : DCMP<BR>
+      0x0002 - 0x0fff	: SCE use<BR>
+      0x1000 - 0xdfff	: Tool licensee use<BR>
+      0xe000 - 0xefff	: local use for licensee<BR>
+      0xf000 - 0xffff	: reserved<BR>
+      </BLOCKQUOTE>
+    <BR>
+    Source、Destination は、DECI2 パケットの送信元、送信先を以下の node ID で表します。特別なケースとして、dsnetm からホスト上のアプリケーションへ直接送信されるパケットは送信元、送信先がどちらも 'H' になります。同様に、DECI2 Manager からプロトコルドライバへのパケットは送信元、送信先がどちらも 'E' や 'I' になります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      I(0x49): IOP<BR>
+      E(0x45): EE<BR>
+      H(0x48): HOST<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_4">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 4 <B>SCE が定義している上位プロトコル</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    SCE が定義している上位プロトコルには、以下のようなものがあります。<BR>
+    これらの詳細については、それぞれのドキュメントを参照してください。<BR>
+    <BR>
+    DCMP : DECI2 Control Message Protocol<BR>
+    NETMP: DECI2 Net Manager Protocol<BR>
+    DBGP : DECI2 Debug Protocol<BR>
+    DRFP : DECI2 Remote File Protocol<BR>
+    TTYP : DECI2 Tty Protocol<BR>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_5">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 5 <B>アプリケーションの作成</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    DECI2 プロトコルをアプリケーションで利用する際に、大きくわけて以下の二つのタイプが考えられます。<BR>
+    <BR>
+    <OL TYPE="a">
+         <LI VALUE= 1> SCE が定義している上位プロトコルのみを使用する、ホスト上のアプリケーションを作成する<BR>
+         <LI VALUE= 2> 新たに上位プロトコルを定義して、ホスト上とターゲット上の両方でアプリケーションを作成する<BR>
+    </OL>
+    (a) のタイプのアプリケーションを作成する場合は、使用したい上位プロトコルの他に、DCMP、NETMP について理解しておく必要があります。<BR>
+    <BR>
+    (b) のタイプのアプリケーションを作成する場合には、上記に加えてターゲット上の DECI2 API を理解しておく必要があります。DECI2 API に関しては、libd2_j.txt を参照してください。<BR>
+    <BR>
+    ホストと EE の間で大きなデータの通信をする場合は、まずホストと IOP の間で DECI2 プロトコルによる通信をおこない、IOP と EE の間では通常の DMA 転送を使用する方がより早い通信を行うことができます。<BR>
+    <BR>
+    DECI2 プロトコルを用いて EE と IOP 間の通信を行うことは可能ですが、通常の DMA 転送を使用してください。転送速度も速いですし、実機では DECI2 Manager が実装されていない可能性もあります。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

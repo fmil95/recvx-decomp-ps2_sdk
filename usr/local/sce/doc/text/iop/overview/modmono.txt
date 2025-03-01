@@ -1,0 +1,47 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+CSL MIDIモノフォニック (modmono)
+=================================
+
+
+ 1 概要
+--------
+
+    modmonoは、CSL（Component Sound Library）に準拠して実装されているIOP
+    モジュールで、入力バッファのMIDI Streamデータを、モノフォニックにアサ
+    インしたMIDI Streamデータとして出力する機能を持ちます。モノフォニック
+    アサインの有無はチャンネルごとに指定できます。
+
+ 2 利用方法
+------------
+
+
+  2.1 バッファ構造
+
+
+    Buffer Group 0：入力ポートグループ
+
+    +------------+---------------------------+------------------------+
+    |BufCtx Index 内容                        データ構造              |
+    +            +                           +                        +
+    |N*2          入力ポートN番の入力バッファ sceCslMidiStream        |
+    |                                         void[ buffsize - sizeof |
+    |                                         (sceCslMidiStream) ]    |
+    |N*2+1        入力ポートN番の環境         sceMidiMono_Env         |
+    +------------+---------------------------+------------------------+
+
+    Buffer Group 1：出力ポートグループ
+
+    +------------+---------------------------+------------------------+
+    |BufCtx Index 内容                        データ構造              |
+    +            +                           +                        +
+    |N            出力ポートN番の出力バッファ sceCslMidiStream        |
+    |                                         void[ buffsize - sizeof |
+    |                                         (sceCslMidiStream) ]    |
+    +------------+---------------------------+------------------------+
+    入力バッファとそれに対応する出力バッファは必ず対で存在する必要があり
+    ます。片方が欠けている場合、初期化時にエラーとなるか、その入力バッフ
+    ァが使用できなくなります。

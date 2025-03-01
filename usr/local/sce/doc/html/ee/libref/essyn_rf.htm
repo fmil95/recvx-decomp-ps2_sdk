@@ -1,0 +1,1784 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> CSLソフトウェア・シンセサイザ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>CSLソフトウェア・シンセサイザ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSSynChOutAttrib>sceSSynChOutAttrib </A><BR>
+</TD><TD> </TD>
+<TD>入力チャンネル毎の出力方法の指定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSynConf>sceSSynConf </A><BR>
+</TD><TD> </TD>
+<TD>初期設定情報</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSynEnv>sceSSynEnv </A><BR>
+</TD><TD> </TD>
+<TD>入力環境</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSynNrpnMsg>sceSSynNrpnMsg </A><BR>
+</TD><TD> </TD>
+<TD>NRPN送信用構造体</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSynRpnMsg>sceSSynRpnMsg </A><BR>
+</TD><TD> </TD>
+<TD>RPN送信用構造体</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_Atick>sceSSyn_Atick </A><BR>
+</TD><TD> </TD>
+<TD>割り込み処理</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_BreakAtick>sceSSyn_BreakAtick </A><BR>
+</TD><TD> </TD>
+<TD>ATick() 処理の中断</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_ClearBreakAtick>sceSSyn_ClearBreakAtick </A><BR>
+</TD><TD> </TD>
+<TD>ATick() 処理の中断の取り消し</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_Init>sceSSyn_Init </A><BR>
+</TD><TD> </TD>
+<TD>初期化</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_Load>sceSSyn_Load </A><BR>
+</TD><TD> </TD>
+<TD>音素及びパラメータデータの登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_PrepareParameter>sceSSyn_PrepareParameter </A><BR>
+</TD><TD> </TD>
+<TD>音素及びパラメータデータのアドレス解決</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_RegisterRpc>sceSSyn_RegisterRpc </A><BR>
+</TD><TD> </TD>
+<TD>IOP との通信路確保用 RPC サーバーの登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SendExcMsg>sceSSyn_SendExcMsg </A><BR>
+</TD><TD> </TD>
+<TD>MIDI エクスクルーシブメッセージの入力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SendNrpnMsg>sceSSyn_SendNrpnMsg </A><BR>
+</TD><TD> </TD>
+<TD>MIDI NRPN メッセージの入力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SendRpnMsg>sceSSyn_SendRpnMsg </A><BR>
+</TD><TD> </TD>
+<TD>MIDI RPN メッセージの入力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SendShortMsg>sceSSyn_SendShortMsg </A><BR>
+</TD><TD> </TD>
+<TD>MIDI メッセージの入力</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetChPriority>sceSSyn_SetChPriority </A><BR>
+</TD><TD> </TD>
+<TD>CH の優先度設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetMasterVolume>sceSSyn_SetMasterVolume </A><BR>
+</TD><TD> </TD>
+<TD>マスターボリュームの設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetOutPortVolume>sceSSyn_SetOutPortVolume </A><BR>
+</TD><TD> </TD>
+<TD>PCM Stream のボリューム</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetOutputAssign>sceSSyn_SetOutputAssign </A><BR>
+</TD><TD> </TD>
+<TD>チャンネル出力の割り当て</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetOutputMode>sceSSyn_SetOutputMode </A><BR>
+</TD><TD> </TD>
+<TD>出力モード（モノ／ステレオ）切り替え</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetPortMaxPoly>sceSSyn_SetPortMaxPoly </A><BR>
+</TD><TD> </TD>
+<TD>入力ポート単位の音数制限</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetPortVolume>sceSSyn_SetPortVolume </A><BR>
+</TD><TD> </TD>
+<TD>入力ポートのボリューム設定</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceSSyn_SetTvaEnvMode>sceSSyn_SetTvaEnvMode </A><BR>
+</TD><TD> </TD>
+<TD>ＴＶＡエンベロープ（リリース）動作モードの設定</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>CALLBACK関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#exc_callback>exc_callback </A><BR>
+</TD><TD> </TD>
+<TD>MIDI エクスクルーシブメッセージのフィルタ用コールバック</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#msg_callback>msg_callback </A><BR>
+</TD><TD> </TD>
+<TD>MIDI メッセージのフィルタ用コールバック</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceSSynChOutAttrib>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSynChOutAttrib
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力チャンネル毎の出力方法の指定
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char	<I>ch</I>;
+	unsigned char	<I>ch_output</I>;
+	unsigned char	<I>mode</I>;
+	unsigned char	<I>output_line</I>;
+	unsigned int	<I>att</I>;
+}<B> sceSSynChOutAttrib</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ch	</I>設定を行なうチャンネル
+<I>ch_output	</I>チャンネル内の出力ポート
+<I>mode	</I>出力モード
+	sceSSynMuteOut:   出力を行なわない
+	sceSSynMonoOut:  モノ出力
+	sceSSynLOut:  左チャンネル出力
+	sceSSynROut:  右チャンネル出力
+<I>output_line	</I>出力するPCM streamの番号
+<I>att	 </I>アッテネータ
+	 SSYN_VOLUME_0DBで0db
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    入力チャンネルの出力指定を行う構造体。sceSSyn_SetOutputAssign()の引数として指定する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSynConf>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSynConf
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期設定情報
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>#define sceSSynVoiceBufferSize	576
+#define sceSSynInputBufferSize	(352*16)
+typedef struct {
+	unsigned int	<I>unit_samples</I>;
+	unsigned int	<I>sampling_frequency</I>;
+	unsigned int	<I>n_voices</I>;
+	void		*<I>voice_buffer</I>;
+	unsigned int	<I>voice_buffer_size</I>;
+	unsigned int	<I>n_input_port</I>;
+	void		*<I>input_port_buffer</I>;
+	unsigned int	<I>input_port_buffer_size</I>;
+} <B>sceSSynConf</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>unit_samples  </I>一回の演算で出力するデータ数（単位はサンプル）
+<I>sampling_frequency  </I>出力PCMのサンプリングレート
+<I>n_voices      </I>システム全体の最大発音数
+<I>voice_buffer   </I>発音状態管理バッファ
+<I>voice_buffer_size   </I>発音状態管理バッファのサイズ
+                  sceSSynVoiceBufferSize * n_voices以上必要
+<I>n_input_port   </I>入力ポートの数（Buffer Group 0のbuffer context数と同じ）
+<I>input_port_buffer   </I>入力管理バッファ
+<I>input_port_buffer_size  </I>入力管理バッファのサイズ
+                       sceSSynInputBufferSize * n_input_port以上必要
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    初期設定情報の指定を行う構造体。CSL context構造体sceCslCtxのconfigメンバに割り当てる。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSynEnv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSynEnv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力環境
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned int	<I>input_buff_len</I>;
+	void	*<I>input_buff</I>;
+	void	*<I>tone_param</I>;
+	unsigned int	(*<I>msg_callback</I>)(unsigned int,unsigned int);
+	unsigned int	<I>msg_callback_private_data</I>;
+	unsigned int	(*<I>exc_callback</I>)(unsigned int,unsigned char*,
+                          unsigned int,unsigned char*,
+                          unsigned int);
+	unsigned int	<I>exc_callback_private_data</I>;
+	unsigned int	<I>system</I>[(sceSSynEnvSize+sizeof(int)-1)/sizeof(int)];
+} <B>sceSSynEnv</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>input_buff_len</I>   IOPとの通信バッファのサイズ
+                16の整数倍でなければならない
+<I>input_buff</I>    IOPとの通信バッファ
+             非キャッシュアクセスが行われるためアライメント等に
+             注意が必要
+<I>tone_param</I>   音色データへのポインタ（未使用）
+<I>msg_callback</I>   MIDIメッセージのフィルタ用コールバックアドレス
+<I>msg_callback_private_data</I>  MIDIメッセージのフィルタ用コールバックの引数
+                           として渡されるユーザー用データ
+<I>exc_callback  </I>MIDIエクスクルーシブ メッセージのフィルタ用
+             コールバックアドレス
+<I>exc_callback_private_data</I>  MIDIエクスクルーシブ メッセージのフィルタ用
+                          コールバックの引数として渡されるユーザー用データ
+<I>system</I>   内部変数
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ソフトウェア・シンセサイザの入力、演奏状態などを管理するための環境バッファに用いる構造体。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP MIDI Streamを使用しない場合、ポートでは、input_buff_len = 0; input_buff = NULL;としておくことにより、そのポートに対するIOPからの接続要求を拒否します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSynNrpnMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSynNrpnMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        NRPN送信用構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char	<I>ch</I>;
+	unsigned short	<I>num</I>;
+	unsigned short	<I>data</I>;
+} <B>sceSSynNrpnMsg</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ch</I>	MIDIチャンネル
+<I>num</I>	NRPN番号
+<I>data</I>	NRPNデータ
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    NRPN送信用構造体。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSynRpnMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSynRpnMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        RPN送信用構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	unsigned char	<I>ch</I>;
+	unsigned short	<I>num</I>;
+	unsigned short	<I>data</I>;
+} <B>sceSSynRpnMsg</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>ch</I>	MIDIチャンネル
+<I>num</I>	RPN番号
+<I>data</I>	RPNデータ
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    RPN送信用構造体。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceSSyn_Atick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_Atick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        割り込み処理
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_ATick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Contextのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOPからのデータを読み込み、PCM Stream Dataを生成する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_BreakAtick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_BreakAtick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ATick() 処理の中断
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_BreakAtick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現在実行中のATick()処理を中断する。割り込みハンドラから呼出しが可能。 <BR>
+    処理を中断するタイミングは、１処理単位（４音）の終了後行われる。また、中断後も出力バッファのクリア、発音中ボイスの発音取り消し処理は行われる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_ClearBreakAtick>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_ClearBreakAtick
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ATick() 処理の中断の取り消し
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_ClearBreakAtick</B>(
+	sceCslCtx *<I>module_context</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    割り込みから呼出し可能。 <BR>
+    sceSSyn_BreakAtick() 後 sceSSyn_ClearBreakAtick() が呼出されるまでの間 ATick() の処 <BR>
+    理は中断される。 <BR>
+<BR>
+    通常時間計測開始時に sceSSyn_ClearBreakAtick()を呼出し、割り込み等で許容時間を超えた場合 sceSSyn_BreakAtick() 呼出しにより処理の中断を行なう。 <BR>
+<BR>
+    但し sceSSyn_BreakAtick() 緊急事態のための物で通常は、全体もしくはポート毎の最大発音数の制限により負荷の制御を行なった方が出力音声に関しては良好な結果が得られる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_Init>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_Init
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        初期化
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_Init</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>interval</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>interval</I>		ATick()が呼び出される周期をマイクロ秒で表したもの
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    内部変数の初期化。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_Load>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_Load
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        音素及びパラメータデータの登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_Load</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	void *<I>parameter</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>parameter</I>	音素及びパラメータデータアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    音素及びパラメータデータを入力ポートに登録する。登録するデータは、予め <BR>
+    sceSSyn_PrepareParameter()を使用しアドレスが解決されている必要がある。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_PrepareParameter>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_PrepareParameter
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        音素及びパラメータデータのアドレス解決
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_PrepareParameter</B>(
+	void *<I>parameter</I>, 
+	unsigned int <I>size</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>parameter</I>	音素及びパラメータデータアドレス
+<I>size	</I>音素及びパラメータデータのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ディスク等に保存されている音素及びパラメータデータは、アドレスの表現形式が、Software <BR>
+    Synthesizer 内で使用するものと異なるため、この sceSSyn_PrepareParameter() でアドレス <BR>
+    形式の変換を行なう必要があります。 <BR>
+    また 一旦sceSSyn_PrepareParameter() を適用したデータはメモリ上で位置を移動すること <BR>
+    はできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_RegisterRpc>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_RegisterRpc
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        IOP との通信路確保用 RPC サーバーの登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_RegisterRpc</B>(
+	sceCslCtx *<I>module_context</I>, 
+	int <I>priority</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>priority	</I>サーバー thread の優先度
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP との通信路確保用 RPC サーバー を起動します。 <BR>
+    IOP MIDI Stream を使用しない場合は、必要ありません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SendExcMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SendExcMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI エクスクルーシブメッセージの入力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SendExcMsg</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	unsigned char *<I>exc_data</I>, 
+	unsigned int <I>length</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>exc_data </I>	エクスクルーシブ データアドレス
+		0xF0 で始まり 0xF7 で終わらなければならない。
+<I>length	</I>エクスクルーシブ データサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP を介さずに MIDI エクスクルーシブメッセージメッセージを入力するための API。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SendNrpnMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SendNrpnMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI NRPN メッセージの入力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SendNrpnMsg</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	sceSSynNrpnMsg *<I>nrpn</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>nrpn	</I>NRPN メッセージのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP を介さずに MIDI NRPN メッセージを入力するための API。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SendRpnMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SendRpnMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI RPN メッセージの入力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SendRpnMsg</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	sceSSynRpnMsg *<I>rpn</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>rpn	</I>RPN メッセージのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP を介さずに MIDI RPN メッセージを入力するための API。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SendShortMsg>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SendShortMsg
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI メッセージの入力
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SendShortMsg</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	unsigned int <I>message</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>message</I>  	MIDI メッセージ
+		bit 0 - 7 :　status
+		8 - 15:　1st data
+		16 - 23:　2nd data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    IOP を介さずに MIDI メッセージを入力するための API。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetChPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetChPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        CH の優先度設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetChPriority</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	unsigned int <I>ch</I>, 
+	unsigned char <I>priority</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>ch	</I>MIDI チャンネル
+<I>priority	</I>優先度
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    優先度は最小 ０、最大２５５となる。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetMasterVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetMasterVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        マスターボリュームの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_Load</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>volume</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>volume	</I>マスターヴォリュームの値
+	SSYN_VOLUME_0DB で 0db
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    マスターヴォリュームの設定。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetOutPortVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetOutPortVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        PCM Stream のボリューム
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetOutPortVolume</B>(
+	sceCslCtx *<I>module_context</I>,
+	unsigned int <I>port_number</I>,
+	unsigned int <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	PCM Stream の番号
+<I>vol</I>	ボリューム SSYN_VOLUME_0DB で 0db
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された 番号の PCM Stream のボリュームを設定。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetOutputAssign>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetOutputAssign
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        チャンネル出力の割り当て
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetOutputAssign</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	sceSSynChOutAttrib *<I>attrib</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>attrib</I>	割り当て情報のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    チャンネルの出力（４系統）を PCM Stream に割り当てます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetOutputMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetOutputMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        出力モード（モノ／ステレオ）切り替え
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetOutputMode</B>(
+	int <I>output_mode</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>output_mode</I>	出力モード
+	sceSSynOutputMode_Mono	   パンポットを無効にする
+sceSSynOutputMode_Stereo   パンポットを有効にする
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    出力モード（パンポットの有効／無効）を設定する。 <BR>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetPortMaxPoly>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetPortMaxPoly
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力ポート単位の音数制限
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetPortMaxPoly</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	unsigned char <I>max_polyphony</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>max_polyphony</I>	最大同時発音数
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    入力ポート毎に同時に発音する音数の上限を設定する。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetPortVolume>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetPortVolume
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        入力ポートのボリューム設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_SetPortVolume</B>(
+	sceCslCtx *<I>module_context</I>, 
+	unsigned int <I>port_number</I>,
+	unsigned int <I>vol</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>module_context</I>	Module Context のアドレス
+<I>port_number</I>	入力ポート番号
+<I>vol</I>		ボリューム SSYN_VOLUME_0DB で 0db
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定された入力ポートを持つ音源のマスターボリュームの設定。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceSSyn_SetTvaEnvMode>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceSSyn_SetTvaEnvMode
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ＴＶＡエンベロープ（リリース）動作モードの設定
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceSSyn_ SetTvaEnvMode</B>(
+	int	<I>env_mode</I> 
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>env_mode</I>   TVAエンベロープ（リリース）動作モード
+            sceSSynTvaEnvMode_Fixed
+              常にTVAのリリース時間をパラメータに
+              設定された時間で実行する
+            sceSSynTvaEnvMode_ChangeByLevel
+              パラメータに設定された時間を現在のレベルに
+             あわせて変化させる（現在値が小さい時は短く、大きい時は長くなる）
+            （デフォルト値、以前との互換性維持用）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    成功の場合 0 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    TVAエンベロープ（リリース）動作モードの設定を行う。 <BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>CALLBACK関数</H2></U>
+</DIV>
+</blockquote>
+<A name=exc_callback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>exc_callback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI エクスクルーシブメッセージのフィルタ用コールバック
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>exc_callback</B>(
+	unsigned int <I>msg_callback_private_data</I>,
+	unsigned char *<I>data1</I>, 
+	unsigned int <I>length1</I>,
+	unsigned char *<I>data2</I>, 
+	unsigned int <I>length2</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>exc_callback_private_data</I>	sceSSynEnv の exc_callback_private_data
+<I>data1</I>	エクスクルーシブデータアドレス
+<I>length1</I>	data1 のデータサイズ
+<I>data2</I>	エクスクルーシブデータアドレス
+<I>length2</I> 	data2 のデータサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ０を返した場合 メッセージの送信は行われない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MIDI エクスクルーシブメッセージのフィルタ用 <BR>
+    リングバッファを直接参照しているため２個のアドレスを引数として持つデータがリングバッファの終端をこえてバッファの先頭へ継続する場合data2 と length2 に有効な値が入る。 <BR>
+    連続した領域にデータが存在する場合はdata2 == NULL, length2 == 0。保証されるデータの開始位置は エクスクルーシブステータス(0xF0)の次のデータバイトからである。 <BR>
+    library build 時に EXEC_CALLBACK を定義してビルドした時のみ有効。 <BR>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=msg_callback>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>msg_callback
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        MIDI メッセージのフィルタ用コールバック
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>unsigned int <B>msg_callback</B>(
+	unsigned int <I>msg_callback_private_data</I>,
+	unsigned int <I>message</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>msg_callback_private_data		sceSSynEnv の msg_callback_private_data
+message    MIDI メッセージ
+              bit 0  - 7 :  status
+                 8  - 15:  1st data
+                 16 - 23:  2nd data
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    Synthesizer に送信する MIDI メッセージ <BR>
+    ０を返した場合 メッセージの送信は行われない。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    MIDI メッセージのフィルタ用 <BR>
+    library build 時に EXEC_CALLBACK を定義してビルドした時のみ有効。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

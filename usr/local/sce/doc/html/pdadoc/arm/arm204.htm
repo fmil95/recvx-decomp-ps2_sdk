@@ -1,0 +1,253 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm204</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm200.htm">[章目次]</A>
+<A HREF="arm203.htm">[前]</A> <A HREF="arm205.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>2.4 <A NAME="anchor1888135"></A>プログラム・ステータス・レジスタ</H3>
+
+<BLOCKQUOTE>
+  <P>図2-2「プログラム・ステータス・レジスタのフォーマット」に、カレント・プログラム・レジスタ（CPSR）とセーブされたプログラム・ステータス・レジスタ（SPSR）のフォーマットを示します。N、Z、C、およびV（ネガティブ、ゼロ、キャリー、およびオーバーフロー）ビットをまとめて、コンディション・コード・フラグと呼びます。CPSRのコンディション・コード・フラグは、プロセッサの算術および論理演算の結果に応じて変化し、すべての命令でフラグをテストして、命令を実行するかどうか判定することができます。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><IMG SRC="02_proa1.gif" WIDTH="664" HEIGHT="654" ALIGN="BOTTOM"
+NATURALSIZEFLAG="3"></P>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">図2-1: レジスタの構成</FONT></P>
+
+<P ALIGN=RIGHT></P>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149160"></A><B>31</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149162"></A><B>30</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149164"></A><B>29</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149166"></A><B>28</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149168"></A><B>27</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149170"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149172"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149174"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149176"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149178"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149180"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149182"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149184"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149186"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149188"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149190"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149192"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149194"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149196"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149198"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149200"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149202"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149204"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149206"></A><B>8</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149208"></A><B>7</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149210"></A><B>6</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149212"></A><B>5</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149214"></A><B>4</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149216"></A><B>3</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149218"></A><B>2</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149220"></A><B>1</B></TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149222"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149288"></A><BR>
+    N</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149290"></A><BR>
+    Z</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149292"></A><BR>
+    C</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149294"></A><BR>
+    V</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP" COLSPAN="20">
+    <A NAME="149296"></A><BR>
+    DNM(RAZ)</TD>
+     
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149336"></A><BR>
+    I</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149338"></A><BR>
+    F</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149340"></A><BR>
+    T</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149342"></A><BR>
+    M 4</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149344"></A><BR>
+    M 3</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149406"></A><BR>
+    M 2</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149348"></A><BR>
+    M 1</TD> 
+    <TD ALIGN="CENTER" VALIGN="TOP">
+    <A NAME="149350"></A><BR>
+    M 0</TD> 
+  </TR>
+</TABLE></P>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">図2-2: プログラム・ステータス・レジスタのフォーマット</FONT></P>
+
+<P></P>
+
+<H4>2.4.1 <A NAME="anchor3249619"></A>制御ビット</H4>
+
+<BLOCKQUOTE>
+  <P>PSRの下位8ビット（I、F、T、および[4:0]を含む）をまとめて、制御ビットと呼びます。例外が発生すると制御ビットが変化するが、これらのビットはプロセッサが特権モードにあるときにのみソフトウェアで変更することができます。IおよびFビットは割り込みディスエーブル・ビットです。</P>
+  <UL>
+    <LI><B>Iビット</B> セットされるとIRQ割り込みがディスエーブルされます。
+    <LI><B>Fビット</B> セットされるとFIQ割り込みがディスエーブルされます。
+  </UL>
+  <P><A NAME="anchor482515"></A>Tフラグは、アーキテクチャ・バージョン4T（THUMB）でのみインプリメントされます。</P>
+  <UL>
+    <LI><B>0</B> ARMの実行を示します。
+    <LI><B>1</B> <A NAME="anchor446626"></A>THUMBの実行を示します。
+  </UL>
+  <P>アーキテクチャの他のすべてのバージョンでは、Tフラグはゼロ（SBZ）でなければなりません。</P>
+</BLOCKQUOTE>
+
+<P></P>
+
+<H4>2.4.2 モード・ビット</H4>
+
+<BLOCKQUOTE>
+  <P>M0、M1、M2、M3、およびM4ビット（M[4:0]）はモード・ビットで、プロセッサが動作するモードを決定します。表2-2「モード・ビット」に、モード・ビットの意味を示します。モード・ビットのすべての組み合わせが、有効なプロセッサ・モードを定義しているわけではありません。規定される組み合わせしか使用できません。モード・ビットM[4:0]に他の値をプログラムした場合、結果は予測できません。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0"
+HEIGHT="275">
+  <TR>
+    <TD WIDTH="14%">
+    M[4:0]</TD> 
+    <TD WIDTH="15%">
+    <B>モード</B></TD> 
+    <TD WIDTH="71%">
+    <B>アクセス可能なレジスタ</B></TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b10000</TD> 
+    <TD>
+    ユーザ</TD> 
+    <TD>
+    PC、R14～R0、CPSR</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b10001</TD> 
+    <TD>
+    FIQ</TD> 
+    <TD>
+    PC、R14_fiq～R8_fiq、R7～R0、CPSR、SPSR_fiq</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b10010</TD> 
+    <TD>
+    IRQ</TD> 
+    <TD>
+    PC、R14_irq、R13_irq、R12～R0、CPSR、SPSR_irq</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b10011</TD> 
+    <TD>
+    SVC</TD> 
+    <TD>
+    PC、R14_svc、R13_svc、R12～R0、CPSR、SPSR_svc</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b10111</TD> 
+    <TD>
+    アボート</TD> 
+    <TD>
+    PC、R14_abt、R13_abt、R12～R0、CPSR、SPSR_abt</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b11011</TD> 
+    <TD>
+    未定義</TD> 
+    <TD>
+    PC、R14_und、R13_und、R12～R0、CPSR、SPSR_und</TD> 
+  </TR>
+  <TR>
+    <TD>
+    0b11111</TD> 
+    <TD>
+    システム</TD> 
+    <TD>
+    PC、R14～R0、CPSR（アーキテクチャ・バージョン4のみ）</TD> 
+  </TR>
+</TABLE></P>
+
+<P ALIGN=RIGHT><FONT SIZE="-1">表2-2: モード・ビット</FONT></P>
+
+<P></P>
+
+<BLOCKQUOTE>
+  <P>例外発生時にユーザ・モードやシステム・モードに入ることはないため、これらのモードにはSPSRはなく、CPSRを保存するためのレジスタは必要ありません。ユーザ・モードやシステム・モードでSPSRを読み出すと、予測できない値が読み出され、SPSRへの書き込みは無視されます。<BR>
+  </P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm200.htm">[章目次]</A>
+<A HREF="arm203.htm">[前]</A> <A HREF="arm205.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

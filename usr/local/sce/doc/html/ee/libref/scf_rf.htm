@@ -1,0 +1,914 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> システムコンフィグレーションライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>システムコンフィグレーションライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceScfT10kConfig>sceScfT10kConfig </A><BR>
+</TD><TD> </TD>
+<TD>DTL-T10000のシステムコンフィグレーション情報設定用構造体</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetAspect>sceScfGetAspect </A><BR>
+</TD><TD> </TD>
+<TD>テレビ画面の縦横比を取得します</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetDateNotation>sceScfGetDateNotation </A><BR>
+</TD><TD> </TD>
+<TD>日付の表示形式を返す</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetGMTfromRTC>sceScfGetGMTfromRTC </A><BR>
+</TD><TD> </TD>
+<TD>JSTからGMTに変換する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetLanguage>sceScfGetLanguage </A><BR>
+</TD><TD> </TD>
+<TD>設定言語を返します</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetLocalTimefromRTC>sceScfGetLocalTimefromRTC </A><BR>
+</TD><TD> </TD>
+<TD>JSTから現地時間に変換する</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetSpdif>sceScfGetSpdif </A><BR>
+</TD><TD> </TD>
+<TD>SPDIFが有効かどうかを返す</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetSummerTime>sceScfGetSummerTime </A><BR>
+</TD><TD> </TD>
+<TD>サマータイムがあるかどうかを返す</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetTimeNotation>sceScfGetTimeNotation </A><BR>
+</TD><TD> </TD>
+<TD>時刻の表示形式を返す</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfGetTimeZone>sceScfGetTimeZone </A><BR>
+</TD><TD> </TD>
+<TD>タイムゾーン情報を返す</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceScfSetT10kConfig>sceScfSetT10kConfig </A><BR>
+</TD><TD> </TD>
+<TD>DTL-T10000のシステムコンフィグレーション情報を設定します</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceScfT10kConfig>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfT10kConfig
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DTL-T10000のシステムコンフィグレーション情報設定用構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct {
+	short  <I>TimeZone</I>;
+	u_char <I>Aspect</I>; 
+	u_char <I>DateNotation</I>;
+	u_char <I>Language</I>;
+	u_char <I>Spdif</I>;
+	u_char <I>SummerTime</I>;
+	u_char <I>TimeNotation</I>;
+} <B>sceScfT10kConfig</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>TimeZone</I>	現地標準値とGMTとの差(分単位)
+<I>Aspect</I>		テレビ画面のアスペクトの設定 
+<I>DateNotation</I>	日付の表示形式
+<I>Language</I>	言語の設定
+<I>Spdif</I>		SPDIFの設定
+<I>SummerTime</I>	サマータイムが設定されているか
+<I>TimeNotation</I>	時間の表示形式
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DTL-T10000のシステムコンフィグレーション情報を設定するために使用する構造体です。 <BR>
+    各メンバに設定できる値は次のとおりです。 <BR>
+<BR>
+    &lt;TimeZone&gt; <BR>
+    現地の標準値(サマータイムがないときの現地時間)とGMTとの差を分単位で指定します。 <BR>
+    例：東京 540,ロンドン 0 <BR>
+<BR>
+    &lt;Aspect&gt; <BR>
+    SCE_ASPECT_43		4:3 <BR>
+    SCE_ASPECT_FULL	フルスクリーン <BR>
+    SCE_ASPECT_169	16:9 <BR>
+<BR>
+    &lt;DateNotation&gt; <BR>
+    SCE_DATE_YYYYMMDD		年月日形式(日本版デフォルト値) <BR>
+    SCE_DATE_MMDDYYYY		月日年形式 <BR>
+    SCE_DATE_DDMMYYYY		日月年形式 <BR>
+<BR>
+    &lt; Language&gt; <BR>
+    SCE_JAPANESE_LANGUAGE	日本語 <BR>
+    SCE_ENGLISH_LANGUAGE	英語 <BR>
+    SCE_FRENCH_LANGUAGE	フランス語 <BR>
+    SCE_SPANISH_LANGUAGE	スペイン語 <BR>
+    SCE_GERMAN_LANGUAGE	ドイツ語 <BR>
+    SCE_ITALIAN_LANGUAGE	イタリア語 <BR>
+    SCE_DUTCH_LANGUAGE	オランダ語 <BR>
+    SCE_PORTUGUESE_LANGUAGE	ポルトガル語 <BR>
+<BR>
+    &lt;Spdif&gt; <BR>
+    SCE_SPDIF_ON		SPDIFがON <BR>
+    SCE_SPDIF_OFF		SPDIFがOFF <BR>
+<BR>
+    &lt;SummerTime&gt; <BR>
+    SCE_SUMMERTIME_OFF		サマータイムなし(日本版固定値) <BR>
+    SCE_SUMMERTIME_ON		サマータイムあり <BR>
+<BR>
+    &lt;TimeNotation&gt; <BR>
+    SCE_TIME_24HOUR	24時間形式(日本版固定値) <BR>
+    SCE_TIME_12HOUR	AM/PMの12時間形式 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 関連項目 -->
+<B>関連項目</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <a href="./scf_rf.htm#sceScfSetT10kConfig">sceScfSetT10kConfig</a>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceScfGetAspect>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetAspect
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        テレビ画面の縦横比を取得します
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetAspect</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_ASPECT_43</TD>
+<TD valign="TOP">4:3</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_ASPECT_FULL</TD>
+<TD valign="TOP">フルスクリーン</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_ASPECT_169</TD>
+<TD valign="TOP">16:9</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報での詳細設定のテレビ画面の縦横比設定を取得します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetDateNotation>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetDateNotation
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        日付の表示形式を返す
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetDateNotation </B>(void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_DATE_YYYYMMDD</TD>
+<TD valign="TOP">年月日形式(日本版デフォルト値)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_DATE_MMDDYYYY</TD>
+<TD valign="TOP">月日年形式</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_DATE_DDMMYYYY</TD>
+<TD valign="TOP">日月年形式</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報での日付の表示形式の設定を返します。日本版 "PlayStation 2"では、必ずSCE_DATE_YYYYMMDDを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetGMTfromRTC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetGMTfromRTC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        JSTからGMTに変換する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceScfGetGMTfromRTC</B> (
+	sceCdCLOCK *<I>rtc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>rtc</I>	年月日および時刻格納構造体へのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数rtcが指す構造体の内容をJST(日本標準時)とみて、GMT(グリニッジ標準時)へ変換し、rtcが指す構造体に書き戻します。 <BR>
+    sceCdCLOCK構造体が2000年1月1日から2099年12月31日までの日付しか保存できないことによる制限があります。 <BR>
+    例えばJSTで2000/1/1 6:00のとき、GMTでは1999/12/31 21:00ですが、この関数が書き戻す値は、99/12/31 21:00となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetLanguage>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetLanguage
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        設定言語を返します
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetLanguage</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_JAPANESE_LANGUAGE</TD>
+<TD valign="TOP">日本語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_ENGLISH_LANGUAGE</TD>
+<TD valign="TOP">英語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_FRENCH_LANGUAGE</TD>
+<TD valign="TOP">フランス語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SPANISH_LANGUAGE</TD>
+<TD valign="TOP">スペイン語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_GERMAN_LANGUAGE</TD>
+<TD valign="TOP">ドイツ語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_ITALIAN_LANGUAGE</TD>
+<TD valign="TOP">イタリア語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_DUTCH_LANGUAGE</TD>
+<TD valign="TOP">オランダ語</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_PORTUGUESE_LANGUAGE</TD>
+<TD valign="TOP">ポルトガル語</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報での言語の設定を取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetLocalTimefromRTC>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetLocalTimefromRTC
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        JSTから現地時間に変換する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceScfGetLocalTimefromRTC</B> (
+	sceCdCLOCK *<I>rtc</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>rtc</I>	年月日および時刻格納構造体へのアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    引数rtcが指す構造体の内容をJST(日本標準時)とみて、タイムゾーンとサマータイムを考慮して現地時間に変換し、rtcが指す構造体に書き戻します。 <BR>
+    sceCdCLOCK構造体が2000年1月1日から、2099年12月31日までの日付しか保存できないことによる制限があります。 <BR>
+    たとえば、JSTで2000/1/1 6:00(JST)のとき、米国東部標準時(GMT-5hour)では1999/12/31 16:00ですが、この関数が書き戻す値は99/12/31 16:00となります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetSpdif>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetSpdif
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        SPDIFが有効かどうかを返す
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetSpdif</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SPDIF_ON</TD>
+<TD valign="TOP">SPDIFがON</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SPDIF_OFF</TD>
+<TD valign="TOP">SPDIFがOFF</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報でSPDIFが有効と設定されているかどうか取得します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetSummerTime>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetSummerTime
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        サマータイムがあるかどうかを返す
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetSummerTime</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SUMMERTIME_OFF</TD>
+<TD valign="TOP">サマータイムなし(日本版デフォルト値)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_SUMMERTIME_ON</TD>
+<TD valign="TOP">サマータイムあり</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報でサマータイムの設定にしてあるかどうかを返します。 <BR>
+    日本版 "PlayStation 2"では、必ずSCE_SUMMERTIME_OFFを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetTimeNotation>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetTimeNotation
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        時刻の表示形式を返す
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetTimeNotation</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>返り値</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_TIME_24HOUR</TD>
+<TD valign="TOP">24時間形式(日本版デフォルト値)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SCE_TIME_12HOUR</TD>
+<TD valign="TOP">AM/PMの12時間形式</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    システムコンフィグレーション情報での時刻の表示形式の設定を返します。 <BR>
+    SCE_TIME_24HOURのとき、24時間形式で時刻表示を設定しています。 <BR>
+    　(例 15:23) <BR>
+    　　SCE_TIME_12HOURのとき、12時間形式で時刻表示を設定しています。 <BR>
+    　(例 3:23PM) <BR>
+    　　日本版 "PlayStation 2"では必ずSCE_TIME_24HOURを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfGetTimeZone>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfGetTimeZone
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        タイムゾーン情報を返す
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceScfGetTimeZone</B> (void)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>なし
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現地の標準時とGMTとの差を分単位で返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    日本版 "PlayStation 2"では、必ず540を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceScfSetT10kConfig>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceScfSetT10kConfig
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DTL-T10000のシステムコンフィグレーション情報を設定します
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void <B>sceScfSetT10kConfig</B>(
+	sceScfT10kConfig *<I>config</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>config</I>	システムコンフィグレーション情報構造体のアドレス
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    なし <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    DTL-T10000に対して、システムコンフィグレーション情報を設定します。 <BR>
+    DTL-T10000以外では、影響を与えません。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

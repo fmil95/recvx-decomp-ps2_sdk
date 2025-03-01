@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm304</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm303.htm">[前]</A> <A HREF="arm305.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>3.4 <A NAME="anchor2520592"></A>分岐命令</H3>
+
+<BLOCKQUOTE>
+  <P>すべてのARMプロセッサは、32 Mバイトまでの順方向または逆方向の条件分岐が可能な分岐命令をサポートしています。プログラム・カウンタ（PC）は汎用レジスタ（レジスタ15）の1つであるため、値をレジスタ15に書き込むことによって分岐またはジャンプが可能です。</P>
+  <P><A NAME="anchor325842"></A>サブルーチン・コールは標準分岐の変形です。32Mバイトまでの順方向または逆方向の条件分岐が可能なだけでなく、Branch
+  With Link命令はレジスタ14（<A NAME="anchor4144411"></A>リンク・レジスタ、LR）に分岐後の命令のアドレス（<A
+  NAME="anchor2034717"></A>リターン・アドレス）を保持します。</P>
+  <P>最後にロード命令は、4Gバイトのアドレス空間のどこにでも分岐する（<A NAME="anchor1662097"></A>ロング分岐ともいう）方法を提供します。32ビット値はメモリからPCに直接ロードされ、分岐を生じます。ロード命令の前にMove命令を置いて、リンク・レジスタ（LRまたはR14）にリターン・アドレスをストアすることができます。</P>
+  <P><A NAME="anchor2843227"></A><B>例</B></P>
+  <PRE>        B       label       ; branch unconditionally to label
+        BCC     label       ; branch to label if carry flag is clear
+        BEQ     label       ; branch to label if zero flag is set 
+        MOV     PC, #0      ; R15 = 0, branch to location zero 
+        BL       func       ; subroutine call to function
+Func    .        .    
+        MOV     PC, LR      ; R15=R14, return to instruction after the BL
+        MOV     LR, PC      ; store the address of the instruction after
+                            ; the next one into R14 ready to return
+        LDR      PC, =func    load a 32-bit value into the program counter</PRE>
+  <P>Thumb命令セットをサポートするプロセッサ（アーキテクチャV4T）は、与えられたアドレスにジャンプし、オプションでThumb命令の実行を切り替える分岐命令（BX）もサポートします。</P>
+</BLOCKQUOTE>
+
+<H4>3.4.1 <A NAME="anchor2844816"></A>分岐命令のリスト</H4>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="450" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="29%">
+      <BLOCKQUOTE>
+        <PRE>B、BL</PRE>
+      </BLOCKQUOTE>
+</TD>
+      <TD WIDTH="71%">
+      分岐、リンク付き分岐</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="29%">
+      <BLOCKQUOTE>
+        <PRE>BX</PRE>
+      </BLOCKQUOTE>
+</TD>
+      <TD WIDTH="71%">
+      分岐および交換命令セット</TD> 
+    </TR>
+  </TABLE></P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="arm303.htm">[前]</A> <A HREF="arm305.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

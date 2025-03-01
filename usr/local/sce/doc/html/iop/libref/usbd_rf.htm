@@ -1,0 +1,1351 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> USBドライバライブラリ</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2"Programmer Tool Runtime Library Release 2.0</H4>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>USBドライバライブラリ</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>構造体一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdLddOps>sceUsbdLddOps </A><BR>
+</TD><TD> </TD>
+<TD>LDD管理構造体</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>LDD外部公開関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#xxxProbe>xxxProbe </A><BR>
+</TD><TD> </TD>
+<TD>LDDごとのデバイス検出処理関数</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#xxxAttach>xxxAttach </A><BR>
+</TD><TD> </TD>
+<TD>LDDごとのデバイス接続処理関数</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#xxxDetach>xxxDetach </A><BR>
+</TD><TD> </TD>
+<TD>LDDごとのデバイス切断処理関数</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>USBD関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdRegisterLdd>sceUsbdRegisterLdd </A><BR>
+</TD><TD> </TD>
+<TD>LDDの登録追加</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdUnregisterLdd>sceUsbdUnregisterLdd </A><BR>
+</TD><TD> </TD>
+<TD>LDD の登録削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdScanStaticDescriptor>sceUsbdScanStaticDescriptor </A><BR>
+</TD><TD> </TD>
+<TD>静的なディスクリプタのスキャン</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdGetDeviceLocation>sceUsbdGetDeviceLocation </A><BR>
+</TD><TD> </TD>
+<TD>デバイスの位置情報を得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdSetPrivateData>sceUsbdSetPrivateData </A><BR>
+</TD><TD> </TD>
+<TD>デバイスにプライベートデータを関連付ける</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdGetPrivateData>sceUsbdGetPrivateData </A><BR>
+</TD><TD> </TD>
+<TD>関連付けられたプライベートデータを得る</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdOpenPipe>sceUsbdOpenPipe </A><BR>
+</TD><TD> </TD>
+<TD>パイプを開く</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdOpenPipeAligned>sceUsbdOpenPipeAligned </A><BR>
+</TD><TD> </TD>
+<TD>ワード境界のパイプを開く</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdClosePipe>sceUsbdClosePipe </A><BR>
+</TD><TD> </TD>
+<TD>パイプを閉じる</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdTransferPipe>sceUsbdTransferPipe </A><BR>
+</TD><TD> </TD>
+<TD>パイプとデータ転送を行う</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceUsbdChangeThreadPriority>sceUsbdChangeThreadPriority </A><BR>
+</TD><TD> </TD>
+<TD>USBDが使用するスレッドの優先度を変更する</TD></TR>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>完了/エラーコード一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>構造体</H2></U>
+</DIV>
+<A name=sceUsbdLddOps>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdLddOps
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDD管理構造体
+</DIV><P>
+
+<!-- 構造 -->
+<B>構造</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef struct _sceUsbdLddOps {
+	struct _sceUsbdLddOps *<I>forw</I>, *<I>back</I>;
+	char *<I>name</I>;
+	int (*<I>probe</I>)(int dev_id);
+	int (*<I>attach</I>)(int dev_id);
+	int (*<I>detach</I>)(int dev_id);
+	void *<I>reserved</I>[5];
+	u_int <I>gp</I>;
+} <B>sceUsbdLddOps</B>;
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- メンバ -->
+<B>メンバ</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>forw</I>	USBD 内部で使用される双方向リンクで、NULL を指定します。
+<I>back</I>	USBD 内部で使用される双方向リンクで、NULL を指定します。
+<I>name</I>	LDD の名称文字列を指定します。(命名方法は自由)
+<I>probe</I>	デバイスの検出処理関数を指定します（デバイスが挿入されたとき）。
+<I>attach</I>	デバイスの接続処理関数を指定します（デバイスと通信するとき）。
+<I>detach</I>	デバイスの切断処理関数を指定します（デバイスが抜かれたとき）。
+<I>reserved</I>		将来の拡張用の予約領域で、すべて 0 でなければなりません。
+<I>gp</I>	probe,attach,detach 関数を USBD から呼び出す際の $gp 値で、
+	sceUsbdRegisterLdd() を呼び出した時の $gp 値に USBD が設定します。
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    USBDがLDD(Logical Device Driver)の管理に使用する構造体です。sceUsbdRegisterLdd()の引数として指定します。 <BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>LDD外部公開関数</H2></U>
+</DIV>
+</blockquote>
+<A name=xxxProbe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>xxxProbe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDDごとのデバイス検出処理関数
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>xxxProbe</B>(
+	int <I>dev_id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>dev_id</I>で示されるデバイスをそのLDDで扱う場合は0以外、扱わない場合は0を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    LDDごとのデバイス検出処理関数です（sceUsbdLddOps構造体のprobeメンバと対応）。 <BR>
+    dev_idのデバイスが、このLDDで扱うべきかどうかを判定します。 <BR>
+    USBDは、このxxxProbe関数をコールする前に静的なディスクリプタを自らのバッファに保存しています。そのため、引数の<I>dev_id</I>がどのようなデバイスであるかの情報は、USBDがデバイスの認識処理時に取得した静的なディスクリプタを得る関数sceUsbdScanStaticDescriptor()を用いて得ることができます。 <BR>
+<BR>
+    そのデバイスを扱うかどうかの判定方法は、通常以下のいずれかになります。 <BR>
+        </BLOCKQUOTE>
+<UL><UL>
+            <LI>  Device Descriptor または Interface Descriptor の Class,SubClass,Protocol によって判定する。
+            <LI>  Device Descriptor の idVendor,idProduct によって判定する。
+</UL></UL>
+        <BLOCKQUOTE>
+<BR>
+    xxxProbe() が呼ばれるのは以下のいずれかの場合です。 <BR>
+        </BLOCKQUOTE>
+<UL><UL>
+            <LI>  sceUsbdRegisterLdd() を呼び出した際に、LDD とまだ関連付けられれていないデバイスが存在した場合。
+            <LI>  新たなデバイスが接続された時。
+</UL></UL>
+        <BLOCKQUOTE>
+<BR>
+    デバイスIDは、USBDでデバイスを特定するためのIDです。現在の実装では、デバイスIDは常にUSBバス上のアドレス値と同じ値を用いており、この値は動的に変化するため、ポート番号等の位置情報との関連はありません。 <BR>
+    デバイスの位置情報を得るにはsceUsbdGetDeviceLocation()を使用してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    一度あるデバイスを「扱う」と示した時、途中でそれを返却することはできません。また、ひとつのデバイスを他のLDDと共有して管理することもできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=xxxAttach>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>xxxAttach
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDDごとのデバイス接続処理関数
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>xxxAttach</B>(
+	int <I>dev_id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了の場合は0、エラーの場合はそれ以外の値を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    xxxProbe()が0以外の値を返したときに呼ばれる接続処理関数です（sceUsbdLddOps構造体のattachメンバと対応）。 <BR>
+<BR>
+    xxAttach() で必要な主な処理は以下のとおりです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL><UL>
+            <LI> 静的なディスクリプタの内容を sceUsbdScanStaticDescriptor() を用いてスキャンし、整合性をチェックしつつ必要な情報を得る。
+            <LI> LDD 内で処理に必要なパイプを開く。(sceUsbdOpenPipe)
+            <LI> そのデバイスに LDD 依存データを関連付ける。(sceUsbdSetPrivateData)
+            <LI> デバイスを Configured の状態に移行させる。(sceUsbdSetConfiguration)
+</UL></UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    現状ではxxxAttach()の返す値によって処理は変わりませんが、将来、エラー時にはデバイスを Power-off もしくは Disable とする処理を追加する予定です。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=xxxDetach>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>xxxDetach
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDDごとのデバイス切断処理関数
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>xxxDetach</B>(
+	int <I>dev_id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    正常終了の場合は0、エラーの場合はそれ以外の値を返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    デバイスが切断された時に呼ばれる切断処理関数です（sceUsbdLddOps構造体のdetachメンバと対応）。 <BR>
+    LDD依存の切断処理を行います（プライベートデータの解放など）。関連するパイプを閉じる等の処理はUSBDが行いますので、必要ありません。 <BR>
+<BR>
+<BR>
+<DIV align="center">
+        </BLOCKQUOTE>
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>USBD関数</H2></U>
+</DIV>
+</blockquote>
+<A name=sceUsbdRegisterLdd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdRegisterLdd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDDの登録追加
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdRegisterLdd</B>(
+	sceUsbdLddOps *<I>lddops</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lddops</I>	LDDの登録情報。内容は構造体sceUsbdLddOpsの項を参照してください。
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ステータスを次のいずれかの値で返します。 <BR>
+<BR>
+</PRE>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>ステータス</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>意味</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">sceUsbd_NOERR</TD>
+<TD valign="TOP">正常終了</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceUsbd_BUSY</TD>
+<TD valign="TOP">エラー<BR>lddops-&gt;forw, lddops-&gt;backがNULL以外で<BR>あった、もしくはすでにUSBD内部のLDD<BR>リストの先頭に登録されている</TD>
+</TR>
+<TR>
+<TD valign="TOP">sceUsbd_INVAL_LDDOPS</TD>
+<TD valign="TOP">エラー<BR>lddops-&gt;nameがNULLであった</TD>
+</TR>
+</TABLE>
+<BR>
+<PRE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    USBD に対して LDD（Logical Device Driver）を登録します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdUnregisterLdd>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdUnregisterLdd
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        LDD の登録削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdUnregisterLdd</B>(
+	sceUsbdLddOps *<I>lddops</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>lddops</I>	LDD管理構造体のポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    LDD（Logical Device Driver）の登録を削除します。 <BR>
+    動作中のデバイス（すでにAttachされたデバイス）に対しても全てのパイプを閉じます。 <BR>
+    この関数を呼ぶ前にLDDの終了処理（プライベートデータの解放など）を行ってください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdScanStaticDescriptor>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdScanStaticDescriptor
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        静的なディスクリプタのスキャン
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdScanStaticDescriptor</B>(
+	int <I>dev_id</I>, 
+	void *<I>ptr</I>, 
+	u_char <I>type</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+<I>ptr</I>	ディスクリプタのスキャン開始位置
+<I>type</I>	スキャンするディスクリプタタイプ（標準ディスクリプタ構造のbDescriptorType）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    スキャンが成功した場合にはそのディスクリプタの先頭アドレス、該当するディスクリプタが存在しなかった場合にはNULLを返します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    USBD内に保持されている静的なディスクリプタのスキャンを行います。 <BR>
+<BR>
+    スキャン開始位置（<I>ptr</I>）が NULL の場合には先頭からのスキャンとなり、NULL 以外の場合には <I>ptr</I> で示されるディスクリプタの「次の」ディスクリプタからスキャンを開始します。 <BR>
+<BR>
+    <I>type</I> はスキャンするディスクリプタタイプの指定です（標準ディスクリプタ構造のbDescriptorTypeに相当）。0 の場合には 「全てのディスクリプタ」を意味します。 <BR>
+<BR>
+     <BR>
+    USBD内部で保持されている静的なディスクリプタの並びは以下のとおりです。 <BR>
+<BR>
+    <blockquote>
+    	Device Descriptor（つねに 1 つ) <BR>
+    </blockquote>
+    <blockquote>
+    	Configuration Descriptor 1 <BR>
+    </blockquote>
+    <blockquote>
+    	Configuration Descriptor 2 <BR>
+    </blockquote>
+    <blockquote>
+    		: <BR>
+    </blockquote>
+    <blockquote>
+    	Configuration Descriptor N（=Device Descriptor 中の bNumConfigurations) <BR>
+    </blockquote>
+<BR>
+    各Configuration Descriptorは、Interface Descriptor, Endpoint Descriptor, Class Specific Descriptor を0または1以上含みます。 <BR>
+    それぞれのConfiguration Descriptorの大きさはConfiguration Descriptor中のwTotalLengthバイトで、Configuration Descriptor間のalignmentはありません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdGetDeviceLocation>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdGetDeviceLocation
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デバイスの位置情報を得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdGetDeviceLocation</B>(
+	int <I>dev_id</I>, 
+	u_char *<I>locations</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+<I>locations</I>	位置情報を格納するポインタ（指す先は常に7バイトの領域）
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定デバイス（<I>dev_id</I>）の位置情報を指定領域（<I>locations</I>）に転送します。 <BR>
+    <I>locations</I>が指す先は常に7バイトの領域で、以下のように"PlayStation 2"から指定デバイスに至るまでのポート番号が順に設定され、最初に現れる0x00が指定デバイスを表します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> 指定デバイスが"PlayStation 2"本体のUSBポート1に接続されているとき<BR>0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+</UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> "PlayStation 2"本体のUSBポート2にHub-Aが接続され、Hub-Aのポート3にHub-Bが接続され、Hub-Bのポート4に指定デバイスが接続されているとき<BR>0x02, 0x03, 0x04, 0x00, 0x00, 0x00, 0x00
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    USBの規格上、"PlayStation 2"本体とデバイス間には最大5つのHubを経由することが可能です。この制限を破った場合、sceUsbdGetDeviceLocation()はsceUsbd_INVAL_HUB_DEPTHのエラーを返します。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdSetPrivateData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdSetPrivateData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        デバイスにプライベートデータを関連付ける
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdSetPrivateData</B>(
+	int <I>dev_id</I>, 
+	void *<I>priv</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+<I>priv</I>	LDD依存プライベートデータのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定デバイス（<I>dev_id</I>）に LDD依存のプライベートデータ（<I>priv</I>）を関連付けます。 <BR>
+<BR>
+    プライベートデータにどのようなデータを指定するかは自由ですが、たとえばLDD依存処理のための動的なデータ領域のアドレスを関連付け、xxxDetach()でその領域を開放するという使い方があります。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdGetPrivateData>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdGetPrivateData
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        関連付けられたプライベートデータを得る
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>void *<B>sceUsbdGetPrivateData</B>(
+	int <I>dev_id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定デバイス（<I>dev_id</I>）に関連付けられたプライベートデータを得ます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdOpenPipe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdOpenPipe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パイプを開く
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdOpenPipe</B>(
+	int <I>dev_id</I>, 
+	UsbEndpointDescriptor *<I>edesc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+<I>edesc</I>	パイプを開きたいエンドポイントディスクリプタのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>edesc</I>がNULLのときはControl PipeのパイプIDを返します。 <BR>
+    <I>edesc</I>がNULL以外のときはEndpoint Descriptorに従ってパイプを開き、そのパイプIDを返します。 <BR>
+    以下のいずれかの場合には、エラーを意味する -1 を返します。 <BR>
+        </BLOCKQUOTE>
+<UL><UL>
+            <LI> <I>dev_id</I> 値が不正な場合
+            <LI> Endpoint数が最大値を越えた場合
+</UL></UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定デバイス（<I>dev_id</I>）の指定エンドポイント（<I>edesc</I>）とのパイプを開きます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdOpenPipeAligned>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdOpenPipeAligned
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ワード境界のパイプを開く
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdOpenPipeAligned</B>(
+	int <I>dev_id</I>, 
+	UsbEndpointDescriptor *<I>edesc</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>dev_id</I>	デバイスID
+<I>edesc</I>	パイプを開きたいエンドポイントディスクリプタのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    <I>edesc</I>がNULLのときはControlパイプのパイプIDを返します。 <BR>
+    <I>edesc</I>がNULL以外のときはEndpoint Descriptorに従ってパイプを開き、そのパイプIDを返します。このとき、アライメントの検査を行います。 <BR>
+    以下のいずれかの場合には、エラーを意味する -1 を返します。 <BR>
+        </BLOCKQUOTE>
+<UL><UL>
+            <LI> <I>dev_id</I> 値が不正な場合
+            <LI> Endpoint数が最大値を越えた場合
+            <LI> 開かれたパイプのアライメントが不正のとき
+</UL></UL>
+        <BLOCKQUOTE>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定デバイス（<I>dev_id</I>）の指定エンドポイント（<I>edesc</I>）とのパイプを開きます。 <BR>
+    sceUsbdOpenPipe()と異なる点は以下のとおりです。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<UL>
+         <LI> 最大パケットサイズが64バイトのときに、それを62バイトに丸める処理を行いません（USBドライバライブラリの概要の「制限事項および注意事項」を参照してください）。
+         <LI> 開かれたパイプに対してsceUsbdTransferPipe()を行ったときにデータの先頭アドレスがワード境界になければ、sceUsbd_INVAL_ALIGNのエラーになります。
+</UL>
+        <BLOCKQUOTE>
+<BR>
+    Controlパイプの場合は、sceUsbdOpenPipeAligned()とsceUsbdTransferPipe()の処理は常に同じです。 <BR>
+    sceUsbd_INVAL_ALIGNのエラー判定は転送方向や転送サイズに関係せず、先頭アドレスの値のみで処理します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdClosePipe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdClosePipe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パイプを閉じる
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdClosePipe</B>(
+	int <I>pipe_id</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pipe_id</I>	閉じたいパイプのパイプID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定パイプ（<I>pipe_id</I>）を閉じます。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdTransferPipe>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdTransferPipe
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        パイプとデータ転送を行う
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>typedef void (*sceUsbdDoneCallback)(int result, int count, void *arg);
+int <B>sceUsbdTransferPipe</B>(
+	int <I>pipe_id</I>,
+	void *<I>ptr</I>, 
+	int <I>len</I>,
+	void *<I>option</I>,
+	sceUsbdDoneCallback <I>done_cb</I>, 
+	void *<I>arg</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>pipe_id</I>	パイプID
+<I>ptr</I>	送信データあるいは受信バッファのポインタ
+<I>len</I>	転送長（byte単位）
+<I>option</I>	オプション（転送モードによって意味が異なる）
+<I>done_cb</I>	転送終了時に呼ばれるコールバック関数。
+	コールバック関数の引数は以下の通りです。
+		result	完了/エラーコード
+		count	転送済みデータサイズ（byte単位）
+		arg	LDD依存プライベートデータのポインタ
+<I>arg</I>	LDD依存プライベートデータのポインタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    指定パイプ（<I>pipe_id</I>）に対してデータ（<I>ptr</I>,<I>len</I>）の転送を行います。 <BR>
+<BR>
+    指定オプション（<I>option</I>）は Control転送とIsochronous転送時に用いられる転送タイプ依存のパラメータです(説明は後述)。 <BR>
+<BR>
+    関数（<I>done_cb</I>）は転送完了時に呼ばれるコールバック関数で、引数の<I>result</I>は完了コード（sceUsbd_XXX)、<I>count</I>は転送済データのバイト数、<I>arg</I>はsceUsbdTransferPipe()の引数の<I>arg</I>でLDD依存処理用です。 <BR>
+<BR>
+    <I>done_cb</I>が呼ばれる時の$gp値は、sceUsbdTransferPipe()を呼び出したときの$gp値となります。 <BR>
+        </BLOCKQUOTE>
+<B>Control転送:</B>
+        <BLOCKQUOTE>
+    オプション（<I>option</I>）にはUsbDeviceRequestへのポインタを指定します。 <BR>
+        </BLOCKQUOTE>
+<B>Isochronous転送:</B>
+        <BLOCKQUOTE>
+    オプション（(int)<I>option</I>）にframe番号の相対値を指定します。 <BR>
+    通常は0を指定しますが、この場合、frame番号はそのframeが（途切れずに転送されているframeの集まりの）先頭である場合には現在のframe番号に2を加えたものとみなされ、転送は1ms～2ms後に行われます。次のframe以降はデータ転送が途切れない限り、増分値1のframe番号で転送が行われます。 <BR>
+<BR>
+    たとえば、m[frame]のデータをn[frame]後にIsochronous転送するには、最初の転送時のオプションに（n-2）を指定し、残りのオプションには0を指定します。 <BR>
+<BR>
+<DIV align="center">
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>フレーム</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>オプション</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">1</TD>
+<TD valign="TOP">n-2</TD>
+</TR>
+<TR>
+<TD valign="TOP">2</TD>
+<TD valign="TOP">0</TD>
+</TR>
+<TR>
+<TD valign="TOP">3</TD>
+<TD valign="TOP">0</TD>
+</TR>
+<TR>
+<TD valign="TOP">:</TD>
+<TD valign="TOP">:</TD>
+</TR>
+<TR>
+<TD valign="TOP">m-1</TD>
+<TD valign="TOP">0</TD>
+</TR>
+<TR>
+<TD valign="TOP">m</TD>
+<TD valign="TOP">0</TD>
+</TR>
+</TABLE>
+</DIV><BR>
+<BR>
+    Isochronous転送では通常、毎frameごとに転送を行いますが、このような「途切れることがない」転送を行うには、コールバック関数が呼ばれる前に複数のsceUsbdTransferPipe()を呼ぶ操作によって、「複数の転送要求を積む」必要があります。 <BR>
+<BR>
+    なお、USBD内部で管理するframe番号は16bitであるため、0x7ffc（約30秒)を越える指定はできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<B>Interrupt転送:</B>
+        <BLOCKQUOTE>
+    オプション（<I>option</I>）は使用しません。常にNULLを指定してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+<B>Bulk転送:</B>
+        <BLOCKQUOTE>
+    オプション（<I>option</I>）は使用しません。常にNULLを指定してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+
+<!-- 備考 -->
+<B>備考</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+    <OL>
+         <LI VALUE= 1> usbd.hにはsceUsbdTransferPipe()を呼び出すマクロがいくつか用意されています。Class依存、Vendor依存ではない標準の転送であるなら、それらのマクロを使用可能です。
+         <LI VALUE= 2> sceUsbdTransferPipe()で転送を要求した後にその転送を中断するための関数は用意されていません。中断が必要な場合にはいったんsceUsbdClosePipe()でパイプを閉じ、再度sceUsbdOpenPipe()でパイプを開いてください。
+         <LI VALUE= 3> Isochronous IN転送で、指定されたデータ長（len）よりも実際の転送長（count）が少ない場合の完了コード（result）は0x90（Data Underrun）となります。このケースを除けば0x0以外で「エラーではなくステータス」とみなすべき完了コードはありません。
+    </OL>
+        <BLOCKQUOTE>
+<BR>
+    done_cbが実行されるスレッドの優先度は、sceUsbdChangeThreadPriority()で設定することができます。 <BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceUsbdChangeThreadPriority>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceUsbdChangeThreadPriority
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        USBDが使用するスレッドの優先度を変更する
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceUsbdChangeThreadPriority</B>(
+	int <I>prio1,</I>
+<I>	</I>int<I> prio2</I>
+);
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>prio1</I>	割込みを処理するスレッドの優先度
+<I>prio2	</I>コールバック関数を呼ぶ処理をするスレッドの優先度
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    完了/エラーコードを参照してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    USBDが生成するスレッドの優先度を変更する。 <BR>
+    Prio1の優先度をPrio2よりも高くするようにして下さい。 <BR>
+        </BLOCKQUOTE>
+<BR>
+<DIV align="center">
+</DIV>
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<DIV align=center>
+<U><H2>完了/エラーコード</H2></U>
+</DIV>
+(1) <B>OHCIが返す完了コード（GTD.CC または ITD.CC)</B>
+        <BLOCKQUOTE>
+    完了コードのビットマップは、下図のようになっています。 <BR>
+<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP">31　　　　　　　　　　　8</TD>
+<TD valign="TOP">7　　　　　　　　 4</TD>
+<TD valign="TOP">3　　　　　　　　0</TD>
+</TR>
+<TR>
+<TD valign="TOP"><BR>Reserved<BR></TD>
+<TD valign="TOP"><BR>PSW.CC</TD>
+<TD valign="TOP"><BR>GTD.CC<BR>or ITD.CC</TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+        </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> GTD.CC (Completion Code of General Transfer Descriptor)<BR>Control転送、Bulk転送そしてInterrupt転送時の完了コードです。
+         <LI VALUE= 2> ITD.CC (Completion Code of Isochronous Transfer Descriptor)<BR>Isochronous転送時の完了コードです。
+         <LI VALUE= 3> PSW.CC (Completion Code of Packet Status Word) <BR>Isochronous転送時のData Overrun, Data Underrun, Buffer Overrun そして Buffer Underrun は、ここに表示されます。
+    </OL>
+        <BLOCKQUOTE>
+<BR>
+    ※Reservedは、オールゼロです。 <BR>
+    ※Isochronous 転送時、指定したデータ長よりも転送済みデータ長が少ないとき、0x90（Data Underrun）が返ってきます。これはエラーではなくステータスとして扱ってください。 <BR>
+<BR>
+    CCは、以下のように定義されています。 <BR>
+    #define sceUsbd_NOERR		0x000    /* No Error */ <BR>
+    #define sceUsbd_CRC		0x001    /* CRC */ <BR>
+    #define sceUsbd_BFV		0x002    /* Bit Stuffing Violation */ <BR>
+    #define sceUsbd_DTM		0x003    /* Data Toggle Mismatch */ <BR>
+    #define sceUsbd_STALL		0x004    /* Stall */ <BR>
+    #define sceUsbd_NOTRESP	0x005    /* Device Not Responding */ <BR>
+    #define sceUsbd_PIDCF		0x006    /* PID Check Failure */ <BR>
+    #define sceUsbd_UEPID		0x007    /* Unexpected PID */ <BR>
+    #define sceUsbd_DOR		0x008    /* Data Overrun */ <BR>
+    #define sceUsbd_DUR		0x009    /* Data Underrun */ <BR>
+    #define sceUsbd_RSVDA		0x00a    /* (reserved) */ <BR>
+    #define sceUsbd_RSVDB		0x00b    /* (reserved) */ <BR>
+    #define sceUsbd_BOR		0x00c    /* Buffer Overrun */ <BR>
+    #define sceUsbd_BUR		0x00d    /* Buffer Underrun */ <BR>
+    #define sceUsbd_NOTACC1	0x00e    /* (not accessed) */ <BR>
+    #define sceUsbd_NOTACC2	0x00f    /* (not accessed) */ <BR>
+<BR>
+    PSW.CCを取り出すために以下のようなマクロも用意しています。 <BR>
+<BR>
+    /* PSW.CC (Isochronous 転送時、上記 ITD.CC との OR で返される) */ <BR>
+    #define sceUsbd_PSW_BITS	0x0f0    /* PSW.CC (Isochronous) */ <BR>
+    #define sceUsbd_PSW_SHIFT	4 <BR>
+<BR>
+        </BLOCKQUOTE>
+(2) <B>USBDが返すエラーコード</B>
+        <BLOCKQUOTE>
+    #define sceUsbd_INVAL_DEVICE		0x101    /* Invalid device id */ <BR>
+    #define sceUsbd_INVAL_PIPE		0x102    /* Invalid pipe id */ <BR>
+    #define sceUsbd_INVAL_LENGTH		0x103    /* Invalid length */ <BR>
+    #define sceUsbd_INVAL_LDDOPS		0x104    /* Invalid LDD ops */ <BR>
+    #define sceUsbd_INVAL_CONTEXT  	0x105    /* Invalid context */ <BR>
+    #define sceUsbd_INVAL_ALIGN   		0x106    /* Invalid alignment */ <BR>
+    #define sceUsbd_INVAL_HUB_DEPTH	0x107    /* Invalid hub Depth */ <BR>
+    #define sceUsbd_NO_ED          		0x111    /* No space (ED) */ <BR>
+    #define sceUsbd_NO_IOREQ       		0x112    /* No space (IOREQ) */ <BR>
+    #define sceUsbd_NO_OPTION      	0x113    /* No Option */ <BR>
+    #define sceUsbd_BUSY           		0x121    /* Busy */ <BR>
+    #define sceUsbd_ABORTED       	 	0x122    /* Aborted */ <BR>
+    #define sceUsbd_NOT_IMP        		0x131    /* Not yet implemented */ <BR>
+    #define sceUsbd_ERROR          		0x132    /* Error (unknown reason) */ <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

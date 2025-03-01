@@ -1,4 +1,4 @@
-#   Copyright (C) 1997, 1998, 1999 Free Software Foundation, Inc.
+#   Copyright (C) 1997, 1998 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -105,9 +105,7 @@ proc i960_ld { dest prog } {
     } else {
 	set id2 [exp_open -leaveopen -i $id];
     }
-    if [catch "exec sx -bX a.out <@$id2 >@$id2 2>/dev/null" error] {
-	perror "exec sx failed: $error"
-    }
+    catch "exec sx -bX a.out <@$id2 >@$id2";
     if { [board_info $dest connect] == "telnet" } {
 	close $id2;
 	sleep 2;

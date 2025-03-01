@@ -1,0 +1,225 @@
+<HTML>
+<HEAD>
+<TITLE> 簡易スレッドモニタ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="thmon.htm" SELECTED> 簡易スレッドモニタ
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+簡易スレッドモニタ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> 起動方法<BR></A><BR>
+    <A HREF="#Heading4_1_3"> 使用方法<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+    <BR>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    DTL-T10000 の boot rom(フラッシュモード) には、IOP のスレッドに関する簡単な監視プログラムが格納されています。<BR>
+    以下の方法でIOPのスレッドの状態をモニタリングすることが出来ます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>起動方法</B>
+</A>
+</H3>
+<blockquote>
+    以下のように dsicons を TTY9 専用に起動しておきます。<BR>
+    <BR>
+<PRE>        % dsicons 9
+</PRE>
+    <BR>
+    さらに別のウインドウで dsicons を TTYK 専用に起動しておくと便利です。<BR>
+    （これは必須ではありません。）<BR>
+    <BR>
+<PRE>        % dsicons k
+</PRE>
+    <BR>
+    次に dsidb か dsistart で 'rom:THMON' を起動します。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      dsidb の場合<BR>
+      </BLOCKQUOTE>
+    <BR>
+<PRE>        dsidb R&gt; mstart rom:THMON
+</PRE>
+    <BR>
+      <BLOCKQUOTE>
+      dsistart の場合<BR>
+      </BLOCKQUOTE>
+    <BR>
+<PRE>        % dsistart rom:THMON
+</PRE>
+    <BR>
+    以上により、最初に起動した dsicons のウインドウで以下のような表示があり、コマンド入力によりスレッドに関する情報の表示が可能になります。<BR>
+    <BR>
+<PRE>        ========= simple thread monitor program =========
+        help command is 'help'
+         &gt;
+</PRE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>使用方法</B>
+</A>
+</H3>
+<blockquote>
+    dsicons 9 のウインドウに、' &gt; ' というプロンプトが表示されますので、下記のコマンドを入力してください。<BR>
+    なお、'/' 一文字を入力して RETURN キーを押すと直前に入力したコマンドを再実行します。<BR>
+    <BR>
+
+     <H4><B>help -- ヘルプコマンド</B></H4>
+
+      <BLOCKQUOTE>
+      コマンドの一覧と簡単な説明を表示します。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>thlist -- スレッドの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      存在するスレッドの一覧を表示します。<BR>
+      -v オプションを付加すると、スレッドのエントリ関数の所属するモジュールのモジュール名と、スタックの未使用サイズの推定値（正確ではありません）も表示されます。<BR>
+      通常は DORMANT 状態のスレッドは表示されませんが、-a オプションを指定すると DORMANT 状態のスレッドも表示されます。<BR>
+      また、引数にスレッドIDを指定することで、特定のスレッドに関する情報のみ表示することも可能です。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>rdlist -- READY スレッドの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      READY 状態のスレッドの一覧を表示します。<BR>
+      -v オプションを付加すると、スレッドのエントリ関数の所属するモジュールのモジュール名と、スタックの未使用サイズの推定値（正確ではありません）も表示されます。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>sllist -- SLEEP スレッドの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      SleepThread により WAIT状態にあるスレッドの一覧を表示します。<BR>
+      -v オプションを付加すると、スレッドのエントリ関数の所属するモジュールのモジュール名と、スタックの未使用サイズの推定値（正確ではありません）も表示されます。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>dllist -- DELAY スレッドの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      DelayThread により WAIT状態にあるスレッドの一覧を表示します。<BR>
+      -v オプションを付加すると、スレッドのエントリ関数の所属するモジュールのモジュール名と、スタックの未使用サイズの推定値（正確ではありません）も表示されます。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>rtlist -- スレッドの稼働時間の累計／稼働率の表示</B></H4>
+
+      <BLOCKQUOTE>
+      稼働中のスレッドの CPU使用時間の累計を表示します。（引数が無い場合）<BR>
+      -v オプションを付加すると、スレッドのエントリ関数の所属するモジュールのモジュール名も表示します。<BR>
+      現在この累計時間には、割り込み処理時間が繰り込まれていてあまり正確なものではありませんが、おおよその目安にはなります。<BR>
+      引数に回数を指定することで、１秒置きに稼働中のスレッドの CPU使用率を表示します。指定した回数表示した後コマンドは終了します。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>semlist -- セマフォの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      存在するセマフォの一覧を表示します。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>evlist -- イベントフラグの一覧の表示</B></H4>
+
+      <BLOCKQUOTE>
+      存在するイベントフラグの一覧を表示します。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>cpuwatch -- CPU 使用率の表示開始</B></H4>
+
+      <BLOCKQUOTE>
+      全スレッドの合計の CPU 使用率の表示を開始します。<BR>
+      表示は Kprint() で行われ、別のウインドウで動いている dsicons に表示されます。<BR>
+      １秒当りのサンプル数を指定することができます。デフォルトでは １秒当り１０回測定します。<BR>
+      サンプル数に 0 を指定すると、表示が止まります。<BR>
+      -b オプションを指定すると、バー表示を行います。<BR>
+      -br オプションを指定すると、改行の無いバー表示を行います。<BR>
+      <BR>
+      </BLOCKQUOTE>
+
+     <H4><B>thwatch -- 特定のスレッドのCPU 使用率の表示開始</B></H4>
+
+      <BLOCKQUOTE>
+      指定したスレッドの CPU 使用率の表示を開始します。<BR>
+      表示は Kprint() で行われ、別のウインドウで動いている dsicons に表示されます。<BR>
+      １秒当りのサンプル数を指定することができます。デフォルトでは １秒当り１０回測定します。<BR>
+      サンプル数に 0 を指定すると、表示が止まります。<BR>
+      -b オプションを指定すると、バー表示を行います。<BR>
+      -br オプションを指定すると、改行の無いバー表示を行います。<BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

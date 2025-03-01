@@ -1,0 +1,44 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+CSLラインアウトライブラリ
+==========================
+
+
+ 1 ライブラリ概要
+------------------
+
+    libloutは、EE上のPCM Streamをlibsdr経由でSPU2に出力するライブラリで、
+    CSL（Component Sound Library）に準拠して実装されています。
+    最大４ポートの入力を処理し、それぞれSPU2のチャンネル0 / 1のL / Rに自
+    由にアサインすることができます。
+    
+
+ 2 利用方法
+------------
+
+
+  2.1 バッファ構造
+
+
+    Buffer Group 0:入力ポートグループ
+
+    +------------+---------------------------+---------------+
+    |BufCtx Index 内容                        データ構造     |
+    +            +                           +               +
+    |N            入力ポートN番の入力バッファ sceCslPcmStream|
+    +------------+---------------------------+---------------+
+    
+    Nの範囲は 0～3です。
+    sceCslPcmStream自身とpcmbufで指されるバッファ領域に対してはアンキャッ
+    シュアクセスが行われるため、アライメント等に注意が必要です。
+
+  2.2 初期化手順
+
+    librsdの設定およびIOP上のMemory Allocationを実行するため、
+    sceLout_Init()を呼び出す前に次の初期化手順が必要です。
+    	sceSdRemoteInit();
+    	sceSdRemote(1, rSdInit);
+    	sceSifInitIopHeap();

@@ -1,0 +1,909 @@
+<HTML>
+
+<!-- 見出し 1,部見出し -->
+<HEAD>
+<TITLE> DECI2 ライブラリリファレンス</TITLE>
+</HEAD>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value>
+<OPTION VALUE="libd2.htm"SELECTED> DECI2リファレンス
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=5>
+<DIV align=center><H1>DECI2 ライブラリリファレンス</H1></DIV>
+<P>
+</TR></TABLE>
+</blockquote>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+<H3>
+<A HREF="#Top"><IMG SRC = ./gif/link.gif BORDER = 0></A>関数一覧
+<HR>
+</H3>
+</A>
+<blockquote>
+
+<TABLE CELLPADDING=0>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2Open>sceDeci2Open </A><BR>
+</TD><TD> </TD>
+<TD>プロトコルドライバの登録</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2Close>sceDeci2Close </A><BR>
+</TD><TD> </TD>
+<TD>プロトコルドライバの削除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExLock>sceDeci2ExLock </A><BR>
+</TD><TD> </TD>
+<TD>他のプロトコルのロック</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExUnLock>sceDeci2ExUnLock </A><BR>
+</TD><TD> </TD>
+<TD>ロックの解除</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExRecv>sceDeci2ExRecv </A><BR>
+</TD><TD> </TD>
+<TD>DECI2 パケットの受信</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExSend>sceDeci2ExSend </A><BR>
+</TD><TD> </TD>
+<TD>DECI2 パケットの送信</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ReqSend>sceDeci2ReqSend </A><BR>
+</TD><TD> </TD>
+<TD>DECI2_WRITE イベントの要求</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExReqSend>sceDeci2ExReqSend </A><BR>
+</TD><TD> </TD>
+<TD>DECI2_WRITE イベントの要求</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExWakeupThread>sceDeci2ExWakeupThread </A><BR>
+</TD><TD> </TD>
+<TD>スリープ中のスレッドの起床 (IOPのみ)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExSignalSema>sceDeci2ExSignalSema </A><BR>
+</TD><TD> </TD>
+<TD>セマフォへのシグナル発行 (IOPのみ)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExSetEventFlag>sceDeci2ExSetEventFlag </A><BR>
+</TD><TD> </TD>
+<TD>イベントフラグのセット (IOPのみ)</TD></TR>
+<TR><TD></TD><TD>
+<A HREF=#sceDeci2ExPanic>sceDeci2ExPanic </A><BR>
+</TD><TD> </TD>
+<TD>イベントハンドラ内からの printf (IOPのみ)</TD></TR>
+</TABLE>
+</blockquote>
+<DIV align="center">
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+</DIV>
+<DIV align="center">
+</blockquote>
+<HR border=1 width=100%><BR><BR>
+<U><H2>関数</H2></U>
+</DIV>
+<A name=sceDeci2Open>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2Open
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        プロトコルドライバの登録
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2Open</B>(
+	unsigned short <I>protocol</I>,
+	void *<I>opt</I>,
+	void (*<I>handler</I>)(int event, int param, void *opt)
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>protocol</I>		プロトコル番号
+<I>opt</I>	イベントハンドラに通知される、プロトコルドライバ毎に設定自由なデータへのポインタ
+<I>handler</I>		イベントが通知されるハンドラ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1 以上	ソケットディスクリプタ <BR>
+    -1 以下	エラーコード(INVALID、ALREADYUSE、MFILE) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    使用したいプロトコル番号を指定してプロトコルドライバを登録します。ここで返されたソケットディスクリプタは、以後の関数呼び出しの際に使用します。 <BR>
+    イベントハンドラ内から呼び出されるすべての関数とそれ以外の関数で共通の変数を使用したい場合は、グローバル変数は使用せずに、必ず opt を使用して変数をイベントハンドラに渡すようにしてください。 <BR>
+<BR>
+    イベントハンドラに通知されるイベントには、以下のものがあります。 <BR>
+<BR>
+    <blockquote>
+    	DECI2_READ		1 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_READDONE	2 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_WRITE		3 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_WRITEDONE	4 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_CHSTATUS	5 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_ERROR		6 <BR>
+    </blockquote>
+<BR>
+    DECI2_READ イベントは、パケットを初めて受信してから、プロトコルドライバがすべてのパケットデータを受信し終わるまで発生します。1 パケットの受信が終了すると、DECI2_READDONE イベントが発生します。 <BR>
+<BR>
+    DECI2_WRITE イベントは、プロトコルドライバからの送信要求を DECI2 Manager が受けとって実際に送信できる状態になったときに発生します。 <BR>
+    1 パケットの送信が終了すると、DECI2_WRITEDONE イベントが発生します。 <BR>
+<BR>
+    DECI2_CHSTATUS と DECI2_ERROR イベントは、プロトコルドライバに通知すべきDCMP のステータス、エラーメッセージがある場合に発生します。 <BR>
+<BR>
+    イベントハンドラには、イベントの種類とイベント毎に異なる一つのパラメータ、そしてプロトコルドライバが設定したデータへのポインタが渡されます。パラメータの詳細は、以下のとおりです。 <BR>
+<BR>
+    <blockquote>
+    	DECI2_READ:		到着したパケットの断片のサイズ <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_READDONE:	0 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_WRITE:		0 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_WRITEDONE:	0 <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_CHSTATUS:	DCMP ステータスメッセージへのポインタ <BR>
+    </blockquote>
+    <blockquote>
+    	DECI2_ERROR:		DCMP エラーメッセージへのポインタ <BR>
+    </blockquote>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2Close>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2Close
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        プロトコルドライバの削除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2Close</B>(
+	int <I>s</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    プロトコルドライバを削除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExLock>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExLock
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        他のプロトコルのロック
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExLock</B>(
+	int <I>s</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、ALREADYLOCK) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この要求を行うプロトコルドライバが使用しているプロトコル以外をロックします。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExUnLock>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExUnLock
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        ロックの解除
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExUnLock</B>(
+	int <I>s</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、NOTLOCKED) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    ロックを解除します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExRecv>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExRecv
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DECI2 パケットの受信
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExRecv</B>(
+	int <I>s</I>,
+	void *<I>buf</I>,
+	unsigned short <I>len</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>buf</I>	バッファへのポインタ
+<I>len</I>	受信するデータのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1 以上	受信したデータのサイズ <BR>
+    -1 以下	エラーコード(INVALSOCK、INVALADDR、PKTSIZE、WOULDBLOCK) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、DECI2_READ イベントが通知された時のみ呼び出し可能です。 <BR>
+    それ以外の時に呼び出すと WOULDBLOCK エラーとなります。 <BR>
+<BR>
+    DECI2_READ イベント は、プロトコルドライバに渡す必要のあるパケットの断片が到着する度に発行され、1 パケット分のデータすべてをこの関数で読み終えるまで何度も発行されます。1 パケット分すべてのデータを読み終えたときには、DECI2_READDONE イベントが発生します。 <BR>
+<BR>
+    DECI2_READ イベント発生時には実際の受信は行われず、この関数で読み込むバッファを指示してはじめて読み込みが開始されます。 <BR>
+<BR>
+    DECI2_READ イベントのパラメータとしては、到着したパケットの断片のサイズが渡されます(パケットの最後の断片の場合は 4の倍数に切り上げられることがあります)。 <BR>
+<BR>
+    len には、パラメーターして通知されたサイズよりも小さいサイズを指定することができます。その場合、DECI2_READ イベントがもう一度発生します。小さいサイズを指定するは 128 の倍数である必要があります。 <BR>
+<BR>
+    EE 上では、buf は 16 バイト境界にアラインされていなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExSend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExSend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DECI2 パケットの送信
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExSend</B>(
+	int <I>s</I>,
+	void *<I>buf</I>,
+	unsigned short <I>len</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>buf</I>	バッファへのポインタ
+<I>len</I>	送信するデータのサイズ
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1 以上	DECI2 Manager が受け付けたデータのサイズ(送信したものではない) <BR>
+    -1 以下	エラーコード(INVALSOCK、INVALADDR、PKTSIZE、WOULDBLOCK) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    この関数は、DECI2_WRITE イベントが通知された時のみ呼び出し可能です。 <BR>
+    それ以外の時に呼び出すと WOULDBLOCK エラーとなります。 <BR>
+<BR>
+    DECI2_WRITE イベントは、sceDeci2ReqSend()の発行を受けて送信可能な状態になったときに発生します。1 パケット分のすべてのデータを受付て送信し終わったときには WRITEDONE イベントが発生します。 <BR>
+<BR>
+    len には、実際に送信するパケットのサイズよりも小さいサイズを指定できます。その場合は、もう一度 DECI2_WRITE イベントが発生します。ただし、一回目の呼び出しでは、DECI2 ヘッダよりも小さなサイズを len に指定することはできません(PKTSIZE エラーとなります)。 <BR>
+<BR>
+    返値には、DECI2 Manager が受け付けたデータのサイズを返します。ただし、次の DECI2_WRITE か、DECI2_WRITEDONE イベントが発生するまでは、送信が完了していない可能性があるので、データは保持しておかなければなりません。 <BR>
+<BR>
+    EE 上では、buf は 16 バイト境界にアラインされていなければなりません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ReqSend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ReqSend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DECI2_WRITE イベントの要求
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ReqSend</B>(
+	int <I>s</I>,
+	char <I>dest</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>dest</I>	パケットの送信先ノード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、WOULDBLOCK、NOROUTE) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1 パケット分のデータ送信を DECI2 Manager に要求します。この呼び出しを受けて DECI2 Mnager が送信可能な状態になったときに DECI2_WRITE イベントが発生します。 <BR>
+<BR>
+    この関数を呼び出して戻ってくるよりも先に DECI2_WRITE イベントが発生する可能性があるので、送信データがそろってから呼び出す必要があります。 <BR>
+<BR>
+    EE 上では、複数回呼び出せますが、その回数だけの DECI2_WRITE イベントが発生します。IOP 上では、複数回連続して送信要求を出すことはできません。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExReqSend>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExReqSend
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        DECI2_WRITE イベントの要求
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExReqSend</B>(
+	int <I>s</I>,
+	char <I>dest</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>dest</I>	パケットの送信先ノード
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、WOULDBLOCK、NOROUTE) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントハンドラ中で、DECI2 Manager にデータ送信を要求するために使用します。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExWakeupThread>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExWakeupThread
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        スリープ中のスレッドの起床 (IOPのみ)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExWakeupThread</B>(
+	int <I>s</I>,
+	int <I>thid</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>thid</I>	起床するスレッドID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、INVALID) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントハンドラ中で、スリープ状態のスレッドを起床するために使用します。 <BR>
+    同一のソケットで、sceDeci2ExSignalSema()、sceDeci2ExSetEventFlag() と混在して使用することはできません。 <BR>
+    また、同一のソケットで、複数のスレッドを起床することもできません。 <BR>
+    特定のソケットでは常に単一のスレッドを指定するようにしてください <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExSignalSema>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExSignalSema
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        セマフォへのシグナル発行 (IOPのみ)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExSignalSema</B>(
+	int <I>s</I>,
+	int <I>semid</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	ソケットディスクリプタ
+<I>semid</I>	シグナルを送るセマフォID
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、INVALID) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントハンドラ中で、セマフォにシグナルを送るために使用します。 <BR>
+    同一のソケットで、sceDeci2ExWakeupThread()、sceDeci2ExSetEventFlag() と混在して使用することはできません。 <BR>
+    また、同一のソケットで、複数のセマフォを扱うこともできません。 <BR>
+    特定のソケットには常に単一のセマフォを使用してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExSetEventFlag>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExSetEventFlag
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントフラグのセット (IOPのみ)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExSetEventFlag</B>(
+	int <I>s</I>,
+	int <I>evfid</I>,
+	unsigned long <I>bitpattern</I>
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>s</I>	 　ソケットディスクリプタ
+<I>evfid</I>	 　イベントフラグID
+<I>bitpattern　</I>セットするビットパターン
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    1	成功 <BR>
+    -1 以下	エラーコード(INVALSOCK、INVALID) <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントハンドラ中で、イベントフラグをセットするために使用します。 <BR>
+    同一のソケットで、sceDeci2ExWakeupThread()、sceDeci2ExSignalSema()と混在して使用することはできません。 <BR>
+    また、同一のソケットで、複数のイベントフラグをセットすることもできません。 <BR>
+    特定のソケットには常に単一のイベントフラグを使用してください。 <BR>
+<BR>
+        </BLOCKQUOTE>
+</blockquote>
+<A name=sceDeci2ExPanic>
+<HR NOSHADE SIZE="8">
+<!-- 関数名 -->
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0><TR><TD valign=bottom>
+<H1>sceDeci2ExPanic
+</TD><TD align=right valign=bottom><A HREF=#top><IMG src=gif/link.gif border=0></A>
+</TD></TR>
+<TR><TD colspan=2 bgcolor=#336699><IMG src=gif/spacer.gif></TD></TR></TABLE>
+<!-- 関数説明 -->
+<DIV ALIGN="right">
+        イベントハンドラ内からの printf (IOPのみ)
+</DIV><P>
+
+<!-- 形式 -->
+<B>形式</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE>int <B>sceDeci2ExPanic</B>(
+	const char *<I>format</I>, ...
+)
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 引数 -->
+<B>引数</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+<PRE><I>format</I>	出力書式文字列(printfと同一)
+        </BLOCKQUOTE>
+</PRE>
+</blockquote>
+
+<!-- 返り値 -->
+<B>返り値</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    出力した文字数 <BR>
+<BR>
+        </BLOCKQUOTE>
+</PRE>
+</PRE>
+</blockquote>
+
+<!-- 解説 -->
+<B>解説</B>
+<HR NOSHADE ALIGN="left" SIZE=2 WIDTH=20%>
+<blockquote>
+        <BLOCKQUOTE>
+    イベントハンドラ中から呼ぶための printf 相当の関数です。 <BR>
+    イベントハンドラ外から呼ぶことも可能です。 <BR>
+    sceDeci2ExPanic() で出力した文字列は、Host 側の dscomp コマンドで表示されます。 <BR>
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

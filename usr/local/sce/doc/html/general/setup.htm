@@ -1,0 +1,456 @@
+<HTML>
+<HEAD>
+<TITLE> "PlayStation 2"開発環境セットアップガイド</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="setup.htm" SELECTED>開発環境セットアップガイド
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+"PlayStation 2"<BR>開発環境セットアップガイド<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ハードウェアセットアップ<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 開発システムの構成概略<BR></A><BR>
+    <A HREF="#Heading4_1_2"> DTL-T10000の特徴<BR></A><BR>
+    <A HREF="#Heading4_1_3"> プログラマツール使用時の必要機材<BR></A><BR>
+    <A HREF="#Heading4_1_4"> DTL-T10000のセットアップ<BR></A><BR>
+    <A HREF="#Heading4_1_5"> DTL-T10000のセットアップに関する注意<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 ソフトウェアセットアップ<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 開発ソフトウェアの概要<BR></A><BR>
+    <A HREF="#Heading4_2_2"> ソフトウェアのインストール<BR></A><BR>
+    <A HREF="#Heading4_2_3"> dsnet のアップデート<BR></A><BR>
+    <A HREF="#Heading4_2_4"> 環境設定<BR></A><BR>
+    <A HREF="#Heading4_2_5"> Flash ROMの書き込み<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 サンプルプログラムのコンパイル・実行<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> iopのライブラリ、ヘッダファイルのコピー<BR></A><BR>
+    <A HREF="#Heading4_3_2"> アクセス許可属性の変更<BR></A><BR>
+    <A HREF="#Heading4_3_3"> basic3d：EE側サンプルプログラムの実行<BR></A><BR>
+    <A HREF="#Heading4_3_4"> sqhard：IOP側サンプルプログラムの実行<BR></A><BR>
+    <A HREF="#Heading4_3_5"> sqsoft：EE-IOP側サンプルプログラムの実行<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+    このマニュアルは、"PlayStation 2"のソフトウェア開発環境をセットアップし、サンプルプログラムをコンパイルするまでの手順を説明するものです。ここに書かれている一連の作業を行うことで、開発環境が正しくセットアップできていることを確認することができます。<BR>
+<DIV align=center>
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ハードウェアセットアップ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>開発システムの構成概略</B>
+</A>
+</H3>
+<blockquote>
+    開発システムの構成概略図を次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/setuf1.gif">
+<P>
+    <B>図 1 開発システムの構成イメージ</B>
+</DIV>
+    "PlayStation 2"ソフトウェア開発装置「DTL-T10000」は、クロス開発で一般的にいうターゲットボックスであり、"PlayStation 2"実機に相当する機能とテストラン・デバッグのための管理・通信機能（dsnet）を内蔵しています。つまり、"PlayStation 2"用ソフトウェアのテストランを行う装置であり、直接DTL-T10000にログインしてプログラミングを行うわけではありません。コーディングやコンパイルなどの作業は、ネットワークで接続された他のコンピュータ（開発用コンピュータ）で行います。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>DTL-T10000の特徴</B>
+</A>
+</H3>
+<blockquote>
+    "PlayStation 2"のソフトウェアを開発するための開発ツールです。<BR>
+<UL>
+         <LI> "PlayStation 2"の持つ機能を備え、ソフトウェアの効率的な開発ができます。<BR>
+         <LI> コミュニケーションプロセッサーを搭載し、開発用コンピュータとネットワークを介してソフトウェアやデータをやり取りできますので、プログラムの実行や確認、デバックなどを効率的に行うことができます。<BR>
+         <LI> ネットワークに直接接続できるため、設置や増設が簡単に可能です。また、開発用コンピュータの負担も軽減することができます。<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_3">
+<A HREF="#Heading3_1"> 1. </A>3 <B>プログラマツール使用時の必要機材</B>
+</A>
+</H3>
+<blockquote>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_1">
+(1) <B>ハードウェア（DTL-T10000）</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      PC/AT互換機（使用に際しては別途開発用コンピュータが必要です）DTL-T10000 には、コミュニケーションプロセッサーとしてシングルボード PC (MMX Pentium 233MHz)が搭載されていますが、コンパイル/デバッグ環境としては別途開発用 PC をご用意ください。ネットワーク経由で DTL-T10000 に対してリモートアクセスする開発環境をお薦めします。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_3_2">
+(2) <B>開発用コンピュータ</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ごく一般的なパーソナルコンピュータを使用することが可能です。性能は以下をおおよその目安としてください。尚、開発作業推奨環境はRedHat LINUX 5.2 です。また他の LINUX にてご利用になる場合も、Libc6 以降であることをご確認の上作業を行ってください。<BR>
+      <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>項目</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能・性能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">CPU</TD>
+<TD valign="TOP">PentiumⅡ 400MHz以上</TD>
+</TR>
+<TR>
+<TD valign="TOP">メモリ</TD>
+<TD valign="TOP">128Mバイト以上</TD>
+</TR>
+<TR>
+<TD valign="TOP">PC/AT用モニタ</TD>
+<TD valign="TOP">17インチ以上</TD>
+</TR>
+<TR>
+<TD valign="TOP">グラフィックス</TD>
+<TD valign="TOP">SVGA</TD>
+</TR>
+</TABLE>
+<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_4">
+<A HREF="#Heading3_1"> 1. </A>4 <B>DTL-T10000のセットアップ</B>
+</A>
+</H3>
+<blockquote>
+    DTL-T10000のセットアップおよび設定操作の詳細については、DTL-T10000に同梱されている取扱説明書も合わせてご参照ください。手順の要点は次のとおりです。<BR>
+    <OL>
+         <LI VALUE= 1> モニタTVを接続する<BR>
+         <LI VALUE= 2> ネットワークに接続する（注意後述）<BR>
+         <LI VALUE= 3>背面の主電源スイッチを入れ、上部の<IMG SRC ="gif/setun1.gif">ボタンを押して起動する<BR>
+
+         <LI VALUE= 4> 開発用コンピュータでWebブラウザを起動し、DTL-T10000にアクセスする<BR>（管理ツール画面が開く）<BR>
+         <LI VALUE= 5> 管理ツール画面で内蔵時計、ネットワーク関連の設定などを行う<BR>
+         <LI VALUE= 6> 管理ツール画面で「パッケージ」をインストールする<BR>
+    </OL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_5">
+<A HREF="#Heading3_1"> 1. </A>5 <B>DTL-T10000のセットアップに関する注意</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>ネットワークへの接続</B></H4>
+
+    ネットワーク内にDHCPサーバがあるかどうかによって、セットアップ手順(2)の段階での処置が多少異なります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_5_1">
+(1) <B>DHCPサーバがある場合</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      DHCPサーバがある場合、DTL-T10000をネットワークに接続し、電源投入するだけで IP アドレスやサブネットマスクの設定が自動的に行われます。しかし、このままだとDTL-T10000のIPアドレスが毎回異なりますので、効率的に開発作業を行うためには、IPアドレスを固定にする方法をお勧めします。自動的に割り振られた IPアドレスをそのまま継続して利用する（IPアドレスを固定にする）方法については DHCP サーバの管理者にご相談ください。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_1_5_2">
+(2) <B>DHCP サーバがない場合</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      DHCPサーバがない場合（各機器に固定的にIPアドレスが割り当てられている場合）は、ローカルなネットワークを構築して、デフォルト値のIPアドレスを自分の環境に合ったIP アドレスへ変更するという方法を採ります。開発用コンピュータのIPアドレスを 192.168.0.2、サブネットマスクを255.255.255.0にします。その状態で開発用コンピュータとDTL-T10000とをクロスケーブルで直接、あるいはハブを経由してストレートケーブルで接続してください。その後開発用コンピュータとDTL-T10000を起動すると、ローカルなネットワークが構築されます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>「パッケージ」のインストール</B></H4>
+
+      <BLOCKQUOTE>
+      DTL-T10000に内蔵されているソフトウェアのうち、「dsnet」と「フラッシュROM」は必要に応じてアップデートされますが、dsnet ツールは管理ツール画面でインストール、アップデートを行います。最新版が開発ソフトウェアとともに配布されていますので、確認のうえアップデート処理を行ってください。具体的な手順は後述します。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>ソフトウェアセットアップ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>開発ソフトウェアの概要</B>
+</A>
+</H3>
+<blockquote>
+    開発に使用するソフトウェアとして、コンパイラ、ライブラリ、サンプルプログラム、その他のツールがSCEから提供されます。主なものを次に示します。<BR>
+<UL>
+         <LI> C/C++コンパイラ<BR>gccをベースとして、EEおよびIOP向けにカスタマイズしたee-gccおよびiop-gcc<BR>
+         <LI> ライブラリ<BR>
+         <LI> サンプルプログラム<BR>
+         <LI> 各種ツール<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>ソフトウェアのインストール</B>
+</A>
+</H3>
+<blockquote>
+    開発ソフトウェアの最新版はSCE-NETで配布されています。<BR>
+    SCE-NETの「ダウンロード」→「プログラマツール」から最新版をダウンロードしてください。<BR>
+    手順は以下のとおりです。<BR>
+
+     <H4><B>パッケージを解凍・インストールする</B></H4>
+
+    <OL>
+         <LI VALUE= 1> 開発ソフトウェアは /usr/local/sce 以下にインストールして使用します。<BR>アップデートの際は、前の環境をリネームする等して保存しておき、新規にインストールするようにした方が安全です。<BR>
+         <LI VALUE= 2> root権限にて /usr/local 以下に解凍して下さい。<BR>$ su<BR>  :<BR># cd /usr/local<BR># mv sce sce_old<BR># tar xzvf lib_110.tgz<BR>     :<BR># tar xzvf eb_110.tgz<BR>     :<BR># ls -1 -t<BR>sce<BR>readme_j.txt<BR>readme_e.txt<BR>t10000-XXXX.bin<BR>     :<BR>     :<BR>
+    </OL>
+
+     <H4><B>インストール時の注意</B></H4>
+
+      <BLOCKQUOTE>
+      開発ソフトウェアは、/usr/local/sce以下のディレクトリに置かれていることを前提で動作しますので、インストールの際は、基本的に/usr/localをカレントディレクトリにして解凍して下さい。好きな場所にインストールした場合には、root権限にて /usr/local からその場所( /home/xxx/sceなど)へシンボリックリンクを張って下さい。<BR>
+      # ln -s /home/xxx/sce /usr/local<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>dsnet のアップデート</B>
+</A>
+</H3>
+<blockquote>
+    DTL-T10000 上の dsnet をアップデートします。開発マシン上のWWWブラウザで「T10000 管理ツール」を起動し、以下の rpm パッケージを指定してアップデートを行ってください。<BR>
+    具体的な手順については「T10000 取扱説明書」の p.17 にも記載されています。<BR>
+    <OL>
+         <LI VALUE= 1> インストールした開発ソフトウェアに次のファイルが含まれていることを確認する。<BR>　　/usr/local/sce/rpm/dsnet-X.X.XX-X.i386.rpm<BR>　　（「X.X.XX-X」の部分はバージョンを表す数字が入ります）<BR>
+         <LI VALUE= 2> Webブラウザを使ってDTL-T10000にアクセスする。<BR>
+         <LI VALUE= 3> 設定メニューの「パッケージ」を開く。<BR>
+         <LI VALUE= 4> 開発用コンピュータのホスト名またはIPアドレスと、開発用コンピュータにログインするためのユーザ名およびパスワードを各欄に入力する。「ディレクトリ」欄には、「/usr/local/sce/rpm」を入力する。<BR>
+         <LI VALUE= 5> パッケージ一覧が表示されたら、上記のファイルを選択して「インストール」ボタンをクリックする。<BR>
+         <LI VALUE= 6> 設定メニューの「シャットダウン」を開いてDTL-T10000をリブートする。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>環境設定</B>
+</A>
+</H3>
+<blockquote>
+
+     <H4><B>パスの設定</B></H4>
+
+      <BLOCKQUOTE>
+      以下のディレクトリにパスを通すことが必要です。<BR>
+      シェルの環境設定ファイル(.bash_profileあるいは.cshrc)のパス設定行に以下の記述を追加して下さい。<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        /usr/local/sce/bin<BR>
+        /usr/local/sce/ee/gcc/bin<BR>
+        /usr/local/sce/iop/gcc/bin<BR>
+        <BR>
+        </BLOCKQUOTE></UL>
+
+     <H4><B>環境変数の設定</B></H4>
+
+      <BLOCKQUOTE>
+      環境変数 DSNETM に T10000 のホスト名(又はIPアドレス)を指定しておくと、デバッガ(dsedb)等を起動する際に -d オプションで指定せずに済みます。<BR>
+      シェルの環境設定ファイル(.bash_profile, cshrcなど)に以下のように記述を追加して下さい。<BR>
+      <BR>
+      .bash_profile(.bashrc) の場合：　　$ export DSNETM=hostname<BR>
+      .cshrc の場合：　　　　　setenv DSNETM hostname<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        <BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>Flash ROMの書き込み</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      DTL-T10000に内蔵されているソフトウェアのうち、"PlayStation 2"カーネルに相当する「Flash ROM」は、最新版がイメージファイルとして開発ソフトウェアとともに配布されています。次の手順でアップデートしてください。<BR>
+      </BLOCKQUOTE>
+    <OL>
+         <LI VALUE= 1> インストールした開発ソフトウェアに次のファイルが含まれていることを確認する。<BR>　　/usr/local/t10000-XXXX.bin<BR>　　（「XXXX」の部分はバージョンを表す数字が入ります）<BR>
+         <LI VALUE= 2> dsflashを実行する。<BR>　　$ dsflash /usr/local/t10000-XXXX.bin<BR>　　*** Updating Flash ROM …<BR>　　*** Resetting…<BR>    <BR>    MPU-4.0 board DSW602<BR><BR>
+         <LI VALUE= 3> 「Complete!」と表示されて処理が終わったら、dsresetを実行する。<BR>　　$ dsreset<BR>　　dsreset (Version X.X.XX…)<BR>　　$<BR>
+    </OL>
+      <BLOCKQUOTE>
+      <BR>
+      dsflashの処理が途中で中断した、または、なんらかの理由で書き込みに失敗した場合、再度dsflashで書き込めなくなる場合があります。その場合はSCE-NETから「DTL-T10000用カーネル修復ツール」をダウンロードし、修復処理をして下さい。<BR>
+      </BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>サンプルプログラムのコンパイル・実行</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    サンプルプログラムをビルドして、DTL-T10000上で実行する手順を説明します。サンプルが正常に動作すれば、開発環境が正しくセットアップされていることになります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>iopのライブラリ、ヘッダファイルのコピー</B>
+</A>
+</H3>
+<blockquote>
+      <BLOCKQUOTE>
+      SCE供給のiop 側のヘッダファイル、スタティックライブラリは標準のディレクトリから検索されていますので、sce/iop/install/include を /usr/local/sce/iop/gcc/mipsel-scei-elfl/include へ、sce/iop/install/lib を /usr/local/sce/iop/gcc/mipsel-scei-elfl/lib へコピーして下さい。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>アクセス許可属性の変更</B>
+</A>
+</H3>
+<blockquote>
+    インストールしただけではsce/ee/sample, sce/iop/sample 以下はリードオンリーになっています。サンプルプログラムをビルドするために、次のようにしてアクセス許可属性を変更してください。<BR>
+    <BR>
+        <BLOCKQUOTE><UL>
+        $ su root<BR>
+        Password:<I>xxxxxxxx</I>	←rootのパスワードを入力する<BR># cd /usr/local/sce/ee
+        # chmod -R a+w sample	←sample以下を全ユーザ書き込み可とする<BR>
+        # exit<BR>
+        $<BR>
+        </BLOCKQUOTE></UL>
+    iop 側も同様に変更してください。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>basic3d：EE側サンプルプログラムの実行</B>
+</A>
+</H3>
+<blockquote>
+    EEで動作するプログラムの例として、sce/ee/sample/basic3d/vu1をビルドして実行する手順を説明します。<BR>
+    <OL>
+         <LI VALUE= 1> サンプルプログラムのビルド<BR>'make' もしくは 'make all' でビルドします。<BR>サンプルのMakefileは、汎用的に使えるようになっていますので、TOP=やOBJS=の行を書き換えるなどして、ユーザプログラムにも流用できます。<BR>  $ cd /usr/local/sce/ee/sample/basic3d/vu1<BR>  $ make all<BR>
+         <LI VALUE= 2> サンプルプログラムの実行<BR>前述の環境変数DSNETMが正しく設定されていれば、'make run' で実行できます。<BR>設定していない場合は、以下のように T-10000のホスト名を指定して起動して下さい。<BR><BR>  $ dsedb -d hostname -r run main.elf<BR><BR>elfファイルがネットワーク経由でT-10000に送られ、正しく起動できた場合には以下のように出力されます。<BR><BR>  $ dsedb -d hostname -r run main.elf<BR>  *** Resetting…<BR>  EE DECI2 Manager version…<BR>  CPUID=…, BoardID=…, ROMGEN=…, 128M<BR><BR>  Loading program (address=…size=…)…<BR>  Loading XXX symbols…<BR>  Entry address =…<BR>  GP value     =…<BR><BR>DTL-T10000に接続されているコントローラを操作してみてください。<BR>サンプルプログラムを停止させるには、開発用コンピュータのコンソールでCtrl+Cキーを押してください。モニタTVには画像が残りますが差し支えありません。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>sqhard：IOP側サンプルプログラムの実行</B>
+</A>
+</H3>
+<blockquote>
+    IOPで動作するプログラムの例として、ハードウェアシンセサイザによるMIDI再生のサンプルプログラムsce/iop/sample/sound/sqhardをビルドして実行する手順を示します。<BR>
+    <OL>
+         <LI VALUE= 1> sqhardのビルド<BR>サンプルプログラムの置いてあるディレクトリをカレントとして、makeコマンドを使ってプログラムをビルドします。<BR>  $ cd /usr/local/sce/iop/sample/sound/sqhard<BR>  $ make<BR>
+         <LI VALUE= 2> sqhardの実行<BR>make runで、ビルドしてできたプログラムを実行します。<BR>   $ make run<BR>makefile中で指定されているモジュールがIOPにロードされ、曲が演奏されます。途中で止めたい場合はCtrl+Cを押すと中断できます。音が残ったら、dsresetを実行してください。<BR>
+    </OL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_5">
+<A HREF="#Heading3_3"> 3. </A>5 <B>sqsoft：EE-IOP側サンプルプログラムの実行</B>
+</A>
+</H3>
+<blockquote>
+    EE 側からIOP 側のプログラムをIOPで動作するプログラムの例として、ソフトウェア・シンセサイザによるMIDI再生のサンプルプログラム、sce/iop/sample/sound/sqsoftをビルドして実行する手順を示します。EE側で動作するsce/ee/sample/sound/sqsoftと合わせて動作するようになっていますので手順に注意してください。<BR>
+    <OL>
+         <LI VALUE= 1> IOP側モジュールのビルド<BR>まずIOP側で動作するプログラムモジュールをビルドします。<BR>  $ cd /usr/local/sce/iop/sample/sound/sqsoft<BR>  $ make<BR>
+         <LI VALUE= 2> EE側プログラムのビルド<BR>次に、EE側で動作するプログラムをビルドします。<BR>  $ cd /usr/local/sce/ee/sample/sound/sqsoft<BR>  $ make<BR>
+         <LI VALUE= 3> 音素データの確認<BR>音素データファイルが存在することを確認します。<BR>  $ ls /usr/local/sce/data/sound<BR>
+         <LI VALUE= 4> サンプルプログラムの実行<BR>ビルドしたEE側プログラムを実行します。<BR>  $ make run<BR>main.elfがDTL-T10000に送られて実行され、IOP側モジュールがロードされ、音素データが読み込まれて、曲が演奏されます。適当なところで、開発用コンピュータのコンソールでCtrl+Cを押して中断してください。音が残った場合は、dsresetを実行してください。<BR>
+    </OL>
+    <BR>
+    このようにサンプルによって、実行方法が異なりますので、詳細については各サンプルのディレクトリにあるreadme_j.txt,readme_e.txtを読んで確認してください。<BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -8,8 +8,8 @@ END-INFO-DIR-ENTRY
 
    This file documents the GNU C Preprocessor.
 
-   Copyright 1987, 1989, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright 1987, 1989, 1991, 1992, 1993, 1994, 1995, 1997, 1998 Free
+Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -25,243 +25,7 @@ manual into another language, under the above conditions for modified
 versions.
 
 
-File: cpp.info,  Node: Stringification,  Next: Concatenation,  Prev: Predefined,  Up: Macros
-
-Stringification
----------------
-
-   "Stringification" means turning a sequence of preprocessing tokens
-into a string literal.  For example, stringifying `foo (z)' results in
-`"foo (z)"'.
-
-   In the C preprocessor, stringification is possible when macro
-arguments are substituted during macro expansion.  When a parameter
-appears preceded by a `#' token in the replacement list of a
-function-like macro, it indicates that both tokens should be replaced
-with the stringification of the corresponding argument during
-expansion.  The same argument may be substituted in other places in the
-definition without stringification if the argument name appears in
-those places with no preceding `#'.
-
-   Here is an example of a macro definition that uses stringification:
-
-     #define WARN_IF(EXP) \
-     do { if (EXP) \
-             fprintf (stderr, "Warning: " #EXP "\n"); } \
-     while (0)
-
-Here the argument for `EXP' is substituted once, as-is, into the `if'
-statement, and once, stringified, into the argument to `fprintf'.  The
-`do' and `while (0)' are a kludge to make it possible to write `WARN_IF
-(ARG);', which the resemblance of `WARN_IF' to a function would make C
-programmers want to do; see *Note Swallow Semicolon::.
-
-   The stringification feature is limited to transforming the tokens of
-a macro argument into a string constant: there is no way to combine the
-argument with surrounding text and stringify it all together.  The
-example above shows how an equivalent result can be obtained in ISO
-Standard C, using the fact that adjacent string constants are
-concatenated by the C compiler to form a single string constant.  The
-preprocessor stringifies the actual value of `EXP' into a separate
-string constant, resulting in text like
-
-     do { if (x == 0) \
-             fprintf (stderr, "Warning: " "x == 0" "\n"); } \
-     while (0)
-
-but the compiler then sees three consecutive string constants and
-concatenates them into one, producing effectively
-
-     do { if (x == 0) \
-             fprintf (stderr, "Warning: x == 0\n"); } \
-     while (0)
-
-   Stringification in C involves more than putting double-quote
-characters around the fragment.  The preprocessor backslash-escapes the
-surrounding quotes of string literals, and all backslashes within
-string and character constants, in order to get a valid C string
-constant with the proper contents.  Thus, stringifying `p = "foo\n";'
-results in `"p = \"foo\\n\";"'.  However, backslashes that are not
-inside string or character constants are not duplicated: `\n' by itself
-stringifies to `"\n"'.
-
-   Whitespace (including comments) in the text being stringified is
-handled according to precise rules.  All leading and trailing
-whitespace is ignored.  Any sequence of whitespace in the middle of the
-text is converted to a single space in the stringified result.
-
-
-File: cpp.info,  Node: Concatenation,  Next: Undefining,  Prev: Stringification,  Up: Macros
-
-Concatenation
--------------
-
-   "Concatenation" means joining two strings into one.  In the context
-of macro expansion, concatenation refers to joining two preprocessing
-tokens to form one.  In particular, a token of a macro argument can be
-concatenated with another argument's token or with fixed text to produce
-a longer name.  The longer name might be the name of a function,
-variable, type, or a C keyword; it might even be the name of another
-macro, in which case it will be expanded.
-
-   When you define a function-like or object-like macro, you request
-concatenation with the special operator `##' in the macro's replacement
-list.  When the macro is called, any arguments are substituted without
-performing macro expansion, every `##' operator is deleted, and the two
-tokens on either side of it are concatenated to form a single token.
-
-   Consider a C program that interprets named commands.  There probably
-needs to be a table of commands, perhaps an array of structures
-declared as follows:
-
-     struct command
-     {
-       char *name;
-       void (*function) ();
-     };
-     
-     struct command commands[] =
-     {
-       { "quit", quit_command},
-       { "help", help_command},
-       ...
-     };
-
-   It would be cleaner not to have to give each command name twice,
-once in the string constant and once in the function name.  A macro
-which takes the name of a command as an argument can make this
-unnecessary.  The string constant can be created with stringification,
-and the function name by concatenating the argument with `_command'.
-Here is how it is done:
-
-     #define COMMAND(NAME)  { #NAME, NAME ## _command }
-     
-     struct command commands[] =
-     {
-       COMMAND (quit),
-       COMMAND (help),
-       ...
-     };
-
-   The usual case of concatenation is concatenating two names (or a name
-and a number) into a longer name.  This isn't the only valid case.  It
-is also possible to concatenate two numbers (or a number and a name,
-such as `1.5' and `e3') into a number.  Also, multi-character operators
-such as `+=' can be formed by concatenation.  However, two tokens that
-don't together form a valid token cannot be concatenated.  For example,
-concatenation of `x' on one side and `+' on the other is not meaningful
-because those two tokens do not form a valid preprocessing token when
-concatenated.  UNDEFINED
-
-   Keep in mind that the C preprocessor converts comments to whitespace
-before macros are even considered.  Therefore, you cannot create a
-comment by concatenating `/' and `*': the `/*' sequence that starts a
-comment is not a token, but rather the beginning of a comment.  You can
-freely use comments next to `##' in a macro definition, or in arguments
-that will be concatenated, because the comments will be converted to
-spaces at first sight, and concatenation operates on tokens and so
-ignores whitespace.
-
-
-File: cpp.info,  Node: Undefining,  Next: Redefining,  Prev: Concatenation,  Up: Macros
-
-Undefining Macros
------------------
-
-   To "undefine" a macro means to cancel its definition.  This is done
-with the `#undef' directive.  `#undef' is followed by the macro name to
-be undefined.
-
-   Like definition, undefinition occurs at a specific point in the
-source file, and it applies starting from that point.  The name ceases
-to be a macro name, and from that point on it is treated by the
-preprocessor as if it had never been a macro name.
-
-   For example,
-
-     #define FOO 4
-     x = FOO;
-     #undef FOO
-     x = FOO;
-
-expands into
-
-     x = 4;
-     
-     x = FOO;
-
-In this example, `FOO' had better be a variable or function as well as
-(temporarily) a macro, in order for the result of the expansion to be
-valid C code.
-
-   The same form of `#undef' directive will cancel definitions with
-arguments or definitions that don't expect arguments.  The `#undef'
-directive has no effect when used on a name not currently defined as a
-macro.
-
-
-File: cpp.info,  Node: Redefining,  Next: Poisoning,  Prev: Undefining,  Up: Macros
-
-Redefining Macros
------------------
-
-   "Redefining" a macro means defining (with `#define') a name that is
-already defined as a macro.
-
-   A redefinition is trivial if the new definition is transparently
-identical to the old one.  You probably wouldn't deliberately write a
-trivial redefinition, but they can happen automatically when a header
-file is included more than once (*note Header Files::.), so they are
-accepted silently and without effect.
-
-   Nontrivial redefinition is considered likely to be an error, so it
-provokes a warning message from the preprocessor.  However, sometimes it
-is useful to change the definition of a macro in mid-compilation.  You
-can inhibit the warning by undefining the macro with `#undef' before
-the second definition.
-
-   In order for a redefinition to be trivial, the parameter names must
-match and be in the same order, and the new replacement list must
-exactly match the one already in effect, with two possible exceptions:
-
-   * Whitespace may be added or deleted at the beginning or the end of
-     the replacement list.  In a sense this is vacuous, since strictly
-     such whitespace doesn't form part of the macro's expansion.
-
-   * Between tokens in the expansion, any two forms of whitespace are
-     considered equivalent.  In particular, whitespace may not be
-     eliminated entirely, nor may it be added where there previously
-     wasn't any.
-
-   Recall that a comment counts as whitespace.
-
-   As a particular case of the above, you may not redefine an
-object-like macro as a function-like macro, and vice-versa.
-
-
-File: cpp.info,  Node: Poisoning,  Next: Macro Pitfalls,  Prev: Redefining,  Up: Macros
-
-Poisoning Macros
-----------------
-
-   Sometimes, there is an identifier that you want to remove completely
-from your program, and make sure that it never creeps back in.  To
-enforce this, the `#pragma GCC poison' directive can be used.  `#pragma
-GCC poison' is followed by a list of identifiers to poison, and takes
-effect for the rest of the source.  You cannot `#undef' a poisoned
-identifier or test to see if it's defined with `#ifdef'.
-
-   For example,
-
-     #pragma GCC poison printf sprintf fprintf
-     sprintf(some_string, "hello");
-
-will produce an error.
-
-   For backwards compatibility `#pragma poison' is also recognized.
-
-
-File: cpp.info,  Node: Macro Pitfalls,  Prev: Poisoning,  Up: Macros
+File: cpp.info,  Node: Macro Pitfalls,  Prev: Redefining,  Up: Macros
 
 Pitfalls and Subtleties of Macros
 ---------------------------------
@@ -280,8 +44,8 @@ counterintuitive consequences that you must watch out for.
 * Side Effects::      Unsafe macros that cause trouble when
                          arguments contain side effects.
 * Self-Reference::    Macros whose definitions use the macros' own names.
-* Argument Prescan::  Arguments are checked for macro calls before they
-                         are substituted.
+* Argument Prescan::  Actual arguments are checked for macro calls
+                         before they are substituted.
 * Cascaded Macros::   Macros whose definitions use other macros.
 * Newlines in Args::  Sometimes line numbers get confused.
 
@@ -296,7 +60,7 @@ substituted into the macro body and the result is checked, together with
 the rest of the input file, for more macro calls.
 
    It is possible to piece together a macro call coming partially from
-the macro body and partially from the arguments.  For example,
+the macro body and partially from the actual arguments.  For example,
 
      #define double(x) (2*(x))
      #define call_with_1(x) x(1)
@@ -345,7 +109,7 @@ make it equivalent to this:
 
      a = (b & (c + sizeof (int) - 1)) / sizeof (int);
 
-What we want is this:
+But what we want is this:
 
      a = ((b & c) + sizeof (int) - 1)) / sizeof (int);
 
@@ -382,38 +146,38 @@ statement.  Consider, for example, the following macro, that advances a
 pointer (the argument `p' says where to find it) across whitespace
 characters:
 
-     #define SKIP_SPACES(p, limit)  \
+     #define SKIP_SPACES (p, limit)  \
      { register char *lim = (limit); \
        while (p != lim) {            \
          if (*p++ != ' ') {          \
            p--; break; }}}
 
-Here backslash-newline is used to split the macro definition, which must
-be a single logical line, so that it resembles the way such C code would
-be laid out if not part of a macro definition.
+Here Backslash-Newline is used to split the macro definition, which must
+be a single line, so that it resembles the way such C code would be
+laid out if not part of a macro definition.
 
    A call to this macro might be `SKIP_SPACES (p, lim)'.  Strictly
 speaking, the call expands to a compound statement, which is a complete
-statement with no need for a semicolon to end it.  However, since it
-looks like a function call, it minimizes confusion if you can use it
-like a function call, writing a semicolon afterward, as in `SKIP_SPACES
-(p, lim);'
+statement with no need for a semicolon to end it.  But it looks like a
+function call.  So it minimizes confusion if you can use it like a
+function call, writing a semicolon afterward, as in `SKIP_SPACES (p,
+lim);'
 
-   This can cause trouble before `else' statements, because the
+   But this can cause trouble before `else' statements, because the
 semicolon is actually a null statement.  Suppose you write
 
      if (*p != 0)
        SKIP_SPACES (p, lim);
      else ...
 
-The presence of two statements -- the compound statement and a null
-statement -- in between the `if' condition and the `else' makes invalid
-C code.
+The presence of two statements--the compound statement and a null
+statement--in between the `if' condition and the `else' makes invalid C
+code.
 
    The definition of the macro `SKIP_SPACES' can be altered to solve
 this problem, using a `do ... while' statement.  Here is how:
 
-     #define SKIP_SPACES(p, limit)     \
+     #define SKIP_SPACES (p, limit)     \
      do { register char *lim = (limit); \
           while (p != lim) {            \
             if (*p++ != ' ') {          \
@@ -484,7 +248,7 @@ Self-Referential Macros
 .......................
 
    A "self-referential" macro is one whose name appears in its
-definition.  A special feature of ISO Standard C is that the
+definition.  A special feature of ANSI Standard C is that the
 self-reference is not considered a macro call.  It is passed into the
 preprocessor output unchanged.
 
@@ -521,15 +285,15 @@ so it is a self-reference and is not further expanded.  Thus, after
 
 `x' would expand into `(4 + (2 * x))'.  Clear?
 
-   Suppose `y' is used elsewhere, not from the definition of `x'.  Then
-the use of `x' in the expansion of `y' is not a self-reference because
-`x' is not "in progress".  So it does expand.  However, the expansion
-of `x' contains a reference to `y', and that is an indirect
+   But suppose `y' is used elsewhere, not from the definition of `x'.
+Then the use of `x' in the expansion of `y' is not a self-reference
+because `x' is not "in progress".  So it does expand.  However, the
+expansion of `x' contains a reference to `y', and that is an indirect
 self-reference now because `y' is "in progress".  The result is that
 `y' expands to `(2 * (4 + y))'.
 
-   This behavior is specified by the ISO C standard, so you may need to
-understand it.
+   It is not clear that this behavior would ever be useful, but it is
+specified by the ANSI C standard, so you may need to understand it.
 
 
 File: cpp.info,  Node: Argument Prescan,  Next: Cascaded Macros,  Prev: Self-Reference,  Up: Macro Pitfalls
@@ -538,27 +302,28 @@ Separate Expansion of Macro Arguments
 .....................................
 
    We have explained that the expansion of a macro, including the
-substituted arguments, is re-scanned for macro calls to be expanded.
+substituted actual arguments, is scanned over again for macro calls to
+be expanded.
 
-   What really happens is more subtle: first each argument is scanned
-separately for macro calls.  Then the resulting tokens are substituted
-into the macro body to produce the macro expansion, and the macro
-expansion is scanned again for macros to expand.
+   What really happens is more subtle: first each actual argument text
+is scanned separately for macro calls.  Then the results of this are
+substituted into the macro body to produce the macro expansion, and the
+macro expansion is scanned again for macros to expand.
 
-   The result is that the arguments are scanned *twice* to expand macro
-calls in them.
+   The result is that the actual arguments are scanned *twice* to expand
+macro calls in them.
 
-   Most of the time, this has no effect.  If the argument contained any
-macro calls, they are expanded during the first scan.  The result
-therefore contains no macro calls, so the second scan does not change
-it.  If the argument were substituted as given, with no prescan, the
-single remaining scan would find the same macro calls and produce the
-same results.
+   Most of the time, this has no effect.  If the actual argument
+contained any macro calls, they are expanded during the first scan.
+The result therefore contains no macro calls, so the second scan does
+not change it.  If the actual argument were substituted as given, with
+no prescan, the single remaining scan would find the same macro calls
+and produce the same results.
 
    You might expect the double scan to change the results when a
-self-referential macro is used in an argument of another macro (*note
-Self-Reference::.): the self-referential macro would be expanded once
-in the first scan, and a second time in the second scan.  However, this
+self-referential macro is used in an actual argument of another macro
+(*note Self-Reference::.): the self-referential macro would be expanded
+once in the first scan, and a second time in the second scan.  But this
 is not what happens.  The self-references that do not expand in the
 first scan are marked so that they will not expand in the second scan
 either.
@@ -573,10 +338,10 @@ concatenated.  Thus,
 expands to `"foo"'.  Once more, prescan has been prevented from having
 any noticeable effect.
 
-   More precisely, stringification and concatenation use the argument
-tokens as given without initially scanning for macros.  The same
-argument would be used in expanded form if it is substituted elsewhere
-without stringification or concatenation.
+   More precisely, stringification and concatenation use the argument as
+written, in un-prescanned form.  The same actual argument would be used
+in prescanned form if it is substituted elsewhere without
+stringification or concatenation.
 
      #define str(s) #s lose(s)
      #define foo 4
@@ -595,20 +360,20 @@ cases:
 
    * Macros whose expansions contain unshielded commas.
 
-   We say that "nested" calls to a macro occur when a macro's argument
-contains a call to that very macro.  For example, if `f' is a macro
-that expects one argument, `f (f (1))' is a nested pair of calls to
-`f'.  The desired expansion is made by expanding `f (1)' and
+   We say that "nested" calls to a macro occur when a macro's actual
+argument contains a call to that very macro.  For example, if `f' is a
+macro that expects one argument, `f (f (1))' is a nested pair of calls
+to `f'.  The desired expansion is made by expanding `f (1)' and
 substituting that into the definition of `f'.  The prescan causes the
 expected result to happen.  Without the prescan, `f (1)' itself would
-be substituted as an argument, and the inner use of `f' would appear
-during the main scan as an indirect self-reference and would not be
-expanded.  Here, the prescan cancels an undesirable side effect (in the
-medical, not computational, sense of the term) of the special rule for
-self-referential macros.
+be substituted as an actual argument, and the inner use of `f' would
+appear during the main scan as an indirect self-reference and would not
+be expanded.  Here, the prescan cancels an undesirable side effect (in
+the medical, not computational, sense of the term) of the special rule
+for self-referential macros.
 
-   Prescan causes trouble in certain other cases of nested macro calls.
-Here is an example:
+   But prescan causes trouble in certain other cases of nested macro
+calls.  Here is an example:
 
      #define foo  a,b
      #define bar(x) lose(x)
@@ -617,10 +382,11 @@ Here is an example:
      bar(foo)
 
 We would like `bar(foo)' to turn into `(1 + (foo))', which would then
-turn into `(1 + (a,b))'.  Instead, `bar(foo)' expands into `lose(a,b)',
-and you get an error because `lose' requires a single argument.  In
-this case, the problem is easily solved by the same parentheses that
-ought to be used to prevent misnesting of arithmetic operations:
+turn into `(1 + (a,b))'.  But instead, `bar(foo)' expands into
+`lose(a,b)', and you get an error because `lose' requires a single
+argument.  In this case, the problem is easily solved by the same
+parentheses that ought to be used to prevent misnesting of arithmetic
+operations:
 
      #define foo (a,b)
      #define bar(x) lose((x))
@@ -641,9 +407,9 @@ turns a compound statement into an expression:
      #define foo { int a; int b; ... }
 
    There is also one case where prescan is useful.  It is possible to
-use prescan to expand an argument and then stringify it -- if you use
-two levels of macros.  Let's add a new macro `xstr' to the example
-shown above:
+use prescan to expand an argument and then stringify it--if you use two
+levels of macros.  Let's add a new macro `xstr' to the example shown
+above:
 
      #define xstr(s) str(s)
      #define str(s) #s
@@ -653,9 +419,9 @@ shown above:
    This expands into `"4"', not `"foo"'.  The reason for the difference
 is that the argument of `xstr' is expanded at prescan (because `xstr'
 does not specify stringification or concatenation of the argument).
-The result of prescan then forms the argument for `str'.  `str' uses
-its argument without prescan because it performs stringification; but
-it cannot prevent or undo the prescanning already done by `xstr'.
+The result of prescan then forms the actual argument for `str'.  `str'
+uses its argument without prescan because it performs stringification;
+but it cannot prevent or undo the prescanning already done by `xstr'.
 
 
 File: cpp.info,  Node: Cascaded Macros,  Next: Newlines in Args,  Prev: Argument Prescan,  Up: Macro Pitfalls
@@ -670,12 +436,12 @@ to another macro.  This is very common practice.  For example,
      #define TABLESIZE BUFSIZE
 
    This is not at all the same as defining `TABLESIZE' to be `1020'.
-The `#define' for `TABLESIZE' uses exactly the body you specify -- in
-this case, `BUFSIZE' -- and does not check to see whether it too is the
+The `#define' for `TABLESIZE' uses exactly the body you specify--in
+this case, `BUFSIZE'--and does not check to see whether it too is the
 name of a macro.
 
-   It's only when you *use* `TABLESIZE' that the result of its
-expansion is checked for more macro names.
+   It's only when you *use* `TABLESIZE' that the result of its expansion
+is checked for more macro names.
 
    This makes a difference if you change the definition of `BUFSIZE' at
 some point in the source file.  `TABLESIZE', defined as shown, will
@@ -696,16 +462,22 @@ File: cpp.info,  Node: Newlines in Args,  Prev: Cascaded Macros,  Up: Macro Pitf
 Newlines in Macro Arguments
 ---------------------------
 
-   The invocation of a function-like macro can extend over many logical
-lines.  The ISO C standard requires that newlines within a macro
-invocation be treated as ordinary whitespace.  This means that when the
-expansion of a function-like macro replaces its invocation, it appears
-on the same line as the macro name did.  Thus line numbers emitted by
-the compiler or debugger refer to the line the invocation started on,
-which might be different to the line containing the argument causing the
-problem.
+   Traditional macro processing carries forward all newlines in macro
+arguments into the expansion of the macro.  This means that, if some of
+the arguments are substituted more than once, or not at all, or out of
+order, newlines can be duplicated, lost, or moved around within the
+expansion.  If the expansion consists of multiple statements, then the
+effect is to distort the line numbers of some of these statements.  The
+result can be incorrect line numbers, in error messages or displayed in
+a debugger.
 
-   Here is an example illustrating this:
+   The GNU C preprocessor operating in ANSI C mode adjusts appropriately
+for multiple use of an argument--the first use expands all the
+newlines, and subsequent uses of the same argument produce no newlines.
+But even in this mode, it can produce incorrect line numbering if
+arguments are used out of order, or not used at all.
+
+   Here is an example illustrating this problem:
 
      #define ignore_second_arg(a,b,c) a; c
      
@@ -714,11 +486,11 @@ problem.
                         syntax error);
 
 The syntax error triggered by the tokens `syntax error' results in an
-error message citing line three -- the line of ignore_second_arg --
-even though the problematic code comes from line five.
+error message citing line four, even though the statement text comes
+from line five.
 
 
-File: cpp.info,  Node: Conditionals,  Next: Assertions,  Prev: Macros,  Up: Top
+File: cpp.info,  Node: Conditionals,  Next: Combining Sources,  Prev: Macros,  Up: Top
 
 Conditionals
 ============
@@ -730,13 +502,13 @@ arithmetic expression or whether a name is defined as a macro.
 
    A conditional in the C preprocessor resembles in some ways an `if'
 statement in C, but it is important to understand the difference between
-them.  The condition in an `if' statement is tested during the
-execution of your program.  Its purpose is to allow your program to
-behave differently from run to run, depending on the data it is
-operating on.  The condition in a preprocessing conditional directive is
-tested when your program is compiled.  Its purpose is to allow different
-code to be included in the program depending on the situation at the
-time of compilation.
+them.  The condition in an `if' statement is tested during the execution
+of your program.  Its purpose is to allow your program to behave
+differently from run to run, depending on the data it is operating on.
+The condition in a preprocessing conditional directive is tested when
+your program is compiled.  Its purpose is to allow different code to be
+included in the program depending on the situation at the time of
+compilation.
 
 * Menu:
 
@@ -744,6 +516,7 @@ time of compilation.
 * Syntax: Conditional Syntax.   How conditionals are written.
 * Deletion: Deleted Code.       Making code into a comment.
 * Macros: Conditionals-Macros.  Why conditionals are used with macros.
+* Assertions::		        How and why to use assertions.
 * Errors: #error Directive.     Detecting inconsistent compilation parameters.
 
 
@@ -810,7 +583,7 @@ practice because it helps people match the `#endif' to the
 corresponding `#if'.  Such comments should always be used, except in
 short conditionals that are not nested.  In fact, you can put anything
 at all after the `#endif' and it will be ignored by the GNU C
-preprocessor, but only comments are acceptable in ISO Standard C.
+preprocessor, but only comments are acceptable in ANSI Standard C.
 
    EXPRESSION is a C expression of integer type, subject to stringent
 restrictions.  It may contain
@@ -830,8 +603,7 @@ restrictions.  It may contain
 
    * Arithmetic operators for addition, subtraction, multiplication,
      division, bitwise operations, shifts, comparisons, and logical
-     operations (`&&' and `||').  The latter two obey the usual
-     short-circuiting rules of standard C.
+     operations (`&&' and `||').
 
    * Identifiers that are not macros, which are all treated as zero(!).
 
@@ -866,8 +638,8 @@ looks like:
 
    If EXPRESSION is nonzero, and thus the TEXT-IF-TRUE is active, then
 `#else' acts like a failing conditional and the TEXT-IF-FALSE is
-ignored.  Conversely, if the `#if' conditional fails, the TEXT-IF-FALSE
-is considered included.
+ignored.  Contrariwise, if the `#if' conditional fails, the
+TEXT-IF-FALSE is considered included.
 
 
 File: cpp.info,  Node: #elif Directive,  Prev: #else Directive,  Up: Conditional Syntax
@@ -888,8 +660,8 @@ than two possible alternatives.  For example, you might have
      #endif /* X != 2 */
      #endif /* X != 1 */
 
-   Another conditional directive, `#elif', allows this to be
-abbreviated as follows:
+   Another conditional directive, `#elif', allows this to be abbreviated
+as follows:
 
      #if X == 1
      ...
@@ -930,13 +702,13 @@ but they must be entire conditionals (balanced `#if' and `#endif').
 
    Conversely, do not use `#if 0' for comments which are not C code.
 Use the comment delimiters `/*' and `*/' instead.  The interior of `#if
-0' must consist of complete tokens; in particular, single-quote
-characters must balance.  Comments often contain unbalanced
-single-quote characters (known in English as apostrophes).  These
+0' must consist of complete tokens; in particular, singlequote
+characters must balance.  But comments often contain unbalanced
+singlequote characters (known in English as apostrophes).  These
 confuse `#if 0'.  They do not confuse `/*'.
 
 
-File: cpp.info,  Node: Conditionals-Macros,  Next: #error Directive,  Prev: Deleted Code,  Up: Conditionals
+File: cpp.info,  Node: Conditionals-Macros,  Next: Assertions,  Prev: Deleted Code,  Up: Conditionals
 
 Conditionals and Macros
 -----------------------
@@ -981,7 +753,7 @@ use of the `defined' operator returns 0, because the name is no longer
 defined.  If the macro is defined again with another `#define',
 `defined' will recommence returning 1.
 
-   Conditionals that test whether a single macro is defined are very
+   Conditionals that test whether just one name is defined are very
 common, so there are two special short conditional directives for this
 case.
 
@@ -1005,10 +777,10 @@ case.
 
    * Macros are a common way of allowing users to customize a program
      for different machines or applications.  For example, the macro
-     `BUFSIZE' might be defined in a configuration file for your program
-     that is included as a header file in each source file.  You would
-     use `BUFSIZE' in a preprocessing conditional in order to generate
-     different code depending on the chosen configuration.
+     `BUFSIZE' might be defined in a configuration file for your
+     program that is included as a header file in each source file.  You
+     would use `BUFSIZE' in a preprocessing conditional in order to
+     generate different code depending on the chosen configuration.
 
    * Macros can be defined or undefined with `-D' and `-U' command
      options when you compile the program.  You can arrange to compile
@@ -1022,50 +794,10 @@ case.
 preprocessor directives or command-line options.
 
 
-File: cpp.info,  Node: #error Directive,  Prev: Conditionals-Macros,  Up: Conditionals
-
-The `#error' and `#warning' Directives
---------------------------------------
-
-   The directive `#error' causes the preprocessor to report a fatal
-error.  The tokens forming the rest of the line following `#error' are
-used as the error message, and not macro-expanded.  Internal whitespace
-sequences are each replaced with a single space.  The line must consist
-of complete tokens.
-
-   You would use `#error' inside of a conditional that detects a
-combination of parameters which you know the program does not properly
-support.  For example, if you know that the program will not run
-properly on a Vax, you might write
-
-     #ifdef __vax__
-     #error "Won't work on Vaxen.  See comments at get_last_object."
-     #endif
-
-*Note Nonstandard Predefined::, for why this works.
-
-   If you have several configuration parameters that must be set up by
-the installation in a consistent way, you can use conditionals to detect
-an inconsistency and report it with `#error'.  For example,
-
-     #if HASH_TABLE_SIZE % 2 == 0 || HASH_TABLE_SIZE % 3 == 0 \
-         || HASH_TABLE_SIZE % 5 == 0
-     #error HASH_TABLE_SIZE should not be divisible by a small prime
-     #endif
-
-   The directive `#warning' is like the directive `#error', but causes
-the preprocessor to issue a warning and continue preprocessing.  The
-tokens following `#warning' are used as the warning message, and not
-macro-expanded.
-
-   You might use `#warning' in obsolete header files, with a message
-directing the user to the header file which should be used instead.
-
-
-File: cpp.info,  Node: Assertions,  Next: Line Control,  Prev: Conditionals,  Up: Top
+File: cpp.info,  Node: Assertions,  Next: #error Directive,  Prev: Conditionals-Macros,  Up: Conditionals
 
 Assertions
-==========
+----------
 
    "Assertions" are a more systematic alternative to macros in writing
 conditionals to test what sort of computer or system the compiled
@@ -1086,9 +818,8 @@ assertion looks like this:
 You must use a properly formed identifier for PREDICATE.  The value of
 ANSWER can be any sequence of words; all characters are significant
 except for leading and trailing whitespace, and differences in internal
-whitespace sequences are ignored.  (This is similar to the rules
-governing macro redefinition.)  Thus, `x + y' is different from `x+y'
-but equivalent to ` x + y '.  `)' is not allowed in an answer.
+whitespace sequences are ignored.  Thus, `x + y' is different from
+`x+y' but equivalent to `x + y'.  `)' is not allowed in an answer.
 
    Here is a conditional to test whether the answer ANSWER is asserted
 for the predicate PREDICATE:
@@ -1153,9 +884,9 @@ this:
 
    Each time you do this, you assert a new true answer for PREDICATE.
 Asserting one answer does not invalidate previously asserted answers;
-they all remain true.  The only way to remove an answer is with
+they all remain true.  The only way to remove an assertion is with
 `#unassert'.  `#unassert' has the same syntax as `#assert'.  You can
-also remove all answers to a PREDICATE like this:
+also remove all assertions about PREDICATE like this:
 
      #unassert PREDICATE
 
@@ -1163,7 +894,44 @@ also remove all answers to a PREDICATE like this:
 run `gcc' or `cpp'.  *Note Invocation::.
 
 
-File: cpp.info,  Node: Line Control,  Next: Other Directives,  Prev: Assertions,  Up: Top
+File: cpp.info,  Node: #error Directive,  Prev: Assertions,  Up: Conditionals
+
+The `#error' and `#warning' Directives
+--------------------------------------
+
+   The directive `#error' causes the preprocessor to report a fatal
+error.  The rest of the line that follows `#error' is used as the error
+message.  The line must consist of complete tokens.
+
+   You would use `#error' inside of a conditional that detects a
+combination of parameters which you know the program does not properly
+support.  For example, if you know that the program will not run
+properly on a Vax, you might write
+
+     #ifdef __vax__
+     #error "Won't work on Vaxen.  See comments at get_last_object."
+     #endif
+
+*Note Nonstandard Predefined::, for why this works.
+
+   If you have several configuration parameters that must be set up by
+the installation in a consistent way, you can use conditionals to detect
+an inconsistency and report it with `#error'.  For example,
+
+     #if HASH_TABLE_SIZE % 2 == 0 || HASH_TABLE_SIZE % 3 == 0 \
+         || HASH_TABLE_SIZE % 5 == 0
+     #error HASH_TABLE_SIZE should not be divisible by a small prime
+     #endif
+
+   The directive `#warning' is like the directive `#error', but causes
+the preprocessor to issue a warning and continue preprocessing.  The
+rest of the line that follows `#warning' is used as the warning message.
+
+   You might use `#warning' in obsolete header files, with a message
+directing the user to the header file which should be used instead.
+
+
+File: cpp.info,  Node: Combining Sources,  Next: Other Directives,  Prev: Conditionals,  Up: Top
 
 Combining Source Files
 ======================
@@ -1204,10 +972,10 @@ input file.  `#line' has three variants:
 `#line LINENUM FILENAME'
      Here LINENUM is a decimal integer constant and FILENAME is a
      string constant.  This specifies that the following line of input
-     came originally from source file FILENAME and its line number
-     there was LINENUM.  Keep in mind that FILENAME is not just a file
-     name; it is surrounded by double-quote characters so that it looks
-     like a string constant.
+     came originally from source file FILENAME and its line number there
+     was LINENUM.  Keep in mind that FILENAME is not just a file name;
+     it is surrounded by doublequote characters so that it looks like a
+     string constant.
 
 `#line ANYTHING ELSE'
      ANYTHING ELSE is checked for macro calls, which are expanded.  The
@@ -1224,7 +992,7 @@ directives.  They start with just `#' instead of `#line', but this is
 followed by a line number and file name as in `#line'.  *Note Output::.
 
 
-File: cpp.info,  Node: Other Directives,  Next: Output,  Prev: Line Control,  Up: Top
+File: cpp.info,  Node: Other Directives,  Next: Output,  Prev: Combining Sources,  Up: Top
 
 Miscellaneous Preprocessing Directives
 ======================================
@@ -1232,7 +1000,7 @@ Miscellaneous Preprocessing Directives
    This section describes three additional preprocessing directives.
 They are not very useful, but are mentioned for completeness.
 
-   The "null directive" consists of a `#' followed by a newline, with
+   The "null directive" consists of a `#' followed by a Newline, with
 only whitespace (including comments) in between.  A null directive is
 understood as a preprocessing directive but has no effect on the
 preprocessor output.  The primary significance of the existence of the
@@ -1240,18 +1008,11 @@ null directive is that an input line consisting of just a `#' will
 produce no output, rather than a line of output containing just a `#'.
 Supposedly some old C programs contain such lines.
 
-   The ISO standard specifies that the effect of the `#pragma'
-directive is implementation-defined.  The GNU C preprocessor recognizes
-some pragmas, and passes unrecognized ones through to the preprocessor
-output, so they are available to the compilation pass.
-
-   In line with the C99 standard, which introduces a STDC namespace for
-C99 pragmas, the preprocessor introduces a GCC namespace for GCC
-pragmas.  Supported GCC preprocessor pragmas are of the form `#pragma
-GCC ...'.  For backwards compatibility previously supported pragmas are
-also recognized without the `GCC' prefix, however that use is
-deprecated.  Pragmas that are already deprecated are not recognized with
-a `GCC' prefix.
+   The ANSI standard specifies that the effect of the `#pragma'
+directive is implementation-defined.  In the GNU C preprocessor,
+`#pragma' directives are not used, except for `#pragma once' (*note
+Once-Only::.).  However, they are left in the preprocessor output, so
+they are available to the compilation pass.
 
    The `#ident' directive is supported for compatibility with certain
 other systems.  It is followed by a line of text.  On some systems, the
@@ -1260,14 +1021,43 @@ the text is ignored and this directive has no effect.  Typically
 `#ident' is only used in header files supplied with those systems where
 it is meaningful.
 
-   The `#pragma GCC dependency' allows you to check the relative dates
-of the current file and another file. If the other file is more recent
-than the current file, a warning is issued. This is useful if the
-include file is derived from the other file, and should be regenerated.
-The other file is searched for using the normal include search path.
-Optional trailing text can be used to give more information in the
-warning message.
+
+File: cpp.info,  Node: Output,  Next: Invocation,  Prev: Other Directives,  Up: Top
 
-     #pragma GCC dependency "parse.y"
-     #pragma GCC dependency "/usr/include/time.h" rerun /path/to/fixincludes
+C Preprocessor Output
+=====================
+
+   The output from the C preprocessor looks much like the input, except
+that all preprocessing directive lines have been replaced with blank
+lines and all comments with spaces.  Whitespace within a line is not
+altered; however, unless `-traditional' is used, spaces may be inserted
+into the expansions of macro calls to prevent tokens from being
+concatenated.
+
+   Source file name and line number information is conveyed by lines of
+the form
+
+     # LINENUM FILENAME FLAGS
+
+which are inserted as needed into the middle of the input (but never
+within a string or character constant).  Such a line means that the
+following line originated in file FILENAME at line LINENUM.
+
+   After the file name comes zero or more flags, which are `1', `2',
+`3', or `4'.  If there are multiple flags, spaces separate them.  Here
+is what the flags mean:
+
+`1'
+     This indicates the start of a new file.
+
+`2'
+     This indicates returning to a file (after having included another
+     file).
+
+`3'
+     This indicates that the following text comes from a system header
+     file, so certain warnings should be suppressed.
+
+`4'
+     This indicates that the following text should be treated as C.
 

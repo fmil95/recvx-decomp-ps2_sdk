@@ -1,12 +1,12 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *                   I/O Proseccor sample Code
  *                          Version 1.20
  *                           Shift-JIS
  *
- *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
  *
  *                       ezbgm.irx - bgm_main.c
@@ -27,40 +27,42 @@
 
 ModuleInfo Module = {"ezbgm_driver", 0x0102 };
 
-extern int sce_bgm_loop (void);
+extern int sce_bgm_loop();
 extern volatile int gStThid;
 
-int create_th (void);
+int create_th();
 
-/*
- *	スタートルーチン
- */
-int
-start (void)
+int start ()
 {
-    struct ThreadParam param;
-    int th;
+	struct ThreadParam param;
+	int th;
 
-    sceSifInitRpc (0);
+	CpuEnableIntr();
 
-    printf ("EzBGM driver version 1.2.1\n");
+	if( ! sceSifCheckInit() )
+		sceSifInit();
+	sceSifInitRpc(0);
 
-    param.attr         = TH_C;
-    param.entry        = sce_bgm_loop;
-    param.initPriority = BASE_priority-2;
-    param.stackSize    = 0x800;
-    param.option       = 0;
-    th = CreateThread (&param);
-    if (th > 0) {
-	StartThread (th, 0);	/* メイン処理スレッドの開始 */
-	printf (" Exit EzBGM loader thread \n");
-	return RESIDENT_END;
-    } else {
-	return NO_RESIDENT_END;
-    }
+	printf("EzBGM driver version 1.2.0\n");
+
+	param.attr         = TH_C;
+	param.entry        = sce_bgm_loop;
+	param.initPriority = BASE_priority-2;
+	param.stackSize    = 0x800;
+	param.option       = 0;
+	th = CreateThread(&param);
+	if (th > 0) {
+		StartThread(th,0);
+		printf(" Exit EzBGM loader thread \n");
+		return 0;
+	}else{
+		return 1;
+	}
 }
+
 
 /* ----------------------------------------------------------------
  *	End on File
  * ---------------------------------------------------------------- */
 /* DON'T ADD STUFF AFTER THIS */
+

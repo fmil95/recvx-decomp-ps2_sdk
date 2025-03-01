@@ -1,0 +1,115 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                    パフォーマンスカウンタライブラリ
+                   =================================
+
+
+ 1 関数
+========
+
+=========================================================================
+scePcGetCounter0                                                   [関数]
+=========================================================================
+                                                    カウンタ 0 の値の取得
+[形式]
+        int scePcGetCounter0(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        カウンタ 0 の値
+        
+[解説]
+        カウンタ 0 の値を取得します。
+        
+
+=========================================================================
+scePcGetCounter1                                                   [関数]
+=========================================================================
+                                                    カウンタ 1 の値の取得
+[形式]
+        int scePcGetCounter1(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        カウンタ 1 の値
+        
+[解説]
+        カウンタ 1 の値を取得します。
+        
+
+=========================================================================
+scePcStart                                                         [関数]
+=========================================================================
+                                       Performance Counter による計測開始
+[形式]
+        void scePcStart(
+        	int control,
+        	int counter0,
+        	int counter1
+        )
+        
+[引数]
+        control		カウントしたいイベント等の設定値
+        counter0		カウンタ 0 の初期値
+        counter1		カウンタ 1 の初期値
+        
+[返り値]
+        なし
+        
+[解説]
+        パフォーマンスカウンタによる計測を開始します。
+        
+        control には、それぞれのカウンタ毎に計測したいイベントとそのイベ
+        ントを計測したいプロセッサモードの論理和を指定します。カウンタ・
+        イネーブルもあわせて指定します。イベント値につきましては、イベン
+        トコードを参照してください。プロセッサモード値とカウンタ・イネー
+        ブルは以下のようになります。
+        
+        SCE_PC_EXL0	(1  <<  1)	// exception	mode for counter0
+        SCE_PC_K0	(1  <<  2)	// kernel	mode for counter0
+        SCE_PC_S0	(1  <<  3)	// supervisor	mode for counter0
+        SCE_PC_U0	(1  <<  4)	// user	mode for counter0
+        SCE_PC_EXL1	(1  << 11)	// exception	mode for counter1
+        SCE_PC_K1	(1  << 12)	// kernel	mode for counter1
+        SCE_PC_S1	(1  << 13)	// supervisor	mode for counter1
+        SCE_PC_U1	(1  << 14)	// user	mode for counter1
+        
+        SCE_PC_CTE	(1  << 31)	// counter enable
+        
+        カウンタ・イネーブルを指定しない場合には計測は開始されません。
+        
+        たとえば、カウンタ 0 でプロセッササイクルを全てのモードで、カウン
+        タ 1 で D$ ミスをユーザーモードのみで計測したい場合のcontrol の値
+        は以下のコードで表すことができます。
+        
+        control  = SCE_PC0_CPU_CYCLE | (SCE_PC_U0|SCE_PC_S0|SCE_PC_K0|
+        SCE_PC_EXL0);
+        control |= SCE_PC1_DCACHE_MISS | (SCE_PC_U1);
+        control |= SCE_PC_CTE;
+        
+        カウンタ 0/1 の内ひとつしか使用しない場合は、使用しない方のカウン
+        タイベントには必ず NO_EVENT を指定してください。
+        
+
+=========================================================================
+scePcStop                                                          [関数]
+=========================================================================
+                                               Performance Counter の停止
+[形式]
+        void scePcStop(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        パフォーマンスカウンタを停止します。

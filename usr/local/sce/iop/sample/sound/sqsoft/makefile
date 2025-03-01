@@ -1,7 +1,7 @@
 #
 #  IOP test program Makefile
 #
-#  $Id: makefile,v 1.10 2000/11/09 09:35:57 kaol Exp $
+#  $Id: makefile,v 1.9 2000/03/02 01:46:43 xokano Exp $
 #
 ifeq ($(wildcard PathDefs),)
 PathDefs:
@@ -11,12 +11,11 @@ else
 include PathDefs
 endif
 
-TOPDIR  = /usr/local/sce
-INCDIR  = -I$(TOPDIR)/common/include
+INCDIR  = -I/usr/local/sce/common/include
 
 #----------- rules --------------
 %.irx: %.o
-	$(LINK.o) $^ -L$(TOPDIR)/iop/lib -L./ $(LOADLIBES) $(LDLIBS) \
+	$(LINK.o) $^ -L../../../lib -L./ $(LOADLIBES) $(LDLIBS) \
 	-ilb=libsd.ilb \
 	-ilb=modssyn.ilb -ilb=modmidi.ilb -o $@
 

@@ -132,8 +132,7 @@ body MemWin::build_win {} {
   iwidgets::spinint $itk_interior.f.cntl -labeltext " Address " -width 20 \
     -command "after idle $this update_address_cb" \
     -increment "after idle $this incr_addr -1" \
-    -decrement "after idle $this incr_addr 1" \
-    -validate {} \
+    -decrement "after idle $this incr_addr 1" -validate alphanumeric \
     -textbackground white
 
   $itk_interior.f.cntl delete 0 end
@@ -241,7 +240,6 @@ body MemWin::edit { cell } {
   global _mem ${this}_memval
 
   #debug "edit $cell"
-
   if {$Running || $cell == ""} { return }
   set rc [split $cell ,]
   set row [lindex $rc 0]
@@ -320,12 +318,10 @@ body MemWin::toggle_enabled {} {
   if {$_mem($this,enabled)} {
     update_address
     set bg white
-    set state normal
   } else {
     set bg gray
-    set state disabled
   }
-  $itk_interior.t config -background $bg -state $state
+  $itk_interior.t config -bg $bg
 }
 
 # ------------------------------------------------------------------
@@ -394,15 +390,14 @@ body MemWin::newsize {height} {
     return 
   }
   
+  # make sure row height is set
+  if {$rheight == ""} {
+    set rheight [lindex [$itk_interior.t bbox 0,0] 3]
+  }
+
   # only add rows if numbytes is zero
   if {$numbytes == 0} {
     ::update idletasks
-
-    # make sure row height is set
-    if {$rheight == ""} {
-      set rheight [lindex [$itk_interior.t bbox 0,0] 3]
-    }
-
     set theight [winfo height $itk_interior.t]
     set Numrows [expr {$theight / $rheight}]
     $itk_interior.t configure -rows $Numrows
@@ -433,7 +428,7 @@ body MemWin::update_address { {ae ""} } {
     # Looks like an expression
     set retVal [catch {gdb_eval "$addr_exp"} current_addr]
     if {$retVal || [string match "No symbol*" $current_addr] || \
-	  [string match "Invalid *" $current_addr]} {
+	  [string match "Invalid *" $current_addr] } {
       BadExpr $current_addr
       return
     }
@@ -468,7 +463,7 @@ body MemWin::update_address { {ae ""} } {
   }
   
   # set table background
-  $itk_interior.t config -bg white -state normal
+  $itk_interior.t config -bg white
   catch {update_addr}
 }
 
@@ -481,7 +476,7 @@ body MemWin::BadExpr {errTxt} {
     set new_entry 0
   }
   # set table background to gray
-  $itk_interior.t config -bg gray -state disabled
+  $itk_interior.t config -bg gray
   set current_addr $saved_addr
   set saved_addr ""
 }
@@ -492,30 +487,9 @@ body MemWin::BadExpr {errTxt} {
 # ------------------------------------------------------------------
 body MemWin::incr_addr {num} {
 
-  if {$current_addr == ""} {
-    return
-  }
-  set old_addr $current_addr
-
-  # You have to be careful with address calculations here, since the memory
-  # space of the target may be bigger than a long, which will cause Tcl to
-  # overflow.  Let gdb do the calculations instead.
-
-  set current_addr [gdb_cmd "printf \"%u\", $current_addr + $num * $bytes_per_row"]
-
-  # A memory address less than zero is probably not a good thing...
-  #
-
-  if {($num < 0 && [gdb_eval "$current_addr > $old_addr"]) \
-      ||($num > 0 && [gdb_eval "$current_addr < $old_addr"]) } {
-    bell
-    set current_addr $old_addr
-    return
-  }
-  $itk_interior.t config -background white -state normal
+  set i [$itk_interior.f.cntl get]
+  incr current_addr [expr {$num * $bytes_per_row}]
   update_addr
-  $itk_interior.f.cntl clear
-  $itk_interior.f.cntl insert 0 [format "0x%x" $current_addr]
 }
 
 
@@ -528,7 +502,6 @@ body MemWin::update_addr {} {
 
   gdbtk_busy
   set addr $current_addr
-
   set row 0
 
   if {$numbytes == 0} {
@@ -544,8 +517,7 @@ body MemWin::update_addr {} {
     set asc ""
   }
 
-  set retVal [catch {gdb_get_mem $addr $format \
-		       $size $nb $bytes_per_row $asc} vals]
+  set retVal [catch {gdb_get_mem $addr $format $size $nb $bytes_per_row $asc} vals]
  
   if {$retVal || [llength $vals] == 0}  {
     # FIXME gdb_get_mem does not always return an error when addr is invalid.
@@ -612,13 +584,6 @@ body MemWin::reconfig {} {
   destroy $itk_interior.f.cntl $itk_interior.f $itk_interior.t $itk_interior.sx 
   
   set dont_size 1
-
-  # If the fonts change, then you will need to recompute the 
-  # row height.  Ditto for switch from fixed number of rows to
-  # depends on size.
-
-  set rheight ""
-
   build_win
   set dont_size 0
   ::update

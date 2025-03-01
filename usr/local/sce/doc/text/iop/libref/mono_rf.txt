@@ -1,0 +1,121 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                         CSL MIDIモノフォニック
+                        =======================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceMidiMono_Env                                                  [構造体]
+=========================================================================
+                                                                     環境
+[構造]
+        #define sceMidiMono_MaxKey	128
+        #define sceMidiMono_MaxCh	16
+        typedef struct {
+        	unsigned char	mono[sceMidiMono_MaxCh];
+        	unsigned char	onKey[sceMidiMono_MaxCh];
+        	unsigned char	velocity[sceMidiMono_MaxCh];
+        	unsigned char	key[sceMidiMono_MaxCh][sceMidiMono_MaxKey];
+        } sceMidiMono_Env;
+        
+[メンバ]
+        mono		sceMidiMonoOn:	モノアサインを行なう
+        		sceMidiMonoOff:	モノアサインを行なわない
+        その他		Mono Module 内部変数
+        
+[解説]
+        入力バッファ毎に処理状態等を指定・管理するための環境バッファです。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceMidiMono_ATick                                                  [関数]
+=========================================================================
+                                                             割り込み処理
+[形式]
+        int sceMidiMono_ATick(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        割り込みから定期的に呼出される処理です。
+        
+
+=========================================================================
+sceMidiMono_GetEnv                                                 [関数]
+=========================================================================
+                                                       環境アドレスの取得
+[形式]
+        sceMidiMono_Env *sceMidiMono_GetEnv(
+        	sceCslCtx *module_context,
+        	unsigned int port_number
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        
+[返り値]
+        環境アドレス
+        
+[解説]
+        port_numberに対応する環境アドレスを取得します。
+
+=========================================================================
+sceMidiMono_Init                                                   [関数]
+=========================================================================
+                                                                   初期化
+[形式]
+        int sceMidiMono_Init(
+        	sceCslCtx *module_context
+        )
+        
+[引数]
+        module_context 	Module Context のアドレス
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        MIDIモノフォニック モジュールの内部環境の初期化を行ないます
+        
+
+=========================================================================
+sceMidiMono_SetMono                                                [関数]
+=========================================================================
+                                                   モノアサインのスイッチ
+[形式]
+        int sceMidiMono_SetMono(
+        	sceCslCtx *module_context,
+        	unsigned int port_number,
+        	unsigned char channel,
+        	int switch
+        )
+        
+[引数]
+        module_context	Module Context のアドレス
+        port_number	入力ポート番号
+        channel		MIDI チャンネル(0--15)
+        switch		sceMidiMonoOn:	モノアサインを行なう
+        		sceMidiMonoOff:	モノアサインを行なわない
+        
+[返り値]
+        成功の場合	0
+        
+[解説]
+        チャンネル毎にアサイン方法を指定します。

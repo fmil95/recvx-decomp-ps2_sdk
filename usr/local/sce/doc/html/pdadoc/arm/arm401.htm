@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>arm401</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A><A HREF="arm400.htm"> [章目次]</A>
+<A HREF="arm400.htm">[前]</A> <A HREF="arm402.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H3>4.1 <A NAME="anchor2318313"></A>算術命令</H3>
+
+<BLOCKQUOTE>
+  <P>以下のコード・シーケンスは、<A NAME="anchor3303195"></A>ARMのデータ処理命令の使用方法をいくつか示しています。</P>
+</BLOCKQUOTE>
+
+<H4></H4>
+
+<H4>4.1.1 <A NAME="anchor2798968"></A>ビット・フィールド操作</H4>
+
+<BLOCKQUOTE>
+  <P>ARMシフトおよび論理操作は、ビット操作に大変便利です。</P>
+  <PRE>; Extract 8 bits from the top of R2 and insert them into
+; the bottom of R3, shifting up the data in R3
+; R0 is a temporary value
+        MOV     R0, R2, LSR #24        ; extract top bits from R2 into R0
+        ORR     R3, R0, R3, LSL #8     ; shift up R3 and insert R0</PRE>
+</BLOCKQUOTE>
+
+<H4>4.1.2 <A NAME="anchor1787987"></A>定数による乗算</H4>
+
+<BLOCKQUOTE>
+  <P>シフト、シフト付き加算、およびシフト付き反転減算を組み合わせて使用して、定数による<A NAME="anchor3148664"></A>乗算を実行することができます。</P>
+  <PRE>; multiplication of R0 by 2<SUP>n</SUP>
+        MOV     R0, R0, LSL #n           ; R0 = R0 &lt;&lt; n 
+; multiplication of R0 by 2<SUP>n</SUP> + 1
+        ADD     R0, R0, R0, LSL #n       ; R0 = R0 + (R0 &lt;&lt; n) 
+; multiplication of R0 by 2<SUP>n</SUP> - 1
+        RSB     R0, R0, R0, LSL #n       ; R0 = (R0 &lt;&lt; n) - R0 
+; R0 = R0 * 10 + R1
+        ADD     R0, R0, R0, LSL #2       ; R0 = R0 * 5
+        ADD     R0, R1, R0, LSL #1       ; R0 = R1 + R0 * 2
+; R0 = R0 * 100 + R1
+        ADD     R0, R0, R0, LSL #2        ; R2 = R0 * 5
+        ADD     R0, R0, R0, LSL #2        ; R0 = R0 * 5 (R0 = R0 * 25)
+        ADD     R0, R1, R0, LSL #2        ; R0 = R1 + R0 * 4</PRE>
+</BLOCKQUOTE>
+
+<H4>4.1.3 多倍精度算術</H4>
+
+<BLOCKQUOTE>
+  <P>算術命令により、64ビットまたはそれ以上のオブジェクト<A NAME="anchor744222"></A>で効率的な算術ができます。</P>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%">
+      <B>加算、およびキャリ付き加算</B></TD> 
+      <TD WIDTH="50%">
+      多倍精度加算を実行します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%">
+      <B>減算、およびキャリ付き減算</B></TD> 
+      <TD WIDTH="50%">
+      減算を実行します</TD> 
+    </TR>
+    <TR>
+      <TD WIDTH="50%">
+      <B>比較</B></TD> 
+      <TD WIDTH="50%">
+      比較に使用できます</TD> 
+    </TR>
+  </TABLE></P>
+  <PRE>; On entry      : R0 and R1 hold a 64-bit number
+;               : (R0 is least significant)
+;               : R2 and R3 hold a second 64-bit number
+; On exit       : R0 and R1 hold the 64-bit sum (or difference) of the 2 numbers
+add64   ADDS    R0, R0, R2     ; add lower halves and update Carry flag
+        ADC     R1, R1, R3     ; add the high halves and Carry flag
+sub64   SUBS    R0, R0, R2     ; subtract lower halves, update Carry
+        SBC     R1, R1, R3     ; subtract high halves and Carry
+; This routine compares two 64-bit numbers
+; On entry: As above
+; On exit: N, Z, and C flags updated correctly
+cmp64   CMP     R1, R3         ; compare high halves, if they are
+        CMPEQ   R0, R2         ; equal, then compare lower halves</PRE>
+  <P>この例では、Vフラグは、正しく更新されません。例えば:</P>
+  <PRE>R1 = 0x00000001, R0 = 0x80000000
+R3 = 0x00000001, R2 = 0x7FFFFFFF</PRE>
+  <P>R0-R2は、32ビット符号に付き数としてオーバーフローします。そして、CMPEQ命令がVフラグをセットします。<BR>
+  しかし、(R1,R0)-(R3,R2)は、64ビット数としてはオーバーフローしません。<BR>
+  Vフラグを正しく更新する別のルーチンは以下の通りです（ただし、フラグは正しくありません）。</P>
+  <PRE>; This routine compares two 64-bit numbers
+; On entry: as above
+; On exit: N, V and C set correctly; R4 is destroyed
+cmp64   SUBS    R4, R0, R2
+        SBCS    R4, R1, R3</PRE>
+</BLOCKQUOTE>
+
+<H4>4.1.4 <A NAME="anchor3445347"></A>エンディアンのスワッピング</H4>
+
+<BLOCKQUOTE>
+  <P>ワード内のバイトの順序（エンディアン）<A NAME="anchor2909359"></A>をスワップするには、以下の2つの方法があります。</P>
+  <P><B>1．最初の方法は、単一のワードに最適です。</B></P>
+  <PRE>
+; On entry   : R0 holds the word to be swapped
+; On exit    : R0 holds the swapped word, R1 is destroyed
+byteswap                             ; R0 = A , B , C , D
+        EOR    R1, R0, R0, ROR #16   ; R1 = A^C,B^D,C^A,D^B
+        BIC    R1, R1, #0xff0000     ; R1 = A^C, 0 ,C^A,D^B
+        MOV    R0, R0, ROR #8        ; R0 = D , A , B , C
+        EOR    R0, R0, R1, LSR #8    ; R0 = D , C , B , A</PRE>
+  <P><B>2．もう一つの方法は、多数のワードのエンディアンをスワップする場合に最適です。</B></P>
+  <PRE>
+; On entry   : R0 holds the word to be swapped
+; On exit    : R0 holds the swapped word,
+;            : R1, R2 and R3 are destroyed
+byteswap     ; first the two-instruction initialization
+             MOV     R2, #0xff          ; R2 = 0xff
+             ORR     R2, R2, #0xff0000  ; R2 = 0x00ff00ff</PRE>
+</BLOCKQUOTE>
+
+<PRE>               ; repeat the following code for each word to swap
+                                             ; R0 =  A  B  C  D
+        AND     R1, R2, R0                   ; R1 =  0  B  0  D
+        AND     R0, R2, R0, ROR #24          ; R0 =  0  C  0  A
+        ORR     R0, R0, R1, ROR #8           ; R0 =  D  C  B  A</PRE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm400.htm">[章目次]</A>
+<A HREF="arm400.htm">[前]</A> <A HREF="arm402.htm">[次]</A> <A 
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

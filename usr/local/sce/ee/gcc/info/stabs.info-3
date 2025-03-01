@@ -68,7 +68,7 @@ Reference Manual', by Ellis and Stroustrup, ISBN 0-201-51459-1);
 `gpcompare.texi' in Cygnus GCC distributions describes the differences
 between GNU mangling and ARM mangling.
 
-     .stabs "name:symbol_descriptor(global function)return_type(int)",
+     .stabs "name:symbol_desriptor(global function)return_type(int)",
              N_FUN, NIL, NIL, code_addr_of_method_start
      
      .stabs "Ameth__5baseAic:F1",36,0,0,_Ameth__5baseAic
@@ -76,7 +76,7 @@ between GNU mangling and ARM mangling.
    Here is the stab for the `this' pointer implicit argument.  The name
 of the `this' pointer is always `this'.  Type 19, the `this' pointer is
 defined as a pointer to type 20, `baseA', but a stab defining `baseA'
-has not yet been emitted.  Since the compiler knows it will be emitted
+has not yet been emited.  Since the compiler knows it will be emited
 shortly, here it just outputs a cross reference to the undefined
 symbol, by prefixing the symbol name with `xs'.
 
@@ -149,8 +149,8 @@ Protections
 ===========
 
    In the simple class definition shown above all member data and
-functions were publicly accessible.  The example that follows contrasts
-public, protected and privately accessible fields and shows how these
+functions were publicly accessable.  The example that follows contrasts
+public, protected and privately accessable fields and shows how these
 protections are encoded in C++ stabs.
 
    If the character following the `FIELD-NAME:' part of the string is
@@ -186,7 +186,7 @@ named `vis' The `priv' field has public visibility (`/0'), type int
 visibility (`/1'), type char (`2') and offset and size `,32,8;'.  The
 `pub' field has type float (`12'), and offset and size `,64,32;'.
 
-   Protections for member functions are signified by one digit embedded
+   Protections for member functions are signified by one digit embeded
 in the field part of the stab describing the method.  The digit is 0 if
 private, 1 if protected and 2 if public.  Consider the C++ class
 definition below:
@@ -209,7 +209,7 @@ descriptors apply to the class name struct tag and struct type.
              meth_name::type_def(22)=sym_desc(method)returning(int);
              :args(int);protection(private)modifier(normal)virtual(no);
              meth_name::type_def(23)=sym_desc(method)returning(char);
-             :args(char);protection(protected)modifier(normal)virtual(no);
+             :args(char);protection(protected)modifier(normal)virual(no);
              meth_name::type_def(24)=sym_desc(method)returning(float);
              :args(float);protection(public)modifier(normal)virtual(no);;",
              N_LSYM,NIL,NIL,NIL
@@ -247,14 +247,14 @@ the class definition below:
              meth_name(VolatileMeth)::type_def(22)=sym_desc(method)
              returning(char);:arg(char);protection(public)modifier(volatile)virt(no)
              meth_name(ConstVolMeth)::type_def(23)=sym_desc(method)
-             returning(float);:arg(float);protection(public)modifier(const volatile)
+             returning(float);:arg(float);protection(public)modifer(const volatile)
              virtual(no);;", ...
 
      .stabs "A:T20=s1ConstMeth::21=##1;:i;2B.;VolatileMeth::22=##2;:c;2C.;
                   ConstVolMeth::23=##12;:f;2D.;;",128,0,0,0
 
 
-File: stabs.info,  Node: Virtual Methods,  Next: Inheritance,  Prev: Method Modifiers,  Up: Cplusplus
+File: stabs.info,  Node: Virtual Methods,  Next: Inheritence,  Prev: Method Modifiers,  Up: Cplusplus
 
 Virtual Methods
 ===============
@@ -308,7 +308,7 @@ a 32 bit unsigned number with the high bit set, followed by a
 semi-colon.
 
    The second number is a type reference to the first base class in the
-inheritance hierarchy defining the virtual member function.  In this
+inheritence hierarchy defining the virtual member function.  In this
 case the class stab describes a base class so the virtual function is
 not overriding any other definition of the method.  Therefore the
 reference is to the type number of the class that the stab is
@@ -320,7 +320,7 @@ third marks the end of the struct definition.
 
    For classes containing virtual functions the very last section of the
 string part of the stab holds a type reference to the first base class.
-This is preceded by `~%' and followed by a final semi-colon.
+This is preceeded by `~%' and followed by a final semi-colon.
 
      .stabs "class_name(A):type_def(20)=sym_desc(struct)struct_bytes(8)
              field_name(Adat):type_ref(int),bit_offset(0),field_bits(32);
@@ -337,24 +337,24 @@ This is preceded by `~%' and followed by a final semi-colon.
              A_virt::23=##1;:i;2A*-2147483647;20;;;~%20;",128,0,0,0
 
 
-File: stabs.info,  Node: Inheritance,  Next: Virtual Base Classes,  Prev: Virtual Methods,  Up: Cplusplus
+File: stabs.info,  Node: Inheritence,  Next: Virtual Base Classes,  Prev: Virtual Methods,  Up: Cplusplus
 
-Inheritance
+Inheritence
 ===========
 
    Stabs describing C++ derived classes include additional sections that
-describe the inheritance hierarchy of the class.  A derived class stab
+describe the inheritence hierarchy of the class.  A derived class stab
 also encodes the number of base classes.  For each base class it tells
-if the base class is virtual or not, and if the inheritance is private
+if the base class is virtual or not, and if the inheritence is private
 or public.  It also gives the offset into the object of the portion of
 the object corresponding to each base class.
 
-   This additional information is embedded in the class stab following
+   This additional information is embeded in the class stab following
 the number of bytes in the struct.  First the number of base classes
 appears bracketed by an exclamation point and a comma.
 
    Then for each base type there repeats a series: a virtual character,
-a visibility character, a number, a comma, another number, and a
+a visibilty character, a number, a comma, another number, and a
 semi-colon.
 
    The virtual character is `1' if the base class is virtual and `0' if
@@ -419,11 +419,11 @@ the derivation of this class is encoded as follows.
 
      .stabs "derived_class_name:symbol_descriptors(struct tag&type)=
              type_descriptor(struct)struct_bytes(32)!num_bases(3),
-             base_virtual(no)inheritance_public(no)base_offset(0),
+             base_virtual(no)inheritence_public(no)base_offset(0),
              base_class_type_ref(A);
-             base_virtual(yes)inheritance_public(no)base_offset(NIL),
+             base_virtual(yes)inheritence_public(no)base_offset(NIL),
              base_class_type_ref(B);
-             base_virtual(no)inheritance_public(yes)base_offset(64),
+             base_virtual(no)inheritence_public(yes)base_offset(64),
              base_class_type_ref(C); ...
 
      .stabs "D:Tt31=s32!3,000,20;100,25;0264,28;$vb25:24,128;Ddat:
@@ -432,15 +432,15 @@ the derivation of this class is encoded as follows.
              28;;D_virt::32:i;2A*-2147483646;31;;;~%20;",128,0,0,0
 
 
-File: stabs.info,  Node: Virtual Base Classes,  Next: Static Members,  Prev: Inheritance,  Up: Cplusplus
+File: stabs.info,  Node: Virtual Base Classes,  Next: Static Members,  Prev: Inheritence,  Up: Cplusplus
 
 Virtual Base Classes
 ====================
 
-   A derived class object consists of a concatenation in memory of the
+   A derived class object consists of a concatination in memory of the
 data areas defined by each base class, starting with the leftmost and
 ending with the rightmost in the list of base classes.  The exception
-to this rule is for virtual inheritance.  In the example above, class
+to this rule is for virtual inheritence.  In the example above, class
 `D' inherits virtually from base class `B'.  This means that an
 instance of a `D' object will not contain its own `B' part but merely a
 pointer to a `B' part, known as a virtual base pointer.
@@ -746,7 +746,7 @@ Field::, for more information about their use.
      Variable on the stack; see *Note Stack Variables::.
 
 `:'
-     C++ nested symbol; see *Note Nested Symbols::.
+     C++ nested symbol; see *Note Nested Symbols::
 
 `a'
      Parameter passed by reference in register; see *Note Reference
@@ -885,7 +885,7 @@ and an equals sign.  It specifies what kind of type is being defined.
 `b'
      Pascal space type (AIX); see *Note Miscellaneous Types::.  Builtin
      integer type (Sun); see *Note Builtin Type Descriptors::.  Const
-     and volatile qualified type (OS9000).
+     and volatile qualfied type (OS9000).
 
 `B'
      Volatile-qualified type; see *Note Miscellaneous Types::.
@@ -1231,10 +1231,10 @@ Questions and Anomalies
      typedefs (symbol descriptor `t') defined at file scope from types
      defined locally to a procedure or other more local scope.  They
      all use the `N_LSYM' stab type.  Types defined at procedure scope
-     are emitted after the `N_RBRAC' of the preceding function and
+     are emited after the `N_RBRAC' of the preceding function and
      before the code of the procedure in which they are defined.  This
      is exactly the same as types defined in the source file between
-     the two procedure bodies.  GDB over-compensates by placing all
+     the two procedure bodies.  GDB overcompensates by placing all
      types in block #1, the block for symbols of file scope.  This is
      true for default, `-ansi' and `-traditional' compiler options.
      (Bugs gcc/1063, gdb/1066.)

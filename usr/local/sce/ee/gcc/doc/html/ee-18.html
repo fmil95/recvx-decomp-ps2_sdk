@@ -1,0 +1,3632 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="GENERATOR" CONTENT="Adobe FrameMaker 5.5/HTML Export Filter">
+<LINK REL="STYLESHEET" HREF="ee.css" CHARSET="ISO-8859-1" TYPE="text/css">
+<TITLE> Emotion Engine Assembler</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<DIV>
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR>
+<TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">
+Emotion Engine Assembler</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A>
+</P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-17.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-19.html">
+To&nbsp;next&nbsp;page</A></P>
+</TD>
+</TR></TABLE>
+<P ALIGN="LEFT">&nbsp;</P>
+<BR>
+<BR>
+<HR ALIGN="center">
+</DIV>
+<H2 CLASS="Heading1">
+<A NAME="pgfId-460567"></A><A NAME="16834"></A><A NAME="marker-461405"></A>Emotion Engine Assembler</H2>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-460880"></A><A NAME="marker-491486"></A>MIPS-specific command-line options</H3>
+<P CLASS="Body">
+<A NAME="pgfId-467991"></A>For a list of available generic assembler options, refer to &quot;Command-Line Options&quot; in <EM CLASS="Emphasis">
+Using AS</EM>
+ in <STRONG CLASS="BoldEmphasis">
+GNUPro Utilities</STRONG>
+. </P>
+<P CLASS="BodyHang1List">
+<A NAME="pgfId-467992"></A><TT CLASS="Code">
+-EL</TT>
+<A NAME="marker-524387"></A></P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-467993"></A>Any MIPS configuration of the assembler can select big-endian or little-endian output at run time. </P>
+<P CLASS="BodyListFollow">
+<A NAME="pgfId-467994"></A>Use <TT CLASS="Code">
+-EL</TT>
+ for little-endian. The default is little-endian.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-460883"></A>Syntax</H3>
+<P CLASS="Body">
+<A NAME="pgfId-460859"></A>For information about the MIPS instruction set, see <STRONG CLASS="BoldEmphasis">
+MIPS RISC Architecture</STRONG>
+, (Kane and Heinrich, Prentice-Hall). For an overview of MIPS assembly conventions, see &quot;Appendix D: Assembly Language Programming&quot; in the same volume.</P>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-460635"></A>Register names</H3>
+<P CLASS="Body">
+<A NAME="pgfId-468023"></A>There are thirty-two 64-bit general (integer) registers, named <TT CLASS="Code">
+'$0..$31'</TT>
+. There are thirty-two 64-bit floating point registers, named <TT CLASS="Code">
+'$f0..$f31'</TT>
+.</P>
+<P CLASS="Body">
+<A NAME="pgfId-468024"></A>The symbols <TT CLASS="Code">
+$0 </TT>
+through <TT CLASS="Code">
+$31 </TT>
+refer to the general-purpose registers.</P>
+<P CLASS="Body">
+<A NAME="pgfId-468159"></A>The following symbols can be used as aliases for individual registers:</P>
+<P CLASS="Body">
+<A NAME="pgfId-468160"></A>&nbsp;</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-468212"></A><A NAME="marker-524388"></A>Emotion Engine Register names</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-468216"></A>Register</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">
+<A NAME="pgfId-468218"></A>Symbol</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468220"></A><TT CLASS="Code">
+$at</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468222"></A><TT CLASS="Code">
+$1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468224"></A><TT CLASS="Code">
+$kt0</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468226"></A><TT CLASS="Code">
+$26</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468228"></A><TT CLASS="Code">
+$kt1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468230"></A><TT CLASS="Code">
+$27</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468232"></A><TT CLASS="Code">
+$gp</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468234"></A><TT CLASS="Code">
+$28</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468236"></A><TT CLASS="Code">
+$sp</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468238"></A><TT CLASS="Code">
+$29</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468240"></A><TT CLASS="Code">
+$fp</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468242"></A><TT CLASS="Code">
+$30</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-460640"></A>Assembler directives</H3>
+<P CLASS="Body">
+<A NAME="pgfId-468541"></A>This is a complete list of Emotion Engine assembler directives</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-468544"></A>Emotion Engine Assembler directives</P>
+</CAPTION>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468554"></A><TT CLASS="Code">
+.abicalls</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468556"></A><TT CLASS="Code">
+.dcb.b</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468558"></A><TT CLASS="Code">
+.fail</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468560"></A><TT CLASS="Code">
+.irepc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468562"></A><TT CLASS="Code">
+.psize</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468564"></A><TT CLASS="Code">
+.abort</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468566"></A><TT CLASS="Code">
+.dcb.d</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468568"></A><TT CLASS="Code">
+.file</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468570"></A><TT CLASS="Code">
+.irp</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468572"></A><TT CLASS="Code">
+.purgem</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468574"></A><TT CLASS="Code">
+.aent</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468576"></A><TT CLASS="Code">
+.dcb.l</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468578"></A><TT CLASS="Code">
+.fill</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468580"></A><TT CLASS="Code">
+.irpc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468582"></A><TT CLASS="Code">
+.quad</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468584"></A><TT CLASS="Code">
+.align</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468586"></A><TT CLASS="Code">
+.dcb.s</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468588"></A><TT CLASS="Code">
+.float</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468590"></A><TT CLASS="Code">
+.lcomm</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468592"></A><TT CLASS="Code">
+.rdata</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468594"></A><TT CLASS="Code">
+.appfile</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468596"></A><TT CLASS="Code">
+.dcb.w</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468598"></A><TT CLASS="Code">
+.fmask</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468600"></A><TT CLASS="Code">
+.lflags</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468602"></A><TT CLASS="Code">
+.rep</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469158"></A><TT CLASS="Code">
+.appline</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468606"></A><TT CLASS="Code">
+.dcb.x</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468608"></A><TT CLASS="Code">
+.format</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468610"></A><TT CLASS="Code">
+.linkonce</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468612"></A><TT CLASS="Code">
+.rept</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469160"></A><TT CLASS="Code">
+.ascii</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469130"></A><TT CLASS="Code">
+.debug</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469132"></A><TT CLASS="Code">
+.frame</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468620"></A><TT CLASS="Code">
+.list</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468622"></A><TT CLASS="Code">
+.rva</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469162"></A><TT CLASS="Code">
+.asciiz</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468626"></A><TT CLASS="Code">
+.double</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468628"></A><TT CLASS="Code">
+.global</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468630"></A><TT CLASS="Code">
+.livereg</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468632"></A><TT CLASS="Code">
+.sbttl</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469164"></A><TT CLASS="Code">
+.asciz</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468636"></A><TT CLASS="Code">
+.ds</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468638"></A><TT CLASS="Code">
+.globl</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468640"></A><TT CLASS="Code">
+.llen</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468642"></A><TT CLASS="Code">
+.sdata</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469166"></A><TT CLASS="Code">
+.balign</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468646"></A><TT CLASS="Code">
+.ds.b</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468648"></A><TT CLASS="Code">
+.gpword</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468650"></A><TT CLASS="Code">
+.loc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468652"></A><TT CLASS="Code">
+.set</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469168"></A><TT CLASS="Code">
+.balignl</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468656"></A><TT CLASS="Code">
+.ds.d</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468658"></A><TT CLASS="Code">
+.half</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468660"></A><TT CLASS="Code">
+.long</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468662"></A><TT CLASS="Code">
+.short</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469170"></A><TT CLASS="Code">
+.balignw</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468666"></A><TT CLASS="Code">
+.ds.l</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468668"></A><TT CLASS="Code">
+.hword</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468670"></A><TT CLASS="Code">
+.lsym</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468672"></A><TT CLASS="Code">
+.single</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469172"></A><TT CLASS="Code">
+.bgnb</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468676"></A><TT CLASS="Code">
+.ds.p</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468678"></A><TT CLASS="Code">
+.if</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468680"></A><TT CLASS="Code">
+.macro</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468682"></A><TT CLASS="Code">
+.skip</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469174"></A><TT CLASS="Code">
+.bss</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468686"></A><TT CLASS="Code">
+.ds.s</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468688"></A><TT CLASS="Code">
+.ifc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468690"></A><TT CLASS="Code">
+.mask</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468692"></A><TT CLASS="Code">
+.space</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-469176"></A><TT CLASS="Code">
+.byte</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468696"></A><TT CLASS="Code">
+.ds.w</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468698"></A><TT CLASS="Code">
+.ifdef</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468700"></A><TT CLASS="Code">
+.mexit</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468702"></A><TT CLASS="Code">
+.spc</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468704"></A><TT CLASS="Code">
+.comm</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468706"></A><TT CLASS="Code">
+.ds.x</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468708"></A><TT CLASS="Code">
+.ifeq</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468710"></A><TT CLASS="Code">
+.mri</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468712"></A><TT CLASS="Code">
+.stabd</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468714"></A><TT CLASS="Code">
+.common</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468716"></A><TT CLASS="Code">
+.dword</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468718"></A><TT CLASS="Code">
+.ifeqs</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468720"></A><TT CLASS="Code">
+.name</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468722"></A><TT CLASS="Code">
+.stabn</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468724"></A><TT CLASS="Code">
+.common.s</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468726"></A><TT CLASS="Code">
+.eject</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468728"></A><TT CLASS="Code">
+.ifge</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468730"></A><TT CLASS="Code">
+.noformat</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468732"></A><TT CLASS="Code">
+.stabs</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468734"></A><TT CLASS="Code">
+.cpadd</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468736"></A><TT CLASS="Code">
+.else</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468738"></A><TT CLASS="Code">
+.ifgt</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468740"></A><TT CLASS="Code">
+.nolist</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468742"></A><TT CLASS="Code">
+.string</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468744"></A><TT CLASS="Code">
+.cpload</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468746"></A><TT CLASS="Code">
+.elsec</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468748"></A><TT CLASS="Code">
+.ifle</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468750"></A><TT CLASS="Code">
+.nopage</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468752"></A><TT CLASS="Code">
+.struct</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468754"></A><TT CLASS="Code">
+.cprestore</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468756"></A><TT CLASS="Code">
+.end</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468758"></A><TT CLASS="Code">
+.iflt</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468760"></A><TT CLASS="Code">
+.octa</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468762"></A><TT CLASS="Code">
+.text</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468764"></A><TT CLASS="Code">
+.data</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468766"></A><TT CLASS="Code">
+.endb</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468768"></A><TT CLASS="Code">
+.ifnc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468770"></A><TT CLASS="Code">
+.offset</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468772"></A><TT CLASS="Code">
+.title</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468774"></A><TT CLASS="Code">
+.dc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468776"></A><TT CLASS="Code">
+.endc</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468778"></A><TT CLASS="Code">
+.ifndef</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468780"></A><TT CLASS="Code">
+.option</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468782"></A><TT CLASS="Code">
+.ttl</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468784"></A><TT CLASS="Code">
+.dc.b</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468786"></A><TT CLASS="Code">
+.endif</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468788"></A><TT CLASS="Code">
+.ifne</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468790"></A><TT CLASS="Code">
+.org</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468792"></A><TT CLASS="Code">
+.verstamp</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468794"></A><TT CLASS="Code">
+.dc.d</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468796"></A><TT CLASS="Code">
+.ent</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468798"></A><TT CLASS="Code">
+.ifnes</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468800"></A><TT CLASS="Code">
+.p2align</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468802"></A><TT CLASS="Code">
+.word</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468804"></A><TT CLASS="Code">
+.dc.l</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468806"></A><TT CLASS="Code">
+.equ</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468808"></A><TT CLASS="Code">
+.ifnotdef</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468810"></A><TT CLASS="Code">
+.p2alignl</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468812"></A><TT CLASS="Code">
+.word</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468814"></A><TT CLASS="Code">
+.dc.s</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468816"></A><TT CLASS="Code">
+.equiv</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468818"></A><TT CLASS="Code">
+.include</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468820"></A><TT CLASS="Code">
+.p2alignw</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468822"></A><TT CLASS="Code">
+.xdef</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468824"></A><TT CLASS="Code">
+.dc.w</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468826"></A><TT CLASS="Code">
+.err</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468828"></A><TT CLASS="Code">
+.insn</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468830"></A><TT CLASS="Code">
+.page</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468832"></A><TT CLASS="Code">
+.xref</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468834"></A><TT CLASS="Code">
+.dc.x</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468836"></A><TT CLASS="Code">
+.exitm</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468838"></A><TT CLASS="Code">
+.int</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468840"></A><TT CLASS="Code">
+.plen</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468842"></A><TT CLASS="Code">
+.xstabs</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468844"></A><TT CLASS="Code">
+.dcb</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468846"></A><TT CLASS="Code">
+.extern</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468848"></A><TT CLASS="Code">
+.irep</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468850"></A><TT CLASS="Code">
+.print</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-468852"></A><TT CLASS="Code">
+.zero</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<H3 CLASS="Heading2">
+<A NAME="pgfId-526269"></A>MIPS <A NAME="marker-526268"></A>synthetic instructions for the Emotion Engine</H3>
+<P CLASS="Body">
+<A NAME="pgfId-526271"></A>The Emotion Engine GAS assembler supports the typical MIPS synthetic instructions <A NAME="marker-526270"></A>(macros). What follows is a list of synthetic instructions supported by the assembler, as well as an example expansion of each instruction.</P>
+<P CLASS="Body">
+<A NAME="pgfId-526273"></A><TT CLASS="Code">
+R1, R2,</TT>
+ etc. represent integer register <A NAME="marker-526272"></A>operands.</P>
+<P CLASS="Body">
+<A NAME="pgfId-526274"></A><TT CLASS="Code">
+I1, I2,</TT>
+ etc. represent integer immediate operands.</P>
+<P CLASS="Body">
+<A NAME="pgfId-527110"></A><TT CLASS="Code">
+F1, F2,</TT>
+ etc. represent floating-point register operands.</P>
+<P CLASS="Body">
+<A NAME="pgfId-527111"></A>Note: <TT CLASS="Code">
+I? </TT>
+represents an immediate integer value that is calculated from the alignment offset of one of the other immediate integer values, and is determined at assemble time.</P>
+<TABLE BORDER="1">
+<CAPTION>
+<P CLASS="TableTitle">
+<A NAME="pgfId-527114"></A>MIPS Synthetic Instructions</P>
+</CAPTION>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527118"></A><STRONG CLASS="BoldEmphasis">
+Instruction</STRONG>
+</P>
+</TH>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527120"></A><STRONG CLASS="BoldEmphasis">
+Expansion</STRONG>
+</P>
+</TH>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527122"></A><TT CLASS="Code">
+abs    R1 R2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527124"></A><TT CLASS="Code">
+   bgez   R2,end_abs</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527125"></A><TT CLASS="Code">
+   move   R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527126"></A><TT CLASS="Code">
+   neg    R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527127"></A><TT CLASS="Code">
+end_abs:</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527129"></A><TT CLASS="Code">
+add    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527131"></A><TT CLASS="Code">
+addi   R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527133"></A><TT CLASS="Code">
+addu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527135"></A><TT CLASS="Code">
+addiu  R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527137"></A><TT CLASS="Code">
+and    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527139"></A><TT CLASS="Code">
+andi   R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527141"></A><TT CLASS="Code">
+beq    R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527143"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527144"></A><TT CLASS="Code">
+beq    R1,$at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527146"></A><TT CLASS="Code">
+beql   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527148"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527149"></A><TT CLASS="Code">
+beql   R1,$at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527151"></A><TT CLASS="Code">
+bge    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527153"></A><TT CLASS="Code">
+slt    $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527154"></A><TT CLASS="Code">
+beqz   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527156"></A><TT CLASS="Code">
+bge    R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527158"></A><TT CLASS="Code">
+slti   $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527159"></A><TT CLASS="Code">
+beqz   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527161"></A><TT CLASS="Code">
+bgel   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527163"></A><TT CLASS="Code">
+slt    $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527164"></A><TT CLASS="Code">
+beqzl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527166"></A><TT CLASS="Code">
+bgel   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527168"></A><TT CLASS="Code">
+slti   $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527169"></A><TT CLASS="Code">
+beqzl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527171"></A><TT CLASS="Code">
+bgeu   R1 R2 I1 </TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527173"></A><TT CLASS="Code">
+sltu   $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527174"></A><TT CLASS="Code">
+beqz   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527176"></A><TT CLASS="Code">
+bgeu   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527178"></A><TT CLASS="Code">
+sltiu  $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527179"></A><TT CLASS="Code">
+beqz   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527181"></A><TT CLASS="Code">
+bgeul  R1 R2 I1  </TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527183"></A><TT CLASS="Code">
+sltu   $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527184"></A><TT CLASS="Code">
+beqzl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527186"></A><TT CLASS="Code">
+bgeul  R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527188"></A><TT CLASS="Code">
+sltiu      $at,R1,I1                   beqzl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527190"></A><TT CLASS="Code">
+bgt    R1 R2 I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527191"></A><TT CLASS="Code">
+</TT>
+&nbsp;</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527193"></A><TT CLASS="Code">
+slt    $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527194"></A><TT CLASS="Code">
+bnez   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527196"></A><TT CLASS="Code">
+bgt    R1 I1 I2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527197"></A><TT CLASS="Code">
+</TT>
+&nbsp;</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527199"></A><TT CLASS="Code">
+slti   $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527200"></A><TT CLASS="Code">
+beqz   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527202"></A><TT CLASS="Code">
+bgtl   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527204"></A><TT CLASS="Code">
+slt    $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527205"></A><TT CLASS="Code">
+bnezl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527207"></A><TT CLASS="Code">
+bgtl   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527209"></A><TT CLASS="Code">
+slti   $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527210"></A><TT CLASS="Code">
+beqzl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527212"></A><TT CLASS="Code">
+bgtu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527214"></A><TT CLASS="Code">
+sltu   $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527215"></A><TT CLASS="Code">
+bnez   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527217"></A><TT CLASS="Code">
+bgtu   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527219"></A><TT CLASS="Code">
+sltiu  $at,R1,I2-1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527220"></A><TT CLASS="Code">
+beqz   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527222"></A><TT CLASS="Code">
+bgtul  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527224"></A><TT CLASS="Code">
+sltu   $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527225"></A><TT CLASS="Code">
+bnezl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527227"></A><TT CLASS="Code">
+bgtul  R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527229"></A><TT CLASS="Code">
+sltiu  $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527230"></A><TT CLASS="Code">
+beqzl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527232"></A><TT CLASS="Code">
+ble    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527234"></A><TT CLASS="Code">
+slt    $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527235"></A><TT CLASS="Code">
+beqz   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527237"></A><TT CLASS="Code">
+ble    R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527239"></A><TT CLASS="Code">
+slti   $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527240"></A><TT CLASS="Code">
+bnez   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527242"></A><TT CLASS="Code">
+blel   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527244"></A><TT CLASS="Code">
+slt    $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527245"></A><TT CLASS="Code">
+beqzl  $at +I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527247"></A><TT CLASS="Code">
+blel   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527249"></A><TT CLASS="Code">
+slti   $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527250"></A><TT CLASS="Code">
+bnezl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527252"></A><TT CLASS="Code">
+bleu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527254"></A><TT CLASS="Code">
+sltu   $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527255"></A><TT CLASS="Code">
+beqz   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527257"></A><TT CLASS="Code">
+bleu   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527259"></A><TT CLASS="Code">
+sltiu  $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527260"></A><TT CLASS="Code">
+bnez   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527262"></A><TT CLASS="Code">
+bleul  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527264"></A><TT CLASS="Code">
+sltu   $at,R2,R1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527265"></A><TT CLASS="Code">
+beqzl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527267"></A><TT CLASS="Code">
+bleul  R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527269"></A><TT CLASS="Code">
+sltiu  $at,R1,I1+1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527270"></A><TT CLASS="Code">
+bnezl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527272"></A><TT CLASS="Code">
+blt    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527274"></A><TT CLASS="Code">
+slt    $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527275"></A><TT CLASS="Code">
+bnez   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527277"></A><TT CLASS="Code">
+blt    R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527279"></A><TT CLASS="Code">
+slti   $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527280"></A><TT CLASS="Code">
+bnez   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527282"></A><TT CLASS="Code">
+bltl   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527284"></A><TT CLASS="Code">
+slt    $at,R1,R2   </TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527285"></A><TT CLASS="Code">
+bnezl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527287"></A><TT CLASS="Code">
+bltl   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527289"></A><TT CLASS="Code">
+slti   $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527290"></A><TT CLASS="Code">
+bnezl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527292"></A><TT CLASS="Code">
+bltu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527294"></A><TT CLASS="Code">
+sltu   $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527295"></A><TT CLASS="Code">
+bnez   $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527297"></A><TT CLASS="Code">
+bltu   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527299"></A><TT CLASS="Code">
+sltiu  $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527300"></A><TT CLASS="Code">
+bnez   $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527302"></A><TT CLASS="Code">
+bltul  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527304"></A><TT CLASS="Code">
+sltu   $at,R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527305"></A><TT CLASS="Code">
+bnezl  $at,+I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527307"></A><TT CLASS="Code">
+bltul  R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527309"></A><TT CLASS="Code">
+sltiu  $at,R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527310"></A><TT CLASS="Code">
+bnezl  $at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527312"></A><TT CLASS="Code">
+bne    R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527314"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527315"></A><TT CLASS="Code">
+bne    R1,$at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527317"></A><TT CLASS="Code">
+bnel   R1 I1 I2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527319"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527320"></A><TT CLASS="Code">
+bnel   R1,$at,+I2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527322"></A><TT CLASS="Code">
+dabs   R1 R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527323"></A><TT CLASS="Code">
+</TT>
+&nbsp;</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527325"></A><TT CLASS="Code">
+   bgez   R2,end_dabs</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527326"></A><TT CLASS="Code">
+   move   R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527327"></A><TT CLASS="Code">
+   dneg   R1,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527328"></A><TT CLASS="Code">
+end_dabs:</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527330"></A><TT CLASS="Code">
+dadd   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527332"></A><TT CLASS="Code">
+daddi  R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527334"></A><TT CLASS="Code">
+daddu  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527336"></A><TT CLASS="Code">
+daddiu R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527338"></A><TT CLASS="Code">
+ddiv   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527340"></A><TT CLASS="Code">
+   bnez   R3,L1_ddiv</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527341"></A><TT CLASS="Code">
+   ddiv   $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527342"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527343"></A><TT CLASS="Code">
+L1_ddiv:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527344"></A><TT CLASS="Code">
+   daddiu $at,$zero,-1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527345"></A><TT CLASS="Code">
+   bne R3,$at,L2_ddiv</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527346"></A><TT CLASS="Code">
+   daddiu $at,$zero,1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527347"></A><TT CLASS="Code">
+   dsll32 $at,$at,0x1f</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527348"></A><TT CLASS="Code">
+   bne R2,$at,L2_ddiv</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527349"></A><TT CLASS="Code">
+   nop</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527350"></A><TT CLASS="Code">
+   break  0x6</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527351"></A><TT CLASS="Code">
+L2_ddiv:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527352"></A><TT CLASS="Code">
+   mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527354"></A><TT CLASS="Code">
+ddiv   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527356"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527357"></A><TT CLASS="Code">
+ddiv   $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527358"></A><TT CLASS="Code">
+mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527808"></A><TT CLASS="Code">
+ddivu  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527810"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527811"></A><TT CLASS="Code">
+ddivu  $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527812"></A><TT CLASS="Code">
+mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527360"></A><TT CLASS="Code">
+ddivu  R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527362"></A><TT CLASS="Code">
+   bnez   R3,L1_ddivu</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527363"></A><TT CLASS="Code">
+   ddivu  $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527364"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527365"></A><TT CLASS="Code">
+L1_ddivu</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527366"></A><TT CLASS="Code">
+   mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527374"></A><TT CLASS="Code">
+div    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527376"></A><TT CLASS="Code">
+   bnez   R3,L1_div</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527377"></A><TT CLASS="Code">
+   div    $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527378"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527379"></A><TT CLASS="Code">
+L1_div:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527380"></A><TT CLASS="Code">
+   li     $at,-1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527381"></A><TT CLASS="Code">
+   bne    R3,$at,L2_div</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527382"></A><TT CLASS="Code">
+   lui    $at,0x8000</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527383"></A><TT CLASS="Code">
+   bne    R2,$at,L2_div</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527384"></A><TT CLASS="Code">
+   nop</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527385"></A><TT CLASS="Code">
+   break  0x6</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527386"></A><TT CLASS="Code">
+L2_div:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527387"></A><TT CLASS="Code">
+   mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527389"></A><TT CLASS="Code">
+div    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527391"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527392"></A><TT CLASS="Code">
+div    $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527393"></A><TT CLASS="Code">
+mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527395"></A><TT CLASS="Code">
+divu   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527397"></A><TT CLASS="Code">
+   bnez   R3,L1_divu</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527398"></A><TT CLASS="Code">
+   divu   $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527399"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527400"></A><TT CLASS="Code">
+L1_divu:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527401"></A><TT CLASS="Code">
+   mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527403"></A><TT CLASS="Code">
+divu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527405"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527406"></A><TT CLASS="Code">
+divu   $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527407"></A><TT CLASS="Code">
+mflo   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527409"></A><TT CLASS="Code">
+dla    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527411"></A><TT CLASS="Code">
+li     R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527412"></A><TT CLASS="Code">
+addu   R1,R1,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527414"></A><TT CLASS="Code">
+dli    R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527416"></A><TT CLASS="Code">
+li     R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527418"></A><TT CLASS="Code">
+drem   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527420"></A><TT CLASS="Code">
+   bnez   R3,L1_drem</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527421"></A><TT CLASS="Code">
+   ddiv   $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527422"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527423"></A><TT CLASS="Code">
+L1_drem</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527424"></A><TT CLASS="Code">
+   daddiu $at,$zero,-1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527425"></A><TT CLASS="Code">
+   bne    R3,$at,300</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527426"></A><TT CLASS="Code">
+   daddiu $at,$zero,1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527427"></A><TT CLASS="Code">
+   dsll32 $at,$at,0x1f</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527428"></A><TT CLASS="Code">
+   bne R2,$at,L2_drem</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527429"></A><TT CLASS="Code">
+   nop</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527430"></A><TT CLASS="Code">
+   break  0x6</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527431"></A><TT CLASS="Code">
+L2_drem:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527432"></A><TT CLASS="Code">
+   mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527434"></A><TT CLASS="Code">
+drem    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527436"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527437"></A><TT CLASS="Code">
+ddiv   $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527438"></A><TT CLASS="Code">
+mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527440"></A><TT CLASS="Code">
+dremu  R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527442"></A><TT CLASS="Code">
+   bnez   R3,L1_dremu</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527443"></A><TT CLASS="Code">
+   ddivu  $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527444"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527445"></A><TT CLASS="Code">
+L1_dremu:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527446"></A><TT CLASS="Code">
+   mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527448"></A><TT CLASS="Code">
+dremu  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527450"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527451"></A><TT CLASS="Code">
+ddivu  $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527452"></A><TT CLASS="Code">
+mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527454"></A><TT CLASS="Code">
+dsub   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527456"></A><TT CLASS="Code">
+daddi  R1,R2,-I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527458"></A><TT CLASS="Code">
+dsubu  R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527460"></A><TT CLASS="Code">
+daddiu R1,R2,-I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527462"></A><TT CLASS="Code">
+flush  R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527464"></A><TT CLASS="Code">
+lwr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527466"></A><TT CLASS="Code">
+jal    R1 R2</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527468"></A><TT CLASS="Code">
+jalr   R1,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527470"></A><TT CLASS="Code">
+jal    R1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527472"></A><TT CLASS="Code">
+jalr   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527474"></A><TT CLASS="Code">
+la     R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527476"></A><TT CLASS="Code">
+li     R1,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527477"></A><TT CLASS="Code">
+addu   R1,R1,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527479"></A><TT CLASS="Code">
+l.d    F1 I1(R1)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527481"></A><TT CLASS="Code">
+ldc1   F1,I1(R1)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527483"></A><TT CLASS="Code">
+ldc3   R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527485"></A><TT CLASS="Code">
+ld     R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527487"></A><TT CLASS="Code">
+li.d   R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527489"></A><TT CLASS="Code">
+li     R1,0x????</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527490"></A><TT CLASS="Code">
+dsll32 R1,R1,0xf</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527492"></A><TT CLASS="Code">
+li.d   F1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527494"></A><TT CLASS="Code">
+li     $at,0x????</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527495"></A><TT CLASS="Code">
+$at,   $at,0xf</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527496"></A><TT CLASS="Code">
+dmtc1  $at,F1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527498"></A><TT CLASS="Code">
+li.s   R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527500"></A><TT CLASS="Code">
+lui    R1,0x????</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527502"></A><TT CLASS="Code">
+li.s   F1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527504"></A><TT CLASS="Code">
+lui    $at,0x????</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527505"></A><TT CLASS="Code">
+mtc1   $at,F1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527507"></A><TT CLASS="Code">
+lwc0   R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527509"></A><TT CLASS="Code">
+ll     R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527511"></A><TT CLASS="Code">
+l.s    F1 I1(R1)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527513"></A><TT CLASS="Code">
+lwc1   F1,I1(R1)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527515"></A><TT CLASS="Code">
+lcache R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527517"></A><TT CLASS="Code">
+lwl    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527519"></A><TT CLASS="Code">
+lwr    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527521"></A><TT CLASS="Code">
+lwr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527523"></A><TT CLASS="Code">
+nor    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527525"></A><TT CLASS="Code">
+ori    R1,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527526"></A><TT CLASS="Code">
+nor    R1,R1,$zero</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527528"></A><TT CLASS="Code">
+or     R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527530"></A><TT CLASS="Code">
+ori    R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527532"></A><TT CLASS="Code">
+rem    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527534"></A><TT CLASS="Code">
+   bnez   R3,L1_rem</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527535"></A><TT CLASS="Code">
+   div    $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527536"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527537"></A><TT CLASS="Code">
+L1_rem:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527538"></A><TT CLASS="Code">
+   li     $at,-1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527539"></A><TT CLASS="Code">
+   bne    R3,$at,4c0</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527540"></A><TT CLASS="Code">
+   lui    $at,0x8000</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527541"></A><TT CLASS="Code">
+   bne    R2,$at,L1_rem</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527542"></A><TT CLASS="Code">
+   nop</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527543"></A><TT CLASS="Code">
+   break  0x6</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527544"></A><TT CLASS="Code">
+L2_rem:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527545"></A><TT CLASS="Code">
+   mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527547"></A><TT CLASS="Code">
+rem    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527549"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527550"></A><TT CLASS="Code">
+div    $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527551"></A><TT CLASS="Code">
+mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527553"></A><TT CLASS="Code">
+remu   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527555"></A><TT CLASS="Code">
+   bnez   R3,L1_remu</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527556"></A><TT CLASS="Code">
+   divu   $zero,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527557"></A><TT CLASS="Code">
+   break  0x7</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527558"></A><TT CLASS="Code">
+L1_remu:</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527559"></A><TT CLASS="Code">
+   mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527561"></A><TT CLASS="Code">
+remu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527563"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527564"></A><TT CLASS="Code">
+divu   $zero,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527565"></A><TT CLASS="Code">
+mfhi   R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527567"></A><TT CLASS="Code">
+rol    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527569"></A><TT CLASS="Code">
+negu   $at,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527570"></A><TT CLASS="Code">
+srlv   $at,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527571"></A><TT CLASS="Code">
+sllv   R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527572"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527574"></A><TT CLASS="Code">
+rol    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527576"></A><TT CLASS="Code">
+sll    $at,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527577"></A><TT CLASS="Code">
+srl    R1,R2,32-I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527578"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527580"></A><TT CLASS="Code">
+ror    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527582"></A><TT CLASS="Code">
+negu   $at,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527583"></A><TT CLASS="Code">
+sllv   $at,R2,$at</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527584"></A><TT CLASS="Code">
+srlv   R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527585"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527587"></A><TT CLASS="Code">
+ror    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527589"></A><TT CLASS="Code">
+srl    $at,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527590"></A><TT CLASS="Code">
+sll    R1,R2,32-I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527591"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527593"></A><TT CLASS="Code">
+sdc3   R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527595"></A><TT CLASS="Code">
+sd     R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527597"></A><TT CLASS="Code">
+s.d    F1 I1(R1)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527599"></A><TT CLASS="Code">
+sdc1   F1,I1(R1)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527601"></A><TT CLASS="Code">
+seq    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527603"></A><TT CLASS="Code">
+xor    R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527604"></A><TT CLASS="Code">
+sltiu  R1,R1,1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527606"></A><TT CLASS="Code">
+seq    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527608"></A><TT CLASS="Code">
+xori   R1,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527609"></A><TT CLASS="Code">
+sltiu  R1,R1,1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527611"></A><TT CLASS="Code">
+sge    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527613"></A><TT CLASS="Code">
+slt    R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527614"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527616"></A><TT CLASS="Code">
+sge    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527618"></A><TT CLASS="Code">
+slti   R1,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527619"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527621"></A><TT CLASS="Code">
+sgeu   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527623"></A><TT CLASS="Code">
+sltu   R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527624"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527626"></A><TT CLASS="Code">
+sgeu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527628"></A><TT CLASS="Code">
+sltiu  R1,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527629"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527631"></A><TT CLASS="Code">
+sgt    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527633"></A><TT CLASS="Code">
+slt    R1,R3,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527635"></A><TT CLASS="Code">
+sgt    R1 R2 I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527636"></A><TT CLASS="Code">
+</TT>
+&nbsp;</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527638"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527639"></A><TT CLASS="Code">
+slt    R1,$at,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527641"></A><TT CLASS="Code">
+sgtu   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527643"></A><TT CLASS="Code">
+sltu   R1,R3,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527645"></A><TT CLASS="Code">
+sgtu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527647"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527648"></A><TT CLASS="Code">
+sltu   R1,$at,R2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527650"></A><TT CLASS="Code">
+sle    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527652"></A><TT CLASS="Code">
+slt    R1,R3,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527653"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527655"></A><TT CLASS="Code">
+sle    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527657"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527658"></A><TT CLASS="Code">
+slt    R1,$at,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527659"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527661"></A><TT CLASS="Code">
+sleu   R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527663"></A><TT CLASS="Code">
+sltu   R1,R3,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527664"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527666"></A><TT CLASS="Code">
+sleu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527668"></A><TT CLASS="Code">
+li     $at,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527669"></A><TT CLASS="Code">
+sltu   R1,$at,R2</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527670"></A><TT CLASS="Code">
+xori   R1,R1,0x1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527672"></A><TT CLASS="Code">
+slt    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527674"></A><TT CLASS="Code">
+slti   R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527676"></A><TT CLASS="Code">
+sltu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527678"></A><TT CLASS="Code">
+sltiu  R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527680"></A><TT CLASS="Code">
+sne    R1 R2 R3</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527682"></A><TT CLASS="Code">
+xor    R1,R2,R3</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527683"></A><TT CLASS="Code">
+sltu   R1,$zero,R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527685"></A><TT CLASS="Code">
+sne    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527687"></A><TT CLASS="Code">
+xori   R1,R2,I1</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527688"></A><TT CLASS="Code">
+sltu   R1,$zero,R1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527690"></A><TT CLASS="Code">
+sub    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527692"></A><TT CLASS="Code">
+addi   R1,R2,-I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527694"></A><TT CLASS="Code">
+subu   R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527696"></A><TT CLASS="Code">
+addiu  R1,R2,-I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527698"></A><TT CLASS="Code">
+swc0   R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527700"></A><TT CLASS="Code">
+sc     R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527702"></A><TT CLASS="Code">
+s.s    F1 I1(R1)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527704"></A><TT CLASS="Code">
+swc1   F1,I1(R1)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527706"></A><TT CLASS="Code">
+scache R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527708"></A><TT CLASS="Code">
+swl    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527710"></A><TT CLASS="Code">
+invalidate R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527712"></A><TT CLASS="Code">
+swr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527714"></A><TT CLASS="Code">
+teq    R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527716"></A><TT CLASS="Code">
+teqi   R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527718"></A><TT CLASS="Code">
+tge    R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527720"></A><TT CLASS="Code">
+tgei   R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527722"></A><TT CLASS="Code">
+tgeu   R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527724"></A><TT CLASS="Code">
+tgeiu  R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527726"></A><TT CLASS="Code">
+tlt    R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527728"></A><TT CLASS="Code">
+tlti   R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527730"></A><TT CLASS="Code">
+tltu   R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527732"></A><TT CLASS="Code">
+tltiu  R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527734"></A><TT CLASS="Code">
+tne    R1 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527736"></A><TT CLASS="Code">
+tnei   R1,I1</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527738"></A><TT CLASS="Code">
+trunc.w.d F1 F2 R1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527740"></A><TT CLASS="Code">
+trunc.w.d F1,F2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527742"></A><TT CLASS="Code">
+trunc.w.s F1 F2 R1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527744"></A><TT CLASS="Code">
+trunc.w.s F1,F2</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527746"></A><TT CLASS="Code">
+uld    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527748"></A><TT CLASS="Code">
+ldl    R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527749"></A><TT CLASS="Code">
+ldr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527751"></A><TT CLASS="Code">
+ulh    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527753"></A><TT CLASS="Code">
+lb     R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527754"></A><TT CLASS="Code">
+lbu    $at,I1(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527755"></A><TT CLASS="Code">
+sll    R1,R1,0x8</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527756"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527758"></A><TT CLASS="Code">
+ulhu    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527760"></A><TT CLASS="Code">
+lbu    R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527761"></A><TT CLASS="Code">
+lbu    $at,I1(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527762"></A><TT CLASS="Code">
+sll    R1,R1,0x8</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527763"></A><TT CLASS="Code">
+or     R1,R1,$at</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527765"></A><TT CLASS="Code">
+ulw    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527767"></A><TT CLASS="Code">
+lwl    R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527768"></A><TT CLASS="Code">
+lwr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527770"></A><TT CLASS="Code">
+usd    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527772"></A><TT CLASS="Code">
+sdl    R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527773"></A><TT CLASS="Code">
+sdr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527775"></A><TT CLASS="Code">
+ush    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527777"></A><TT CLASS="Code">
+sb     R1,I1(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527778"></A><TT CLASS="Code">
+srl    $at,R1,0x8</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527779"></A><TT CLASS="Code">
+sb     $at,I?(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527781"></A><TT CLASS="Code">
+usw    R1 I1(R2)</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527783"></A><TT CLASS="Code">
+swl    R1,I?(R2)</TT>
+</P>
+<P CLASS="CellBody">
+<A NAME="pgfId-527784"></A><TT CLASS="Code">
+swr    R1,I1(R2)</TT>
+</P>
+</TD>
+</TR>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527786"></A><TT CLASS="Code">
+xor    R1 R2 I1</TT>
+</P>
+</TD>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">
+<A NAME="pgfId-527788"></A><TT CLASS="Code">
+xori   R1,R2,I1</TT>
+</P>
+</TD>
+</TR>
+</TABLE>
+<HR ALIGN="center">
+<TABLE CLASS="ECOS" WIDTH="98%" BORDER="0" ALIGN="LEFT" CELLPADDING="1">
+<TR><TH COLSPAN="3" ALIGN="center">
+<P CLASS="Gotos">Emotion Engine Assembler</P>
+</TH></TR>
+<TR><TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-15.html">
+To&nbsp;main&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-17.html">
+To&nbsp;previous&nbsp;page</A></P></TD>
+<TD  ALIGN="center">
+<P CLASS="Gotos">
+<A HREF="ee-19.html">
+To&nbsp;next&nbsp;page</A></P></TD>
+</TR></TABLE>
+</BODY>
+</HTML>

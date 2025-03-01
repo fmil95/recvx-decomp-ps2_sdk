@@ -1,0 +1,193 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+                  Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+Scissoring Sample Program (CORE&VU0)
+
+<Description of the Sample>
+
+        This sample program allows to cut the polygon at the clipping boundary 
+	by using the CORE&VU0 macro mode enabling the new polygon which does not
+ 	protrude the boundary is generated and displayed.  The sample program is
+	for both Triangle and Triangle strip.  The yellow line on the screen 
+	describes the clipping area which can be operated by the controller. 
+	Normaly, this area should be set to the frame of (x, y)=(+/-2048) to 
+	refrain the polygon from protruding the clipping area of GS.  Since the
+ 	Z buffer effective range (near surface and far surface of the z 
+	direction) should also be defined, cuts the polygon with care for not to 
+	protrude this range.  The object which is cut front plane has a section 
+	view. Generally, scissoring is used on purpose of preventing the
+	polygon	close to the viewpoint from displaying in the unnaturally 
+	chipped state.
+
+        (eg.) ground, road, wall 
+
+<File>
+
+        main.c          : Main program
+        main.h          : Prototype declaration in the main program
+        defines.h       : Prototype declaration used in each *.c file
+        cube.s          : Object data (cube)
+        torus1.s        : Object data (doughnut)
+        tex128.dsm      : Texture data
+        remake.c        : A function group to automatically generate the 
+		 	  polygon which is cut at the clip surface.
+			
+<Activating the Program>
+
+        % make          : Compiles the program
+        % make run      : Executes the program
+
+        After the compilation, the program is also executable with the 
+	following:
+
+        % dsedb
+        > run main.elf
+
+<Using the Controller>
+
+        Up/Down directional button: Rotation around x-axis (viewpoint)
+        Left/Right directional button: Rotation around y-axis (viewpoint)
+        L1L2    :  Translation around z-axis (viewpoint, back and forth)
+        Triangle/Cross button    : Modification of a clipping area (y direction)
+        Square/Circle button  : Modification of a clipping area (x direction)
+        R1R2    : Modification of a clipping area (xy direction)
+        select button: Model switching (cube, torus)
+        start button: Switching the scissoring polygon display
+		      (TriangleFan or LineStrip)
+
+<Note>
+
+    [Important]  
+
+	1. As to associating the boundary surface of nearZ and farZ with the 
+	Zbuffer value in the view volume, there are a few points attention
+	should be paid.  Normally, the arithmetic operations are performed in 	   
+	floating-point numbers in both nearZ surface and farZ surface.
+	However, since Zbuffer value is represented in integer, nearZ surface 	   
+	and farZ surface is changed to be the integer representation by
+	specific instruction such as a FTOI instructon.  
+	Generally, association is made using the marginal value so that the
+ 	desired z value in integer representation is obtained.  
+     
+	For example, in the case of 24bits Zbuffer, setting is made
+	(16777215.0->FTOI->0xffffff) so that the point on the nearZ surface be
+	16777215.0 (eg.Z=1.0) by the floating-point operation.
+       
+        However, the fixed-point part is 23 bits in the 32bits floating-point
+	number representation, and reliable significant digits will be
+	approximately 6 to 7 digits at the most.  Therefore, the result of the
+	1.0->16777215.0	operation may largely exceed 16777215.0 due to the 
+	calculational error.  In such a case, the Zbuffer value falls in error 
+	which results in zero.  To make sure to avoid this happens, it is
+	effective to set the corresponding value of the nearZ surface to
+	16777000.0 by sacrifysing the Zbuffer width.  With the program like this 
+	sample, if it is critical to the nearZ surface, the extra attention 
+	should be paid to the calculation precision of the Z value in the
+	Zbuffer.
+       
+	2. To calculate the cross section, obtains the point of intersection of 
+	each edges of polygon and the cut surface.
+	At the same time, the vertex information (vertex,normal,color,textureUV)
+	needs to be interpolated.  Especially, attention should be paid to the 
+	normal interpolation. 
+	
+	If polygon is displayed with gouraud shading, the color of the point on 
+	the edge of the polygon is obtained by the endpoint which is linear
+	interpolation of the vertex color.  Therefore, if normal is linear 
+	interpolated without careful consideration, the correct lighting color 
+	cannot be obtained.
+
+	To avoid this problem, linear interpolate the color to be passed to GS, 
+	after calculating the lighting color of the vertex.  Consequently, the 
+	interpolation necessary elements are (vertex, GScolor, textureUV).  
+        
+
+    Outline of the Procedure
+
+        The new polygon which is generated by cutting generates and draws by 
+	TriangleFan on the assumption that it is convex polygon.
+        
+	The triangle polygon consists of 3 edges.  If this is cut by a surface,
+	each two edges have a point of intersection, and a new polygon can be 
+	created by connecting these two points of intersection.  The new polygon 
+	is displayable by TriangleFan.  Then, cuts this polygon by another 
+	surface.  Now, this polygon has two points of intersection of the two
+ 	edges which can create another new polygon by being connected.  If the
+	cutting process is executed recursively, a polygon which fits in the
+	desired area (within a cross section group) is eventually generated.
+        
+	With this sample, the cutting process is executed in each of the 6 clip 
+	surfaces (+x,-x, +y,-y, +z,-z) to generate the final scissoring polygon.
+	
+	(Reference) 
+		 Computer Graphics --princeples and practice--
+                            SECOND EDITION
+                 authors:  James Foley, Andries van Dam,
+                         Steven Feiner, John Hughes
+                 publisher: ADDISON-WESLEY PUBLISHING COMPANEY 
+             
+                 Section 3.14 Clipping Polygons(pp124-127)
+
+
+    The outline of the processing is as follows.
+
+        ===== main.c =====
+        main():
+
+        1. Sets the double buffer, loads the texture and opens the pad
+        2. Reads the information from the pad
+        3. Generates the packet for scissoring polygon and transfers to GS
+	   (with clipping)
+        4. Scissoring processes the clipped polygon 
+	5. Generates the packet for scissoring polygon and transfers to GS
+        6. Transfers the packet of the clipped object data to GS
+	7. Returns to 2.
+
+    Detailed description of the program
+
+        InitNodeArraySet():
+        The function for initializing the NodeArraySet structure which manages
+	the vertex array prepared for TriangleFan. 
+        
+        InitScissorPlane();
+        Initializes the ScissorPlaneArray structure to retain the clipping
+	surface information.
+
+        ResetNodeArraySet();
+        The function for initializing the vertex array structure used for the
+	recursive scissoring process.
+
+        FlipNodeArray();
+        The function for flipping which allows the more effective use of the
+	vertex array for TriangleFan by the double buffer process.
+	
+        PushTriangleNodeArray();
+        The function for registration and maintaining of the information on the
+	triangle polygon to be passed to the scissoring process. 
+        
+        ClipCheck();
+        The function for checking whether if the cross section is overstriding 
+	the cut surface when detecting the surface by the scissoring.  
+	The clipping is checked among the connecting vertexs forming
+	TriangleFan.  
+
+        InterpNode();
+        The function for obtaining the connecting line of a point of 
+	intersection and the surface to generate the new connecting vertex 
+	when the cross section section is determined. 
+	
+        ScissorTriangle();
+        Executes the scissoring process of the triangle polygon.
+
+        DrawScissorPolygon();
+        Perspective transforms the scissoring processed polygon (TriangleFan).
+	Generates and transfers the packet for GS transfer.
+
+        MakePacket();
+	Perspective transforms the ordinary object data with clipping process
+	and generates the packet for GS transfer.  The clipped triangle polygon
+	is passed to the scissoring process.
+        
+

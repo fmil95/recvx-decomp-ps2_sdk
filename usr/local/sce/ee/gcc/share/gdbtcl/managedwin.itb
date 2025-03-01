@@ -1,17 +1,3 @@
-# Managed window for GDBtk.
-# Copyright 1998, 1999 Cygnus Solutions
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
 body ManagedWin::reconfig {} {}
 
 
@@ -20,31 +6,22 @@ body ManagedWin::window_name {wname {iname ""}} {
   wm title $top $wname
   if {$iname != ""} {
     wm iconname $top $iname
-  } else {
-    wm iconname $top $wname
   }
 }
 
-# ------------------------------------------------------------
-# pickle - This is the base class pickle method.  It returns a
-#  a command that can be used to recreate this particular window.  
-# ------------------------------------------------------------
-body ManagedWin::pickle {} {
-  return [list ManagedWin::open [namespace tail [info class]]]
-}
 
 body ManagedWin::reveal {} {
   # Do this update to flush all changes before deiconifying the window.
   update idletasks
-  
+
   set top [winfo toplevel [namespace tail $this]]
-  raise $top
   wm deiconify $top
-  
+
   # I don't understand this next line and no one commented it, so it's gone.
   #focus -force [focus -lastfor $top]
-  
+
   focus $top
+  raise $top
 }
 
 body ManagedWin::restart {} {
@@ -60,86 +37,36 @@ body ManagedWin::restart {} {
   }
 }
 
-# ------------------------------------------------------------------
-#  shutdown - This writes all the active windows to the preferences file,
-#  so they can be restored at startup.
-#  FIXME: Currently assumes only ONE window per type...
-# ------------------------------------------------------------------
+body ManagedWin::open { args } {
+  debug "$args"
 
-body ManagedWin::shutdown {} {
-  set activeWins {}
-  foreach win $manage_active {
-    if {[$win isa ManagedWin]} {
-      lappend activeWins [$win pickle]
-    }
-  }
-  pref set gdb/window/active $activeWins
-}
-
-# ------------------------------------------------------------------
-#  startup - This restores all the windows that were opened at shutdown.
-#  FIXME: Currently assumes only ONE window per type...
-# ------------------------------------------------------------------
-
-body ManagedWin::startup {} {
-  debug "Got active list [pref get gdb/window/active]"
-
-  foreach cmd [pref get gdb/window/active] {
-    eval $cmd
-  }
-  ManagedWin::open SrcWin
-}
-
-body ManagedWin::open_dlg {class args} {
-  
-  set newwin [eval _open $class $args]
-  if {$newwin != ""} {
-    $newwin reveal
-    $newwin post
-  }
-}
-
-
-body ManagedWin::open {class args} {
-  
-  set newwin [eval _open $class $args]
-  if {$newwin != ""} {
-    if {[$newwin isa ModalDialog]} {
-      after idle "$newwin reveal; $newwin post"
-    } else {
-      after idle "$newwin reveal"
-    }
-  }
-  
-  return $newwin
-}
-
-body ManagedWin::_open { class args } {
-  debug "$class $args"
-  
   parse_args force
-  
+
   if {!$force} {
     # check all windows for one of this type
+    set win [lindex $args 0]
     foreach obj $manage_active {
-      if {[$obj isa $class]} {
+      if {[$obj isa $win]} {
 	$obj reveal
 	return $obj
       }
     }
-    
   }
+
   # need to create a new window
-  return [eval _create $class $args]
+  return [eval _create $args]
 }
 
-body ManagedWin::_create { class args } {
+body ManagedWin::_create { args } {
+
+  set class [lindex $args 0]
+  set args [lrange $args 1 end]
   
   set win [string tolower $class]
   debug "win=$win args=$args"
-  
+
   parse_args {center transient {over ""}} 
-  
+
   # increment window numbers until we get an unused one
   set i 0
   while {[winfo exists .$win$i]} { incr i }
@@ -166,15 +93,15 @@ body ManagedWin::_create { class args } {
       break
     }
   }
-  
+
   if {[catch {pack $newwin -expand yes -fill both}]} {
     dbug W "packing of $newwin failed: $::errorInfo"
     return ""
   }
-  
+
   wm maxsize $top $screenwidth $screenheight
   wm minsize $top 20 20
-  
+
   if {$over != ""} {
     # center new window over widget
     set t [winfo toplevel [namespace tail $over]]
@@ -189,19 +116,12 @@ body ManagedWin::_create { class args } {
     set y [expr {[winfo screenheight $top] / 2 - [winfo reqheight $top] / 2}]
     wm geometry $top +$x+$y
   }
-  
+
   if {$transient} {
     wm resizable $top 0 0
     wm transient $top .
-  } elseif {$::tcl_platform(platform) == "unix"} {
-    # Modal dialogs DONT get Icons...
-    if {[pref get gdb/use_icons] && ![$newwin isa ModalDialog]} {
-      set icon [make_icon_window ${top}_icon]
-      wm iconwindow $top $icon
-      bind $icon <Double-1> "$newwin reveal"
-    }
   }
-  
+
   if {[info exists ::env(GDBTK_TEST_RUNNING)] && $::env(GDBTK_TEST_RUNNING)} {
     set g "+100+100"
     wm geometry $top $g
@@ -248,8 +168,15 @@ body ManagedWin::_create { class args } {
 
   bind $top <Alt-F4> [list delete object $newwin]
 
+  if {[$newwin isa ModalDialog]} {
+    after idle "$newwin reveal; $newwin post"
+  } else {
+    after idle "$newwin reveal"
+  }
+  
   return $newwin
 }
+
 
 body ManagedWin::find { win } {
   debug "$win"
@@ -288,17 +215,3 @@ body ManagedWin::thaw_me {} {
   ::update idletasks
 }
 
-# ------------------------------------------------------------------
-#  make_icon_window - create a small window with an icon in
-#  it for use by certain Unix window managers.
-# ------------------------------------------------------------------
-
-body ManagedWin::make_icon_window {name {file "gdbtk_icon"}} {
-  if {![winfo exists $name]} {
-    toplevel $name
-    label $name.im -image \
-      [image create photo icon_photo -file [file join $::gdb_ImageDir $file.gif]]
-  }
-  pack $name.im
-  return $name
-}

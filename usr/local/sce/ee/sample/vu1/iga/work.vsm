@@ -1,0 +1,215 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - iga -
+ *
+ *                         Version 0.1.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : work.vsm
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *      0.1.0           Mar,26,1999     okadaa    1st version
+ */
+
+;
+; RotTransPers + NormalColor 
+;
+;	VU-MEM  0-3   Local/Screen matrix
+;		4-7   Local/World(View) matrix
+;		8-11  light matrix
+;		12-15 light color
+;		16    vertex color
+;		35    work area
+;		120-  input0
+;				0 GIFtag
+;				1-34 vertex
+;				35-68 normal
+;				69-102 uv
+;		240-  input1
+;				0 GIFtag
+;				1-34 vertex
+;				35-68 normal
+;				69-102 uv
+;		600-  output
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.vu
+main:    SUB.xyzw VF01, VF00, VF00	IADDIU VI02, VI00, 4 ; L->W
+	 SUB.xyzw VF22, VF00, VF00	IADDIU VI03, VI00, 8 ; light
+	 NOP				LQI.xyzw VF02, (VI02++) ; L->W
+	 NOP				LQI.xyzw VF16, (VI03++) ; light
+	 NOP				LQI.xyzw VF17, (VI03++) ; light
+	 NOP				LQI.xyzw VF18, (VI03++) ; light
+	 NOP				LQI.xyzw VF19, (VI03++) ; light
+	 MULAx  ACC, VF16, VF02x	LQI.xyzw VF03, (VI02++) ; L->W
+	 MADDAy ACC, VF17, VF02y	LQI.xyzw VF04, (VI02++) ; L->W
+	 MADDAz ACC, VF18, VF02z	LQI.xyzw VF05, (VI02++) ; L->W
+	 MADDw VF12, VF19, VF02w	IADDIU VI04, VI00, 12   ; lcolor
+	 MULAx  ACC, VF16, VF03x	LQI.xyzw VF08, (VI04++) ; lcolor
+	 MADDAy ACC, VF17, VF03y	LQI.xyzw VF09, (VI04++) ; lcolor
+	 MADDAz ACC, VF18, VF03z	IADDIU VI01, VI00, 0    ; L->S
+	 MADDw VF13, VF19, VF03w	LQI.xyzw VF02, (VI01++) ; L->S
+	 MULAx  ACC, VF16, VF04x	LQI.xyzw VF10, (VI04++) ; lcolor
+	 MADDAy ACC, VF17, VF04y	LQI.xyzw VF11, (VI04++) ; lcolor
+	 MADDAz ACC, VF18, VF04z	LQI.xyzw VF07, (VI04++) ; vert col
+	 MADDw VF14, VF19, VF04w	LQI.xyzw VF03, (VI01++) ; L->S
+	 MULAx  ACC, VF16, VF05x	IADDIU VI09, VI00, 0	; bufid
+	 MADDAy ACC, VF17, VF05y	LOI 255.0
+	 MADDAz ACC, VF18, VF05z	NOP
+	 MADDw VF15, VF19, VF05w	LQI.xyzw VF04, (VI01++) ; L->S
+	 ADDi.xyzw VF22, VF22, I	LQI.xyzw VF05, (VI01++) ; L->S
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	VF01	vertex
+;	VF02-05 Local->Screen matrix
+;	VF06	uv 
+;	VF07	vertex color
+;	VF08-11	light color matrix
+;	VF12-15 local light matrix
+;	VF22	max color value
+;	VF23	rgb
+;	VF24	Light x Normal
+;	VF25	normal
+;	VF28	xyz
+;	VF29	tmp register for pers 
+;	VF30	tmp register for pers 
+;	VF31	tmp register for rottrans
+;
+;	VI01-04 tmp register
+;	VI05	input data base address
+;	VI07	input vertex data address
+;	VI08	input normal data address
+;	VI09	output double buffer id
+;	VI10	input uv data address
+;	VI11	loop counter
+;	VI12	output data address
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+START_P: NOP   	 			XTOP VI05  
+	 NOP   	 			ILW.x VI02, 0(VI05)  
+	 NOP   	 			IADDIU VI03, VI00, 0x7fff
+	 NOP   	 			IADDIU VI07, VI05, 1  ; vector
+	 NOP   	 			IAND VI11, VI02, VI03 ; loop num
+	 NOP   	 			IADD VI08, VI07, VI11 ; normal
+	 NOP   	 			IBNE VI09, VI00, BUF1
+	 NOP				LQI.xyzw VF01, (VI07++) 
+	 NOP   	 			B START  
+	 NOP   	 			IADDIU VI12, VI00, 601
+BUF1:	 NOP   	 			IADDIU VI12, VI12, 1
+START:	 
+	 MULAx.xyzw ACC, VF02, VF01x	IADD VI10, VI08, VI11 ; uv
+	 MADDAy.xyzw ACC, VF03, VF01y	LQ.xyzw VF27, 0(VI05)  ; GIFtag
+	 MADDAz.xyzw ACC, VF04, VF01z	ISUBIU VI01, VI12, 1   ; outaddr(GIFtag)
+	 MADDw.xyzw VF31, VF05, VF01w	ISW.x VI01, 35(VI00)   ; address save
+	 NOP				LQI.xyzw VF01, (VI07++) 
+	 NOP   	 			SQ.xyzw VF27, 0(VI01)  ; put(GIFtag)
+	 NOP   	 			LQI.xyzw VF25, (VI08++) ; load norm
+	 ADDx.xyzw VF30, VF31, VF00x	DIV Q, VF00w, VF31w
+	 MULAx.xyzw ACC, VF02, VF01x	NOP   
+	 MADDAy.xyzw ACC, VF03, VF01y	NOP   
+	 MADDAz.xyzw ACC, VF04, VF01z	NOP   
+	 MADDw.xyzw VF31, VF05, VF01w	NOP   
+	 MULAx.xyz ACC, VF12, VF25x 	LQI.xyzw VF01, (VI07++) 
+	 MADDAy.xyz ACC, VF13, VF25y	NOP   	; L x N
+	 MADDz.xyz VF24, VF14, VF25z	NOP	; L x N -> vf24
+	 MULq.xyzw VF29, VF30, Q	NOP   
+	 ADDx.xyzw VF30, VF31, VF00x	DIV Q, VF00w, VF31w
+	 MULAx.xyzw ACC, VF02, VF01x	NOP   
+	 MAXx.xyzw VF24, VF24, VF00x	NOP	; if(vf24<0) vf24=0
+	 MADDAy.xyzw ACC, VF03, VF01y	NOP   
+	 MADDAz.xyzw ACC, VF04, VF01z	NOP   
+	 MADDw.xyzw VF31, VF05, VF01w	LQI.xyzw VF06, (VI10++) 
+	 MULAx.xyzw ACC, VF08, VF24x	NOP	; ll x c
+	 MADDAy.xyzw ACC, VF09, VF24y	NOP	; ll x c
+	 MADDAz.xyzw ACC, VF10, VF24z	NOP	; ll x c
+	 MADDw.xyzw VF23, VF11, VF24w	LQI.xyzw VF01, (VI07++) 
+	 FTOI4.xyzw VF28, VF29 		LQI.xyzw VF25, (VI08++) ; load norm
+	 MULq.xyzw VF29, VF30, Q	IADDI VI11, VI11, -4
+;---------------------------------------------------------------------------
+LOOP:	 MUL.xyzw VF23, VF23, VF07	NOP	; llc x rgb -> vf23
+	 ADDx.xyzw VF30, VF31, VF00x	DIV Q, VF00w, VF31w
+	 MULAx.xyz ACC, VF12, VF25x 	NOP	; L x N
+	 MADDAy.xyz ACC, VF13, VF25y	NOP   	; L x N
+	 MADDz.xyz VF24, VF14, VF25z	NOP	; L x N -> vf24
+	 MINI.xyzw VF23, VF23, VF22	NOP
+	 MULAx.xyzw ACC, VF02, VF01x	SQI.xyzw VF06, (VI12++) ; save uv
+	 MADDAy.xyzw ACC, VF03, VF01y	IADDI VI11, VI11, -1
+	 MAXx.xyzw VF24, VF24, VF00x	NOP
+	 FTOI0.xyzw VF23, VF23		LQI.xyzw VF25, (VI08++) ; load norm
+	 MADDAz.xyzw ACC, VF04, VF01z	NOP
+	 MADDw.xyzw VF31, VF05, VF01w	LQI.xyzw VF06, (VI10++) 
+	 MULAx.xyzw ACC, VF08, VF24x	NOP	; ll x c
+	 MADDAy.xyzw ACC, VF09, VF24y	NOP	; ll x c
+	 MADDAz.xyzw ACC, VF10, VF24z	SQI.xyzw VF23, (VI12++) ; save rgb
+	 MADDw.xyzw VF23, VF11, VF24w	SQI.xyzw VF28, (VI12++) ; save xy
+	 FTOI4.xyzw VF28, VF29 	 	IBNE VI11, VI00, LOOP
+	 MULq.xyzw VF29, VF30, Q	LQI.xyzw VF01, (VI07++) 
+;---------------------------------------------------------------------------
+	 ADDx.xyzw VF30, VF31, VF00x	DIV Q, VF00w, VF31w
+	 MULAx.xyz ACC, VF12, VF25x 	NOP	; L x N
+	 MADDAy.xyz ACC, VF13, VF25y	NOP   	; L x N
+	 MUL.xyzw VF23, VF23, VF07	NOP	; llc x rgb -> vf23
+	 MADDz.xyz VF24, VF14, VF25z	NOP	; L x N -> vf24
+	 MULAx.xyzw ACC, VF02, VF01x	SQI.xyzw VF06, (VI12++) ; save uv
+	 MADDAy.xyzw ACC, VF03, VF01y	NOP
+	 MINI.xyzw VF23, VF23, VF22	NOP
+	 MADDAz.xyzw ACC, VF04, VF01z	NOP
+	 MADDw.xyzw VF31, VF05, VF01w	LQI.xyzw VF06, (VI10++) 
+	 MAXx.xyzw VF24, VF24, VF00x	NOP	; if(vf24<0) vf24=0
+	 FTOI0.xyzw VF23, VF23		LQI.xyzw VF25, (VI08++) ; load norm
+	 MULAx.xyzw ACC, VF08, VF24x	NOP	; ll x c
+	 MADDAy.xyzw ACC, VF09, VF24y	NOP
+	 MADDAz.xyzw ACC, VF10, VF24z	SQI.xyzw VF23, (VI12++) ; save rgb
+	 MADDw.xyzw VF23, VF11, VF24w	SQI.xyzw VF28, (VI12++) ; save xy
+	 MULAx.xyz ACC, VF12, VF25x 	SQI.xyzw VF06, (VI12++) ; save uv
+	 MADDAy.xyz ACC, VF13, VF25y	LQI.xyzw VF06, (VI10++) 
+	 MADDz.xyz VF24, VF14, VF25z	NOP	; L x N -> vf24
+	 MUL.xyzw VF23, VF23, VF07	NOP	; llc x rgb -> vf23
+	 FTOI4.xyzw VF28, VF29 	 	NOP   
+	 MULq.xyzw VF29, VF30, Q	NOP   
+	 ADDx.xyzw VF30, VF31, VF00x	DIV Q, VF00w, VF31w
+	 MINI.xyzw VF23, VF23, VF22	LQI.xyzw VF25, (VI08++) ; load norm
+	 MAXx.xyzw VF24, VF24, VF00x	NOP	; if(vf24<0) vf24=0
+	 FTOI0.xyzw VF23, VF23		NOP
+	 MULAx.xyzw ACC, VF08, VF24x	NOP	; ll x c
+	 MADDAy.xyzw ACC, VF09, VF24y	NOP
+	 MADDAz.xyzw ACC, VF10, VF24z	SQI.xyzw VF23, (VI12++) ; save rgb
+	 MADDw.xyzw VF23, VF11, VF24w	SQI.xyzw VF28, (VI12++) ; save xy
+	 MULAx.xyz ACC, VF12, VF25x 	NOP	; L x N
+	 MADDAy.xyz ACC, VF13, VF25y	NOP   	; L x N
+	 MADDz.xyz VF24, VF14, VF25z	NOP	; L x N -> vf24
+	 MUL.xyzw VF23, VF23, VF07	NOP
+	 FTOI4.xyzw VF28, VF29 	 	NOP   
+	 MULq.xyzw VF29, VF30, Q	SQI.xyzw VF06, (VI12++) ; save uv
+	 MINI.xyzw VF23, VF23, VF22	NOP
+	 MAXx.xyzw VF24, VF24, VF00x	LQI.xyzw VF06, (VI10++) 
+	 FTOI0.xyzw VF23, VF23		NOP
+	 MULAx.xyzw ACC, VF08, VF24x	NOP	; ll x c
+	 MADDAy.xyzw ACC, VF09, VF24y	NOP	; ll x c
+	 MADDAz.xyzw ACC, VF10, VF24z	SQI.xyzw VF23, (VI12++) ; save rgb
+	 MADDw.xyzw VF23, VF11, VF24w	NOP
+	 MUL.xyzw VF23, VF23, VF07	NOP	; llc x rgb -> vf23
+	 MINI.xyzw VF23, VF23, VF22	NOP
+	 NOP				SQI.xyzw VF28, (VI12++) ; save xy
+	 NOP				NOP
+	 FTOI0.xyzw VF23, VF23		NOP
+	 FTOI4.xyzw VF28, VF29		SQI.xyzw VF06, (VI12++) ; save uv
+	 NOP   	 			NOP   
+	 NOP   	 			ILW.x VI03, 35(VI00) 
+	 NOP   	 			SQI.xyzw VF23, (VI12++) ; save rgb
+	 NOP   	 			SQI.xyzw VF28, (VI12++) ; save xy
+	 NOP   	 			XGKICK VI03  
+	 NOP   	 			IADDIU VI01, VI00, 1
+	 NOP   	 			ISUB VI09, VI01, VI09
+	 NOP				NOP
+	 NOP[E]   	 		NOP
+	 NOP   	 			NOP   
+	 NOP   	 			B START_P  
+	 NOP   	 			NOP   

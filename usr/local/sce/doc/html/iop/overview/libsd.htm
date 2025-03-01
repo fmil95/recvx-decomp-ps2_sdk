@@ -1,0 +1,791 @@
+<HTML>
+<HEAD>
+<TITLE> 低レベルサウンドライブラリ</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="libsd.htm" SELECTED> 低ﾚﾍﾞﾙｻｳﾝﾄﾞﾗｲﾌﾞﾗﾘ
+<OPTION VALUE="../../index.htm">TOP MENU
+<OPTION VALUE="../../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../../deci2/index.htm">DECI2
+<OPTION VALUE="../../tool/index.htm">各種ツール
+<OPTION VALUE="../../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+低レベルサウンドライブラリ<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 ライブラリ概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> 概要<BR></A><BR>
+    <A HREF="#Heading4_1_2"> レジスタマクロ<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 レジスタマクロ一覧<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> 基本パラメータレジスタマクロ<BR></A><BR>
+    <A HREF="#Heading4_2_2"> ボイス制御パラメータレジスタマクロ<BR></A><BR>
+    <A HREF="#Heading4_2_3"> アドレス値レジスタマクロ<BR></A><BR>
+    <A HREF="#Heading4_2_4"> エントリ（擬似レジスタマクロ）<BR></A><BR>
+    <A HREF="#Heading4_2_5"> 注意：SPDIF（光デジタル）出力の設定<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_3">  3 SPU2の概要およびSPUとの相違<BR></A>
+    <UL>
+    <A HREF="#Heading4_3_1"> SPU2の概要<BR></A><BR>
+    <A HREF="#Heading4_3_2"> コアとSPUとの相違点<BR></A><BR>
+    <A HREF="#Heading4_3_3"> SPU2とSPUとの相違点<BR></A><BR>
+    <A HREF="#Heading4_3_4"> 内部信号 / 機能接続<BR></A><BR>
+    <A HREF="#Heading4_3_5"> メモリマップ<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>ライブラリ概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>概要</B>
+</A>
+</H3>
+<blockquote>
+    libsdは、"PlayStation 2"のサウンドデバイス（SPU2および周辺回路）を制御するための低レベルライブラリです。サウンドデバイスへのアクセスには、必ずlibsdを使用してください。<BR>
+    libsdでは、公開されているSPU2レジスタへのアクセス、SPU2ローカルメモリとの波形データ・サウンドデータの転送、SPU2からの割り込みに対する処理の設定、エフェクト属性の設定・取得、などの関数が用意されています。また、一連のSPU2レジスタへのアクセスをまとめて行うバッチ機能が用意されています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_2">
+<A HREF="#Heading3_1"> 1. </A>2 <B>レジスタマクロ</B>
+</A>
+</H3>
+<blockquote>
+    libsdでは、レジスタラッパAPIとレジスタマクロとを用いてSPU2レジスタにアクセスします。SPU2レジスタは、基本パラメータレジスタ／ボイス制御パラメータレジスタ／アドレス値レジスタの3種に分類され、それぞれに対して値を設定／取得するレジスタラッパAPIが別々に用意されています。また、SPU2の一部の機能に対しては擬似レジスタが定義されていて、他のレジスタラッパAPIと同様に使用できるAPIが用意されています。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタ種別</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値の設定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>値の取得</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">基本パラメータ<BR>レジスタ</TD>
+<TD valign="TOP">SD_VP_*/SD_P_*</TD>
+<TD valign="TOP">sceSdSetParam()</TD>
+<TD valign="TOP">sceSdGetParam()</TD>
+</TR>
+<TR>
+<TD valign="TOP">ボイス制御<BR>パラメータレジスタ</TD>
+<TD valign="TOP">SD_S_*</TD>
+<TD valign="TOP">sceSdSetSwitch()</TD>
+<TD valign="TOP">sceSdGetSwitch()</TD>
+</TR>
+<TR>
+<TD valign="TOP">アドレス値レジスタ</TD>
+<TD valign="TOP">SD_VA_*/SD_A_*</TD>
+<TD valign="TOP">sceSdSetAddr()</TD>
+<TD valign="TOP">sceSdGetAddr()</TD>
+</TR>
+<TR>
+<TD valign="TOP">擬似レジスタ</TD>
+<TD valign="TOP">SD_C_*</TD>
+<TD valign="TOP">sceSdSetCore<BR>Attr()</TD>
+<TD valign="TOP">sceSdGetCore<BR>Attr()</TD>
+</TR>
+</TABLE>
+<BR>
+    <BR>
+    各コアに同名のレジスタがありますので、レジスタマクロは必ずコア指定マクロ（SD_CORE_0 / SD_CORE_1）とビットごとのORをとって使用します。また、各ボイスに同名のレジスタがあるもの（SD_V*）については、さらにボイス指定マクロ（SD_VOICE_00～SD_VOICE_23）とビットごとのORをとって使用します。<BR>
+    <BR>
+
+<!-- 見出し 6 -->
+<BLOCKQUOTE><H4>
+  <B>（例）</B>
+</H4></BLOCKQUOTE>
+        <BLOCKQUOTE><UL>
+        sceSdSetParam( SD_CORE_0|SD_P_MVOLL , 0x3fff ) ;<BR>
+        sceSdSetParam( SD_CORE_0|SD_VOICE_05|SD_VP_PITCH , 0x1000 );<BR>
+        </BLOCKQUOTE></UL>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>レジスタマクロ一覧</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    レジスタマクロの一覧を次に示します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>基本パラメータレジスタマクロ</B>
+</A>
+</H3>
+<blockquote>
+    設定：sceSdSetParam()<BR>
+    取得：sceSdGetParam()<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボイスボリューム（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボイスボリューム（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_PITCH</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">発音時のピッチ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ADSR1</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ADSR2</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ（２）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_ENVX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">エンベロープ現在値</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボリューム現在値（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VP_VOLXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ボリューム現在値（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MMIX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイスミキシング後の出力指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリューム（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリューム（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_EVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクトリターンボリューム<BR>（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_EVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクトリターンボリューム<BR>（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_AVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">コア外部入力のボリューム(左)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_AVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">コア外部入力のボリューム(右)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_BVOLL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">サウンドデータ入力のボリューム<BR>（左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_BVOLR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">サウンドデータ入力のボリューム<BR>（右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリュームの現在値(左)</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_P_MVOLXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">マスターボリュームの現在値(右)</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>ボイス制御パラメータレジスタマクロ</B>
+</A>
+</H3>
+<blockquote>
+    設定：sceSdSetSwitch()<BR>
+    取得：sceSdGetSwitch()<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_PMON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ピッチ変調の指定</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_NON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ノイズ発生器への割り当て</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_KON</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">キーオン（ボイス発音開始）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_KOFF</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">キーオフ（ボイス発音終了）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_ENDX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エンドポイント通過フラグ</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Dry 左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXR</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Dry 右）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXEL</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Wet 左）</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_S_VMIXER</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ボイス出力のミキシング指定<BR>（Wet 右）</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>アドレス値レジスタマクロ</B>
+</A>
+</H3>
+<blockquote>
+    設定：sceSdSetAddr()<BR>
+    取得：sceSdGetAddr()<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>レジスタマクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_SSA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">波形データの先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_LSAX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">ループポイントのアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_VA_NAX</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">SD_VOICE_??</TD>
+<TD valign="TOP">次に読みこまれるべき波形<BR>データのアドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_ESA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト処理用作業領域<BR>の先頭アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_EEA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト処理用作業領域<BR>の終端アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_TSA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">転送開始アドレス</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_A_IRQA</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">割り込みアドレスの指定</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>エントリ（擬似レジスタマクロ）</B>
+</A>
+</H3>
+<blockquote>
+    設定：sceSdSetCoreAttr<BR>
+    取得：sceSdGetCoreAttr<BR>
+<TABLE BORDER>
+<TR>
+<TD valign="TOP" bgcolor="#cccccc"><B>マクロ</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>コア指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>ボイス指定</B></TD>
+<TD valign="TOP" bgcolor="#cccccc"><B>機能</B></TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_EFFECT_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">エフェクト領域への<BR>書き込み許可</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_IRQ_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">IRQ割り込み許可</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_MUTE_ENABLE</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ミュート</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_NOISE_CLK</TD>
+<TD valign="TOP">SD_CORE_?</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">ノイズ発生器のM系列<BR>シフト周波数</TD>
+</TR>
+<TR>
+<TD valign="TOP">SD_C_SPDIF_MODE</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">---</TD>
+<TD valign="TOP">SPDIFの設定（マスク）</TD>
+</TR>
+</TABLE>
+<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>注意：SPDIF（光デジタル）出力の設定</B>
+</A>
+</H3>
+<blockquote>
+    SPU2からSPDIFへ出力される信号はIEC958規格に沿っていなければなりません。必要な設定のほとんどはライブラリの初期化時に行なわれますが、以下の3点はアプリケーションに委ねられていますので、間違いなく設定してください。<BR>
+    <BR>
+<TABLE BORDER>
+<TR>
+<TD bgcolor="#cccccc" valign="top"><B>項目</B></TD>
+<TD bgcolor="#cccccc" valign="top"><B>設定値</B></TD>
+<TD bgcolor="#cccccc" valign="top"><B>意味</B></TD>
+</TR>
+<TR>
+<TD rowspan= 2 valign="top">メディア<BR>(カテゴリコード)</TD>
+<TD valign="top">SD_SPDIF_MEDIA_DVD</TD>
+<TD valign="top">DVD</TD>
+</TR>
+<TR>
+<TD valign="top">SD_SPDIF_MEDIA_CD</TD>
+<TD valign="top">CD（デフォルト）</TD>
+</TR>
+<TR>
+<TD rowspan= 3 valign="top">出力内容</TD>
+<TD valign="top">SD_SPDIF_OUT_OFF</TD>
+<TD valign="top">SPDIFに何も出力しない</TD>
+</TR>
+<TR>
+<TD valign="top">SD_SPDIF_OUT_PCM</TD>
+<TD valign="top">アナログ出力と同じ音をPCM<BR>で出力する（デフォルト）</TD>
+</TR>
+<TR>
+<TD valign="top">SD_SPDIF_OUT_BITSTREAM</TD>
+<TD valign="top">Core0の入力ブロックに入力<BR>されたデータをビットストリ<BR>ームとして出力する</TD>
+</TR>
+<TR>
+<TD rowspan= 2 valign="top">デジタル録音</TD>
+<TD valign="top">SD_SPDIF_COPY_NORMAL</TD>
+<TD valign="top">通常モード（１世代録音可）<BR>（デフォルト）</TD>
+</TR>
+<TR>
+<TD valign="top">SD_SPDIF_COPY_PROHIBIT</TD>
+<TD valign="top">デジタル録音禁止</TD>
+</TR></TABLE>
+<BR>
+    <BR>
+    設定はsceSdSetCoreAttr()を用いて、次のように行います。どちらかのコアで設定すれば、両方のコアに対して有効になります。<BR>
+    <BR>
+
+     <H4><B>（例）DVD・PCM出力・デジタル録音禁止</B></H4>
+
+        <BLOCKQUOTE><UL>
+        sceSdSetCoreAttr(<BR>
+        SD_C_SPDIF_MODE,<BR>
+        SPU_SPDIF_MEDIA_DVD | SD_SPDIF_OUT_PCM | SD_SPDIF_COPY_PROHIBIT<BR>
+        );<BR>
+        </BLOCKQUOTE></UL>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_3">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 3 <B>SPU2の概要およびSPUとの相違</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    "PlayStation 2"のサウンドプロセッサSPU2のハードウェア概要と、"PlayStation"のサウンドプロセッサSPUとの相違を簡単に説明します。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_1">
+<A HREF="#Heading3_3"> 3. </A>1 <B>SPU2の概要</B>
+</A>
+</H3>
+<blockquote>
+    SPU2はふたつのコアから構成され、ローカルメモリと外部入出力を持つ音響合成プロセッサです。<BR>
+    各コア（CORE0およびCORE1）は、"PlayStation"にて提供されていたSPUのボイス処理からエフェクト処理、およびマスターボリューム処理までの基本機能と同等の処理を行い、それぞれ24ボイスのサウンド生成機能を持ちます。<BR>
+    さらに、各種スイッチング機能や16ビットPCMデータのサウンドデータ入出力の機能が追加されています。<BR>
+    CORE0およびCORE1は機能的に同等で、独立して動作します。CORE0の出力はCORE1に入力され、最終的にミキシングされたサウンドがCORE1から出力されるように接続されています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_2">
+<A HREF="#Heading3_3"> 3. </A>2 <B>コアとSPUとの相違点</B>
+</A>
+</H3>
+<blockquote>
+    以下に掲げる項目において、SPU2の各コアとSPUとで相違があります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_1">
+(1) <B>処理分解能 / サンプリング周波数</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      コアの処理は48kHzの単位で行われます。発音処理の分解能、およびサンプリング周波数も48kHzとなります。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_2">
+(2) <B>波形データの処理中位置を読みだし可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      各ボイス毎に、ボイス処理が次にどの波形データを使用するかをアドレスとして読みだすことができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_3">
+(3) <B>ループエンドの通過確認が可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ボイス処理がループエンドに達したことを示すフラグをボイス毎に持ち、ループ情報を持つ波形データのループエンド通過を確認することができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_4">
+(4) <B>ドライ / ウェット出力に対して個別にミキシングのスイッチングが可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ボイスボリュームによるパンポット制御に加えて、各ボイス毎にドライ / ウェット各L / Rチャンネルへのミキシングのon / offを制御することができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_5">
+(5) <B>16 / 24bitストレートPCMのサウンドデータ入力</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      16 / 24bitストレートPCMデータをホスト側からサウンドデータとして入力（データ転送）し、ボイス処理のミキシング結果とミックスすることができます。入力バッファとしてローカルメモリを使用しますが、形としてはSPUのコア外部入力に該当します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_6">
+(6) <B>ボリューム処理を行わない16bitサウンドデータ入力</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      エンコードされた16bitサウンドデータを、ホストからデジタル出力に直接出力（データ転送）することができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_7">
+(7) <B>ミキシング結果のサウンドデータ出力</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      24ボイスの出力が最終的にミキシングされた、ドライ / ウェット各L / Rチャンネル、計4チャンネルのサウンドデータをホスト側に転送することができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_8">
+(8) <B>サウンドデータ入出力処理の負荷を軽減させる"Auto DMA転送"</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      サウンドデータ処理におけるデータ転送においてホスト側の割り込み負荷を軽減させる"Auto DMA転送"が、DMA転送のモードのひとつとして追加されています。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_2_9">
+(9) <B>エフェクト作業領域が制限付きで移動可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      128KB単位でエフェクト作業領域の終了位置を指定することができます。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_3">
+<A HREF="#Heading3_3"> 3. </A>3 <B>SPU2とSPUとの相違点</B>
+</A>
+</H3>
+<blockquote>
+    以下に掲げる項目において、SPU2全体とSPUとで相違があります。<BR>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_1">
+(1) <B>ローカルメモリ容量の増大</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      SPU2は2MBのローカルメモリ（サウンドバッファ）を持ちます。ローカルメモリはふたつのコアに対してひとつだけ存在し、2MB全域をどちらのコアからもアクセス可能です。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_2">
+(2) <B>ローカルメモリ内の予約領域の追加</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      ふたつのコアがあること、およびサウンドデータ入出力のバッファ領域としてローカルメモリが使われるため、ローカルメモリ先頭部分の予約領域が増大しています。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_3">
+(3) <B>2つのDMA転送を同時に発行可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      各コアはそれぞれDMA転送機能を独立に持ち、並列に動作させることができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_4">
+(4) <B>2つの割り込みを同時に発行可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      各コアはそれぞれハードウェア割り込みを独立に持ち、並列に動作させることができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_5">
+(5) <B>2つのリバーブを個別に設定可能</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      各コアはそれぞれリバーブ処理機能を独立に持ち、違う設定でリバーブ処理を行うことができます。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_6">
+(6) <B>CORE0の出力がCORE1の入力として接続</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      CORE0で生成された24ボイス+リバーブ処理のサウンドがCORE1に入力されます。このサウンドにさらにCORE1側のリバーブ処理を付加することも可能です。CORE0の出力がつながるCORE1の入力は、SPUのCD入力に該当します。<BR>
+      </BLOCKQUOTE>
+
+<!-- 見出し 5,(1) -->
+<H4>
+<A NAME="Heading5_3_3_7">
+(7) <B>アナログ / デジタル各1系統の出力</B>
+</A>
+</H4>
+      <BLOCKQUOTE>
+      アナログ / デジタル各1系統の出力を持ち、それぞれon / offの切り替えが可能です。<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_4">
+<A HREF="#Heading3_3"> 3. </A>4 <B>内部信号 / 機能接続</B>
+</A>
+</H3>
+<blockquote>
+    SPU2コアとローカルメモリの接続を次に示します。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sdn1.gif">
+<P>
+    <BR>
+</DIV>
+    コア内部の接続を次に示します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/sdn2.gif">
+<P>
+    <BR>
+</DIV>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_3_5">
+<A HREF="#Heading3_3"> 3. </A>5 <B>メモリマップ</B>
+</A>
+</H3>
+<blockquote>
+    ローカルメモリのメモリマップを次に示します。<BR>
+    <BR>
+<P>
+<IMG SRC ="gif/sdn3.gif">
+<P>
+    <BR>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

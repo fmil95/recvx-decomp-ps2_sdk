@@ -1,0 +1,83 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *
+ *                         Version 0.5.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *                     Name : joint matrix interpolation runtime
+ *                     Description : dma data
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.5.0          Aug,16,1999     aoki
+ */
+.include "vumacros.h"
+
+.global My_dma_start
+.global My_matrix
+.global My_light_matrix
+.global My_light_color_matrix
+.global My_rot_trans_matrix
+.global My_dma_next
+
+.align 0
+My_dma_start:
+DMAcnt *
+MPG 0, *
+.include "basic.vsm" 
+.EndMPG
+.EndDmaData
+
+My_dma_next:
+DMAnext *, My_dma_next
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+;fwzyx 	      0.000000,         0.000000,		 0.000000,	      0.000000
+;fwzyx 	      0.000000,         0.000000,		 0.000000,	      0.000000
+;fwzyx 	      0.000000,         0.000000,		 0.000000,	      0.000000
+;fwzyx 	      0.000000,         0.000000,		 0.000000,	      0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.000000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.000000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 0.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT COLOR MATRIX
+My_light_color_matrix:
+fxyzw 0.9, 0.9, 0.9, 0.0
+fxyzw 0.9, 0.9, 0.9, 0.0
+fxyzw 0.9, 0.9, 0.9, 0.0
+fxyzw 0.9, 0.9, 0.9, 1.0
+;fxyzw 0.8, 0.2, 0.2, 0.0
+;fxyzw 0.2, 0.8, 0.2, 0.0
+;fxyzw 0.2, 0.2, 0.8, 0.0
+;fxyzw 0.2, 0.2, 0.2, 1.0
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 0.0, -1.0, 0.0, 0.000000
+fxyzw 1.0, 0.0, 0.0, 0.000000
+fxyzw 0.0, 0.0, 0.0, 0.000000
+fxyzw 0.0, 0.0, 0.0, 1.000000
+.EndUnpack
+
+MSCAL 0         ; 
+BASE 0          ; sets the vif1 base register
+OFFSET 512      ; sets the vif1 offset register
+.EndDmaData

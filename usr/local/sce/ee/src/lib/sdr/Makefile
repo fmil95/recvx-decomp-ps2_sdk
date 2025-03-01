@@ -2,11 +2,9 @@
 
 SHELL=/bin/sh
 
-#TOP	= ../../..
-TOP	= /usr/local/sce/ee
-INCDIR = -I../../../include -I../../../../common/include \
-	-I$(TOP)/include -I$(TOP)/../common/include
-PUB_INCDIR = -I$(TOP)/include
+TOP = /usr/local/sce/ee
+INCDIR = $(TOP)/include -I$(TOP)/../common/include
+PUB_INCDIR = $(TOP)/include
 LIB_INST_DIR = $(TOP)/lib
 HDR_INST_DIR = $(TOP)/include
 
@@ -24,8 +22,8 @@ RM=/bin/rm -f
 INSTALL = install
 
 
-CFLAGS = -Wa,-al -fno-common -O2 -G0 
-ASFLAGS = -xassembler-with-cpp -Wa,-al 
+CFLAGS = -c -Wa,-al -fno-common -O2 -G0 
+ASFLAGS = -c -xassembler-with-cpp -Wa,-al 
 DVPASMFLAGS = -g 
 
 INIT_OBJ = sdr_main.o
@@ -40,19 +38,16 @@ $(TARGET).a: $(OBJS)
 	$(RANLIB) $@ 
 
 .s.o:
-	$(AS) $(ASFLAGS) $(INCDIR) $(PUB_INCDIR) $< > $*.lst
+	$(AS) $(ASFLAGS) -I$(INCDIR) -I$(PUB_INCDIR) -o $@ $< > $*.lst
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCDIR) $(PUB_INCDIR) -c $< > $*.lst
+	$(CC) $(CFLAGS) -I$(INCDIR) -I$(PUB_INCDIR) -c $< -o $*.o > $*.lst
 
 .dsm.o:
-	$(DVPASM) $(DVPASMFLAGS) $(INCDIR) $(PUB_INCDIR) -o $@ $< > $*.lst
+	$(DVPASM) $(DVPASMFLAGS) -I$(INCDIR) -I$(PUB_INCDIR) -o $@ $< > $*.lst
 
 clean:
-	$(RM) *.o *.lst core *.elf *.a
-
-clear:
-	$(RM) *~
+	/bin/rm -f *.o *.lst core *.elf *.a
 
 install: all
 	$(INSTALL) -d $(LIB_INST_DIR)

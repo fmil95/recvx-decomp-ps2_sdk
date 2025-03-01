@@ -1,0 +1,215 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/*
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - bumpmap -
+ *
+ *                         Version 1.1.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *          Name : packet.dsm
+ *          Description : data packets to send to path1/path2.
+ *
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       1.1.0          Sep,10,1999     munekis     first verison
+ */
+
+.include "vumacros.h"
+.global My_dma_start
+.global My_dma_setting
+.global My_matrix
+.global My_light_matrix
+.global My_light_color_matrix
+.global My_rot_trans_matrix
+.global My_offset
+.global buff1_tex
+.global buff2_tex
+
+.data
+
+; -------- load microcode & texture  --------
+.align 4
+My_dma_setting:
+DmaRef *, My_microcode
+
+DmaRef *, picture0
+DmaRef *, picture1
+DmaRef *, picture2
+
+DMAend
+
+; ------- draw object ----
+.align 4
+My_dma_start:
+DmaRef *, My_environment
+
+DmaRef *, set_buf0
+DmaRef *, model1
+DmaRef *, set_buf1
+DmaRef *, model1
+DmaRef *, set_buf2
+DmaRef *, model1
+
+DMAend
+
+; ---------- micro code ------------
+.DmaData My_microcode
+MPG 0, *
+;.include "m.vsm"     ; non-optimized micro code 
+.include "m_opt.vsm"     ; non-optimized micro code 
+.EndMPG
+.EndDmaData
+
+
+; ----------------- matrix environment -----------------
+.DmaData My_environment
+unpack 4, 4, V4_32, 0, *; Screen Matrix
+My_matrix:
+fwzyx 0.000000, 0.000000, 0.000000, 35.752483
+fwzyx 0.000000, 0.000000, -14.765776, 0.000000
+fwzyx 0.050000, 4995000.000000, 102.400002, 102.400002
+fwzyx 1.000000, 100000000.000000, 2048.000000, 2048.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 4, *      ; ROTATION & TRANSLATION MATRIX
+My_rot_trans_matrix:
+fwzyx 0.0, -0.000000, -0.000000, 1.200000
+fwzyx 0.0, -0.000000, 1.000000, 0.000000
+fwzyx 0.0, 1.200000, 0.000000, 0.000000
+fwzyx 1.0, 0.000000, 2.000000, 0.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 8, *      ; LIGHT VECTOR MATRIX
+My_light_matrix:
+fxyzw 1.0, -1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+fxyzw 1.0, 1.0, 1.0, 1.000000
+.EndUnpack
+
+unpack 4, 4, V4_32, 12, *      ; LIGHT COLOR MATRIX
+My_light_color_matrix:
+fxyzw 0.8, 0.2, 0.2, 0.0
+fxyzw 0.2, 0.8, 0.2, 0.0
+fxyzw 0.2, 0.2, 0.8, 0.0
+fxyzw 0.4, 0.4, 0.4, 1.0
+.EndUnpack
+MSCAL 0         ; 
+BASE 20          ; sets the vif1 base register
+OFFSET 502      ; sets the vif1 offset register
+
+.EndDmaData
+
+
+
+; --------- buffer no.0 -----------
+.DmaData set_buf0
+.align 7
+FLUSH
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008003
+iwzyx 0x00000000 0x00000006 0x00000006 0x20011a40
+iwzyx 0x00000000 0x00000014 0x00000000 0x00000060
+iwzyx 0x00000000 0x00000042 0x0000007f 0x000000a8
+.ENDDIRECT
+unpack 4, 4, V4_32, 16, *      ; ST OFFSET
+fxyzw 0.0, 0.0, 0.0, 0.0
+.EndUnpack
+.EndDmaData
+
+; --------- buffer no.1 -----------
+.DmaData set_buf1
+.align 7
+FLUSH
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008003
+buff1_tex:
+iwzyx 0x00000000 0x00000006 0x00000006 0x20011e40
+iwzyx 0x00000000 0x00000014 0x00000000 0x00000060
+iwzyx 0x00000000 0x00000042 0x00000050 0x00000068 ; ALPHA_1(Cs * FIX(0x4f) + Cd)
+.ENDDIRECT
+unpack 4, 4, V4_32, 16, *      ; ST OFFSET
+My_offset:
+fxyzw 0.01, 0.01, 0.0, 0.0
+.EndUnpack
+.EndDmaData
+
+; --------- buffer no.2 -----------
+.DmaData set_buf2
+.align 7
+FLUSH
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008003
+buff2_tex:
+iwzyx 0x00000000 0x00000006 0x00000006 0x20011e40
+iwzyx 0x00000000 0x00000014 0x00000000 0x00000060
+iwzyx 0x00000000 0x00000042 0x00000050 0x00000062 ; ALPHA_1(-Cs * FIX(0x4f) + Cd)
+.ENDDIRECT
+unpack 4, 4, V4_32, 16, *      ; ST OFFSET
+fxyzw 0.00, 0.00, 0.0, 0.0
+.EndUnpack
+.EndDmaData
+
+
+
+
+
+; --------- texture no.0 -----------
+.align 7
+.DmaData picture0
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008005
+iwzyx 0x00000000 0x00000050 0x00041a40 0x00000000 ; send to buffer0
+iwzyx 0x00000000 0x00000051 0x00000000 0x00000000
+iwzyx 0x00000000 0x00000052 0x00000100 0x00000100
+iwzyx 0x00000000 0x00000053 0x00000000 0x00000000
+iwzyx 0x00000000 0x00000008 0x00000000 0x00000000
+.include "mat.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.1 -----------
+.align 7
+.DmaData picture1
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008004
+iwzyx 0x00000000 0x00000050 0x00041e40 0x00000000 ; send to buffer1
+iwzyx 0x00000000 0x00000051 0x00000000 0x00000000
+iwzyx 0x00000000 0x00000052 0x00000100 0x00000100
+iwzyx 0x00000000 0x00000053 0x00000000 0x00000000 ; CLAMP
+.include "textbump.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; --------- texture no.2 -----------
+.align 7
+.DmaData picture2
+DIRECT *
+iwzyx 0x00000000 0x0000000e 0x10000000 0x00008004
+iwzyx 0x00000000 0x00000050 0x00042240 0x00000000 ; send to buffer1
+iwzyx 0x00000000 0x00000051 0x00000000 0x00000000
+iwzyx 0x00000000 0x00000052 0x00000100 0x00000100
+iwzyx 0x00000000 0x00000053 0x00000000 0x00000000 ; CLAMP
+.include "wavebump.dsm"
+.ENDDIRECT
+.EndDmaData
+
+; -------- model No.1 (grid) ---------
+.DmaData model1
+.align 7
+.include "grid.dsm"
+.EndDmaData
+
+
+
+
+
+
+ 

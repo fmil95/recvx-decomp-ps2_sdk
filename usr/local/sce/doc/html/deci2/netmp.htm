@@ -1,0 +1,412 @@
+<HTML>
+<HEAD>
+<TITLE> NETMP Specification</TITLE>
+<META HTTP-EQUIV=Content-Type CONTENT="text/html; charset=Shift_JIS">
+</HEAD>
+<BODY BGCOLOR=#ffffff TEXT=#000000 LINK=#0000ff ALINK=#ffff00 VLINK=#800080>
+<TABLE WIDTH="100%">
+<TR><TD>
+<H4>"PlayStation 2" Programmer Tool Runtime Library Release 2.0</H4>
+</TD><TD ALIGN="right">
+<FORM><SELECT NAME=list onchange=location.href=this.form.list.options[this.form.list.selectedIndex].value><OPTION VALUE="netmp.htm" SELECTED> NETMP
+<OPTION VALUE="../index.htm">TOP MENU
+<OPTION VALUE="../general/index.htm">EE/IOP共通文書
+<OPTION VALUE="../ee/overview/index.htm">EE Overview
+<OPTION VALUE="../ee/libref/index.htm">EE Library Reference
+<OPTION VALUE="../iop/overview/index.htm">IOP Overview
+<OPTION VALUE="../iop/libref/index.htm">IOP Library Reference
+<OPTION VALUE="../deci2/index.htm">DECI2
+<OPTION VALUE="../tool/index.htm">各種ツール
+<OPTION VALUE="../pdadoc/pda/index.htm">PDA関連
+</SELECT>
+</FORM>
+</TD></TR></TABLE>
+<HR NOSHADE SIZE=8>
+<A NAME=Heading2>
+<H1>
+NETMP Specification<BR>
+</H1>
+</A>
+<DIV align=center>
+<TABLE border=0 bgcolor=#D6E0BA width=90%><TR><TD>
+<H2><U>
+        <B>目次</B>
+</U></H2>
+
+<blockquote>
+<UL>
+<P><A HREF="#Heading3_1">  1 概要<BR></A>
+    <UL>
+    <A HREF="#Heading4_1_1"> メッセージフォーマット<BR></A><BR>
+    </UL>
+<P><A HREF="#Heading3_2">  2 メッセージ<BR></A>
+    <UL>
+    <A HREF="#Heading4_2_1"> NETMP_CODE_CONNECT<BR></A><BR>
+    <A HREF="#Heading4_2_2"> NETMP_CODE_CONNECTR<BR></A><BR>
+    <A HREF="#Heading4_2_3"> NETMP_CODE_RESET<BR></A><BR>
+    <A HREF="#Heading4_2_4"> NETMP_CODE_RESETR<BR></A><BR>
+    <A HREF="#Heading4_2_5"> NETMP_CODE_MESSAGE<BR></A><BR>
+    <A HREF="#Heading4_2_6"> NETMP_CODE_MESSAGER<BR></A><BR>
+    <A HREF="#Heading4_2_7"> NETMP_CODE_STATUS<BR></A><BR>
+    <A HREF="#Heading4_2_8"> NETMP_CODE_STATUSR<BR></A><BR>
+    <A HREF="#Heading4_2_9"> NETMP_CODE_KILL<BR></A><BR>
+    <A HREF="#Heading4_2_10"> NETMP_CODE_KILLR<BR></A><BR>
+    <A HREF="#Heading4_2_11"> NETMP_CODE_VERSION<BR></A><BR>
+    <A HREF="#Heading4_2_12"> NETMP_CODE_VERSIONR<BR></A><BR>
+    </UL>
+</UL>
+</blockquote>
+</TD></TR></TABLE>
+</DIV>
+<DIV align=center>
+
+<!-- 見出し 2,章見出し -->
+<A NAME="Heading2">
+</DIV>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_1">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 1 <B>概要</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+    このドキュメントでは、DECI2 プロトコルの上位プロトコルのひとつである NETMP について説明します。<BR>
+    NETMP は、ホスト上で dsnetm とアプリケーションの間でのみ使用されるプロトコルです。したがって、DECI2 ヘッダの Source と Destination に指定される Node ID は、双方ともに 'H' となります。NETMP のプロトコル番号は、NETMP = 0x0400 です。<BR>
+    <BR>
+    NETMP は、アプリケーションから dsnetm へ以下のような要求を行う場合に使用します。<BR>
+    <BR>
+<UL>
+         <LI> アプリケーションの登録<BR>
+         <LI> 指定したプロトコルのパケットの配送要求<BR>
+         <LI> ターゲットシステムのリセット<BR>
+         <LI> ステータス情報管理<BR>
+         <LI> 指定したプロトコルの強制解放<BR>
+</UL>
+    <BR>
+    パケットの配送要求は、受信に関してのみ必要で、送信に関しては要求する必要はなく常に許可されています。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_1_1">
+<A HREF="#Heading3_1"> 1. </A>1 <B>メッセージフォーマット</B>
+</A>
+</H3>
+<blockquote>
+    NETMP メッセージは、DECI2 ヘッダに引き続き、常に以下の NETMP ヘッダを持ちます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/netmf1.gif">
+<P>
+    <B>図 1 NETMP メッセージヘッダ</B>
+</DIV>
+    <BR>
+    code は、メッセージの種別を表します。メッセージには要求と応答があります。<BR>
+    メッセージの code には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_CODE_CONNECT	0	// connect request<BR>
+      NETMP_CODE_CONNECTR	1	// connect reply<BR>
+      NETMP_CODE_RESET		2	// reset request<BR>
+      NETMP_CODE_RESETR		3	// reset reply<BR>
+      NETMP_CODE_MESSAGE	4	// message request<BR>
+      NETMP_CODE_MESSAGER	5	// message reply<BR>
+      NETMP_CODE_STATUS		6	// status request<BR>
+      NETMP_CODE_STATUSR		7	// status reply<BR>
+      NETMP_CODE_KILL		8	// kill request<BR>
+      NETMP_CODE_KILLR		9	// kill reply<BR>
+      NETMP_CODE_VERSION		10	// version request<BR>
+      NETMP_CODE_VERSIONR	11	// version reply<BR>
+      </BLOCKQUOTE>
+    <BR>
+    result は、メッセージの結果を表します。要求メッセージの場合は常に 0 で、応答メッセージの場合は、以下のいずれかになります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK		0	// good<BR>
+      NETMP_ERR_INVAL		1	// invalid request<BR>
+      NETMP_ERR_BUSY		2	// protocol busy<BR>
+      NETMP_ERR_NOTCONN		3	// can not connect<BR>
+      NETMP_ERR_ALREADYCONN	4	// already connect<BR>
+      NETMP_ERR_NOMEM		5	// no memory<BR>
+      NETMP_ERR_NOPROTO		6	// no protocol<BR>
+      </BLOCKQUOTE>
+    <BR>
+</blockquote>
+
+<!-- 見出し 3,節見出し -->
+<A NAME="Heading3_2">
+<H2>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A> 2 <B>メッセージ</B>
+<HR NOSHADE>
+</H2>
+</A>
+
+<blockquote>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_1">
+<A HREF="#Heading3_2"> 2. </A>1 <B>NETMP_CODE_CONNECT</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_CONNECT は、アプリケーションから dsnetm に対する接続要求と配送要求メッセージです。NETMP ヘッダに引き続いて以下の接続データが任意個の繰り返しされた形式を持ちます。<BR>
+    <BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/netmf2.gif">
+<P>
+    <B>図 2 NETMP_CODE_CONNECT Data</B>
+</DIV>
+
+     <H4><B>priority</B></H4>
+
+      <BLOCKQUOTE>
+      プロトコルに関する受信配送優先順位を指定します。<BR>
+      符号無し整数で、0 から 255 まで設定可能です。0 が最も低い優先順位となります。<BR>
+      <BR>
+      複数のアプリケーションが同じプロトコルを使用する場合、dsnetm はその中で最も大きな priority を持つアプリケーションにパケットを配送します。<BR>
+      ただし TTYP プロトコルに関しては、優先順位による配送制御は行なわれず、すべてのアプリケーションへ配送が行なわれます。優先順位による制御を行なう予定がない場合には 0x80 を設定しなければなりません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>unused</B></H4>
+
+      <BLOCKQUOTE>
+      予約領域です。常に 0 を設定しなければなりません。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>protocol</B></H4>
+
+      <BLOCKQUOTE>
+      受信データの配送を要求するプロトコル番号です。<BR>
+      <BR>
+      </BLOCKQUOTE>
+    このメッセージによる明示的な指定がなくとも、以下のメッセージは dsnetm からアプリケーションに配送される場合があります。この配送が行なわれるのはこのメッセージによって接続が成功した以降に限られます。<BR>
+    <BR>
+<UL>
+         <LI> DCMP のステータスメッセージ<BR>
+         <LI> DCMP のエラーメッセージ<BR>
+         <LI> NETMP のリセット完了通知(NETMP_CODE_RESETR)<BR>
+</UL>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_2">
+<A HREF="#Heading3_2"> 2. </A>2 <B>NETMP_CODE_CONNECTR</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_CONNECTR は、NETMP_CODE_CONNECT に対する dsnetm からアプリケーションへの応答メッセージです。NETMP ヘッダ 2 byte のみで構成されます。<BR>
+    <BR>
+    結果コード (result) には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK		接続成功<BR>
+      NETMP_ERR_BUSY 		既に同じ priority かつ同じ protocol で<BR>
+      				他のアプリケーションが接続済<BR>
+      NETMP_ERR_NOTCONN		接続失敗 (その他の原因)<BR>
+      NETMP_ERR_ALREADYCONN	既に接続済み<BR>
+      NETMP_ERR_NOMEM		メモリ不足<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_3">
+<A HREF="#Heading3_2"> 2. </A>3 <B>NETMP_CODE_RESET</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_RESET は、アプリケーションから dsnetm に対するターゲットシステムのリセット要求メッセージです。NETMP ヘッダおよび 2 byte の予約領域に続く 2 word x 2 の初期化パラメータで構成されます、合計 20 byte。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/netmf3.gif">
+<P>
+    <B>図 3 NETMP_CODE_CONNECT メッセージ</B>
+</DIV>
+    Boot parameter の領域は dsnetm で保存され、dsnetm がターゲットに対して送信する DCMP_TYPE_CONNECT メッセージの Boot parameter データとして使用されます。Boot parameter のビットがすべて 1 の場合は、dsnetm が保存するデータを変更しません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_4">
+<A HREF="#Heading3_2"> 2. </A>4 <B>NETMP_CODE_RESETR</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_RESETR は、dsnetm からアプリケーションに送られるリセット完了通知です。NETMP ヘッダ 2 byte のみで構成されます。<BR>
+    このメッセージが送られるのは以下のいずれかの場合です。<BR>
+    <BR>
+    <OL>
+         <LI VALUE= 1> そのアプリケーションからの NETMP_CODE_RESET によるリセット完了時<BR>
+         <LI VALUE= 2> 他のアプリケーションからの NETMP_CODE_RESET によるリセット完了時<BR>
+         <LI VALUE= 3> ターゲットのリセットスイッチや電源 ON 等によるリセット完了時<BR>
+    </OL>
+    <BR>
+    このメッセージからリセットの原因を知ることはできません。<BR>
+    <BR>
+    結果コード (result) には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK	リセット完了<BR>
+      NETMP_ERR_INVAL	ボードドライバがエラーを報告した<BR>
+      			(上記 1) の場合に、リセットを要求したアプリケーションにのみ送<BR>
+      			られます)<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_5">
+<A HREF="#Heading3_2"> 2. </A>5 <B>NETMP_CODE_MESSAGE</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_MESSAGE は、アプリケーションから dsnetm に対する接続情報設定メッセージです。NETMP ヘッダに続く任意長の ASCII データ (NUL ターミネイトなし) で、"&lt;user&gt;@&lt;host&gt;,&lt;prog&gt;" の形式である必要があります。<BR>
+    NETMP_CODE_CONNECT メッセージの直後にこの接続情報を送る事を強く推奨します。<BR>
+    アプリケーションは、このメッセージで送られた情報を NETMP_CODE_STATUS メッセージによって得ることができます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_6">
+<A HREF="#Heading3_2"> 2. </A>6 <B>NETMP_CODE_MESSAGER</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_MESSAGER は、NETMP_CODE_MESSAGE に対して dsnetm からアプリケーションに送られる接続情報設定完了メッセージです。NETMP ヘッダ 2 byte のみで構成されます。<BR>
+    <BR>
+    結果コード (result) には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK	設定完了<BR>
+      NETMP_ERR_NOMEM	メモリ不足<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_7">
+<A HREF="#Heading3_2"> 2. </A>7 <B>NETMP_CODE_STATUS</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_STATUS は、dsnetm が管理するプロトコルごとの接続関連情報の参照要求メッセージです。NETMP ヘッダ 2 byte のみで構成されます。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_8">
+<A HREF="#Heading3_2"> 2. </A>8 <B>NETMP_CODE_STATUSR</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_STATUSR は、NETMP_CODE_STATUS に対して dsnetm からアプリケーションに送られる応答メッセージです。NETMP ヘッダおよび 2 byte の予約領域に続く、ワードアラインされた接続関連情報の任意個の繰り返しで構成され、 dsnetm が管理するすべてのプロトコルに関する接続関連情報を返します。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/netmf4.gif">
+<P>
+    <B>図 4 NETMP_CODE_STATUSR メッセージ</B>
+</DIV>
+
+     <H4><B>connect-time</B></H4>
+
+      <BLOCKQUOTE>
+      32bit の符号なしの秒数で、そのプロトコルに関する TCP レベルの接続が開始されてからの経過時間を表します。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>protocol / unused / priority</B></H4>
+
+      <BLOCKQUOTE>
+      NETMP_CODE_CONNECT メッセージの該当するフィールドど同じ意味を持ちます。<BR>
+      </BLOCKQUOTE>
+
+     <H4><B>"&lt;user&gt;@&lt;host&gt;,&lt;prog&gt;"</B></H4>
+
+      <BLOCKQUOTE>
+      NETMP_CODE_MESSAGE によってアプリケーションから送られた接続情報です。<BR>
+      少なくとも 1 byte の NUL データでターミネイトされます。<BR>
+      さらに NETMP メッセージの先頭からワードアラインされるまで 0 から 3 byte の NUL データでパディングされます。<BR>
+      <BR>
+      結果コード (result) には以下のようなものがあります。<BR>
+      <BR>
+      NETMP_ERR_OK	正常終了<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_9">
+<A HREF="#Heading3_2"> 2. </A>9 <B>NETMP_CODE_KILL</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_KILL は、アプリケーションから dsnetm に対して、指定プロトコルの強制解放を要求するメッセージです。NETMP ヘッダに引き続くプロトコル番号を示す 2 byte のデータのみで構成されます。<BR>
+<DIV align=center>
+<P>
+<IMG SRC ="gif/netmf5.gif">
+<P>
+    <B>図 5 NETMP_CODE_KILL メッセージ</B>
+</DIV>
+    dsnetm は指定された protocol でもっとも高い priority を持つアプリケーションとの TCP レベルのコネクションを無条件にクローズし、そのプロトコルを解放します。<BR>
+    ひとつの protocol に対して複数の priority が存在する場合は、このメッセージをその priority の数だけ送信しなければ、その protocol をすべて解放することはできません。<BR>
+    <BR>
+    逆にアプリケーションに複数の protocol が関連付けられている場合には、ひとつの NETMP_CODE_KILL メッセージによって指定以外の protocol が解放されることもあります。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_10">
+<A HREF="#Heading3_2"> 2. </A>10 <B>NETMP_CODE_KILLR</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_KILLR は、NETMP_CODE_KILL に対して dsnetm からアプリケーションに送られる応答メッセージです。NETMP ヘッダ 2 byte のみで構成されます。<BR>
+    <BR>
+    結果コード (result) には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK	強制解放完了<BR>
+      NETMP_ERR_NOPROTO	指定プロトコルの接続が存在しない<BR>
+      </BLOCKQUOTE>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_11">
+<A HREF="#Heading3_2"> 2. </A>11 <B>NETMP_CODE_VERSION</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_VERSION は、アプリケーションから dsnetm に対するバージョン情報要求メッセージです。NETMP ヘッダに続く任意長の ASCII データ (NUL ターミネイトなし) で、ASCII データの内容はアプリケーションのバージョンを表す任意の文字列である必要があります。dsnetm ではこの情報はチェック対象としては参照しません。したがって、どのような文字列であっても構いません。<BR>
+</blockquote>
+
+<!-- 見出し 4,小見出し -->
+<H3>
+<A NAME="Heading4_2_12">
+<A HREF="#Heading3_2"> 2. </A>12 <B>NETMP_CODE_VERSIONR</B>
+</A>
+</H3>
+<blockquote>
+    NETMP_CODE_VERSIONR は、NETMP_CODE_VERSION に対して dsnetm からアプリケーションに送られる応答メッセージです。NETMP ヘッダに続く任意長の ASCII データ (NUL ターミネイトなし) で、ASCII データの内容は dsnetm のバージョン情報です。バージョン情報の形式は、X、Y、Z はそれぞれ10 進数で "X.Y.Z" となります。<BR>
+    <BR>
+    結果コード (result) には以下のようなものがあります。<BR>
+    <BR>
+      <BLOCKQUOTE>
+      NETMP_ERR_OK	正常終了
+</BLOCKQUOTE>
+</blockquote>
+<A HREF="#Top"><IMG SRC = gif/link.gif BORDER = 0></A>
+<HR>
+<DIV ALIGN="right">
+    Copyright (c) 2000 Sony Computer Entertainment Inc.  All Rights Reserved.<BR>
+    SCEI CONFIDENTIAL
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,422 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *
+ *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ */
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;	fsub.vsm
+;
+;	Fractal subdivide 8x8 
+;
+;	RotTransPers+Lighting+Fog(limiter255)+GS_clip(enrol,no_enrol)
+;       clipping by prim coord.(after perspective)
+;	work3.vuasm - perspective mapping
+;	Q of STQ is used for LOD select
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.include "testconst.h"
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;fractal subdivide
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+START_P_f:NOP    			NOP
+	NOP				ILW.x		VI14, SDIV(VI00)	;VI14 =sdiv = subdivide start No.
+	NOP   	 			LQ.xyzw 	VF19, TEDGE_SHARP(VI00)	;VF19x =terr->tedge*terr->mount_sharp
+	NOP   	 			LQ.xyzw 	VF12, WATER_LEVEL(VI00)	;VF12x =WATER_LEVEL
+	NOP				LQ.xyzw		VF13, ONE_SECOND(VI00)	;VF13x =0.5
+	NOP				LQ.xyzw		VF07, ONE_FORTH(VI00)	;VF7x =0.25
+	NOP				LOI		0.125
+	ADDx.xyzw	VF11,VF0,VF0	NOP					;VF11=(0,0,0,0)
+	ADDx.xyzw	VF14,VF0,VF0	NOP					;VF14=(0,0,0,0)
+	ADDx.xyzw	VF15,VF0,VF0	NOP					;VF15=(0,0,0,0)
+	ADDx.xyzw	VF06,VF0,VF0	NOP					;VF06=(0,0,0,0)
+	ADDx.xyzw	VF16,VF0,VF0	NOP					;VF16=(0,0,0,0)
+	ADDx.xyzw	VF17,VF0,VF0	NOP					;VF17=(0,0,0,0)
+	ADDx.xyzw	VF26,VF0,VF0	NOP					;VF26=(0,0,0,0)
+;
+LOOP_SDIV_f: NOP			NOP
+	NOP				IADDIU		VI01,VI00,8		;VI01=8
+	NOP				IADDIU		VI02,VI00,4		;VI02=4
+	NOP				IADDIU		VI03,VI00,2		;VI03=2
+	NOP				IBEQ		VI14,VI01,SUBDIV_END_f	;if(sdiv==8) subdivide end
+	NOP				NOP
+	NOP				IADD		VI13,VI14,VI00		;VI13 =sdiv
+	NOP				IADD		VI14,VI14,VI14		;VI14 =sdiv*2
+	NOP				NOP
+;
+SUBDIV0_f:NOP				IBNE		VI14,VI03,SUBDIV1_f	;
+	NOP				IADDIU		VI12,VI00,4		;if(sdiv==2) VI12=px=pz=4
+	NOP				LOI		0.5
+	MULi.x		VF08,VF19,I	B		SUBDIV3_f		;  VF08x=phen=tedge*shrap/2
+	NOP				NOP
+;
+SUBDIV1_f:NOP				IBNE		VI14,VI02,SUBDIV2_f	;
+	NOP				IADDIU		VI12,VI00,2		;if(sdiv==4) VI12=px=pz=2
+	NOP				LOI		0.25
+	MULi.x		VF08,VF19,I	B		SUBDIV3_f		;  VF08x=phen=tedge*shrap/4
+	NOP				NOP
+;
+SUBDIV2_f:NOP				IADDIU		VI12,VI00,1		;if(sdiv==8) VI12=px=pz=1
+	NOP				LOI		0.125
+	MULi.x		VF08,VF19,I	NOP					;  VF08x.phen=tedge*shrap/8
+;
+SUBDIV3_f: NOP				IADDIU		VI01,VI00,0		;VI01 =i=0
+	NOP				IADDIU		VI03,VI00,0		;VI03 =Z0=0
+	NOP				IADD		VI04,VI12,VI12		;VI04 =Z1=2*pz
+	NOP				XTOP		VI10			;VI10 =start address of position
+	NOP				IADDIU		VI10,VI10,5		;start position
+;
+LOOP_Z_f: NOP				IADDIU		VI02,VI00,0		;VI02 =j=0
+	NOP				IADDIU		VI05,VI00,0		;VI05 =X0=0
+	NOP				IADD		VI06,VI12,VI12		;VI06 =X1=2*px
+;
+;load 4 vertex position
+LOOP_X_f: NOP				ILW.x		VI07,ZPOS(VI03)		;VI07 =Z0*9
+	NOP				IADD		VI08,VI10,VI05		;VI08 =pos+X0
+	NOP				IADD		VI09,VI10,VI06		;VI08 =pos+X1
+	NOP				IADD		VI08,VI08,VI07		;VI08 =pos+Z0*9+X0 = &pos[Z0][X0]
+	NOP				IADD		VI09,VI09,VI07		;VI09 =pos+Z0*9+X1 = &pos[Z0][X1]
+	NOP				LQ.xyzw		VF1,0(VI08)		;VF1 =pos[Z0][X0]
+	NOP				LQ.xyzw		VF3,0(VI09)		;VF3 =pos[Z0][X1]
+;
+	NOP				ILW.x		VI07,ZPOS(VI04)		;VI07 =Z1*9
+	NOP				IADD		VI08,VI10,VI05		;VI08 =pos+X0
+	NOP				IADD		VI09,VI10,VI06		;VI08 =pos+X1
+	NOP				IADD		VI08,VI08,VI07		;VI08 =pos+Z1*9+X0 = &pos[Z1][X0]
+	NOP				IADD		VI09,VI09,VI07		;VI09 =pos+Z1*9+X1 = &pos[Z1][X1]
+	NOP				LQ.xyzw		VF2,0(VI08)		;VF2 =pos[Z1][X0]
+	NOP				LQ.xyzw		VF4,0(VI09)		;VF4 =pos[Z1][X1]
+;
+	NOP				IBEQ		VI01,VI13,EDGE_1	;if(i==sdiv/2)
+	NOP				NOP
+	NOP				IBEQ		VI02,VI13,EDGE_2	;if(j==sdiv/2)
+	NOP				NOP
+;load random
+;
+	NOP				ILW.y		VI11,-5(VI10)		;VI11 =si8
+	NOP				ILW.y		VI08,-4(VI10)		;VI08 =sj8
+;
+	NOP				IADD		VI11,VI11,VI03		;VI07 =si8+Z0
+	NOP				ILW.x		VI07,SZPOS(VI11)	;VI07 =(si8+Z0)*17
+	NOP				IADD		VI07,VI07,VI08		;VI07 =(si8+Z0)*17+sj8
+	NOP				IADD		VI07,VI07,VI05		;VI07 =(si8+Z0)*17+sj8+X0
+	NOP				IADD		VI07,VI07,VI12		;VI07 =(si8+Z0)*17+sj8+X0+px
+	NOP				LQ.xyzw		VF11,Rtable16(VI07)	;VF11 =Rtable16[si8+Z0][sj8+X0+px]
+;
+	NOP				IADD		VI11,VI11,VI12		;VI07 =si8+Z0+pz
+	NOP				ILW.x		VI07,SZPOS(VI11)	;VI07 =(si8+Z0+pz)*17
+	NOP				IADD		VI07,VI07,VI08		;VI07 =(si8+Z0+pz)*17+sj8
+	NOP				IADD		VI07,VI07,VI05		;VI07 =(si8+Z0+pz)*17+sj8+X0
+	NOP				LQ.xyzw		VF14,Rtable16(VI07)	;VF14 =Rtable16[si8+Z0+pz][sj8+X0]
+	NOP				IADD		VI07,VI07,VI12		;VI07 =(si8+Z0+pz)*17+sj8+X0+px
+	NOP				LQ.xyzw		VF15,Rtable16(VI07)	;VF15 =Rtable16[si8+Z0+pz][sj8+X0+px]
+;
+	NOP				ISUBIU		VI07,VI14,8
+	NOP				NOP
+	NOP				IBNE		VI07,VI00,ALL_PHEN_f	;if(sdiv!=8) all phen# =phen
+	NOP				NOP
+;
+	NOP				ILW.x		VI11,NMESH(VI00)	;VI11 =NMESH
+	NOP				IADDI		VI11,VI11,-1		;VI11 =NMESH-1
+	NOP				ILW.x		VI07,-5(VI10)		;VI07 =si
+	NOP				ILW.x		VI08,-4(VI10)		;VI08 =sj
+;
+PHEN0S_f:NOP				IBNE		VI07,VI00,PHEN0E_f
+	ADD.x		VF09,VF00,VF00	NOP					;if(si==0) phen0=0
+	NOP				B		PHEN1S_f
+	NOP				NOP
+PHEN0E_f:ADD.x		VF09,VF08,VF00	NOP					;if(si!=0) phen0=phen
+;
+PHEN1S_f:NOP				IBNE		VI08,VI00,PHEN1E_f
+	ADD.x		VF10,VF00,VF00	NOP					;if(sj==0) phen1=0
+	NOP				B		PHEN3S_f
+	NOP				NOP
+PHEN1E_f:ADD.x		VF10,VF08,VF00	NOP					;if(sj==0) phen1=phen
+;	
+PHEN3S_f:NOP				IBNE		VI07,VI11,PHEN3E_f
+	ADD.x		VF24,VF00,VF00	NOP					;if(si==NMESH-1) phen3=0
+	NOP				B		PHEN4S_f
+	NOP				NOP
+PHEN3E_f:ADD.x		VF24,VF08,VF00	NOP					;if(si!=NMESH-1) phen3=phen
+;	
+PHEN4S_f:NOP				IBNE		VI08,VI11,PHEN4E_f
+	ADD.x		VF25,VF00,VF00	NOP					;if(sj==NMESH-1) phen4=0
+	NOP				B		INTERP_f
+	NOP				NOP
+PHEN4E_f:ADD.x		VF25,VF08,VF00	NOP					;if(sj!=NMESH-1) phen4=phen
+	NOP				B		INTERP_f
+	NOP				NOP
+;
+ALL_PHEN_f:NOP				NOP
+	ADD.x		VF09,VF08,VF00	NOP					;VF09=phen0=phen
+	ADD.x		VF10,VF08,VF00	NOP					;VF10=phen1=phen
+	ADD.x		VF24,VF08,VF00	NOP					;VF24=phen3=phen
+	ADD.x		VF25,VF08,VF00	NOP					;VF25=phen4=phen
+;
+INTERP_f:NOP				NOP
+	MULAx.xyz	ACC,VF1,VF13	ILW.x           VI07,ZPOS(VI03)		;ACCxyz = 0.5*VF1xyz		;VI07 =Z0*9
+	MADDAx.xyz	ACC,VF3,VF13	NOP					;ACCxyz = 0.5*(VF1xyz+VF3xyz)
+	MADDx.xyz	VF6,VF11,VF9	NOP					;VF6xyz = 0.5*(VF1+VF3)+Rand*phen0
+	MULAx.xyz	ACC,VF1,VF13	NOP					;ACCxyz = 0.5*VF1xyz
+	MADDAx.xyz	ACC,VF2,VF13	IADD            VI07,VI07,VI05		;ACCxyz = 0.5(VF1xyz+VF2xyz)	;VI07 =Z0*9+X0
+	MADDx.xyz	VF16,VF14,VF10	IADD            VI07,VI07,VI12		;VF16xyz = 0.5(VF1+VF2)+Rand*phen1 ;VI07 =Z0*9+X0+px
+	MULAx.xyz	ACC,VF1,VF7	IADD            VI07,VI07,VI10		;ACCxyz = 0.25*VF1xyz		;VI07 =&pos[Z0][X0+px]
+	MADDAx.xyz	ACC,VF4,VF7	IADD            VI08,VI03,VI12		;ACCxyz = 0.25*(VF1xyz+VF4xyz)	;VI08 =Z0+pz
+	MADDAx.xyz	ACC,VF3,VF7	ILW.x           VI08,ZPOS(VI08)		;ACCxyz = 0.25*(VF1+VF4+VF3)	;VI08 =(Z0+pz)*9
+	MADDAx.xyz	ACC,VF2,VF7	NOP					;ACCxyz = 0.25*(VF1+VF4+VF3+VF2)
+	MADDx.xyz	VF26,VF15,VF8	NOP					;VF26xyz = 0.25*(VF1+VF4+VF3+VF2)+Rand*phen
+	MINIx.y		VF6,VF6,VF12	NOP					;VF6y=min(VF6y,WATER_LEVEL)
+	MINIx.y		VF16,VF16,VF12	IADD            VI08,VI08,VI05		;VF16y=min(VF16y,WATER_LEVEL)	;VI08 =(Z0+pz)*9+X0
+	MINIx.y		VF26,VF26,VF12	IADD            VI08,VI08,VI10		;VF26y=min(VF26y,WATER_LEVEL)	;VI08 =&pos[Z0+pz][X0]
+	NOP				NOP
+	NOP				SQ.xyzw		VF6,0(VI07)		;VF6 -> pos[Z0][X0+px]
+	NOP				SQ.xyzw		VF16,0(VI08)		;VF16 -> pos[Z0+pz][X0] 
+	NOP				IADD		VI08,VI08,VI12		;VI07 =&pos[Z0+pz][X0+px]
+	NOP				SQ.xyzw		VF26,0(VI08)		;VF26 -> pos[Z0+pz][X0+px] 
+;
+EDGE_1:	NOP				NOP
+	NOP				ILW.y		VI07,-5(VI10)		;VI07 =si8
+	NOP				ILW.y		VI08,-4(VI10)		;VI08 =sj8
+	NOP				IADD		VI07,VI07,VI04		;VI07 =si8+Z1
+	NOP				ILW.x		VI07,SZPOS(VI07)	;VI07 =(si8+Z1)*17
+	NOP				IADD		VI07,VI07,VI08		;VI07 =(si8+Z1)*17+sj8
+	NOP				IADD		VI07,VI07,VI05		;VI07 =(si8+Z1)*17+sj8+X0
+	NOP				IADD		VI07,VI07,VI12		;VI07 =(si8+Z1)*17+sj8+X0+px
+	NOP				LQ.xyzw		VF11,Rtable16(VI07)	;VF11 =Rtable16[si8+Z1][sj8+X0+px]
+;
+	MULAx.xyz	ACC,VF2,VF13	ILW.x           VI07,ZPOS(VI04)		;ACCxyz = 0.5*VF2xyz	;VI07 =Z1*9
+	MADDAx.xyz	ACC,VF4,VF13	NOP					;ACCxyz = 0.5*(VF2+VF4)
+	MADDx.xyz	VF6,VF11,VF24	NOP					;VF6xyz = 0.5*(VF2+VF4)+Rand*phen3
+	MINIx.y		VF6,VF6,VF12	NOP					;VF6y = min(VF6y,WATER_LEVEL)
+	NOP				IADD		VI07,VI07,VI05		;VI07 =Z1*9+X0
+	NOP				IADD		VI07,VI07,VI12		;VI07 =Z1*9+X0+px
+	NOP				IADD		VI07,VI07,VI10		;VI07 =&pos[Z1][X0+px]
+	NOP				SQ.xyzw		VF6,0(VI07)		;VF6 -> pos[Z1][X0+px]
+;
+EDGE_2:	NOP				NOP
+	NOP				ILW.y		VI07,-5(VI10)		;VI07 =si8
+	NOP				ILW.y		VI08,-4(VI10)		;VI08 =sj8
+	NOP				IADD		VI07,VI07,VI03		;VI07 =si8+Z0
+	NOP				IADD		VI07,VI07,VI12		;VI07 =si8+Z0+pz
+	NOP				ILW.x		VI07,SZPOS(VI07)	;VI07 =(si8+Z0+pz)*17
+	NOP				IADD		VI07,VI07,VI08		;VI07 =(si8+Z0+pz)*17+sj8
+	NOP				IADD		VI07,VI07,VI06		;VI07 =(si8+Z0+pz)*17+sj8+X1
+	NOP				LQ.xyzw		VF14,Rtable16(VI07)	;VF14 =Rtable16[si8+Z0+pz][sj8+X1]
+;
+	MULAx.xyz	ACC,VF3,VF13	IADD            VI07,VI03,VI12		;ACCxyz = 0.5*VF3xyz	;VI07 =Z0+pz
+	MADDAx.xyz	ACC,VF4,VF13	ILW.x           VI07,ZPOS(VI07)		;ACCxyz = 0.5*(VF3+VF4)	;VI07 =(Z0+pz)*9
+	MADDx.xyz	VF6,VF14,VF25	NOP					;VF6xyz = 0.5*(VF3+VF4)+Rand*phen4
+	MINIx.y		VF6,VF6,VF12	NOP					;VF6y = min(VF6y,WATER_LEVEL)
+	NOP				NOP
+	NOP				IADD		VI07,VI07,VI06		;VI07 =(Z0+px)*9+X1
+	NOP				IADD		VI07,VI07,VI10		;VI07 =&pos[Z0+pz][X1]
+	NOP				SQ.xyzw		VF6,0(VI07)		;VF6 -> pos[Z0+pz][X1] 
+	NOP				NOP
+;
+	NOP				IADD		VI05,VI05,VI12		;VI05 =X0+pz
+	NOP				IADD		VI05,VI05,VI12		;VI05 =X0+2*pz= new X0
+	NOP				IADD		VI06,VI06,VI12		;VI06 =X1+pz
+	NOP				IADD		VI06,VI06,VI12		;VI06 =X1+2*pz= new X1
+	NOP				IADDIU		VI02,VI02,1		;VI02 =j++
+	NOP				NOP
+	NOP				IBNE		VI02,VI13,LOOP_X_f	;if(j<sdiv/2) LOOP_X_f
+	NOP				NOP
+;
+	NOP				IADD		VI03,VI03,VI12		;VI03 =Z0+pz
+	NOP				IADD		VI03,VI03,VI12		;VI03 =Z0+2*pz= new Z0
+	NOP				IADD		VI04,VI04,VI12		;VI04 =Z1+pz
+	NOP				IADD		VI04,VI04,VI12		;VI04 =Z1+2*pz= new Z1
+	NOP				IADDIU		VI01,VI01,1		;VI01 =i++
+	NOP				NOP
+	NOP				IBNE		VI01,VI13,LOOP_Z_f	;if(i<sdiv/2) LOOP_Z_f
+	NOP				NOP
+;
+LOOP_ZX_END_f: NOP			NOP
+	NOP				B		LOOP_SDIV_f
+	NOP				NOP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; fractal subdivide end
+; TriangleStrip packet generate & XGKICK
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SUBDIV_END_f: NOP			NOP
+	NOP				XTOP		VI05			;VI05= start address of position
+	NOP   	 			IADDIU 		VI01, VI00, 1
+	NOP   	 			IAND 		VI09, VI09, VI01	;VI09=LSB(VI09)
+;
+	NOP   	 			LQ.xyzw 	VF20, PRIM_LOCAL(VI00) 	;[VF20,VF21,VF22,VF23]=[PRIM/LOCAL]
+	NOP   	 			LQ.xyzw 	VF21, (PRIM_LOCAL+1)(VI00) 
+	NOP   	 			LQ.xyzw 	VF22, (PRIM_LOCAL+2)(VI00) 
+	NOP   	 			LQ.xyzw 	VF23, (PRIM_LOCAL+3)(VI00) 
+;
+	NOP				LQ.xyzw 	VF18, RGB_FIX(VI00)	;RGB fix color
+	NOP				IADDIU		VI08, VI00, 8		;VI08=8	outer LOOP counter= # of XGKICK
+;
+;Input Buffer: 
+;	XTOP->	SI	
+;		SJ
+;		GIFtag for TriangleStrip
+;		GIFtag for LineStrip 0
+;		GIFtag for LineStrip 1
+;		POS
+;		 :
+;		STQ
+;		 :
+;
+	NOP   	 			IADDIU 		VI06, VI05, 5		;VI06 = XTOP+5 =POS
+;
+;outer LOOP
+;
+LOOP_OUT_f:NOP				NOP
+	NOP   	 			ILW.x 		VI02, 2(VI05) 		;VI05->GIFtag for TriangleStrip
+	NOP   	 			IADDIU 		VI03, VI00, 0x7fff
+	NOP   	 			NOP   
+	NOP   	 			NOP   
+	NOP   	 			IAND 		VI11, VI02, VI03	;VI11=NLOOP=18
+;
+	NOP   	 			IADDIU 		VI07, VI00, 0		;VI07=0
+	NOP   	 			IBNE 		VI09, VI00, START_f
+	NOP				IADDIU		VI12, VI00, 740		;Output Buffer 0 start address
+	NOP				IADDIU		VI12, VI00, 880		;Output Buffer 1 start address
+;
+START_f:NOP   	 			LQ.xyzw     	VF05, FA(VI00)      	;VF05=(FA,0,0,0)
+	NOP   	 			LQ.xyzw     	VF06, FB(VI00)      	;VF06=(FB,0,0,0)
+	NOP   	 			LOI    		255.0   
+;
+	MULw.xyzw   VF17, VF00, VF00	NOP 					;VF17=(1,?,?,0)
+;
+	NOP				LQ.xyzw		VF08,ONE_ZERO(VI00)	;VF08=(1.0,0,0,0)
+	NOP				LQ.xyzw		VF10,GS_MAX(VI00)	;VF10=(10000.0,0,4095.0,4095.0)
+	NOP				ILW.w		VI04,ADCBIT(VI00)	;VI04=0x8000
+	NOP				IADDIU		VI13,VI00,0		;triangle clip counter VI13=0
+;
+/**** no enroll****/
+;RotTrans
+LOOP_f:	NOP                             LQ.xyzw   	VF01, 0(VI06)       	;VF01= XYZ
+        NOP                             NOP
+        NOP                             NOP
+        NOP                             NOP
+        MULAx.xyzw  ACC, VF20, VF01    	LQ.xyzw   	VF02, 81(VI06)       	;[PRIM/LOCAL]*(XYZ),VF02= STQ
+        MADDAy.xyzw ACC, VF21, VF01    	NOP
+        MADDAz.xyzw ACC, VF22, VF01    	NOP
+        MADDw.xyzw  VF31, VF23, VF01   	LOI		-0.00025
+        MULi.y		VF01,VF01,I	NOP                             	;VF01y = height = -pos[][][1]/SNOWLEVEL
+        NOP     			NOP
+        NOP    				LOI		0.01
+        NOP                             DIV       	Q, VF00w, VF31w		;Q=1/Z
+	MAXi.y		VF01,VF01,I	NOP					;if(height<=0.011) height=0.01
+	NOP				NOP
+        NOP   				NOP   
+        NOP                             NOP
+	MULy.xyz	VF02,VF02,VF01	NOP
+	NOP				NOP
+        MULq.xyz   VF31, VF31, Q        NOP                             	;(z,y,x)*Q=(z,ZBz,PPy,PPx)
+;
+	NOP				NOP				
+	MULA.w		ACC,VF05,VF00	NOP					;FOG:ACCw=FA
+	MADDq.w		VF14,VF06,Q	NOP					;FOG:VF14=ACCw+FB*(1/Pw)
+	NOP				LOI		255.0			
+	SUB.xyw        	VF09,VF08,VF31	IADDIU 		VI02,VI00,0x00d0	;(1.0,0,0,0)-(z,ZBz,PPy,PPx)
+	SUB.xyw		VF09,VF31,VF10	SQ.xyzw   	VF02, 1(VI12) 		;(z,ZBz,PPy,PPx)-(Zmax,0,Ymax,Xmax) ;store STQ
+;
+	MINIi.w		VF31,VF14,I	SQ.xyzw		VF02, 56(VI12)		;FOG:255.0-limit
+	NOP				LOI		0.0			;
+;
+	NOP				FMAND		VI01,VI02		; ;if(z<1.0||PPy<0||PPx<0)?
+	NOP				FMAND		VI01,VI01		; ;if(z>Zmax||PPy>Ymax||PPx>Xmax)?
+	NOP				ILW.w		VI04,ADCBIT(VI00)	; ;VI04=0x8000
+	MAXi.w    	VF31,VF31,I	IBNE   		VI01,VI02,CLIP_f	;FOG:0-limit ;if(z<1.0||PPy<0||PPx<0)
+	FTOI0.xyzw 	VF16,VF18	NOP					;or if(z>Zmax||PPy>Ymax||PPx>Xmax) clip
+	NOP				IBGTZ  		VI13,CONTNU_f		;if(vertex_clip_flag>0) clip triangle
+	NOP				NOP			
+	NOP				B		CONTNU_f		;NO CLIP
+	NOP				ISUB		VI04,VI04,VI04		;VI04=0	
+;
+CLIP_f:	NOP				IADDIU 		VI13,VI00,3             ;vertex_clip_flag=3
+;
+CONTNU_f:FTOI4.xyzw VF31, VF31          SQ.xyzw   	VF16, 2(VI12)        	;XYZF=(iFOG,iZBz,iPPy,iPPx) ;store RGBA
+        NOP                             SQ.xyzw		VF16, 57(VI12)	
+        NOP                             NOP                             
+        NOP                             NOP                             
+	NOP				MTIR		VI01,VF31w		;VI01=iFOG
+	NOP				NOP
+	NOP				NOP
+	NOP				NOP
+	NOP				IOR		VI01,VI01,VI04		;VI01=iFOG or iFOG|0x8000
+	NOP				MFIR.w		VF31w,VI01		;VF31=(ADCBIT|iFOG,iZBz,iPPy,iPPx)
+;
+	NOP				IADDIU		VI01, VI00, 1		;VI01=1
+	NOP				ISUB		VI07, VI01, VI07	;VI07=1-VI07
+	NOP				NOP
+	NOP				IBNE		VI07, VI00, INC_IBUF_END_f ;if(VI07!=0) LOW RAW
+	NOP				IADDIU		VI06, VI06, 9		;+9=LOW
+	NOP				ISUBIU		VI06, VI06, 17		;-8=UP
+;
+INC_IBUF_END_f: NOP			NOP
+;
+	NOP                     	IADDI     	VI11, VI11, -1		;inner LOOP counter -=1
+	NOP				ISUBIU	  	VI13,VI13,1		;triangle clip counter
+        NOP                             SQ.xyzw   	VF31, 3(VI12)         	;store XYZF
+        NOP                             SQ.xyzw   	VF31, 58(VI12)         	;store XYZF
+        NOP                             IBNE      	VI11, VI00, LOOP_f	;inner LOOP
+        NOP                             IADDIU    	VI12, VI12, 3		;next packet address
+;
+;anti aliasing lines
+;
+LINE_f:	NOP				NOP
+	NOP   	 			IBNE 		VI09, VI00, LINE9_f
+	NOP				IADDIU		VI12, VI00, 740		;Output Buffer 0 start address
+	NOP				IADDIU		VI12, VI00, 880		;Output Buffer 1 start address
+;
+LINE9_f:NOP				NOP
+	NOP				IADDIU		VI01,VI00,9		;restore 8 vertex
+	NOP				IADDIU		VI04,VI12,1		;source
+	NOP				IADDIU		VI02,VI12,108		;destination
+;
+LOOP_LINE9_f:NOP			NOP
+	NOP				LQI.xyzw	VF29,(VI04++)		;copy GIF packet
+	NOP				LQI.xyzw	VF30,(VI04++)		;from TriangleStrip
+	NOP				LQI.xyzw	VF31,(VI04++)		;to LineStrip
+	NOP				NOP
+	NOP				SQI.xyzw	VF29,(VI02++)
+	NOP				SQI.xyzw	VF30,(VI02++)
+	NOP				SQI.xyzw	VF31,(VI02++)
+	NOP				IADDIU		VI04,VI04,3		
+	NOP				IADDI		VI01,VI01,-1
+	NOP				NOP
+	NOP				IBNE		VI01,VI00,LOOP_LINE9_f
+	NOP				NOP
+;
+	NOP 	 			LQ.xyzw 	VF31, 2(VI05)		;load GIFtag for TriangleStrip
+	NOP 	 			LQ.xyzw 	VF30, 3(VI05)		;load GIFtag for LineStrip 0
+	NOP				LQ.xyzw		VF29, 4(VI05)		;load GIFtag for LineStrip 1
+	NOP   	 			NOP   
+	NOP   	 			SQ.xyzw 	VF31, 0(VI12) 		;store GIFtag
+	NOP   	 			SQ.xyzw 	VF30, 55(VI12) 		;store GIFtag
+	NOP   	 			SQ.xyzw 	VF29, 107(VI12) 	;store GIFtag
+;
+	NOP				ILW.x		VI01, TRIANGLE(VI00)
+	NOP   	 			NOP   
+	NOP   	 			NOP   
+	NOP   	 			NOP   
+	NOP				IBNE		VI01, VI00, KICK_f	;if(TRIANGLE==0) line only
+	NOP				NOP
+	NOP				IADDIU		VI12, VI12, 55		;jump TriangleStrip
+	NOP				NOP
+	NOP				NOP
+KICK_f:	NOP   	 			XGKICK 		VI12  			;XGKICK TriangleStrip,LineStrip0,LineStrip1
+;
+NEXT_STRIP_f:NOP			NOP
+	NOP   	 			IADDIU 	VI01, VI00, 1
+	NOP   	 			ISUB 	VI09, VI01, VI09
+	NOP				ISUBIU 	VI08, VI08, 1			;outer LOOP counter--
+	NOP				NOP
+        NOP                             IBNE    VI08, VI00, LOOP_OUT_f		;outer LOOP
+	NOP   	 			NOP   
+	NOP[e]   	 		NOP	
+	NOP   	 			NOP   
+	NOP   	 			B 	START_P_f  
+	NOP   	 			NOP   
+;

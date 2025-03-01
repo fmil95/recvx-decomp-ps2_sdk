@@ -1,18 +1,18 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
-/* 
+/*
  *                 I/O Processor Library Sample Program
- * 
+ *
  *                          - CD/DVD -
  *                           Shift-JIS
- * 
- *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
- * 
+ *
  *                            <main.c>
  *                     <main function of file read>
- * 
+ *
  *       Version        Date            Design      Log
  *  --------------------------------------------------------------------
  *      0.01            Oct,13,1999     kashiwabara  first version
@@ -26,20 +26,18 @@
 #include <string.h>
 #include <libcdvd.h>
 
-#define BASE_priority	(80)	/* サンプルプログラムのプライオリティ */ 
-#define SAMPLE_WAIT	(16 * 1000)	/* 16(msec) */
+#define BASE_priority   80
 
 extern int sprintf(char *, const char *, ...);
 
 
-unsigned char  bf[2048 * 256];	/* 読み込みバッファ */
-unsigned char  toc[2048];	/* TOC読み込みバッファ */
+unsigned char  bf[2048 * 256];
+unsigned char  toc[2048];
 
-#define MEDIA_CD		/* 読み込みメディアは CD */
+#define MEDIA_CD
 
 int my_main(int arg);
 
-/* my_main()関数スレッドを作成するための関数 */ 
 int start( int argc, char *argv[] )
 {
         struct ThreadParam param;
@@ -60,7 +58,6 @@ int start( int argc, char *argv[] )
         }
 }
 
-/* メディア読みとり関数等の、終了コールバック関数 */ 
 void test_callback( int cb_reason )
 {
         switch(cb_reason){
@@ -77,13 +74,12 @@ void test_callback( int cb_reason )
             default:
                 Kprintf("Other Ended \n"); break;
         }
-        Kprintf("error code= 0x%08x\n",sceCdGetError());
+        printf("error code= 0x%08x\n",sceCdGetError());
 }
 
-/* メイン処理関数 */
 int my_main(int arg)
 {
-	int	 rfd, wfd, rsec, rs_flg, cnt0, lpcnt,
+	int	 rfd, wfd, rsec, rs_flg, wait0, cnt0, lpcnt,
 		 disk_type, last_track, readsize, trayflg, traycnt,*old_func;
 	unsigned char *cp;
 	char *cw, *filename,wfilename[32];
@@ -114,12 +110,10 @@ int my_main(int arg)
 		sceCdTrayReq(2,&trayflg);
 		printf("Change your PlayStation CD/DVD-ROM\n");
 		do{
-		    /* 他スレッドへの影響を考えリソース返却 */
-		    DelayThread(SAMPLE_WAIT);
-		    while(!sceCdTrayReq(2,&trayflg)){
-		        /* 他スレッドへの影響を考えリソース返却 */
-		    	DelayThread(SAMPLE_WAIT);
-		    }
+
+		    for(wait0 =0; wait0 < 0x8000; wait0++);
+
+		    while(!sceCdTrayReq(2,&trayflg));
 		    traycnt+= trayflg;
 		    disk_type= sceCdGetDiskType();
 		}while(!traycnt ||
@@ -200,12 +194,10 @@ int my_main(int arg)
             sceCdDiskReady(0);
 
 	    /* ライブラリ関数でファイルを読む */
-	    /* エラー発生時は255回リトライ           */ 
-	    mode.trycount= 0;	 
-	    /* エラー発生時は回転速度を落してリード	 */
+	    mode.trycount= 0;	/* エラー発生時は255回リトライ           */ 
 	    mode.spindlctrl= SCECdSpinNom;
-            /* データサイズは2048byte	 */
-	    mode.datapattern= SCECdSecS2048;
+				/* エラー発生時は回転速度を落してリード	 */
+	    mode.datapattern= SCECdSecS2048; /* データサイズは2048byte	 */
  
 	    /* ファイルの格納位置を検索する */
 	    printf("Search Filename: %s\n",filename);
@@ -220,22 +212,19 @@ int my_main(int arg)
 
 	    /* ファイルの読み込みセクタ数を算出する */
 	    rsec= fp.size / 2048; if(fp.size % 2048) rsec++;
-	    /* 読み込みバッファの都合により読み込みセクタ数を制限する。*/ 
             if(rsec > 256) rsec= 256;
 
 	    /* ファイルの読み込みを開始する */
             printf("CD_READ LSN= %d sectors= %d\n", fp.lsn,rsec);
             sceCdDiskReady(0);
-	    while(!sceCdRead(fp.lsn, rsec, (u_int *)bf, &mode)){
+	    while(!sceCdRead(fp.lsn, rsec, (u_int *)bf, &mode))
 	        printf("Read cmd fail\n");
-		DelayThread(SAMPLE_WAIT);
-	    }
 	    printf("ReadSync ");
             for( rs_flg= 1; rs_flg; ){
                 rs_flg= sceCdSync(1); 
-            /* ファイルの読み込みステータスを得る 0:終了 */
+			/* ファイルの読み込みステータスを得る 0:終了 */
                 printf("Cur Read Position= %d\n",sceCdGetReadPos());
-		DelayThread(SAMPLE_WAIT);
+                for(wait0 =0; wait0 < 0x8000; wait0++);
 	    }
 
 	    printf("Disk error code= 0x%08x\n",sceCdGetError());
@@ -243,40 +232,27 @@ int my_main(int arg)
 	    /* シークテスト */
 //	    printf("CdSeek Test\n");
 //	    sceCdDiskReady(0);
-//	    while(!sceCdSeek(fp.lsn)){
-//		DelayThread(SAMPLE_WAIT);
-//		printf("Seek cmd fail\n");
-//	    }
+//	    while(!sceCdSeek(fp.lsn)) printf("Seek cmd fail\n");
 //	    sceCdSync(0); 
 
 	    /* スタンドバイテスト */
 	    printf("CdStandby Test\n");
             sceCdDiskReady(0);
-	    while(!sceCdStandby()){
-		DelayThread(SAMPLE_WAIT);
-		printf("Standby cmd fail\n");
-	    }
+	    while(!sceCdStandby()) printf("Standby cmd fail\n");
             sceCdSync(0); 
 
             /* ポーズテスト */
             printf("CdSPause Test\n");
             sceCdDiskReady(0);
-            while(!sceCdPause()){
-		DelayThread(SAMPLE_WAIT);
-		printf("Pause cmd fail\n");
-	    }
+            while(!sceCdPause()) printf("Pause cmd fail\n");
             sceCdSync(0);
 
 	    /* テストのためディスクを止めてみる */
 	    printf("CdStop Test\n");
             sceCdDiskReady(0);
-	    while(!sceCdStop()){
-		DelayThread(SAMPLE_WAIT);
-		printf("Stop cmd fail\n");
-	    }
+	    while(!sceCdStop()) printf("Stop cmd fail\n");
             sceCdSync(0); 
 
-	    /* 読み込みファイルをホストに保存する。*/
             sprintf(wfilename,"host1:data%d.dat",lpcnt);
 	    wfd = open(wfilename, O_WRONLY | O_TRUNC | O_CREAT);
 	    if (wfd < 0 ) {

@@ -1,9 +1,9 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
  */
 /* 
  *
- *      Copyright (C) 1998-2000 Sony Computer Entertainment Inc.
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
  *                       All Rights Reserved.
  *
  *                       EzBGM - bgm_i.h
@@ -13,6 +13,7 @@
  *  --------------------------------------------------------------------
  *   1.20      Nov.23.1999     morita    first checked in
  */
+
 
 //--- 最上位ビットは戻り値アリを表す
 #define EzBGM_INIT         0x8000
@@ -30,6 +31,7 @@
 #define EzBGM_SETMODE      0x80c0
 #define EzBGM_SDINIT       0x00d0
 
+
 //-- SET AVAILABLE
 #define BGM_MODE_REPEAT_OFF      0x0000
 #define BGM_MODE_REPEAT_DEFAULT  0x0001
@@ -45,17 +47,20 @@
 #define BGM_MODE_FADE            0x4000  // no implemented
 #define BGM_MODE_TERMINATE       0x8000
 
+
 #define BGM_MASK_STATUS          0x0FFF
 #define BGM_MASK_REPEAT          0xFFF0
 #define BGM_MASK_STEREO          0xFF0F
 
 #define WAV_STEREO_BIT           0x00000001
 
+
 /* ----------------------------------------------
    moduke ID number
    サンプルなのでユーザー用番号。適宜変更のこと。
   -----------------------------------------------*/
 #define EZBGM_DEV   0x00012345
+
 
 #define PRINTF(x) printf x
 //#define PRINTF(x) 
@@ -68,7 +73,3 @@
 #define OLDLIB 0
 #define TRANS_CH  0
 
-/* ----------------------------------------------------------------
- *	End on File
- * ---------------------------------------------------------------- */
-/* This file ends here, DON'T ADD STUFF AFTER THIS */

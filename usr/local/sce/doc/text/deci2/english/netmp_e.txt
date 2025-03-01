@@ -1,0 +1,348 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                       Copyright (C) 1999 by Sony Computer Entertainment Inc.
+                                                         All Rights Reserved
+                                                               June  9, 1999
+
+NETMP Specification                       
+===================
+
+  This document provides description of the NETMP, one of higher level 
+  protocols than the DECI2 protocol.
+  
+
+Contents
+========
+1.  Overview
+2.  Message Format
+3.  Message
+3.1  NETMP_CODE_CONNECT 
+3.2  NETMP_CODE_CONNECTR
+3.3  NETMP_CODE_RESET
+3.4  NETMP_CODE_RESETR
+3.5  NETMP_CODE_MESSAGE
+3.6  NETMP_CODE_MESSAGER
+3.7  NETMP_CODE_STATUS
+3.8  NETMP_CODE_STATUSR
+3.9  NETMP_CODE_KILL
+3.10 NETMP_CODE_KILLR
+3.11 NETMP_CODE_VERSION
+3.12 NETMP_CODE_VERSIONR
+
+
+1.  Overview
+================
+  The NETMP is a protocol used only between the dsnetm and application 
+  on the host. Therefore, 'H' is specified as Node ID in both the Source 
+  and Destination of the DECI2 header. The protocol number of the NETMP 
+  is NETMP = 0x0400. 
+
+  The NETMP is used when the following requests are made from 
+  the application to the dsnetm. 
+
+    - Registration of application
+    - Delivery of the packet via specified protocol
+    - Target system reset
+    - Status information management
+    - Forced release of specified protocol
+
+  The request for packet delivery is necessary only for transmission  
+  and unnecessary for reception, since the packet delivery is always 
+  permitted for reception.
+
+
+
+2.  Message Format
+===========================
+  The NETMP message always has the NETMP header shown below following 
+  the DECI2 header. 
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                    |    result     |     code      |
+                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                     Figure 1  NETMP Message Header
+
+  The code shows message types.  The messages are categorized as request 
+  and reply. The code of the messages includes the following. 
+
+    NETMP_CODE_CONNECT      0	// connect request
+    NETMP_CODE_CONNECTR     1	// connect reply
+    NETMP_CODE_RESET        2	// reset request
+    NETMP_CODE_RESETR       3	// reset reply
+    NETMP_CODE_MESSAGE      4	// message request
+    NETMP_CODE_MESSAGER     5	// message reply
+    NETMP_CODE_STATUS       6	// status request
+    NETMP_CODE_STATUSR      7	// status reply
+    NETMP_CODE_KILL         8	// kill request
+    NETMP_CODE_KILLR        9	// kill reply
+    NETMP_CODE_VERSION     10	// version request
+    NETMP_CODE_VERSIONR    11	// version reply
+
+  The result shows the result of the message. It is always 0 for request 
+  messages, and is one of the following for reply messages. 
+
+    NETMP_ERR_OK            0	// good
+    NETMP_ERR_INVAL         1	// invalid request
+    NETMP_ERR_BUSY          2	// protocol busy
+    NETMP_ERR_NOTCONN       3	// can not connect
+    NETMP_ERR_ALREADYCONN   4	// already connect
+    NETMP_ERR_NOMEM         5	// no memory
+    NETMP_ERR_NOPROTO       6	// no protocol
+
+
+
+3.  Message
+===============
+
+3.1  NETMP_CODE_CONNECT
+------------------------
+  The NETMP_CODE_CONNECT is the message to request connection and 
+  delivery from the application to the dsnetm.  It has the format, in
+  which the connected data shown below is repeated arbitrarily 
+  following the NETMP header.
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |           protocol            |    unused     |   priority    |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 2  NETMP_CODE_CONNECT Data
+
+  priority
+    The priority in delivery at receipt concerning the protocol is 
+    specified.  An unsigned integer from 0 to 255 can be set. The lowest 
+    priority is given to 0.
+    
+    When two or more applications use the same protocol, the dsnetm 
+    delivers the packet to the application with the highest priority.  
+    Regarding the TTYP protocol, however, the delivery control by 
+    priority assignment is not applied and the packet is delivered 
+    to all the applications.  When the delivery control by priority 
+    is not scheduled, 0x80 should be set. 
+
+  unused
+    This is a reserved area.  0 should always be set.
+
+  protocol
+    This is a protocol number to request the delivery of received data.
+ 
+  Even if there is no explicit specification by this message, 
+  the following messages might be delivered from the dsnetm to 
+  the application.  These messages are delivered only after 
+  the connection has succeeded with the above message. 
+
+     - DCMP status message
+     - DCMP error message
+     - NETMP reset completion notification (NETMP_CODE_RESETR)
+
+
+3.2  NETMP_CODE_CONNECTR
+-------------------------
+  The NETMP_CODE_CONNECTR is a reply message from the dsnetm to 
+  the application to the NETMP_CODE_CONNECT.  It is composed only of 
+  the NETMP header 
+  of 2 bytes.
+ 
+  The result code (result) includes the following.
+
+    NETMP_ERR_OK           Connection has succeeded.
+    NETMP_ERR_BUSY         Another application has already been connected 
+			   with the same priority and same protocol. 
+    NETMP_ERR_NOTCONN      Connection has failed (other causes).
+    NETMP_ERR_ALREADYCONN  Already connected.
+    NETMP_ERR_NOMEM        Insufficient memory.
+
+
+3.3  NETMP_CODE_RESET
+----------------------
+  The NETMP_CODE_RESET is a message to request to reset the target system 
+  from the application to the dsnetm. It is composed of 2 initialization 
+  parameters of 2 words following the NETMP header and the reserved 
+  area of 2 bytes (20 bytes in total).
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |         reserved (=0)         |    result     |     code      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +--                    EE  Boot parameter                     --+
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +--                    IOP Boot parameter                     --+
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                   Figure 3  NETMP_CODE_CONNECT Message
+
+  The Boot parameter areas are stored by the dsnetm, and used as Boot 
+  parameter data of the DCMP_TYPE_CONNECT message sent from the dsnetm 
+  to the target.  When 1 is set to all the bits of the Boot parameters, 
+  the data to be stored by the dsnetm is not changed. 
+
+
+3.4  NETMP_CODE_RESETR
+-----------------------
+  The NETMP_CODE_RESETR is reset completion notification to be sent 
+  from the dsnetm to the application.  It is composed only of the NETMP 
+  header 2 bytes.  This message is sent in any of the following cases. 
+
+    1) When reset is completed by the NETMP_CODE_RESET 
+       from the application in use.
+    2) When reset is completed by the NETMP_CODE_RESET 
+       from another application.
+    3) When reset is completed by turning the reset 
+       switch or power of the target "on".
+
+  This message does not show the cause for reset. 
+
+  The result code (result) includes the following. 
+
+    NETMP_ERR_OK           Reset has been completed.
+    NETMP_ERR_INVAL        The board driver has reported an error.  
+			   (This is sent only to the application, which
+			   has made a reset request in 1) above.)
+
+3.5  NETMP_CODE_MESSAGE
+------------------------
+  The NETMP_CODE_MESSAGE is a connection information setting message 
+  from the application to the dsnetm.  It is ASCII data (without NUL 
+  terminate) of arbitrary length following the NETMP header, and should 
+  be in the format of "<user>@<host>,<prog>".
+  It is strongly recommended that this connection information be sent 
+  immediately after the NETMP_CODE_CONNECT message. 
+  The application can obtain information sent by this message from 
+  the NETMP_CODE_STATUS message. 
+
+3.6  NETMP_CODE_MESSAGER
+-------------------------
+  The NETMP_CODE_MESSAGER is a connection information setting completion 
+  message sent from the dsnetm to the application in response to 
+  the NETMP_CODE_MESSAGE.  It is composed only of the NETMP header of 
+  2 bytes. 
+
+  The result code (result) includes the following. 
+
+    NETMP_ERR_OK           Setting has been completed.
+    NETMP_ERR_NOMEM        Insufficient memory.
+
+
+3.7  NETMP_CODE_STATUS
+-----------------------
+ The NETMP_CODE_STATUS is a reference request message for 
+ connection-related information on each protocol managed by 
+ the dsnetm.  It is composed only of the NETMP header of 2 bytes. 
+
+3.8  NETMP_CODE_STATUSR
+------------------------
+  The NETMP_CODE_STATUSR is a reply message sent from the dsnetm to 
+  the application to the NETMP_CODE_STATUS.  It is composed of 
+  the connection-related information aligned on the word boundary and 
+  repeated arbitrarily following the NETMP header and the reserved area 
+  of 2 bytes.  It returns the connection-related information on all 
+  the protocols managed by the dsnetm. 
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |         reserved (=0)         |    result     |     code      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          protocol             |    unused     |   priority    |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                        connect-time                           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                    "<user>@<host>,<prog>"                     |
+    |                              ...                              |
+    +-+-+-+-+-+-+-+-+-+-+- word-aligned +-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                   Figure 4  NETMP_CODE_STATUSR Message
+
+  connect-time
+    This shows in 32-bit unsigned seconds the elapsed time after 
+    the TCP-level connection about the protocol in use has started.
+
+  protocol
+  unused
+  priority
+    This field has the same meaning as the corresponding field of 
+    the NETMP_CODE_CONNECT message.
+
+  "<user>@<host>,<prog>"
+    This is connection information sent from the application by 
+    the NETMP_CODE_MESSAGE.  It is terminated by the NUL data of 1 byte 
+    at least.  In addition, it is padded with the NUL data of 0 to 3 
+    bytes from the begining of the NETMP message until it is aligned 
+    on the word boundary.
+ 
+  The result code (result) includes the following. 
+
+    NETMP_ERR_OK           Normal end
+
+
+3.9  NETMP_CODE_KILL
+---------------------
+  The NETMP_CODE_KILL is a message requesting forced release of 
+  the specified protocol from the application to the dsnetm.  It is 
+  composed only of 2-byte data, which shows the protocol number, 
+  following the NETMP header. 
+
+       3                   2                   1
+     1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          protocol             |    result     |     code      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                   Figure 5  NETMP_CODE_KILL Message
+
+  The dsnetm unconditionally closes the TCP-level connection with 
+  the application with the highest priority in the specified protocol, 
+  and releases the protocol. 
+
+  When two or more priorities exist for one protocol, all the protocol 
+  cannot be released unless the message is transmitted for the number 
+  of priorities. 
+
+  In contrast with this, when two or more protocols are linked to 
+  the application, a non-specified protocol might be released by one 
+  NETMP_CODE_KILL message. 
+
+
+3.10 NETMP_CODE_KILLR
+----------------------
+  The NETMP_CODE_KILLR is a reply message sent from the dsnetm to 
+  the application to the NETMP_CODE_KILL.  It is composed only of 
+  the NETMP header of 2 bytes. 
+
+  The result code (result) includes the following.
+
+    NETMP_ERR_OK           Forced release has been completed.
+    NETMP_ERR_NOPROTO      Connection with the specified protocol 
+			   does not exist. 
+
+3.11 NETMP_CODE_VERSION
+------------------------
+  The NETMP_CODE_VERSION is a version information request 
+  message from the application to the dsnetm.  It is ASCII data 
+  (without NUL terminate) of arbitrary length following the NETMP 
+  header.  The contents of the ASCII data should be an arbitrary 
+  character string which shows the version of the application. 
+  The dsnetm does not refer to this information as an object for 
+  checking.  Therefore, any character string is acceptable.
+
+
+3.12 NETMP_CODE_VERSIONR
+-------------------------
+  The NETMP_CODE_VERSIONR is the reply message sent from the dsnetm 
+  to the application to the NETMP_CODE_VERSION.  It is ASCII data 
+  (without NUL terminate) of arbitrary length following the NETMP 
+  header.  The contents of the ASCII data are the version information 
+  of the dsnetm.  In the version information format, decimal numbers, 
+  X, Y, Z are shown as "X.Y.Z".
+
+  The result code (result) includes the following.
+
+    NETMP_ERR_OK           Normal end

@@ -1,22 +1,14 @@
-# Menu, toolbar, and status window for GDBtk.
-# Copyright 1997, 1998, 1999 Cygnus Solutions
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License (GPL) as published by
-# the Free Software Foundation; either version 2 of the License, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-
+# GDBToolBar
+# ----------------------------------------------------------------------
 # Implements a menu, toolbar, and status window for GDB
 # This class has methods for adding buttons & menus, and 
 # a collection of methods for the standard GDB menu sets
 # and button sets.  It does not actually add any buttons or
 # menus on its own, however.
+#
+#   Copyright (C) 1997, 1998, 1999 Cygnus Solutions
+#
 
 class GDBToolBar {
   inherit itk::Widget
@@ -24,16 +16,16 @@ class GDBToolBar {
   # ------------------------------------------------------------------
   #  CONSTRUCTOR - create new console window
   # ------------------------------------------------------------------
-  constructor {src} {
-    set source $src
+  constructor {args} {
+
     _load_images
     _load_src_images
 
     build_win
+    eval itk_initialize $args
     add_hook gdb_idle_hook "$this enable_ui 1"
     add_hook gdb_busy_hook "$this enable_ui 0"
     add_hook gdb_no_inferior_hook "$this enable_ui 2"
-    add_hook gdb_set_hook "$this set_hook"
   }
 
   # ------------------------------------------------------------------
@@ -44,7 +36,7 @@ class GDBToolBar {
     set OtherMenus {}
     set ControlMenus {}
     set OtherButtons {}
-    set ControlButtons {}
+    set ContorlButtons {}
 
     set Menu [menu $itk_interior.m -tearoff 0]
     if {! [create_menu_items]} {
@@ -74,7 +66,6 @@ class GDBToolBar {
     remove_hook gdb_idle_hook "$this enable_ui 1"
     remove_hook gdb_busy_hook "$this enable_ui 0"
     remove_hook gdb_no_inferior_hook "$this enable_ui 2"
-    remove_hook gdb_set_hook "$this set_hook"
     #destroy $this
   }
 
@@ -242,108 +233,27 @@ class GDBToolBar {
     }
   }
 
-  ############################################################
-  # The next set of commands control the menubar associated with the
-  # toolbar.  Currently, only sequential addition of submenu's and menu
-  # entries is allowed.  Here's what you do.  First, create a submenu
-  # with the "new_menu" command.  This submenu is the targeted menu. 
-  # Subsequent calls to add_menu_separator, and add_menu_command add
-  # separators and commands to the end of this submenu.
-  # If you need to edit a submenu, call clear_menu and then add all the
-  # items again.
-  #
-  # Each menu command also has a class list.  Transitions between states
-  #  of gdb will enable and disable different classes of menus.
-  #
-  # FIXME - support insert_command, and also cascade menus, whenever
-  # we need it...
-  # FIXME - The toolbar and the Menubar support are glommed together in
-  # one class for historical reasons, but there is no good reason for this.
-  ############################################################
-
   # ------------------------------------------------------------------
   #  METHOD:  create_menu_items - Add some menu items to the menubar.
   #                               Returns 1 if any items added.
-  # 
   # num = number of last menu entry
   # ------------------------------------------------------------------
   method create_menu_items {} {
-    # Empty - This is overridden in child classes.
+
   }
 
-  # ------------------------------------------------------------------
-  #  METHOD:  new_menu - Add a new cascade menu to the Toolbar's main menu.
-  #                      Also target this menu for subsequent add_menu_command
-  #                      calls.
-  #
-  #  name - the token for the new menu
-  #  label - The label used for the label
-  #  underline - the index of the underlined character for this menu item.
-  #
-  #  RETURNS: then item number of the menu.
-  # ------------------------------------------------------------------
   method new_menu {name label underline} {
-    set current_menu $Menu.$name
-    set menu_list($name) [$Menu add cascade -menu  $current_menu \
-			     -label $label -underline $underline]
-    menu $current_menu -tearoff 0
-
+    $Menu add cascade -menu $Menu.$name -label $label -underline $underline
+    set current_menu [menu $Menu.$name -tearoff 0]
     set item_number -1
     return $current_menu
   }
 
-  # ------------------------------------------------------------------
-  #  METHOD:  menu_exists - Report whether a menu keyed by NAME exists.
-  # 
-  #  name - the token for the menu sought
-  #
-  #  RETURNS: 1 if the menu exists, 0 otherwise.
-  # ------------------------------------------------------------------
-  method menu_exists {name} {
-    return [info exists menu_list($name)]
-
-  }
-
-  # ------------------------------------------------------------------
-  #  METHOD:  clear_menu - Deletes the items from one of the cascade menus
-  #                        in the Toolbar's main menu.  Also makes this menu
-  #                        the target menu.
-  # 
-  #  name - the token for the new menu
-  #
-  #  RETURNS: then item number of the menu, or "" if the menu is not found.
-  # ------------------------------------------------------------------
-  method clear_menu {name} {
-    if {[info exists menu_list($name)]} {
-      set current_menu [$Menu entrycget $menu_list($name) -menu]
-      $current_menu delete 0 end
-      set item_number -1
-      return $current_menu
-    } else {
-      return ""
-    }
-  }
-
-
-  # ------------------------------------------------------------------
-  #  METHOD:  add_menu_separator - Adds a menu separator to the currently
-  #                        targeted submenu of the Toolbar's main menu.
-  # 
-  # ------------------------------------------------------------------
   method add_menu_separator {} {
     incr item_number
     $current_menu add separator
   }
 
-  # ------------------------------------------------------------------
-  #  METHOD:  add_menu_command - Adds a menu command item to the currently
-  #                        targeted submenu of the Toolbar's main menu.
-  #
-  #  class - The class of the command, used for disabling entries.
-  #  label - The text for the command.
-  #  command - The command for the menu entry
-  #  args  - Passed to the menu entry creation command (eval'ed) 
-  # ------------------------------------------------------------------
   method add_menu_command {class label command args} {
 
     eval $current_menu add command -label \$label -command \$command \
@@ -354,13 +264,10 @@ class GDBToolBar {
     switch $class {
       None {}
       default {
-        foreach elem $class {
-	  lappend menu_classes($elem) [list $current_menu $item_number]
-	}
+	lappend ${class}Menus [list $current_menu $item_number]
       }
     }
   }
-
     
   # ------------------------------------------------------------------
   #  METHOD:  _load_images - Load standard images.  Private method.
@@ -398,7 +305,7 @@ class GDBToolBar {
     }
   }
 
- # ------------------------------------------------------------------
+  # ------------------------------------------------------------------
   # METHOD:  enable_ui - enable/disable the appropriate buttons and menus
   # Called from the busy, idle, and no_inferior hooks.
   #
@@ -410,26 +317,21 @@ class GDBToolBar {
   # ------------------------------------------------------------------
   public method enable_ui {on} {
     global tcl_platform
-    debug "Toolbar::enable_ui $on - Browsing=$Browsing"
+    #debug "Toolbar::enable_ui $on - Browsing=$Browsing"
 
     # Do the enabling so that all the disabling happens first, this way if a
     # button belongs to two groups, enabling takes precedence, which is probably right.
 
     switch $on {
       0 {
-	set enable_list {Control disabled \
-			   Other disabled \
-			   Trace disabled \
-			   Attach disabled \
-			   Detach disabled}
+	set enable_list {Control disabled Other disabled Trace disabled}
       }
       1 {
 	if {!$Browsing} {
-	  set enable_list {Trace disabled \
-			     Control normal \
-			     Other normal \
-			     Attach disabled \
-			     Detach normal }
+	  set enable_list {Trace disabled Control normal Other normal}
+	  set ostate normal
+	  set cstate normal
+	  set tstate disabled
 	  # set the states of stepi and nexti correctly
 	  _set_stepi
 	} else {
@@ -438,11 +340,10 @@ class GDBToolBar {
 
       }
       2 {
-	set enable_list {Control disabled \
-			   Trace disabled \
-			   Other normal \
-			   Attach normal \
-			   Detach disabled }
+	set enable_list {Control disabled Trace disabled Other normal}
+	set ostate normal
+	set cstate disabled
+	set tstate disabled
       }
       default {
 	debug "Unknown type: $on in enable_ui"
@@ -450,16 +351,11 @@ class GDBToolBar {
       }
     }
 
-    debug "Enable list is: $enable_list"
     foreach {type state} $enable_list {
-      if {[info exists ${type}Buttons]} {
-	foreach button [set ${type}Buttons] {
-	  $button configure -state $state
-	}
+      foreach button [set ${type}Buttons] {
+	$button configure -state $state
       }
-      if {[info exists menu_classes($type)]} {
-	change_menu_state $menu_classes($type) $state
-      }
+      eval change_menu_state \$${type}Menus \$state
     }
 
   }
@@ -487,26 +383,26 @@ class GDBToolBar {
   # ------------------------------------------------------------------
   
   method create_control_buttons {} {
-    add_button step Control [code $source inferior step] \
+    add_button step Control [list catch {gdb_immediate step}] \
       "Step (S)" -image step_img
     
-    add_button next Control [code $source inferior next] \
+    add_button next Control [list catch {gdb_immediate next}] \
       "Next (N)" -image next_img
     
-    add_button finish Control [code $source inferior finish] \
+    add_button finish Control [list catch {gdb_immediate finish}] \
       "Finish (F)" -image finish_img
     
-    add_button continue Control [code $source inferior continue] \
+    add_button continue Control [list catch {gdb_immediate continue}] \
       "Continue (C)" -image continue_img
     
     # A spacer before the assembly-level items looks good.  It helps
     # to indicate that these are somehow different.
     add_button_separator
     
-    add_button stepi Control [code $source inferior stepi] \
+    add_button stepi Control [list catch {gdb_immediate stepi}] \
       "Step Asm Inst (S)" -image stepi_img
     
-    add_button nexti Control [code $source inferior nexti] \
+    add_button nexti Control [list catch {gdb_immediate nexti}] \
       "Next Asm Inst (N)" -image nexti_img
     
     _set_stepi
@@ -590,6 +486,7 @@ class GDBToolBar {
       add_button tdump Trace  {ManagedWin::open TdumpWin} "Tdump (Ctrl+D)" -image tdump_img
     }
 
+
     add_button con Other {ManagedWin::open Console} "Console (Ctrl+N)" \
       -image console_img
   }
@@ -636,6 +533,7 @@ class GDBToolBar {
         
     }
 
+
     add_menu_command Other "Console" {ManagedWin::open Console} \
       -underline 2 -accelerator "Ctrl+N" 
       
@@ -657,26 +555,26 @@ class GDBToolBar {
   method create_control_menu {} {
     new_menu cntrl "Control" 0
     
-    add_menu_command Control "Step" [code $source inferior step] \
+    add_menu_command Control "Step" [list catch {gdb_immediate step}] \
       -underline 0 -accelerator S
     
-    add_menu_command Control "Next" [code $source inferior next] \
+    add_menu_command Control "Next" [list catch {gdb_immediate next}] \
       -underline 0 -accelerator N
     
-    add_menu_command Control "Finish" [code $source inferior finish] \
+    add_menu_command Control "Finish" [list catch {gdb_immediate finish}] \
       -underline 0 -accelerator F
     
     add_menu_command Control "Continue" \
-      [code $source inferior continue] \
+      [list catch {gdb_immediate continue}] \
       -underline 0 -accelerator C
     
     add_menu_separator
     add_menu_command Control "Step Asm Inst" \
-      [code $source inferior stepi] \
+      [list catch {gdb_immediate stepi}] \
       -underline 1 -accelerator S
     
     add_menu_command Control "Next Asm Inst" \
-      [code $source inferior nexti] \
+      [list catch {gdb_immediate nexti}] \
       -underline 1 -accelerator N
     
     # add_menu_separator
@@ -739,39 +637,7 @@ class GDBToolBar {
     add_menu_command Other "Cygnus on the Web" \
       {open_url http://www.cygnus.com/gnupro/} -underline 14 
     add_menu_separator
-    add_menu_command Other "About GDB..." {ManagedWin::open About -transient} \
-      -underline 0
-  }
-
-  # ------------------------------------------------------------------
-  #  METHOD:  set_hook - run when user enters a `set' command.
-  # ------------------------------------------------------------------  
-  method set_hook {varname value} {
-    debug "Got $varname = $value"
-    if {$varname == "os"} {
-      set save_menu $current_menu
-      set current_menu $Menu.view
-      set title "Kernel Objects"
-      if {[catch {$current_menu index $title} index]} {
-	set index none
-      }
-      if {$value == ""} {
-	# No OS, so remove KOD from View menu.
-	if {$index != "none"} {
-	  $current_menu delete $index
-	}
-      } else {
-	# Add KOD to View menu, but only if it isn't already there.
-	if {$index == "none"} {
-	  add_menu_command Other $title {ManagedWin::open KodWin} \
-	    -underline 0 -accelerator "Ctrl+K"
-	}
-      }
-      set current_menu $save_menu
-
-      global gdb_kod_cmd
-      set gdb_kod_cmd $value
-    }
+    add_menu_command Other "About GDB..." {ManagedWin::open About} -underline 0
   }
 
   #
@@ -793,10 +659,6 @@ class GDBToolBar {
   #
   #  PUBLIC DATA
   #
-
-  # This is a handle on our parent source window.
-  protected variable source {}
-
   public variable Tracing 0     ;# Is tracing enabled for this gdb?
   public variable Browsing   0  ;# Are we currently browsing a trace experiment?
   public variable Collecting 0  ;# Are we currently collecting a trace experiment?
@@ -829,16 +691,19 @@ class GDBToolBar {
   #The frame to contain the buttons:
   protected variable ButtonFrame
 
-  # This array holds the menu classes.  The key is the class name,
-  # and the value is the list of menus belonging to this class.
+  # The list of all menu entries which should be disabled when either no exe
+  # is loaded/running or whenever the inferior is running
+  protected variable ControlMenus {}
 
-  protected variable menu_classes
+  # The list of all menu entries which should be disabled when the inferior is
+  # running.
+  protected variable OtherMenus {}
 
-  # These buttons go in the control area when we are browsing
-  protected variable Trace_control_buttons 
-
-  # And these go in the control area when we are running
-  protected variable Run_control_buttons
+  # The list of menu items that are enabled when we are in trace browse
+  # mode...
+  protected variable TraceMenus {}
+  protected variable Trace_control_buttons ;# These buttons go in the control area when we are browsing
+  protected variable Run_control_buttons   ;# And these go in the control area when we are running
 
   protected variable item_number -1
   protected variable current_menu {}

@@ -480,11 +480,6 @@ proc BALLOON_command_show {window {tag {}} {keep 0}} {
   $b showballoon $window $tag $keep
 }
 
-proc BALLOON_command_withdraw {window} {
-  set b [BALLOON_find_balloon $window]
-  $b _unmap $window
-}
-    
 # This implements "balloon variable".
 proc BALLOON_command_variable {window args} {
   if {[llength $args] == 0} then {

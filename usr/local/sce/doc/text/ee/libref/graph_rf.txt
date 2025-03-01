@@ -1,0 +1,1924 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                            GS基本ライブラリ
+                           =================
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceGsAlphaEnv                                                    [構造体]
+=========================================================================
+                                   アルファブレンディング関連の設定データ
+[構造]
+        typedef struct {
+        	sceGsAlpha	alpha1;
+        	long		alpha1addr;
+        	sceGsPabe	pabe;
+        	long		pabeaddr;
+        	sceGsTexa	texa;
+        	long		texaaddr;
+        	sceGsFba	fba1;
+        	long		fba1addr;
+        } sceGsAlphaEnv __attribute__((aligned(16)));
+        
+[メンバ]
+        alpha1		ALPHA_1レジスタの設定値
+        alpha1addr	ALPHA_1レジスタのアドレス
+        pabe		PABEレジスタの設定値
+        pabeaddr	PABEレジスタのアドレス
+        texa		TEXAレジスタの設定値
+        texaaddr		TEXAレジスタのアドレス
+        fba1		FBA_1レジスタの設定値
+        fba1addr		FBA_1レジスタのアドレス
+        
+[解説]
+        アルファブレンディング情報(コンテキスト1)を保持する構造体です。
+        sceGsSetDefAlphaEnv()関数で、構造体に値を設定できます。
+        構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付けれ
+        ば、そのままGIFに転送できる構造になっています。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsAlphaEnv2                                                   [構造体]
+=========================================================================
+                                   アルファブレンディング関連の設定データ
+[構造]
+        typedef struct {
+        	sceGsAlpha	alpha2;
+        	long		alpha2addr;
+        	sceGsPabe	pabe;
+        	long		pabeaddr;
+        	sceGsTexa	texa;
+        	long		texaaddr;
+        	sceGsFba	fba2;
+        	long		fba2addr;
+        } sceGsAlphaEnv2 __attribute__((aligned(16)));
+        	
+[メンバ]
+        alpha2		ALPHA_2レジスタの設定値
+        alpha2addr	ALPHA_2レジスタのアドレス
+        pabe		PABEレジスタの設定値
+        pabeaddr	PABEレジスタのアドレス
+        texa		TEXAレジスタの設定値
+        texaaddr		TEXAレジスタのアドレス
+        fba2		FBA_2レジスタの設定値
+        fba2addr		FBA_2レジスタのアドレス
+        
+[解説]
+        アルファブレンディング情報(コンテキスト2)を保持する構造体です。
+        sceGsSetDefAlphaEnv2()関数で、構造体に値を設定できます。
+        構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付けれ
+        ば、そのままGIFに転送できる構造になっています。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        PABE, TEXAは、コンテキスト切り替えができませんので、コンテキスト1
+        と異なる値を設定する場合には、注意してご使用ください。
+        
+
+=========================================================================
+sceGsClear                                                       [構造体]
+=========================================================================
+                                                   バッファクリア用データ
+[構造]
+        typedef struct {
+        	sceGsTest	testa;
+        	long		testaaddr;
+        	sceGsPrim	prim;
+        	long		primaddr;
+        	sceGsRgbaq	rgbaq;
+        	long		rgbaqaddr;
+        	sceGsXyz	xyz2a;
+        	long		xyz2aaddr;
+        	sceGsXyz	xyz2b;
+        	long		xyz2baddr;
+        	sceGsTest	testb;
+        	long		testbaddr;
+        } sceGsClear __attribute__((aligned(16)));
+        
+[メンバ]
+        testa		クリア用TESTレジスタの設定値
+        testaaddr	TESTレジスタのアドレス
+        prim		クリア用スプライトのPRIM設定値
+        primaddr	PRIMレジスタのアドレス
+        rgbaq		フレームバッファクリア値
+        rgbaqaddr	RGBAQレジスタのアドレス
+        xyz2a		クリア用スプライトの左上端点座標
+        xyz2aaddr	XYZ2レジスタのアドレス
+        xyz2b		クリア用スプライトの右下端点座標
+        testb		TESTレジスタの再設定値
+        testbaddr	TESTレジスタのアドレス
+        
+[解説]
+        バッファクリア用のデータを保持する構造体です。
+        構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付けれ
+        ば、そのままGIFに転送できる構造になっています。
+        実体は単なるスプライト描画ですので、直前に設定されたXYOFFSETやSCI
+        SSOR等の描画環境設定の影響を受けます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsDBuff                                                       [構造体]
+=========================================================================
+                                         ダブルバッファに関する設定データ
+[構造]
+        typedef struct {
+        	sceGsDispEnv	disp[2];
+        	sceGifTag	giftag0;
+        	sceGsDrawEnv1	draw0;
+        	sceGsClear	clear0;
+        	sceGifTag	giftag1;
+        	sceGsDrawEnv1	draw1;
+        	sceGsClear	clear1;
+        } sceGsDBuff;
+        
+[メンバ]
+        disp[2]		表示環境
+        giftag0		描画環境用GIFtag(バッファ0用)
+        draw0		描画環境(バッファ0用)
+        clear0		描画バッファクリア環境(バッファ0用)
+        giftag1		描画環境用GIFtag(バッファ1用)
+        draw1		描画環境(バッファ1用)
+        clear1		描画バッファクリア環境(バッファ1用)
+        
+[解説]
+        ダブルバッファ情報を保持する構造体です。
+        sceGsSetDefDBuff()関数で、構造体に値を設定できます。
+        sceGsSwapDBuff()関数で、GS(GIF)に値を転送できます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        この構造体は、コンテキスト1の設定のみを保持します。コンテキスト2
+        を併用する場合は、sceGsDBuffDcを使用してください。
+        
+
+=========================================================================
+sceGsDBuffDc                                                     [構造体]
+=========================================================================
+                                         ダブルバッファに関する設定データ
+[構造]
+        typedef struct {
+        	sceGsDispEnv	disp[2];
+        	sceGifTag	giftag0;
+        	sceGsDrawEnv1	draw01;
+        	sceGsDrawEnv2	draw02;
+        	sceGsClear	clear0;
+        	sceGifTag	giftag1;
+        	sceGsDrawEnv1	draw11;
+        	sceGsDrawEnv2	draw12;
+        	sceGsClear	clear1;
+        } sceGsDBuffDc;
+        
+[メンバ]
+        disp[2]		表示環境
+        giftag0		描画環境用GIFtag(バッファ0用)
+        draw01		描画環境(コンテキスト1、バッファ0用)
+        draw02		描画環境(コンテキスト2、バッファ0用)
+        clear0		描画バッファクリア環境(バッファ0用)
+        giftag1		描画環境用GIFtag(バッファ1用)
+        draw11		描画環境(コンテキスト1、バッファ1用)
+        draw12		描画環境(コンテキスト2、バッファ1用)
+        clear1		描画バッファクリア環境(バッファ1用)
+        
+[解説]
+        2コンテキスト併用のダブルバッファ情報を保持する構造体です。
+        sceGsSetDefDBuffDc()関数で、構造体に値を設定できます。
+        sceGsSwapDBuffDc()関数で、GS(GIF)に値を転送できます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsDispEnv                                                     [構造体]
+=========================================================================
+                                                     表示環境の設定データ
+[構造]
+        typedef struct {
+        	tGS_PMODE	pmode;
+        	tGS_SMODE2	smode2;
+        	tGS_DISPFB2	dispfb;
+        	tGS_DISPLAY2	display;
+        	tGS_BGCOLOR	bgcolor;
+        } sceGsDispEnv;
+        
+[メンバ]
+        pmode		PCRTCのモード設定値(PMODEレジスタの値)
+        smode2		ビデオ同期モード設定値(SMODE2レジスタの値)
+        dispfb		表示フレームバッファの設定値(DISPFB2レジスタの値)
+        display		テレビ画面上の表示位置の設定値(DISPLAY2レジスタの値)
+        bgcolor		バックグラウンドカラーの設定値(BGCOLORレジスタの値)
+        
+[解説]
+        表示関連の設定、GSの矩形読み出し回路2に関する設定データを	保持す
+        る構造体です。
+        sceGsSetDefDispEnv()関数で、構造体に値を設定できます。
+        sceGsPutDispEnv()関数で、構造体の値をGSに設定できます。
+        
+[備考]
+        smode2はGSのRevision.1チップでは無効です。
+        
+
+=========================================================================
+sceGsDrawEnv1                                                    [構造体]
+=========================================================================
+                                                     描画環境の設定データ
+[構造]
+        typedef struct {
+        	sceGsFrame	frame1;
+        	u_long		frame1addr;
+        	sceGsZbuf	zbuf1;
+        	long		zbuf1addr;
+        	sceGsXyoffset	xyoffset1;
+        	long		xyoffset1addr;
+        	sceGsScissor	scissor1;
+        	long		scissor1addr;
+        	sceGsPrmodecont	prmodecont;
+        	long		prmodecontaddr;
+        	sceGsColclamp	colclamp;
+        	long		colclampaddr;
+        	sceGsDthe	dthe;
+        	long		dtheaddr;
+        	sceGsTest	test1;
+        	long		test1addr;
+        } sceGsDrawEnv1 __attribute__((aligned(16)));
+        
+[メンバ]
+        frame1		FRAME_1レジスタの設定値
+        frame1addr	FRAME_1レジスタのアドレス
+        zbuf1		ZBUF_1レジスタの設定値
+        zbuf1addr	ZBUF_1レジスタのアドレス
+        xyoffset1		XYOFFSET_1レジスタの設定値
+        xyoffset1addr	XYOFFSET_1レジスタのアドレス
+        scissor1		SCISSOR_1レジスタの設定値
+        scissor1addr	SCISSOR_1レジスタのアドレス
+        prmodecont	PRMODECONTレジスタの設定値
+        prmodecontaddr	PRMODECONTレジスタのアドレス
+        colclamp		COLCLAMPレジスタの設定値
+        colclampaddr	COLCLAMPレジスタのアドレス
+        dthe		DTHEレジスタの設定値
+        dtheaddr		DTHEレジスタのアドレス
+        test1		TEST_1レジスタの設定値
+        test1addr	TEST_1レジスタのアドレス
+        
+[解説]
+        描画環境情報(コンテキスト1)を保持する構造体です。
+        sceGsSetDefDrawEnv()関数で、構造体に値を設定できます。
+        また、この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を付ければ、
+        sceGsPutDrawEnv()関数を用いてGSにそのまま転送することができます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsDrawEnv2                                                    [構造体]
+=========================================================================
+                                                     描画環境の設定データ
+[構造]
+        typedef struct {
+        	sceGsFrame	frame2;
+        	u_long		frame2addr;
+        	sceGsZbuf	zbuf2;
+        	long		zbuf2addr;
+        	sceGsXyoffset	xyoffset2;
+        	long		xyoffset2addr;
+        	sceGsScissor	scissor2;
+        	long		scissor2addr;
+        	sceGsPrmodecont	prmodecont;
+        	long		prmodecontaddr;
+        	sceGsColclamp	colclamp;
+        	long		colclampaddr;
+        	sceGsDthe	dthe;
+        	long		dtheaddr;
+        	sceGsTest	test2;
+        	long		test2addr;
+        } sceGsDrawEnv2 __attribute__((aligned(16)));
+        
+[メンバ]
+        frame2		FRAME_2レジスタの設定値
+        frame2addr	FRAME_2レジスタのアドレス
+        zbuf2		ZBUF_2レジスタの設定値
+        zbuf2addr	ZBUF_2レジスタのアドレス
+        xyoffset2		XYOFFSET_2レジスタの設定値
+        xyoffset2addr	XYOFFSET_2レジスタのアドレス
+        scissor2		SCISSOR_2レジスタの設定値
+        scissor2addr	SCISSOR_2レジスタのアドレス
+        prmodecont	PRMODECONTレジスタの設定値
+        prmodecontaddr	PRMODECONTレジスタのアドレス
+        colclamp		COLCLAMPレジスタの設定値
+        colcalmpaddr	COLCLAMPレジスタのアドレス
+        dthe		DTHEレジスタの設定値
+        dtheaddr		DTHEレジスタのアドレス
+        test2		TEST_2レジスタの設定値
+        test2addr	TEST_2レジスタのアドレス
+        
+[解説]
+        描画環境情報(コンテキスト2)を保持する構造体です。
+        sceGsSetDefDrawEnv2()関数で、構造体に値を設定できます。
+        また、この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を付ければ、
+        sceGsPutDrawEnv()関数を用いてGSにそのまま転送することができます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        PRMODECONT, COLCLAMP, DTHEは、コンテキスト切り替えができませんの
+        で、コンテキスト1の設定と異なる値を設定する場合は注意してください。
+        
+
+=========================================================================
+sceGsGParam                                                      [構造体]
+=========================================================================
+                                                   ライブラリシステム情報
+[構造]
+        typedef struct {
+        	short	sceGsInterMode;
+        	short	sceGsOutMode;
+        	short	sceGsFFMode;
+        	short	sceGsVersion;
+        	volatile int (*sceGsVSCfunc)(int);
+        	int	sceGsVSCid;
+        } sceGsGParam;
+        
+[メンバ]
+        sceGsInterMode		インタレース/ノンインタレースの設定値
+        sceGsOutMode		NTSC/PALの設定値
+        sceGsFFMode		FIELD/FRAMEの設定値
+        sceGsVersion		GSのバージョン
+        sceGsVSCfunc		sceGsSyncVCallbackで設定されたコールバック関数ポイ
+        ンタ
+        sceGsVSCid		割り込みハンドラID
+        
+[解説]
+        ライブラリで使用するパラメータを保持する構造体です。
+        ライブラリで使用中のデータはsceGsGetGParam()で参照できます。
+        
+
+=========================================================================
+sceGsLoadImage                                                   [構造体]
+=========================================================================
+                                              LoadImageのためのデータ構造
+[構造]
+        typedef struct {
+        	sceGifTag	giftag0;
+        	sceGsBitbltbuf	bitbltbuf;
+        	long		bitbltbufaddr;
+        	sceGsTrxpos	trxpos;
+        	long		trxposaddr;
+        	sceGsTrxreg	trxreg;
+        	long		trxregaddr;
+        	sceGsTrxdir	trxdir;
+        	long		trxdiraddr;
+        	sceGifTag	giftag1;
+        } sceGsLoadImage __attribute__((aligned(16)));
+        
+[メンバ]
+        giftag0		転送情報設定用GIFtag
+        bitbltbuf		BITBLTBUFレジスタの設定値
+        bitbltbufaddr	BITBLTBUFレジスタのアドレス
+        trxpos		TRXPOSレジスタの設定値
+        trxposaddr	TRXPOSレジスタのアドレス
+        trxreg		TRXREGレジスタの設定値
+        trxregaddr	TRXREGレジスタのアドレス
+        trxdir		TRXDIRレジスタの設定値
+        trxdiraddr	TRXDIRレジスタのアドレス
+        giftag1		転送イメージ用GIFtag
+        
+[解説]
+        GSへのイメージデータ転送を行うための構造体です。
+        sceGsSetDefLoadImage()関数で、構造体に値を設定することができます。
+        この構造体はそのままGIFへ転送し、続けてイメージデータを転送するこ
+        とができます。
+        また、より簡便な方法として、sceGsExecLoadImage()関数でGSへイメー
+        ジデータ転送を行うことができます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsStoreImage                                                  [構造体]
+=========================================================================
+                                             StoreImageのためのデータ構造
+[構造]
+        typedef struct {
+        	u_int		vifcode[4];
+        	sceGifTag	giftag;
+        	sceGsBitbltbuf	bitbltbuf;
+        	long		bitbltbufaddr;
+        	sceGsTrxpos	trxpos;
+        	long		trxposaddr;
+        	sceGsTrxreg	trxreg;
+        	long		trxregaddr;
+        	sceGsFinish	finish;
+        	long		finishaddr;
+        	sceGsTrxdir	trxdir;
+        	long		trxdiraddr;
+        } sceGsStoreImage __attribute__((aligned(16)));
+        
+[メンバ]
+        vifcode[4]	Path2用VIFcodeの設定値
+        giftag		転送情報設定GIFtag
+        bitbltbuf		BITBLTBUFレジスタの値
+        bitbltbufaddr	BITBLTBUFレジスタのアドレス
+        trxpos		TRXPOSレジスタの設定値
+        trxposaddr	TRXPOSレジスタのアドレス
+        trxreg		TRXREGレジスタの設定値
+        trxregaddr	TRXREGレジスタのアドレス
+        finish		FINISHレジスタの設定値
+        finishaddr	FINISHレジスタのアドレス
+        trxdir		TRXDIRレジスタの設定値
+        trxdiraddr	TRXDIRレジスタのアドレス
+        
+[解説]
+        PATH2経由でGSからのイメージデータ転送を行うための構造体です。
+        sceGsSetDefStoreImage()関数で、構造体に値を設定することができます。
+        また、簡便な方法として、sceGsExecStoreImage()関数でイメージデータ
+        転送を行うことができます。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsTexEnv                                                      [構造体]
+=========================================================================
+                                               テクスチャ関連の設定データ
+[構造]
+        typedef struct {
+        	sceGsTexflush	texflush;
+        	long		texflushaddr;
+        	sceGsTex1	tex11;
+        	long		tex11addr;
+        	sceGsTex0	tex01;
+        	long		01addr;
+        	sceGsClamp	clamp1;
+        	long		clamp1addr;
+        } sceGsTexEnv __attribute__((aligned(16)));
+        
+[メンバ]
+        texflush		TEXFLUSHレジスタの値
+        texflushaddr	TEXFLUSHレジスタのアドレス
+        tex01		TEX0_1レジスタの値
+        tex01addr	TEX0_1レジスタのアドレス
+        tex11		TEX1_1レジスタの値
+        tex11addr	TEX1_1レジスタのアドレス
+        clamp1		CLAMP_1レジスタの値
+        clamp1addr	CLAMP_1レジスタのアドレス
+        
+[解説]
+        テクスチャ情報(コンテキスト1)を保持する構造体です。
+        sceGsSetDefTexEnv()関数で、構造体に値を設定できます。
+        構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付けれ
+        ば、そのままGIFに転送できる構造になっています。
+        mipmapを使用する場合には、この他にMIPTBP1_1, MIPTBP2_1レジスタの
+        設定が必要です。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+=========================================================================
+sceGsTexEnv2                                                     [構造体]
+=========================================================================
+                                               テクスチャ関連の設定データ
+[構造]
+        typedef struct {
+        	sceGsTexflush	texflush;
+        	long		texflushaddr;
+        	sceGsTex1	tex12;
+        	long		tex12addr;
+        	sceGsTex0	tex02;
+        	long		tex02addr;
+        	sceGsClamp	clamp2;
+        	long		clamp2addr;
+        } sceGsTexEnv2 __attribute__((aligned(16)));
+        
+[メンバ]
+        texflush		TEXFLUSHレジスタの値
+        texflushaddr	TEXFLUSHレジスタのアドレス
+        tex02		TEX0_2レジスタの値
+        tex02addr	TEX0_2レジスタのアドレス
+        tex12		TEX1_2レジスタの値
+        tex12addr	TEX1_2レジスタのアドレス
+        clamp2		CLAMP_2レジスタの値
+        clamp2addr	CLAMP_2レジスタのアドレス
+        
+[解説]
+        テクスチャ情報(コンテキスト2)を保持する構造体です。
+        sceGsSetDefTexEnv2()関数で、構造体に値を設定できます。
+        構造体のメモリ上での直前に、GIFtag(PACKETモード,REGS=A+D)を付けれ
+        ば、そのままGIFに転送できる構造になっています。
+        mipmapを使用する場合には、この他にMIPTBP1_2, MIPTBP2_2レジスタの
+        設定が必要です。
+        
+[備考]
+        この構造体にはDMAで直接GSに転送されるデータが設定されますので、先
+        頭を16byteアライメントに必ず合わせてメモリに配置してください。
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceGsExecLoadImage                                                 [関数]
+=========================================================================
+                                                          LoadImageの実行
+[形式]
+        int sceGsExecLoadImage(
+        	sceGsLoadImage *lp,
+        	u_long128 *srcaddr
+        )
+        
+[引数]
+        lp		LoadImage情報が設定されている構造体のアドレス
+        srcaddr		データ転送元アドレス
+        
+[返り値]
+        終了状態
+        0 : 正常終了
+        -1: Timeout
+        
+[解説]
+        PATH3経由でメインメモリからGSのローカルメモリへイメージデータを転
+        送します。転送に必要な情報はあらかじめsceGsSetDefLoadImage()関数
+        を用いて構造体にセットしておいてください。
+        プロトタイピングやデバッグ用途を想定した簡易版ですので、DMAチャネ
+        ル（ch-2）がアイドルでない場合は、アイドルになるまでプログラムが
+        ブロックされます。
+        
+[備考]
+        sceGsLoadImage構造体をCachedに指定した場合、この関数を呼び出す前
+        にD-cacheをフラッシュしてメモリに書き戻しておくよう注意してくださ
+        い。
+        新しいテクスチャをGSに転送したときには、テクスチャの再設定を行う
+        必要があります。sceGsSetDefTexEnv()関数の説明を参照してください。
+
+=========================================================================
+sceGsExecStoreImage                                                [関数]
+=========================================================================
+                                                         StoreImageの実行
+[形式]
+        int sceGsExecStoreImage(
+        	sceGsStoreImage *sp,
+        	u_long128 *dstaddr
+        )
+        
+[引数]
+        sp		StoreImage情報が設定されている構造体のアドレス
+        dstaddr		データ転送先アドレス
+        
+[返り値]
+        終了状態
+        0 : 正常終了
+        -1: Timeout
+        
+[解説]
+        GSのローカルメモリからメインメモリへイメージデータを転送します。
+        転送に必要な情報はあらかじめsceGsSetDefStoreImage()関数を用いて構
+        造体にセットしておいてください。
+        プロトタイピングやデバッグ用途を想定した簡易版ですので、転送が終
+        了するまでプログラムはブロックされます。
+        また、データ転送に使用するデータパスはPATH2ですが、他のデータパス
+        も停止されます。
+        
+[備考]
+        sceGsStoreImage()ではDMA環境の待避を行いません。
+        そのため、実行直後はDl_CHCR.TTE=0に初期化されてしまいます。
+
+=========================================================================
+sceGsGetGParam                                                     [関数]
+=========================================================================
+                                             ライブラリシステム情報を獲得
+[形式]
+        sceGsGParam *sceGsGetGParam(void)
+        
+[引数]
+        なし
+        
+[返り値]
+        システムで使用中の構造体のポインタ
+        
+[解説]
+        ライブラリで使用中のシステム情報構造体のポインタを返します。
+
+=========================================================================
+sceGsGetIMR / isceGsGetIMR                                         [関数]
+=========================================================================
+                                                     割り込みマスクの取得
+[形式]
+        u_long sceGsGetIMR(
+        	void
+        )
+        u_long isceGsGetIMR(
+        	void
+        )
+        
+[引数]
+        なし
+        
+[返り値]
+        直前にsceGsPutIMR/isceGsPutIMR関数で設定されたIMRレジスタの値
+        
+[解説]
+        GSの割り込みマスクを設定するIMRレジスタは書き込み専用なので、現在
+        の設定を確認することができません。IMRレジスタへの書き込みを必ずsc
+        eGsPutIMR関数を介して行うようにすれば、直前に設定されていた値を確
+        認することが可能になります。
+        
+        割り込みハンドラ中で割り込みマスクを取得する場合には、isceGsGetIM
+        R()をご使用ください。
+        
+
+=========================================================================
+sceGsPutDispEnv                                                    [関数]
+=========================================================================
+                                                       表示関連の初期設定
+[形式]
+        void sceGsPutDispEnv(
+        	sceGsDispEnv *disp
+        )
+        
+[引数]
+        disp		表示環境を設定する構造体のアドレス
+        
+[返り値]
+        なし
+        
+[解説]
+        dispの内容をGSのレジスタに設定します。
+        
+[備考]
+        GS側のレジスタアドレスが、GSのバージョンによって異なります。
+        この関数は、その差異を吸収します。
+        
+
+=========================================================================
+sceGsPutDrawEnv                                                    [関数]
+=========================================================================
+                                                       描画関連の初期設定
+[形式]
+        int sceGsPutDrawEnv(
+        	sceGifTag *giftag
+        )
+        
+[引数]
+        giftag		描画環境設定データの先頭アドレス
+        
+[返り値]
+        終了状態
+        0 : 正常終了
+        -1: Timeout(先行するCh-2 DMAが終了しない場合)
+        
+[解説]
+        描画環境の設定データをGSに転送し、所要のレジスタに設定します。
+        適切な値が設定された描画環境構造体sceGsDrawEnvを用意し、その直前
+        にGIFtag（PACKEDモード,REGS=A+D）を置き、そのGIFtagのアドレスを引
+        数giftagに指定してください。
+        この関数はDMA転送を開始するとただちに（転送終了を待たずに）終了し
+        ます。
+        
+[備考]
+        データ転送はPATH3経由で行うため、この関数を呼び出す時点でtoGIFチ
+        ャネルとGIFがアイドル状態で、PATH3がマスクされていないことが必要
+        です。
+        アイドル状態でなければアイドル状態になるまでプログラムがブロック
+        されます。
+        DMAを使用してデータ転送を行うため、GIFtagおよび後続のデータはメモ
+        リ上に置かれている必要があります。この関数を呼び出す前に、必ずユ
+        ーザ側でD-cacheからフラッシュしてメモリ上に書き戻しておいてくださ
+        い。
+
+=========================================================================
+sceGsPutIMR / isceGsPutIMR                                         [関数]
+=========================================================================
+                                                     割り込みマスクの設定
+[形式]
+        u_long sceGsPutIMR(
+        	u_long imr
+        )
+        u_long isceGsPutIMR(
+        	u_long imr
+        )
+[引数]
+        imr		IMRレジスタに設定する値
+        
+[返り値]
+        直前にsceGsPutIMR/isceGsPutIMR関数で設定されたIMRレジスタの値
+        
+[解説]
+        GSの割り込みマスクを設定するIMRレジスタは書き込み専用なので、現在
+        の設定を確認することができません。IMRレジスタへの書き込みを必ずこ
+        の関数を介して行うようにすれば、直前に設定されていた値を確認する
+        ことが可能になります。
+        
+        割り込みハンドラ中で割り込みマスクを設定する場合には、isceGsPutIM
+        R()をご使用ください。
+        
+
+=========================================================================
+sceGsResetGraph                                                    [関数]
+=========================================================================
+                                                               GSの初期化
+[形式]
+        void sceGsResetGraph(
+        	short mode,
+        	short inter,
+        	short omode,
+        	short ffmode
+        )
+        
+[引数]
+        mode		リセットモード
+        		0: オールリセット
+        		1: 描画リセット
+        inter		インタレース/ノンインタレースの設定(mode==0の時のみ有効)
+        		0 : non-interlace
+        		1 : interlace
+        omode		ビデオ信号フォーマットの設定(mode==0の時のみ有効)
+        		2 : NTSC
+        		3 : PAL
+        ffmode		FRAME/FIELDモードの設定(interlace時のみ有効)
+        		0 : FIELDモード始点から1ラインおきに読む
+        		  (+0,+2,+4,... / +1,+3,+5,...)
+        		1 : FRAMEモード始点から1ラインずつ読む
+        		  (+0,+1,+2,+3,...)
+        
+[返り値]
+        なし
+        
+[解説]
+        GSを指定したモードでリセットします。
+        modeに0を指定した場合はGS全体をリセットします。
+        modeに1を指定した場合は、描画中の処理をキャンセルし、GSの内部バッ
+        ファにあるプリミティブデータを破棄します（描画環境／表示環境は保
+        持されます）。
+        テレビ画面に対する表示関連の設定がGSチップのバージョンによって異
+        なりますので、その差異を吸収するために、必ずこの関数を用いて初期
+        化を行ってください。
+        この関数を使用しない場合、画面表示が乱れることがあります。
+        
+[備考]
+        オールリセット時は、GSのローカルメモリの内容は保証されません。
+        
+
+=========================================================================
+sceGsResetPath                                                     [関数]
+=========================================================================
+                                               データパスデバイスの初期化
+[形式]
+        void sceGsResetPath(
+        	void
+        )
+        
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        GSへのデータ転送経路にあたるデバイス、つまりVIF1, VU1, GIFをリセ
+        ットします。
+        
+[備考]
+        VIF1の汎用レジスタを以下のように初期化します。
+        STCYCL	(WL=4, CL=4)
+        STMASK	(all 0)
+        STMOD	(MOD=0)
+        MSKPATH3	(0:転送許可)
+        BASE	(0)
+        OFFSET	(0)
+        ITOP	(0)
+        またVIF1の特権レジスタVIF1_ERRのME0を1にします。
+        
+
+=========================================================================
+sceGsSetDefAlphaEnv                                                [関数]
+=========================================================================
+                                   アルファブレンディング設定データの作成
+[形式]
+        int sceGsSetDefAlphaEnv(
+        	sceGsAlphaEnv *ap,
+        	short pabe
+        )
+        
+[引数]
+        ap		アルファブレンディング情報を設定する構造体のアドレス
+        pabe		ピクセル単位のアルファブレンディングの制御
+        		0 : 行わない
+        		1 : 行う（A値のMSBが0のピクセルに対してはアルファ
+        			ブレンディングoff)
+        
+[返り値]
+        sceGsAlphaEnv構造体のサイズ
+        
+[解説]
+        アルファブレンディングの設定(コンテキスト1)に関するデータを、sceG
+        sAlphaEnv構造体の各メンバにセットします。
+        この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのま
+        まGIFに転送することができます。構造体がCachedの場合はD-cacheをフ
+        ラッシュしてメモリに書き戻さないと正しいデータが転送されませんの
+        で注意してください。
+        
+[備考]
+        この関数によってsceGsAlphaEnv構造体の各メンバに設定される値は次の
+        とおりです。必要があれば適宜修正して使用してください。
+        
+        alpha1.B = 1
+        alpha1.D = 1
+        pabe = pabe
+        texa.TA0 = 127
+        texa.AEM = 1
+        texa.TA1 = 129
+        
+
+=========================================================================
+sceGsSetDefAlphaEnv2                                               [関数]
+=========================================================================
+                                   アルファブレンディング設定データの作成
+[形式]
+        int sceGsSetDefAlphaEnv2(
+        	sceGsAlphaEnv2 *ap,
+        	short pabe
+        )
+        
+[引数]
+        ap		アルファブレンディング情報を設定する構造体のアドレス
+        pabe		ピクセル単位のアルファブレンディングの制御
+        		0 : 行わない
+        		1 : 行う（A値のMSBが0のピクセルに対してはアルファ
+        			ブレンディングoff)
+        
+[返り値]
+        sceGsAlphaEnv2構造体のサイズ
+        
+[解説]
+        アルファブレンディングの設定(コンテキスト2)に関するデータを、sceG
+        sAlphaEnv2構造体の各メンバにセットします。
+        この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのま
+        まGIFに転送することができます。構造体がCachedの場合はD-cacheをフ
+        ラッシュしてメモリに書き戻さないと正しいデータが転送されませんの
+        で注意してください。
+        PABE, TEXAは、コンテキスト切り替えができませんので、コンテキスト1
+        と異なる値を設定する場合は注意してください。
+        
+[備考]
+        この関数によってsceGsAlphaEnv2構造体の各メンバに設定される値は次
+        のとおりです。必要があれば適宜修正して使用してください。
+        
+        alpha2.B = 1
+        alpha2.D = 1
+        pabe = pabe
+        texa.TA0 = 127
+        texa.AEM = 1
+        texa.TA1 = 129
+        
+
+=========================================================================
+sceGsSetDefClear                                                   [関数]
+=========================================================================
+                                             バッファクリア用データの作成
+[形式]
+        int sceGsSetDefClear(
+        	sceGsClear *cp,
+        	short ztest,
+        	short x, short y,
+        	short w, short h,
+        	u_char r, u_char g, u_char b, u_char a,
+        	u_int z
+        )
+        
+[引数]
+        cp		バッファクリア用データを設定する構造体のアドレス
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファ不使用）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        x, y		クリア領域左上端点座標
+        w, h		クリア領域の幅、高さ(ピクセル単位)
+        r,g,b,a		フレームバッファのクリア値
+        z		Zバッファのクリア値
+        
+[返り値]
+        sceGsClear構造体のサイズ(word単位)
+        
+[解説]
+        バッファクリア用のデータを、指定されたsceGsClear構造体の各メンバ
+        にセットします。この構造体の直前にGIFtag（PACKEDモード、A+D）を置
+        いてGIFに転送すると、コンテキスト１のフレームバッファをr,g,b,aに
+        指定した値で、同じくコンテキスト１のZバッファをzに指定した値でク
+        リアすることになります。
+        ztestに1-3を指定した場合は、デプステスト方式をいったんALWAYSとし
+        てフレームバッファとZバッファをクリアし、あらためてztestに指定し
+        た方式を設定するようになります。
+        ztestに0を指定した場合は、ztest=1と等価な動作をしますので、必ず、
+        ZBUFのZMSKの値を1にしてからご使用ください。
+        
+[備考]
+        ztest != 0を指定したとき、この関数によってsceGsClear構造体の各メ
+        ンバにセットされる値は次のとおりです。
+        必要があれば適宜修正して使用してください。
+        
+        testa.ZTE = 1
+        testa.ZTST = 1
+        prim = 6(SPRITE)
+        rgbaq.R = r
+        rgbaq.G = g
+        rgbaq.B = b
+        rgbaq.A = a
+        rgbaq.Q = 1.0f
+        xyz2a.X = x<<4
+        xyz2a.Y = y<<4
+        xyz2a.Z = z
+        xyz2b.X = (x+w)<<4
+        xyz2b.Y = (y+h)<<4
+        xyz2b.Z = z
+        testb.ZTE = 1
+        testb.ZTST = ztest
+        
+
+=========================================================================
+sceGsSetDefClear2                                                  [関数]
+=========================================================================
+                                             バッファクリア用データの作成
+[形式]
+        int sceGsSetDefClear2(
+        	sceGsClear *cp,
+        	short ztest,
+        	short x, short y,
+        	short w, short h,
+        	u_char r, u_char g, u_char b, u_char a,
+        	u_int z
+        )
+        
+[引数]
+        cp		バッファクリア用データを設定する構造体のアドレス
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファ不使用）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        x, y		クリア領域左上端点座標
+        w, h		クリア領域の幅、高さ(ピクセル単位)
+        r,g,b,a		フレームバッファのクリア値
+        z		Zバッファのクリア値
+        
+[返り値]
+        sceGsClear構造体のサイズ(word単位)
+        
+[解説]
+        バッファクリア用のデータを、指定されたsceGsClear構造体の各メンバ
+        にセットします。この構造体の直前にGIFtag（PACKEDモード、A+D）を置
+        いてGIFに転送すると、コンテキスト２のフレームバッファをr,g,b,aに
+        指定した値で、同じくコンテキスト２のZバッファをzに指定した値でク
+        リアすることになります。
+        ztestに1-3を指定した場合は、デプステスト方式をいったんALWAYSとし
+        てフレームバッファとZバッファをクリアし、あらためてztestに指定し
+        た方式を設定するようになります。
+        ztestに0を指定した場合は、ztest=1と等価な動作をしますので、必ず、
+        ZBUFのZMSKの値を1にしてからご使用ください。
+        
+[備考]
+        ztest != 0を指定したとき、この関数によってsceGsClear構造体の各メ
+        ンバにセットされる値は次のとおりです。
+        必要があれば適宜修正して使用してください。
+        
+        testa.ZTE = 1
+        testa.ZTST = 1
+        prim = 6(SPRITE)
+        rgbaq.R = r
+        rgbaq.G = g
+        rgbaq.B = b
+        rgbaq.A = a
+        rgbaq.Q = 1.0f
+        xyz2a.X = x<<4
+        xyz2a.Y = y<<4
+        xyz2a.Z = z
+        xyz2b.X = (x+w)<<4
+        xyz2b.Y = (y+h)<<4
+        xyz2b.Z = z
+        testb.ZTE = 1
+        testb.ZTST = ztest
+        
+
+=========================================================================
+sceGsSetDefDBuff                                                   [関数]
+=========================================================================
+                                                     ダブルバッファの設定
+[形式]
+        void sceGsSetDefDBuff(
+        	sceGsDBuff *db,
+        	short psm,
+        	short w, short h,
+        	short ztest,
+        	short zpsm
+        	short clear,
+        )
+        
+[引数]
+        db		ダブルバッファ情報を設定する構造体アドレス
+        psm		描画ピクセルフォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        w, h		表示/描画領域の幅、高さ(ピクセル単位)
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファマスク）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        zpsm		Z値格納フォーマット(ztest!=0の時のみ有効)
+        		0 : PSMZ32
+        		1 : PSMZ24
+        		2 : PSMZ16
+        		10: PSMZ16S
+        clear		描画領域のクリア制御
+        		0 : クリアしない
+        		1 : クリアする
+        
+[返り値]
+        なし
+        
+[解説]
+        ダブルバッファ情報構造体中にある2組の描画環境/表示環境/バッファク
+        リア用データに、引数にしたがってそれぞれ適切な値を設定します。
+        clearに1を指定した場合、sceGsSwapDBuff()関数を用いてダブルバッフ
+        ァを切り替える際にフレームバッファとZバッファが0クリアされるよう
+        になります。
+        この関数は、コンテキスト1の環境のみを設定します。
+        ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。
+        
+[備考]
+        インタレース／FRAMEモードでclear = 1 , psm = PSMCT32と指定した場
+        合、この関数によって構造体の各メンバに設定される値は次のとおりで
+        す。必要であれば適宜修正して使用してください。
+        
+        disp[0]	sceGsSetDefDispEnv(&db->disp[0], psm, w, h, 0, 0)の結果
+        disp[1]	sceGsSetDefDispEnv(&db->disp[1], psm, w, h, 0, 0)の結果、
+        	ただしdisp[1].dispfb.FBP = ((w+63)/64)*((h+31)/32)
+        draw0	sceGsSetDefDrawEnv(&db->draw0, psm, w, h, ztest, zpsm)の結
+        果、
+        	ただしdraw0.frame1.FBP = ((w+63)/64)*((h+31)/32)
+        draw1	sceGsSetDefDrawEnv(&db->draw1, psm, w, h, ztest, zpsm)の結
+        果
+        clear0	sceGsSetDefClear(&db->clear0, ztest, 2048-(w>>1),
+        	2048-(h>>1), w, h, 0, 0, 0, 0, 0)の結果
+        clear1	sceGsSetDefClear(&db->clear1, ztest, 2048-(w>>1),
+        	2048-(h>>1), w, h, 0, 0, 0, 0, 0)の結果
+        
+
+=========================================================================
+sceGsSetDefDBuffDc                                                 [関数]
+=========================================================================
+                                                     ダブルバッファの設定
+[形式]
+        void sceGsSetDefDBuffDc(
+        	sceGsDBuffDc *db,
+        	short psm,
+        	short w, short h,
+        	short ztest,
+        	short zpsm
+        	short clear,
+        )
+        
+[引数]
+        db		ダブルバッファ情報を設定する構造体アドレス
+        psm		描画ピクセルフォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        w, h		表示/描画領域の幅、高さ(ピクセル単位)
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファマスク）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        zpsm		Z値格納フォーマット(ztest!=0の時のみ有効)
+        		0 : PSMZ32
+        		1 : PSMZ24
+        		2 : PSMZ16
+        		10: PSMZ16S
+        clear		描画領域のクリア制御
+        		0 : クリアしない
+        		1 : クリアする
+        
+[返り値]
+        なし
+        
+[解説]
+        ダブルバッファ情報構造体中にある2組の描画環境/表示環境/バッファク
+        リア用データに、引数にしたがってそれぞれ適切な値を設定します。
+        clearに1を指定した場合、sceGsSwapDBuff()関数を用いてダブルバッフ
+        ァを切り替える際にフレームバッファとZバッファが0クリアされるよう
+        になります。
+        この関数は、コンテキスト1と2の両方の環境を設定します。
+        ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。
+        
+[備考]
+        インタレース／FRAMEモードでclear = 1 , psm = PSMCT32と指定した場
+        合、この関数によって構造体の各メンバに設定される値は次のとおりで
+        す。必要であれば適宜修正して使用してください。
+        
+        disp[0]	sceGsSetDefDispEnv(&db->disp[0], psm, w, h, 0, 0)の結果
+        disp[1]	sceGsSetDefDispEnv(&db->disp[1], psm, w, h, 0, 0)の結果、
+        	ただしdisp[1].dispfb.FBP = ((w+63)/64)*((h+31)/32)
+        draw01	sceGsSetDefDrawEnv(&db->draw01, psm, w, h, ztest, zpsm)の
+        結果、
+        	ただしdraw01.frame1.FBP = ((w+63)/64)*((h+31)/32)
+        draw02	sceGsSetDefDrawEnv2(&db->draw02, psm, w, h, ztest, zpsm)の
+        結果、
+        	ただしdraw02.frame2.FBP = ((w+63)/64)*((h+31)/32)
+        draw11	sceGsSetDefDrawEnv(&db->draw11, psm, w, h, ztest, zpsm)の
+        結果
+        draw12	sceGsSetDefDrawEnv2(&db->draw12, psm, w, h, ztest, zpsm)の
+        結果
+        clear0	sceGsSetDefClear(&db->clear0, ztest, 2048-(w>>1),
+        	2048-(h>>1), w, h, 0, 0, 0, 0, 0)の結果
+        clear1	sceGsSetDefClear(&db->clear1, ztest, 2048-(w>>1),
+        	2048-(h>>1), w, h, 0, 0, 0, 0, 0)の結果
+        
+
+=========================================================================
+sceGsSetDefDispEnv                                                 [関数]
+=========================================================================
+                                                     表示環境データの作成
+[形式]
+        void sceGsSetDefDispEnv(
+        	sceGsDispEnv *disp,
+        	short psm,
+        	short w, short h,
+        	short dx, short dy,
+        )
+        
+[引数]
+        disp		表示環境を設定する構造体のアドレス
+        psm		ピクセルフォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        w, h		表示領域の幅、高さ(ピクセル単位)
+        dx, dy		表示領域左上端点のテレビ画面上での位置 (ピクセル単位)
+        
+[返り値]
+        なし
+        
+[解説]
+        表示環境構造体のメンバに値を設定します。
+        
+[備考]
+        インタレース／FRAMEモードを指定したとき、この関数によって構造体の
+        各メンバに設定される値を次に示します。
+        必要であれば適宜再設定してください。
+        
+        pmode = 0x66
+        smode2 = 3
+        dispfb2.PSM = psm;
+        dispfb.FBW = (w>>6)<<9
+        display2.DH = ((h<<1)-1) << 44
+        display2.DW = (0x9ff)<<32
+        display2.MAGH = (((2560+w-1)/w)-1) << 23
+        display2.DY = (50+dy) <<12
+        display2.DX = 0x27c + (dx*(2560/w))
+        bgcolor = 0
+        
+
+=========================================================================
+sceGsSetDefDrawEnv                                                 [関数]
+=========================================================================
+                                                     描画環境データの作成
+[形式]
+        int sceGsSetDefDrawEnv(
+        	sceGsDrawEnv1 *draw,
+        	short psm,
+        	short w, short h,
+        	short ztest,
+        	short zpsm
+        )
+        
+[引数]
+        draw		描画環境を設定する構造体のアドレス
+        psm		描画ピクセルフォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        w, h		描画領域の幅、高さ(ピクセル単位)
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファマスク）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        zpsm		Z値格納フォーマット(ztest!=0の時のみ有効)
+        		0 : PSMZ32
+        		1 : PSMZ24
+        		2 : PSMZ16
+        		10: PSMZ16S
+        
+[返り値]
+        sceGsDrawEnv1構造体のサイズ(word単位)
+        
+[解説]
+        コンテキスト1用描画環境構造体のメンバに値を設定します。
+        
+[備考]
+        drawをcachedに指定した場合、この関数の終了時にはdrawの内容はcache
+        上にありますので、DMAで転送する前にD-cacheをフラッシュしてメモリ
+        に書き戻しておく必要があります。
+        ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。
+        
+        ztest != 0, psm = PSMCT32と指定したとき、この関数によって作成され
+        る構造体の各メンバの値を次に示します。
+        必要であれば適宜修正して使用してください。
+        
+        frame1.PSM = psm
+        frame1.FBW = w
+        zbuf1.ZBP = ((w+63)/64)*((h+31)/32)*2;
+        zbuf1.ZPSM = zpsm
+        xyoffset1.OFX = (2048 - (w>>1))<<4;
+        xyoffset1.OFY = (2048 - (h>>1))<<4;
+        scissor1.SCAX1 = w-1
+        scissor1.SCAY1 = h-1
+        prmodecont.AC = 1
+        colclamp.CLAMP = 1
+        dthe.DTHE = 0
+        test1.ZTE = 1
+        test1.ZTST = ztest
+        
+
+=========================================================================
+sceGsSetDefDrawEnv2                                                [関数]
+=========================================================================
+                                                     描画環境データの作成
+[形式]
+        int sceGsSetDefDrawEnv2(
+        	sceGsDrawEnv2 *draw,
+        	short psm,
+        	short w, short h,
+        	short ztest,
+        	short zpsm
+        )
+        
+[引数]
+        draw		描画環境を設定する構造体のアドレス
+        psm		描画ピクセルフォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        w, h		描画領域の幅、高さ(ピクセル単位)
+        ztest		デプステスト方式
+        		0 : デプステストなし（Zバッファマスク）
+        		1 : Zバッファの値にかかわらず全ピクセルを描画
+        		2 : Z値がZバッファの値以上のピクセルを描画
+        		3 : Z値がZバッファの値より大きいピクセルを描画
+        zpsm		Z値格納フォーマット(ztest!=0の時のみ有効)
+        		0 : PSMZ32
+        		1 : PSMZ24
+        		2 : PSMZ16
+        		10: PSMZ16S
+        
+[返り値]
+        sceGsDrawEnv2構造体のサイズ(word単位)
+        
+[解説]
+        コンテキスト2用描画環境構造体のメンバに値を設定します。
+        
+[備考]
+        drawをcachedに指定した場合、この関数の終了時にはdrawの内容はcache
+        上にありますので、DMAで転送する前にD-cacheをフラッシュしてメモリ
+        に書き戻しておく必要があります。
+        PRMODECONT, COLCLAMP, DTHEは、コンテキスト切り替えができませんの
+        で、コンテキスト1と異なる値を設定する場合は注意してください。
+        ztest = 0で呼び出した場合、ztest=1 ZBUF.ZMSK=1に設定されます。
+        
+        ztest != 0, psm = PSMCT32と指定したとき、この関数によって作成され
+        る構造体の各メンバの値を次に示します。
+        必要であれば適宜修正して使用してください。
+        
+        frame2.PSM = psm
+        frame2.FBW = w
+        zbuf2.ZBP = ((w+63)/64)*((h+31)/32)*2;
+        zbuf2.ZPSM = zpsm
+        xyoffset2.OFX = (2048 - (w>>1))<<4;
+        xyoffset2.OFY = (2048 - (h>>1))<<4;
+        scissor2.SCAX1 = w-1
+        scissor2.SCAY1 = h-1
+        prmodecont.AC = 1
+        colclamp.CLAMP = 1
+        dthe.DTHE = 0
+        test2.ZTE = 1
+        test2.ZTST = ztest
+        
+
+=========================================================================
+sceGsSetDefLoadImage                                               [関数]
+=========================================================================
+                                                      LoadImage情報の設定
+[形式]
+        int sceGsSetDefLoadImage(
+        	sceGsLoadImage *lp,
+        	short dbp,
+        	short dbw,
+        	short dpsm,
+        	short x, short y,
+        	short w, short h
+        )
+        
+[引数]
+        lp		LoadImage情報を設定する構造体のアドレス
+        dbp		dbp転送先バッファベースアドレス
+        		(dpb x 64が実際のアドレスになる)
+        dbw		dbw転送先バッファ幅
+        		(dbw x 64が実際の幅になる)
+        dpsm		転送データのピクセルフォーマット
+        		0 : PSMCT32	（ピクセルサイズ:32bit）
+        		1 : PSMCT24	（ピクセルサイズ:24bit）
+        		2 : PSMCT16	（ピクセルサイズ:16bit）
+        		10: PSMCT16S	（ピクセルサイズ:16bit）
+        		19: PSMT8	（ピクセルサイズ:8bit）
+        		20: PSMT4	（ピクセルサイズ:4bit）
+        		27: PSMT8H	（ピクセルサイズ:8bit）
+        		36: PSMT4HL	（ピクセルサイズ:4bit）
+        		44: PSMT4HH	（ピクセルサイズ:4bit）
+        		48: PSMZ32	（ピクセルサイズ:32bit）
+        		49: PSMZ24	（ピクセルサイズ:24bit）
+        		50: PSMZ16	（ピクセルサイズ:16bit）
+        		58: PSMZ16S	（ピクセルサイズ:16bit）
+        x, y		転送先領域の左上端点
+        w, h		転送領域の幅、高さ(ピクセル単位)
+        
+[返り値]
+        sceGsLoadImage構造体のサイズ(word単位)
+        
+[解説]
+        PATH3経由でGSへイメージデータを転送するための構造体を作成します。
+        作成した構造体はGIFtagを含んでいますので、イメージデータの転送に
+        先立って、そのままGSへ転送することができます。
+        イメージデータのサイズ（w×h×ピクセルサイズ）は16byteの倍数で、3
+        2767×16byte以下でなければなりません。
+        また、ピクセルサイズが8bitの場合はx,wはともに2の倍数、ピクセルサ
+        イズが4bitの場合はx,wはともに4の倍数でなければなりません。
+        
+[備考]
+        この関数によってsceGsLoadImage構造体の各メンバにセットされる値は
+        次のとおりです。必要があれば適宜修正して使用してください。
+        
+        bitbltbuf.DBP = dbp
+        bitbltbuf.DBW = dbw
+        bitbltbuf.DPSM = dpsm
+        trxpos.DSAX = x
+        trxpos.DSAY = y
+        trxreg.RRW = w
+        trxreg.RRH = h
+        
+        sceGsLoadImage構造体を使用して簡便にデータ転送を行う関数として、s
+        ceGsExecLoadImage()関数が用意されています。
+        
+
+=========================================================================
+sceGsSetDefStoreImage                                              [関数]
+=========================================================================
+                                                     StoreImage情報の設定
+[形式]
+        int sceGsSetDefStoreImage(
+        	sceGsStoreImage *sp,
+        	short sbp,
+        	short sbw,
+        	short spsm,
+        	short x, short y,
+        	short w, short h
+        )
+        
+[引数]
+        sp		StoreImage情報を設定する構造体のアドレス
+        sbp		転送元バッファベースアドレス
+        		(sbp x 64が実際のアドレスになる)
+        sbw		転送元バッファ幅
+        		(sbw x 64が実際の幅になる)
+        spsm		転送データのピクセルフォーマット
+        		0 : PSMCT32	（ピクセルサイズ:32bit）
+        		1 : PSMCT24	（ピクセルサイズ:24bit）
+        		2 : PSMCT16	（ピクセルサイズ:16bit）
+        		10: PSMCT16S	（ピクセルサイズ:16bit）
+        		19: PSMT8	（ピクセルサイズ:8bit）
+        		27: PSMT8H	（ピクセルサイズ:8bit）
+        		48: PSMZ32	（ピクセルサイズ:32bit）
+        		49: PSMZ24	（ピクセルサイズ:24bit）
+        		50: PSMZ16	（ピクセルサイズ:16bit）
+        		58: PSMZ16S	（ピクセルサイズ:16bit）
+        x, y		転送元領域の左上端点
+        w, h		転送領域の幅、高さ(ピクセル単位)
+        
+        注意：ハード的な仕様によりPSMT4,PSMT4HH,PSMT4HLのlocal －> hostへ
+        の転送は出来
+        ません。他のモードで取得しておき、そのデータを並び変えるといった
+        処理が必要となります。
+        
+[返り値]
+        sceGsStoreImage構造体のサイズ
+        
+[解説]
+        PATH2経由でGSからイメージデータを転送するための構造体を作成します。
+        作成した構造体はGIFtagを含んでいますので、そのままGSへ転送するこ
+        とができます。
+        イメージデータのサイズ（w×h×ピクセルサイズ）は16byteの倍数で、3
+        2767×16byte以下でなければなりません。
+        また、ピクセルサイズが8bitの場合はx,wはともに2の倍数でなければな
+        りません。
+        
+[備考]
+        この関数によってsceGsStoreImage構造体の各メンバにセットされる値は
+        次のとおりです。必要があれば適宜修正して使用してください。
+        
+        vifcode[0] = VIFNOP
+        vifcode[1] = VIFMSKPATH3 (MASK on)
+        vifcode[2] = VIFFLUSHA
+        vifcode[3] = DIRECT
+        bitbltbuf,SBP = sbp
+        bitbltbuf.SBW = sbw
+        bitbltbuf.SPSM = spsm
+        trxpos.SSAX = x
+        trxpos.SSAY = y
+        trxreg.RRW = w
+        trxreg.RRH = h
+        trxdir.DIR = 1
+        
+        sceGsStoreImage構造体を使用して簡便にデータ転送を行う関数として、
+        sceGsExecStoreImage()関数が用意されています。
+        
+
+=========================================================================
+sceGsSetDefTexEnv                                                  [関数]
+=========================================================================
+                                               テクスチャ設定データの作成
+[形式]
+        int sceGsSetDefTexEnv(
+        	sceGsTexEnv *tp,
+        	short flush,
+        	short tbp0,
+        	short tbw,
+        	short psm,
+        	short w, h,
+        	short tfx
+        	short cbp,
+        	short cpsm,
+        	short cld,
+        	short filter
+        )
+        
+[引数]
+        tp		テクスチャ情報を設定する構造体のアドレス
+        flush		テクスチャページバッファの無効化
+        		0 : 無効化しない
+        		1 : 無効化する
+        tbp0		テクスチャバッファベースアドレス
+        		(tpb0 x 64が実際のアドレスになる)
+        tbw		テクスチャバッファの幅
+        		(tbw x 64が実際の幅になる)
+        psm		テクスチャピクセル格納フォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        		19: PSMT8
+        		20: PSMT4
+        		27: PSMT8H
+        		36: PSMT4HL
+        		44: PSMT4HH
+        		48: PSMZ32
+        		49: PSMZ24
+        		50: PSMZ16
+        		58: PSMZ16S
+        w, h		テクスチャの幅、高さ
+        		(2^wおよび2^nが実際のサイズになる)
+        tfx		テクスチャファンクション
+        		0 : MODULATE
+        		1 : DECAL
+        		2 : HILIGHT
+        		3 : HILIGHT2
+        cbp		CLUTデータのベースアドレス
+        		(cbp x 64が実際のアドレスになる)
+        cpsm		CLUTエントリ格納フォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        cld		CLUTバッファのロード制御
+        		0 : ロードしない
+        		1 : cbpからロードする
+        		2 : cbpからロードし,GS内部レジスタCBP0にcbp値を設定
+        		3 : cbpからロードし,GS内部レジスタCBP1にcbp値を設定
+        		4 : CBP0!=cbpならロードし,CBP0にcbp値を設定
+        		5 : CBP1!=cbpならロードし,CBP1にcbp値を設定
+        filter		フィルタリング方式の指定
+        		0 : NEAREST
+        		1 : LINEAR
+        		2 : NEAREST_MIPMAP_NEAREST
+        		3 : NEAREST_MIPMAP_LINEAR
+        		4 : LINEAR_MIPMAP_NEAREST
+        		5 : LINEAR_MIPMAP_LINEAR
+        
+[返り値]
+        sceGsTexEnv構造体のサイズ(word単位)
+        
+[解説]
+        テクスチャの設定に関するデータ(コンテキスト1)を、sceGsTexEnv構造
+        体の各メンバに設定します。
+        この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのま
+        まGIFに転送することができます。ただし構造体がCachedの場合は、D-ca
+        cheをフラッシュしてメモリに書き戻さないと正しいデータが転送されま
+        せんので注意してください。
+        新しいテクスチャをGSに転送したときには、flushに1を指定して作成し
+        たsceGsTexEnv構造体を用いて、テクスチャの再設定を行ってください。
+        
+[備考]
+        この関数によってsceGsTexEnv構造体の各メンバに設定される値は次のと
+        おりです。必要があれば適宜修正して使用してください。
+        
+        tex01.TBP0 = tbp0
+        tex01.TBW = tbw
+        tex01.PSM = psm
+        tex01.TW = w
+        tex01.TH = h
+        tex01.TCC = 1
+        tex01.TFX = tfx
+        tex01.CBP = cbp
+        tex01.CPSM = cpsm
+        tex01.CLD = cld
+        tex11.MMAG = filter & 1
+        tex11.MMIN = filter
+        clamp1.WMS = 1
+        clamp1.WMT = 1
+        
+
+=========================================================================
+sceGsSetDefTexEnv2                                                 [関数]
+=========================================================================
+                                               テクスチャ設定データの作成
+[形式]
+        int sceGsSetDefTexEnv2(
+        	sceGsTexEnv2 *tp,
+        	short flush,
+        	short tbp0,
+        	short tbw,
+        	short psm,
+        	short w, h,
+        	short tfx
+        	short cbp,
+        	short cpsm,
+        	short cld,
+        	short filter
+        )
+        
+[引数]
+        tp		テクスチャ情報を設定する構造体のアドレス
+        flush		テクスチャページバッファの無効化
+        		0 : 無効化しない
+        		1 : 無効化する
+        tbp0		テクスチャバッファベースアドレス
+        		(tpb0 x 64が実際のアドレスになる)
+        tbw		テクスチャバッファの幅
+        		(tbw x 64が実際の幅になる)
+        psm		テクスチャピクセル格納フォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        		19: PSMT8
+        		20: PSMT4
+        		27: PSMT8H
+        		36: PSMT4HL
+        		44: PSMT4HH
+        		48: PSMZ32
+        		49: PSMZ24
+        		50: PSMZ16
+        		58: PSMZ16S
+        w, h		テクスチャの幅、高さ
+        		(2^wおよび2^nが実際のサイズになる)
+        tfx		テクスチャファンクション
+        		0 : MODULATE
+        		1 : DECAL
+        		2 : HILIGHT
+        		3 : HILIGHT2
+        cbp		CLUTデータのベースアドレス
+        		(cbp x 64が実際のアドレスになる)
+        cpsm		CLUTエントリ格納フォーマット
+        		0 : PSMCT32
+        		1 : PSMCT24
+        		2 : PSMCT16
+        		10: PSMCT16S
+        cld		CLUTバッファのロード制御
+        		0 : ロードしない
+        		1 : cbpからロードする
+        		2 : cbpからロードし,GS内部レジスタCBP0にcbp値を設定
+        		3 : cbpからロードし,GS内部レジスタCBP1にcbp値を設定
+        		4 : CBP0!=cbpならロードし,CBP0にcbp値を設定
+        		5 : CBP1!=cbpならロードし,CBP1にcbp値を設定
+        filter		フィルタリング方式の指定
+        		0 : NEAREST
+        		1 : LINEAR
+        		2 : NEAREST_MIPMAP_NEAREST
+        		3 : NEAREST_MIPMAP_LINEAR
+        		4 : LINEAR_MIPMAP_NEAREST
+        		5 : LINEAR_MIPMAP_LINEAR
+        
+[返り値]
+        sceGsTexEnv2構造体のサイズ(word単位)
+        
+[解説]
+        テクスチャの設定に関するデータ(コンテキスト2)を、sceGsTexEnv2構造
+        体の各メンバに設定します。
+        この構造体の直前にGIFtag（PACKEDモード,REGS=A+D）を置くと、そのま
+        まGIFに転送することができます。ただし構造体がCachedの場合は、D-ca
+        cheをフラッシュしてメモリに書き戻さないと正しいデータが転送されま
+        せんので注意してください。
+        新しいテクスチャをGSに転送したときには、flushに1を指定して作成し
+        たsceGsTexEnv2構造体を用いて、テクスチャの再設定を行ってください。
+        
+[備考]
+        この関数によってsceGsTexEnv2構造体の各メンバに設定される値は次の
+        とおりです。必要があれば適宜修正して使用してください。
+        
+        tex02.TBP0 = tbp0
+        tex02.TBW = tbw
+        tex02.PSM = psm
+        tex02.TW = w
+        tex02.TH = h
+        tex02.TCC = 1
+        tex02.TFX = tfx
+        tex02.CBP = cbp
+        tex02.CPSM = cpsm
+        tex02.CLD = cld
+        tex12.MMAG = filter & 1
+        tex12.MMIN = filter
+        clamp2.WMS = 1
+        clamp2.WMT = 1
+        
+
+=========================================================================
+sceGsSetHalfOffset                                                 [関数]
+=========================================================================
+                                               描画オフセットデータの作成
+[形式]
+        void sceGsSetHalfOffset(
+        	sceGsDrawEnv1 *draw,
+        	short centerx, short centery,
+        	short halfoff
+        )
+        
+[引数]
+        draw		描画環境を設定する構造体のアドレス
+        centerx, centery	描画領域の中心座標
+        halfoff		オフセット加算の制御
+        		0 : 加算しない
+        		1 : 加算する
+        
+[返り値]
+        なし
+        
+[解説]
+        描画領域の中心座標から描画オフセット座標を計算し、描画環境構造体
+        内のxyoffset1の値を設定します。
+        その際に、halfoffに1が指定されていれば、ハーフピクセル分としてy方
+        向オフセットに8を加算して設定します。
+        
+[備考]
+        インタレースモードではoddフィールドとevenフィールドに半ピクセル分
+        ずれた画像を描画させることによって、見かけ上の縦解像度を走査線数
+        の2倍に引き上げることができます。
+        バッファをFRAMEモードとした場合は、両フィールドのオフセット値をず
+        らすことで半ピクセル分ずれた画像を描画させることができます。
+        
+
+=========================================================================
+sceGsSetHalfOffset2                                                [関数]
+=========================================================================
+                                               描画オフセットデータの作成
+[形式]
+        void sceGsSetHalfOffset2(
+        	sceGsDrawEnv2 *draw,
+        	short centerx, short centery,
+        	short halfoff
+        )
+        
+[引数]
+        draw		描画環境を設定する構造体のアドレス
+        centerx, centery	描画領域の中心座標
+        halfoff		オフセット加算の制御
+        		0 : 加算しない
+        		1 : 加算する
+        
+[返り値]
+        なし
+        
+[解説]
+        描画領域(コンテキスト2)の中心座標から描画オフセット座標を計算し、
+        描画環境構造体内のxyoffset2の値を設定します。
+        その際に、halfoffに1が指定されていれば、ハーフピクセル分としてy方
+        向オフセットに8を加算して設定します。
+        
+[備考]
+        インタレースモードではoddフィールドとevenフィールドに半ピクセル分
+        ずれた画像を描画させることによって、見かけ上の縦解像度を走査線数
+        の2倍に引き上げることができます。
+        バッファをFRAMEモードとした場合は、両フィールドのオフセット値をず
+        らすことで半ピクセル分ずれた画像を描画させることができます。
+        
+
+=========================================================================
+sceGsSwapDBuff                                                     [関数]
+=========================================================================
+                                                 ダブルバッファの切り替え
+[形式]
+        int sceGsSwapDBuff(
+        	sceGsDBuff *db,
+        	int id,
+        )
+        
+[引数]
+        db		ダブルバッファ情報が設定されている構造体のアドレス
+        id		バッファ番号(最下位1bitのみ有効)
+        
+[返り値]
+        終了状態
+        0 : 正常終了
+        -1 : Timeout(先行するCh.2 DMAが終了しない場合)
+        
+[解説]
+        引数idの指定にしたがって、ダブルバッファ情報構造体中にある2組のう
+        ちいずれかの描画環境および表示環境をGSに設定します。
+        この関数は、コンテキスト1の環境のみを設定します。
+        
+[備考]
+        ダブルバッファ情報構造体dbがCachedの場合は、D-cacheをフラッシュし
+        てメモリに書き戻してからこの関数を呼び出してください。
+        
+
+=========================================================================
+sceGsSwapDBuffDc                                                   [関数]
+=========================================================================
+                                                 ダブルバッファの切り替え
+[形式]
+        int sceGsSwapDBuffDc(
+        	sceGsDBuffDc *db,
+        	int id,
+        )
+        
+[引数]
+        db		ダブルバッファ情報が設定されている構造体のアドレス
+        id		バッファ番号(最下位1bitのみ有効)
+        
+[返り値]
+        終了状態
+        0 : 正常終了
+        -1 : Timeout(先行するCh.2 DMAが終了しない場合)
+        
+[解説]
+        引数idの指定にしたがって、ダブルバッファ情報構造体中にある2組のう
+        ちいずれかの描画環境および表示環境をGSに設定します。
+        この関数は、コンテキスト1と2の両方の環境を設定します。
+        
+[備考]
+        ダブルバッファ情報構造体dbがCachedの場合は、D-cacheをフラッシュし
+        てメモリに書き戻してからこの関数を呼び出してください。
+        
+
+=========================================================================
+sceGsSyncPath                                                      [関数]
+=========================================================================
+                                                     データ転送の終了待ち
+[形式]
+        int sceGsSyncPath(
+        	int mode,
+        	u_short timeout
+        )
+        
+[引数]
+        mode		終了待ちモード
+        		0 : 待ち条件が解除されるまでブロックする。
+        		1 : ブロックせずに、その時の各デバイスのbusyステータスを返す。
+        timeout		timeoutカウンタ
+        		0    : システムデフォルト(約4VSync)
+        		正数 : timeout発生時間(単位HSync) (※not supported yet)
+        
+[返り値]
+        終了状態
+        mode == 0 時
+        	0    : 正常終了
+        	負数 : 異常終了(タイムアウト発生)
+        
+        mode == 1 時
+        	0    : 待ち条件が解除されている
+        	正数 : 以下のデバイスのbusyステータス
+        +--------------------------------------------+--+--+--+--+--+
+        |31　　　　　　　　　　　　　　　　　　　　　 4  3  2  1  0 |
+        +                                            +  +  +  +  +  +
+        |　　　　　　　　　　　　　　　　　　　　　　 G  V  V  D  D |
+        |                                             I  U  I  M  M |
+        |                                             F  1  F  A  A |
+        |                                                   1  2  1 |
+        +--------------------------------------------+--+--+--+--+--+
+        0:idle
+        1:busy
+[解説]
+        引数modeに0が指定された場合、データパス(PATH1,2,3)中のデバイスがi
+        dleになるまでプログラムをブロックします。timeoutで指定された期間
+        にわたって転送が終了しない場合はタイムアウトとして、標準出力にメ
+        ッセージを出力してエラー終了します。このとき、ロックしているデバ
+        イスはそのままで、リセットするなどの処置は行いません。
+        引数timeoutには、最大何HSync分待機を続けるかを指定します。0を指定
+        した場合は、4Vsync（1050Hsync)だけ待ちます。
+        
+        引数modeに1が指定された場合、その時点でのデータパス中のデバイスの
+        busyステータスを返します。
+        
+        引数modeに0が指定されて、以上終了時には以下のレジスタの内容をデバ
+        ッグコンソールにプリントします。
+        	D1_CHCR, D1_TADR, D1_MADR, D1_QWC
+        	D2_CHCR, D2_TADR, D2_MADR, D2_QWC
+        	VIF1_STAT, GIF_STAT
+        
+
+=========================================================================
+sceGsSyncV                                                         [関数]
+=========================================================================
+                                                      V-Blankとの同期待ち
+[形式]
+        int sceGsSyncV(
+        	int mode
+        )
+        
+[引数]
+        mode		reserved(0を指定すること)
+        
+[返り値]
+        インタレースモードでのFIELD情報
+        0: even field
+        1: odd field
+        ノンインタレースモード時は必ず1を返す
+        
+[解説]
+        V-Blank期間の開始までプログラムをブロックします。
+        modeは将来の機能拡張に備えて用意されている引数です。現バージョン
+        では必ず0を指定してください。
+        
+
+=========================================================================
+sceGsSyncVCallback                                                 [関数]
+=========================================================================
+                                              VSyncコールバック関数の設定
+[形式]
+        int *sceGsSyncVCallback(
+        	int (*func)(int)
+        )
+        
+[引数]
+        func		コールバック関数のエントリアドレス
+        
+[返り値]
+        それまでに設定されていたコールバック関数のエントリアドレス
+        
+[解説]
+        V-Blank期間の先頭で呼び出されるコールバック関数を設定します。
+        それまでの設定は破棄されます。
+        設定した関数のエントリアドレスはグローバル変数sceGsVSCfuncに保存
+        されます。
+        
+[備考]
+        Vsyncコールバック関数の設定は、sceGsResetGraph(0)を呼び出すとクリ
+        アされます。
+        
+        この関数は、カーネルサービス関数AddIntcHandlerを使用していますの
+        で、func関数が-1を返す場合、AddIntcHandlerを使用して登録した他のV
+        sync割り込みハンドラが呼ばれなくなる場合があります。
+        
+        func関数は割り込みハンドラとして実行されるため、プログラミングに
+        際していくつか特別な注意が必要です。割り込みハンドラの記述につい
+        て、\overview\eekernelに注意事項が記載されていますので参照してく
+        ださい。

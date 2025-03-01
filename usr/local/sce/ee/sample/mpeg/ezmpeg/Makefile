@@ -1,0 +1,77 @@
+
+SHELL       = /bin/sh
+
+TOP         = /usr/local/sce/ee
+LIBDIR      = $(TOP)/lib
+INCDIR      = $(TOP)/../common/include -I$(TOP)/include
+
+TARGET      = ezmpeg
+OBJS        = crt0.o \
+              main.o \
+	      display.o \
+	      ldimage.o
+
+LCFILE      = $(LIBDIR)/app.cmd
+LIBS        = $(LIBDIR)/libgraph.a \
+              $(LIBDIR)/libdma.a \
+              $(LIBDIR)/libdev.a \
+              $(LIBDIR)/libpkt.a \
+	      $(LIBDIR)/libvu0.a \
+	      $(LIBDIR)/libmpeg.a \
+	      $(LIBDIR)/libipu.a \
+
+LIBOPT	  = -lgraph -ldma -ldev -lpkt -lvu0 -lmpeg -lipu -lm
+
+PREFIX      = ee
+AS          = $(PREFIX)-gcc
+CC          = $(PREFIX)-gcc
+LD          = $(PREFIX)-gcc
+DVPASM      = $(PREFIX)-dvp-as
+OBJDUMP     = $(PREFIX)-objdump
+RUN         = dsedb -r run
+RM          = /bin/rm -f
+
+#CFLAGS      = -O2 -Wall -Wa,-al -g
+CFLAGS      = -O2 -Wall -Werror -Wa,-al
+CXXFLAGS    = -O2 -Wall -Werror -Wa,-al -fno-exceptions -fno-common
+ASFLAGS     = -c -xassembler-with-cpp -Wa,-al
+DVPASMFLAGS = -g 
+LDFLAGS     = -Wl,-Map,$(TARGET).map -nostartfiles -L$(LIBDIR) $(LIBOPT)
+TMPFLAGS    =
+
+.SUFFIXES: .c .s .cc .dsm
+
+all: $(TARGET).elf
+
+$(TARGET).elf: $(OBJS) $(LIBS)
+	$(LD) -o $@ -T $(LCFILE) $(OBJS) $(LDFLAGS)
+
+crt0.o: $(LIBDIR)/crt0.s
+	$(AS) $(ASFLAGS) $(TMPFLAGS) -o $@ $< > $*.lst
+
+.s.o:
+	$(AS) $(ASFLAGS) $(TMPFLAGS) -I$(INCDIR) -o $@ $< > $*.lst
+
+.dsm.o:
+	$(DVPASM) $(DVPASMFLAGS) -I$(INCDIR) -o $@ $< > $*.lst
+
+.c.o:
+	$(CC) $(CFLAGS) $(TMPFLAGS) -I$(INCDIR) -c $< -o $*.o > $*.lst
+
+.cc.o:
+	$(CC) $(CXXFLAGS) $(TMPFLAGS) -I$(INCDIR) -c $< -o $*.o > $*.lst
+
+run: $(TARGET).elf
+	$(RUN) $(TARGET).elf ez.m2v
+
+clean:
+	$(RM) *.o *.map *.lst core *.dis *.elf
+
+########
+compare:
+	${MAKE} "CFLAGS=${CFLAGS} -DCOMPARE_ON"
+
+g++:
+	${MAKE} "CC=ee-g++" "LD=ee-g++"
+
+

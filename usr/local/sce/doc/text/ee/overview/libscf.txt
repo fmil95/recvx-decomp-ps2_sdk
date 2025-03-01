@@ -1,0 +1,165 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C) 2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+システムコンフィグレーション
+ライブラリ
+========================================
+
+    
+
+ 1 ライブラリ概要
+------------------
+
+
+  1.1 概要
+
+    libscfは、表示言語やテレビ画面の縦横比など、"PlayStation 2"の詳細設定
+    画面でユーザが設定したシステムコンフィグレーション情報を取得するため
+    のライブラリです。
+    システムコンフィグレーション情報の内容は、海外版 "PlayStation 2"と日
+    本語版 
+    "PlayStation 2"およびDTL-T10000とでは異なりますが、libscfはこの相違を
+    吸収します。
+
+  1.2 関連ファイル
+
+    システムコンフィグレーションライブラリAPIを利用するのに必要なファイル
+    は次のとおりです。
+    
+    +------------------+----------------------------------+
+    |カテゴリ           ファイル名                        |
+    +                  +                                  +
+    |ヘッダファイル     libscf.h                          |
+    |ライブラリファイル libscf.a                          |
+    |ライブラリファイル libkernl.a(Library Release2.0以降)|
+    +------------------+----------------------------------+
+
+  1.3 注意事項
+
+    libscfの各関数は、スレッドセーフではありません。同時に複数のスレッド
+    から呼び出されると誤動作を引き起こす危険があるため、複数のスレッドで
+    libscfの関数を呼び出す場合はセマフォなどを用いて排他制御を行ってくだ
+    さい。
+
+ 2 システムコンフィグレーション情報の内容
+------------------------------------------
+
+
+  2.1 機種による相違
+
+    海外版の"PlayStation 2"では、日付の表示方法やタイムゾーンの設定、サマ
+    ータイムがあるかないかなどが設定できるようになっています。
+    日本版"PlayStation 2"、DTL-T10000で設定では、これらの項目は設定できま
+    せんので、以下の固定値を返すようにしています。
+    
+    +-----------------+-------------+----------------+----------------+
+    |関数名            開発ツール    日本版           海外版          |
+    |                  DTL-T10000    "PlayStation 2"  "PlayStation 2" |
+    +                 +             +                +                +
+    |sceScfGetLanguage SCE_JAPANESE  設定値           設定値          |
+    |                  _LANGUAGE                                      |
+    |sceScfGetAspect   SCE_ASPECT_43 設定値           設定値          |
+    |sceScfGetSpdif    SCE_SPDIF_ON  設定値           設定値          |
+    |sceScfGetDate     SCE_DATE      SCE_DATE_        設定値          |
+    |Notation          _YYYYMMDD     YYYYMMDD                         |
+    |sceScfGet         SCE_          SCE              設定値          |
+    |SummerTime        SUMMER        _SUMMER                          |
+    |                  TIME_OFF      TIME_OFF                         |
+    |sceScfGetTime     SCE_TIME_     SCE_TIME         設定値          |
+    |Notatinon         24HOUR        _24HOUR                          |
+    |sceScfGetTimeZone 540           540              設定値          |
+    |sceScfGetLocal    設定値        設定値           設定値          |
+    |TimefromRTC                                                      |
+    |sceScfGetGMT      設定値        設定値           設定値          |
+    |fromRTC                                                          |
+    +-----------------+-------------+----------------+----------------+
+
+  2.2 時刻の解説
+
+
+   (1) "PlayStation 2"の時刻の管理方法
+
+      日本版、海外版の全"PlayStation 2"は、RTCにJST(Japanese Standard 
+      Time日本標準時)を保存することで時刻を管理します。
+
+   (2) "PlayStation 2"の時刻の設定方法
+
+      ゲームのディスクを入れずに電源を入れると、詳細設定画面が表示され、
+      そこでRTCの時刻を設定できます。
+      ここで設定する時刻は現地時刻ですが、JSTに変換されてRTCに保存されま
+      す。
+
+   (3) DTL-T10000の時刻の設定方法
+
+      開発用コンピュータでWWWブラウザを起動し、DTL-T10000にアクセスして管
+      理ツール画面を開き、「"PlayStation 2" RTC設定」をクリックして画面を
+      開き、「時刻を選択する」を選択します。年・月・日・時・分をJSTで設定
+      してください。
+      JSTはGMT(Greenwich Mean Timeグリニッジ標準時)+9時間で計算できます。
+      管理ツール画面については、DTL-T10000取扱説明書を参照してください。
+
+   (4) 現地時刻、GMTの取得方法
+
+      まず、sceCdReadClockでRTCの値を取得します。
+      現地時刻を求めるには、取得したRTCの値をsceScfGetLocalTimefromRTCで
+      変換します。
+      GMTを求めるには、取得したRTCの値をsceScfGetGMTfromRTCで変換します。
+
+  2.3 言語の解説
+
+    sceScfGetLanguage関数で言語設定情報を取得することができます。
+    返り値は以下のいずれかです。
+         ・SCE_JAPANESE_LANGUAGE		日本語
+         ・SCE_ENGLISH_LANGUAGE		英語
+         ・SCE_FRENCH_LANGUAGE		フランス語
+         ・SCE_SPANISH_LANGUAGE		スペイン語
+         ・SCE_GERMAN_LANGUAGE		ドイツ語
+         ・SCE_ITALIAN_LANGUAGE		イタリア語
+         ・SCE_DUTCH_LANGUAGE		オランダ語
+         ・SCE_PORTUGUESE_LANGUAGE	ポルトガル語
+
+  2.4 テレビ画面の縦横比の解説
+
+    sceScfGetAspect関数でテレビ画面の縦横比の設定を取得することができます。
+    戻り値は以下のいずれかです。
+         ・SCE_ASPECT_43	4:3
+         ・SCE_ASPECT_FULL	FULL SCREEN
+         ・SCE_ASPECT_169	16:9
+
+  2.5 SPDIFの解説
+
+    sceScfGetSpdif関数でSPDIFの設定を取得することができます。
+    SPDIFを有効にしているとSCE_SPDIF_ONを返し、無効にしていると
+    SCE_SPDIF_OFFを返します。
+
+  2.6 日付の表示形式の解説
+
+    sceScfGetDateNotation関数で日付の表示形式を取得することができます。
+    戻り値はSCE_DATE_YYYYMMDD,SCE_DATE_MMDDYYYY,SCE_DATE_DDMMYYYYのいずれ
+    かです。
+    タイトルアプリケーションで日付を表示する際には、この表示形式に従って
+    ください。
+    具体例をあげると2000年10月23日の表示は、
+    SCE_DATE_YYYYMMDD	2000/10/23
+    SCE_DATE_MMDDYYYY	10/23/2000
+    SCE_DATE_DDMMYYYY	23/10/2000 のようにしてください。
+
+  2.7 時刻の表示形式の解説
+
+    sceScfGetTimeNotation関数で時刻の表示方法を返します。
+    返り値はSCE_TIME_24HOURまたはSCE_TIME_12HOURのいずれかです。
+    タイトルアプリケーションで時刻を表示する際には、この表示形式に従って
+    ください。
+    具体例として15:00:00の表示は、
+    SCE_TIME_24HOUR 24時間制	15:00:00
+    SCE_TIME_12HOUR 12時間制	03:00:00 PM のようにしてください。
+
+  2.8 サマータイムの解説
+
+    sceScfGetSummerTime関数でサマータイムが設定されているか取得することが
+    できます。
+    返り値がSCE_SUMMERTIME_ONのとき、そのタイムゾーンの標準時刻を1時間進
+    めます。
+    SCE_SUMMERTIME_OFFのとき標準時刻はそのままです。

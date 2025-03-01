@@ -1,0 +1,171 @@
+<HTML>
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0J Win">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=x-sjis">
+  <TITLE>admo8</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<P><A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo106.htm">[前]</A> <A HREF="admo108.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A></P>
+
+<H2><FONT COLOR="#996633">ARM Architecture Reference Manual</FONT><BR>
+<HR ALIGN=LEFT></H2>
+
+<H1><FONT COLOR="#ff0000">Addressing Mode 1</FONT></H1>
+
+<BLOCKQUOTE>
+  <P><TABLE WIDTH="90%" BORDER="1" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="50%" HEIGHT="38">
+      <H3><FONT COLOR="#999999">機能説明</FONT></H3>
+</TD>
+      <TD WIDTH="50%">
+      <A NAME="anchor2135450"></A><B>Rotate right by immediate</B></TD> 
+    </TR>
+  </TABLE></P>
+  <H2><FONT COLOR="#009999">Rm, ROR #&lt;shift_imm&gt;</FONT></H2>
+</BLOCKQUOTE>
+
+<H4>説明</H4>
+
+<BLOCKQUOTE>
+  <P>このデータ処理オペランドは、レジスタの値を定数値分だけローテートするのに使用します。</P>
+  <P>命令のオペランドは、レジスタRmの値を1～31の範囲のイミディエイト値で右にローテートして生成されます。右端からローテート・オフされたビットが左の空きビット位置に挿入されます。</P>
+  <P>&lt;shift_imm&gt; == 0のときは、拡張付き右ローテートが実行されます（Rm, RRX参照）。</P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="1" CELLSPACING="2" CELLPADDING="0">
+  <TR>
+    <TD VALIGN="TOP">
+    <A NAME="1018101"></A><B>31</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018103"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018105"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018107"></A><B>28</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018109"></A><B>27</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018111"></A><B>26</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018113"></A><B>25</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018115"></A><B>24</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018117"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018119"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018121"></A><B>21</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018123"></A><B>20</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018125"></A><B>19</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018127"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018129"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018131"></A><B>16</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018133"></A><B>15</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018135"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018137"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018139"></A><B>12</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018141"></A><B>11</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018143"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018145"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018147"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018149"></A><B>7</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018151"></A><B>6</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018153"></A><B>5</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018155"></A><B>4</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018157"></A><B>3</B></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018159"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018161"></A><FONT COLOR="#ffffff">-</FONT></TD> 
+    <TD VALIGN="TOP">
+    <A NAME="1018163"></A><B>0</B></TD> 
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1018165"></A><BR>
+    cond</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018173"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018175"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018177"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1018179"></A><BR>
+    opcode</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018187"></A><BR>
+    S</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1018189"></A><BR>
+    Rn</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1018197"></A><BR>
+    Rd</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="5">
+    <P><CENTER><A NAME="1018205"></A><BR>
+    shift_imm</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018215"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018217"></A><BR>
+    1</CENTER></TD>
+    <TD VALIGN="TOP">
+    <P><CENTER><A NAME="1018219"></A><BR>
+    0</CENTER></TD>
+    <TD VALIGN="TOP" COLSPAN="4">
+    <P><CENTER><A NAME="1018221"></A><BR>
+    Rm</CENTER></TD>
+  </TR>
+</TABLE></P>
+
+<H4>オペレーション</H4>
+
+<BLOCKQUOTE>
+  <PRE>if &lt;shift_imm&gt; == 0 then
+        See Rm, RRX
+else /* &lt;shift_imm&gt; &gt; 0 */
+        &lt;shifter_operand&gt; = Rm Rotate_Right &lt;shift_imm&gt;
+        &lt;shifter_carry_out&gt; = Rm[&lt;shift_imm&gt; - 1]</PRE>
+</BLOCKQUOTE>
+
+<H4>注記</H4>
+
+<BLOCKQUOTE>
+  <P><B>R15の使用：</B>レジスタRmまたはRnとしてR15を指定した場合、使用される値は現在の命令のアドレスに8を加算した値です。</P>
+</BLOCKQUOTE>
+
+<P><HR ALIGN=LEFT><BR>
+<A HREF="arm_gtoc.htm">[総目次]</A> <A HREF="arm300.htm">[章目次]</A>
+<A HREF="admo106.htm">[前]</A> <A HREF="admo108.htm">[次]</A> <A
+HREF="arm_inde.htm">[インデックス]</A>
+
+</BODY>
+</HTML>

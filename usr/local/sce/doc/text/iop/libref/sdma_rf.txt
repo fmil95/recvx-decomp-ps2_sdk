@@ -1,0 +1,140 @@
+[SCEI CONFIDENTIAL DOCUMENT]
+"PlayStation 2" Programmer Tool Runtime Library Release 2.0
+                  Copyright (C)  2000 by Sony Computer Entertainment Inc.
+                                                     All Rights Reserved
+
+                                 SIF DMA
+                                ========
+
+
+ 1 構造体
+==========
+
+=========================================================================
+sceSifDmaData                                                    [構造体]
+=========================================================================
+                                                               DMA データ
+[構造]
+        typedef struct {
+        	u_int	data;
+        	u_int	addr;
+        	u_int	size;
+        	u_int	mode;
+        } sceSifDmaData;
+        
+[メンバ]
+        data    送出するデータのアドレス(EE 16byte/IOP 4byte アライン)
+        addr    送るべき相手のアドレス(EE 16byte/IOP 4byte アライン)
+        size     データのサイズ byte指定(EE 16byte/IOP 4byte 単位となる)
+        mode    注意：現在0(割り込みを起こさないモード)のみを設定してくだ
+                 さい。
+                 SIF DMA関連の割り込みは、現在SIF CMDで独占しているので
+                 使用しないでください。
+                SIF_DMA_INT_I	転送終了後割り込み(送り手)
+                SIF_DMA_INT_O	転送終了後割り込み(受け手)
+                SIF_DMA_TAG	dataの先頭の1qwordをTAGとして使用してもよい
+                                (EEでのみ指定)
+                SIF_DMA_ERT	転送後 IOP の DMA を止める(EEでのみ指定)
+        
+[解説]
+        DMA 転送すべきデータのアドレス、送り先アドレス、サイズ、モードを
+        指定する構造体。
+        アドレスは、EE の場合は16バイト、IOP の場合は4バイトにアラインさ
+        れます。
+        サイズは、EE の場合は16バイト、IOP の場合は4バイト単位となります
+        1回(ひとつのsceSifDmaDataで)の最大転送単位は、(1M - 16)バイトです。
+        
+[関連項目]
+        sceSifSetDma()
+        
+
+ 2 関数
+========
+
+
+=========================================================================
+sceSifDmaStat / isceSifDmaStat                                     [関数]
+=========================================================================
+                                                       キューイングの状態
+[形式]
+        int  sceSifDmaStat(unsigned int id)
+        int  isceSifDmaStat(unsigned int id)
+        
+[引数]
+        id	sceSifSetDma()が返したキューイング識別子
+        
+[返り値]
+        正(>0)		キューイングされて待機中
+        0		DMA 実行中
+        負(<0)		DMA 終了済
+        
+[解説]
+        指定 id のDMAの状態を調べます。
+        
+[備考]
+        EE の場合は、割り込み関数内では isceSifDmaStat() を使用してくださ
+        い。
+        
+
+=========================================================================
+sceSifSetDChain / isceSifSetDChain                                 [関数]
+=========================================================================
+                                                    DMAチャンネルの再設定
+[形式]
+        void  sceSifSetDChain(void)
+        void  isceSifSetDChain(void)
+[引数]
+        なし
+        
+[返り値]
+        なし
+        
+[解説]
+        割り込みその他の原因で、DMA が受けられない状態の時には、受け手側
+        でこの関数を実行して、DMA チャネルの再設定を行います。
+        EE の場合、IOP から SIF DMA 割り込みが起ると、DMA の受け口が塞が
+        りますので、この関数を使用して再設定しなければなりません。
+        IOP の場合、SIF_DMA_ERT が指定されたデータの転送後、同様に受け口
+        が塞がりますので、この関数を使用して再設定しなければなりません。
+        
+[備考]
+        EE の場合、割り込み関数内では isceSifSetDChain() を使用してくださ
+        い。
+
+=========================================================================
+sceSifSetDma / isceSifSetDma                                       [関数]
+=========================================================================
+                                                  相手メモリへの DMA 転送
+[形式]
+        unsigned int sceSifSetDma(
+        	sceSifDmaData *sdd,
+        	int len
+        )
+        
+        unsigned int isceSifSetDma(
+        	sceSifDmaData *sdd,
+        	int len
+        )
+[引数]
+        sdd	DMA の内容
+        len	sdd データの数
+        
+[返り値]
+        0以外	キューイング識別子を返す
+        0	キューイングに失敗
+        
+[解説]
+        相手のアドレスに対して DMA でデータを送ります。
+        データはsceSifDmaData構造体で、一度に複数を指定できます。
+        既にDMA中であれば、DMA終了後に発動されるようにキューイングされま
+        す。
+        キューイング識別子は、時間がたてば同じ値が返ることもあります。
+        キューの数は、現在の実装では、EE側 は32本のリングバッファ、
+        IOP側は片方32本のダブルバッファです。そのため、IOP では、DMA 終了
+        割り込み関数を占有しています。
+        
+[備考]
+        EE の場合は、割り込み関数内では isceSifSetDma() を使用してくださ
+        い。
+        IOP の場合は、必ずこの関数は割り込み禁止領域で呼んでください。
+        現在の実装では SPR を扱うことはできません。

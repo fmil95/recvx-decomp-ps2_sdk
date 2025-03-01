@@ -1,24 +1,24 @@
 /* SCEI CONFIDENTIAL
- "PlayStation 2" Programmer Tool Runtime Library Release 2.4
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
 */
-/* 
+/*
  *              I/O Processor Library Sample Program
- * 
+ *
  *                         - CD/DVD -
- * 
+ *
  *      Copyright (C) 2000 Sony Computer Entertainment Inc.
  *                        All Rights Reserved.
- * 
- * 
+ *
+ *
  */
 
 #include <stdio.h>
 #include <kernel.h>
-#include <sys/types.h>
 #include <sys/file.h>
 #include <string.h>
 #include <libsd.h>
 #include <libcdvd.h>
+#include <string.h>
 
 /* ================================================================
  *
@@ -48,7 +48,7 @@ volatile int gAdpcmStatus= ADPCM_STATUS_PRELOADED;
 int buf_side= 0;
 int gSem = 0;
 
-// ローカルメモリ内の配置
+// SPU2 ローカルメモリ内の配置
 unsigned char  ring_buf[2048 * 80] __attribute__((aligned (16)));
 unsigned char  sbuf[_BUF_SIZE] __attribute__((aligned (16)));
 
@@ -56,17 +56,36 @@ unsigned char  sbuf[_BUF_SIZE] __attribute__((aligned (16)));
 #define _ADPCM_MARK_LOOP  0x02
 #define _ADPCM_MARK_END   0x01
 
-#define _AdpcmSetMarkSTART(a,s) { *((unsigned char *)((a)+1)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); *((unsigned char *)((a)+0x10+1)) = _ADPCM_MARK_LOOP; *((unsigned char *)((a)+(s)-0x0f)) = _ADPCM_MARK_LOOP; FlushDcache (); }
+#define _AdpcmSetMarkSTART(a,s) { \
+  *((unsigned char *)((a)+1)) = \
+        (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
+  *((unsigned char *)((a)+0x10+1)) = \
+        _ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+        _ADPCM_MARK_LOOP; \
+        FlushDcache (); }
+#define _AdpcmSetMarkEND(a,s) { \
+  *((unsigned char *)((a)+1)) = \
+         _ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+0x10+1)) = \
+        _ADPCM_MARK_LOOP; \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+        (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); \
+        FlushDcache (); }
 
-#define _AdpcmSetMarkEND(a,s) { *((unsigned char *)((a)+1)) = _ADPCM_MARK_LOOP;  *((unsigned char *)((a)+0x10+1)) = _ADPCM_MARK_LOOP; *((unsigned char *)((a)+(s)-0x0f)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); FlushDcache (); }
-
-#define _AdpcmSetMarkSTARTpre(a,s) { *((unsigned char *)((a)+1)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); *((unsigned char *)((a)+0x10+1)) = _ADPCM_MARK_LOOP;  FlushDcache (); }
-
-#define _AdpcmSetMarkENDpre(a,s) { *((unsigned char *)((a)+(s)-0x0f)) = (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); FlushDcache (); }
+#define _AdpcmSetMarkSTARTpre(a,s) { \
+  *((unsigned char *)((a)+1)) = \
+        (_ADPCM_MARK_LOOP | _ADPCM_MARK_START); \
+  *((unsigned char *)((a)+0x10+1)) = \
+        _ADPCM_MARK_LOOP; \
+        FlushDcache (); }
+#define _AdpcmSetMarkENDpre(a,s) { \
+  *((unsigned char *)((a)+(s)-0x0f)) = \
+        (_ADPCM_MARK_LOOP | _ADPCM_MARK_END); \
+        FlushDcache (); }
 
 int my_main(int arg);
 
-/* my_main()関数スレッドを作成するための関数 */
 int start( int argc, char *argv[] )
 {
         struct ThreadParam param;
@@ -88,21 +107,19 @@ int start( int argc, char *argv[] )
 }
 
 /* internal */
-static int 
-_AdpcmDmaInt (int channel, void* data)     // DMA Interrupt
+static int
+_AdpcmDmaInt (void* common)     // DMA Interrupt
 {
     iSignalSema (gSem);
-    // 割り込みを再度許可
-    return 0;  
+    return 1;  // 割り込みを再度許可
 }
 
 /* internal */
-static int
-_AdpcmSpu2Int (int core_bit, void* data)            // SPU2 Interrupt
+static SD_IRQ_CBProc
+_AdpcmSpu2Int (void)            // SPU2 Interrupt
 {
     iSignalSema (gSem);
-    // 割り込みを再度許可
-    return 0;
+    return (SD_IRQ_CBProc) 1;   // 割り込みを再度許可
 }
 
 // ADPCM_SETVOICE
@@ -133,7 +150,6 @@ AdpcmSetVolumeDirect (unsigned int vol,int vnum)
     return;
 }
 
-/* メイン処理関数 */
 int my_main(int arg)
 {
 	int	cnt0, ret, start_st,file_sec;
@@ -160,6 +176,12 @@ int my_main(int arg)
 	printf(" sceCdDiskReady\n");
 	sceCdDiskReady(0);
 
+        //-- 割り込み環境の初期化を行っておく。
+        CpuEnableIntr();
+        EnableIntr( INUM_DMA_4 );
+        EnableIntr( INUM_DMA_7 );
+        EnableIntr( INUM_SPU );
+
         /* セマフォ作成 */
 	sem.initCount = 0;
         sem.maxCount = 1;
@@ -167,16 +189,12 @@ int my_main(int arg)
         gSem= CreateSema(&sem);
 
 	// 割り込みコールバック関数
-        // 転送終了割り込み
-        sceSdSetTransIntrHandler (0, _AdpcmDmaInt, NULL); 
-	
-        // SPU 割り込み
-    	sceSdSetSpu2IntrHandler (_AdpcmSpu2Int, NULL); 
+    	sceSdSetTransCallback (0, _AdpcmDmaInt); // 転送終了割り込み
+    	sceSdSetIRQCallback(_AdpcmSpu2Int); // SPU 割り込み
 
         /* ライブラリ関数でファイルを読む */
 	printf("Search Filename: %s\n",filename);
-        /* ファイルの格納位置を検索する */
-	ret= sceCdSearchFile(&fp, filename); 
+	ret= sceCdSearchFile(&fp, filename); /* ファイルの格納位置を検索する */
 	if(!ret){
 		printf("sceCdSearchFile fail :%d\n",ret);
                 return(-1);
@@ -184,18 +202,17 @@ int my_main(int arg)
 	sceCdDiskReady(0);
 	
         /* ストリーム関数でファイルを読む */
-        /* エラー発生時は２５５回リトライする。 */
         mode.trycount= 0;
-	/* エラー発生時は回転速度を落してリード */
+			 /* エラー発生時は２５５回リトライする。 */
         mode.spindlctrl= SCECdSpinNom;
-	/* ストリーマはデータサイズ２０４８byteのみサポート */
+			 /*エラー発生時は回転速度を落してリード */
         mode.datapattern= SCECdSecS2048;
-			 
+			 /* ストリーマはデータサイズ２０４８byteのみサポート */
 	file_sec= fp.size / 2048; if(fp.size % 2048) file_sec++;
 	start_st= fp.lsn;
 	sceCdStStart(start_st , &mode);
 
-	// メインボリューム設定
+	//メインボリューム設定
         for( cnt0= 0; cnt0 < 2; cnt0++ ){
             sceSdSetParam( cnt0 | SD_P_MVOLL , 0x3fff ) ;
             sceSdSetParam( cnt0 | SD_P_MVOLR , 0x3fff ) ;
@@ -214,27 +231,25 @@ int my_main(int arg)
         _AdpcmSetMarkSTARTpre(sbuf, _BUF_SIZE);
         _AdpcmSetMarkENDpre(sbuf, _BUF_SIZE);
         sceSdVoiceTrans(0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
-                          sbuf, _SB_TOP, _BUF_SIZE);
+                          sbuf, (u_char *)_SB_TOP, _BUF_SIZE);
 	while(read_sec < file_sec){
 
-            // -- バッファの発音終了待ち
+            //-- バッファの発音終了待ち
             WaitSema(gSem);
 	    switch (gAdpcmStatus) {
-                // SPU2 割り込み待ち 全域転送終了、演奏開始
 	        case ADPCM_STATUS_PRELOADED:
+		    // SPU2 割り込み待ち 全域転送終了、演奏開始
             	    sceSdSetAddr (SD_CORE_0 | SD_A_IRQA,
 						 (u_int)_SB_TOP + _BUF_HALF);
         	    AdpcmSetVolumeDirect ( _VOLUME, _VOICE_NUM );
-                    // SPU 割り込み有効
         	    sceSdSetCoreAttr (SD_CORE_0 | SD_C_IRQ_ENABLE, 1);
-                    // キーオン
-        	    sceSdSetSwitch (SD_CORE_0 | SD_S_KON, _VOICE);
+        						// SPU 割り込み有効
+        	    sceSdSetSwitch (SD_CORE_0 | SD_S_KON, _VOICE); // キーオン
                     gAdpcmStatus= ADPCM_STATUS_RUNNING;
-                    // preload 後は前半に転送
-            	    buf_side= 0;    
+            	    buf_side= 0;    // preload 後は前半に転送
             	    break;
 	        case ADPCM_STATUS_RUNNING:
-		    // バッファの半分の領域の演奏終了を待ち
+		    //   バッファの半分の領域の演奏終了を待ち
 		    // 非演奏領域にデータを転送
         	    read_sec+= sceCdStRead(_SEC_HALF,(u_int *)sbuf,
 							    STMBLK, &err);
@@ -244,39 +259,33 @@ int my_main(int arg)
 		        continue;
 		    }
                	    sceSdSetCoreAttr (SD_CORE_0 | SD_C_IRQ_ENABLE, 0);
-                    // マークの修正
-               	    if(!buf_side){
+               	    if(!buf_side){	 // マークの修正
 		        _AdpcmSetMarkSTART(sbuf, _BUF_HALF);
 		    }else{	 
 		        _AdpcmSetMarkEND(sbuf, _BUF_HALF);
 		    }
                     // _BUF_HALF 分転送
                	    sceSdVoiceTrans (0, (SD_TRANS_MODE_WRITE | SD_TRANS_BY_DMA),
-			       sbuf, _SB_TOP + _BUF_HALF * buf_side,
+			       sbuf, (u_char *)(_SB_TOP + _BUF_HALF * buf_side),
 			       _BUF_HALF);
-                    // 状態遷移
-                    gAdpcmStatus= ADPCM_STATUS_BUFCHG; 
+                    gAdpcmStatus= ADPCM_STATUS_BUFCHG; // 状態遷移
                	    break;
 	        case ADPCM_STATUS_BUFCHG:
 		    // 転送終了後バッファ切替え
                     // SPU2 割り込みアドレス変更
                     sceSdSetAddr (SD_CORE_0 | SD_A_IRQA,
 					 _SB_TOP + _BUF_HALF * buf_side);
-                    // バッファ状態の切替え
-                    buf_side ^= 1; 
+                    buf_side ^= 1; // バッファ状態の切替え
                     // SPU2 割り込み有効
                     sceSdSetCoreAttr (SD_CORE_0 | SD_C_IRQ_ENABLE, 1);
-                    // 状態遷移
-                    gAdpcmStatus= ADPCM_STATUS_RUNNING; 
+                    gAdpcmStatus= ADPCM_STATUS_RUNNING; // 状態遷移
            	    break;
         	default:
            	    break;
 	    }
         }
-        // SPU2 割り込み停止
-	sceSdBlockTrans( 0, SD_TRANS_MODE_STOP, NULL, 0 ); 
-        // ボイス停止
-        sceSdSetCoreAttr (SD_CORE_0 | SD_C_IRQ_ENABLE, 0); 
+	sceSdBlockTrans( 0, SD_TRANS_MODE_STOP, NULL, 0 ); // SPU2 割り込み停止
+        sceSdSetCoreAttr (SD_CORE_0 | SD_C_IRQ_ENABLE, 0); // ボイス停止
 	AdpcmSetVolumeDirect (0,_VOICE_NUM);
         sceSdSetSwitch (SD_CORE_0 | SD_S_KOFF, _VOICE);
 	sceCdStStop();

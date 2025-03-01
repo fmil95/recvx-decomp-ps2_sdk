@@ -1,0 +1,144 @@
+/* SCEI CONFIDENTIAL
+ "PlayStation 2" Programmer Tool Runtime Library  Release 2.0
+ */
+/* 
+ *              Emotion Engine Library Sample Program
+ *
+ *                         - blow -
+ *
+ *                         Version 0.3.0
+ *                           Shift-JIS
+ *
+ *      Copyright (C) 1998-1999 Sony Computer Entertainment Inc.
+ *                        All Rights Reserved.
+ *
+ *          Name : p_opt.vsm
+ *          Description : vu1 micro code to draw particle(optimized). 
+ *
+ *       Version        Date            Design      Log
+ *  --------------------------------------------------------------------
+ *       0.3.0          Mar,26,1999     munekis     first version
+ */
+
+; -------------------------------------
+;
+;          particle calc micro
+;
+; -------------------------------------
+	NOP	IADDIU VI01, VI00, 0 ; Perspecitive Matrix
+	NOP	IADDIU VI02, VI00, 4 ; Offset Vector
+	NOP	IADDIU VI03, VI00, 8 ; ST
+;
+	NOP	LQI.xyzw VF01, (VI01++) ; load Perspective Matrix
+	NOP	LQI.xyzw VF02, (VI01++) 
+	NOP	LQI.xyzw VF03, (VI01++) 
+	NOP	LQI.xyzw VF04, (VI01++) 
+	NOP	LQI.xyzw VF23, (VI02++) ; load offset vector
+	NOP	LQI.xyzw VF24, (VI02++) 
+	NOP	LQI.xyzw VF25, (VI02++) 
+	NOP	LQI.xyzw VF26, (VI02++) 
+	NOP	LQI.xyzw VF09, (VI03++) ; load ST
+	NOP	LQI.xyzw VF10, (VI03++) 
+	NOP	LQI.xyzw VF11, (VI03++) 
+	NOP	LQI.xyzw VF12, (VI03++) 
+	NOP	IADDIU VI01, VI00, 12   
+	NOP	LQ.xyzw VF19, 0(VI01)  
+
+START0:
+	NOP				XTOP VI04
+	NOP				IADDIU VI09, VI00, 4  ; This is counter.
+	NOP				IADD VI05, VI09, VI09    
+	NOP				IADD VI05, VI05, VI09  ; set offset from data area(nb x 3)
+	NOP				IADDIU VI07, VI04, 1   ; position & color
+	NOP				IADD VI10, VI07, VI05 ; XGKICK
+	NOP				IADDIU VI11, VI10, 1 ; RGBAQ
+	NOP				IADDIU VI12, VI10, 2 ; ST
+	NOP				IADDIU VI13, VI10, 3 ; XYZF2
+	NOP				LOI -1.0
+	NOP				LQI.xyzw VF20, (VI07++) ; load position
+	NOP				SQ.xyzw VF19, 0(VI10);
+LOOPA:
+	NOP				LQI.xyzw VF14, (VI07++) ; load velocity
+	NOP				LQI.xyzw VF22, (VI07++) ; load RGBA
+	NOP 				NOP
+	ADD VF29, VF26, VF20 		NOP
+	SUB VF20, VF20, VF14		NOP
+	NOP 				NOP
+	NOP 				NOP
+	MULAx.xyzw ACC, VF01, VF29x 	NOP
+	ADD VF21, VF23, VF20		NOP
+	MADDAy.xyzw ACC, VF02, VF29y	NOP
+	MADDAz.xyzw ACC, VF03, VF29z 	NOP
+	MADDw.xyzw VF08, VF04, VF29w 	NOP
+	MULAx.xyzw ACC, VF01, VF21x     NOP
+	MADDAy.xyzw ACC, VF02, VF21y    NOP
+	MADDAz.xyzw ACC, VF03, VF21z    NOP
+	MADDw.xyzw VF05, VF04, VF21w    DIV Q, VF00w, VF08w
+	NOP				MOVE VF31, VF08
+	NOP				NOP 
+	NOP				NOP
+	NOP				NOP
+	SUB VF20, VF20, VF14		MOVE VF28, VF05
+	NOP				NOP
+	MULq VF31, VF31, Q		NOP
+	NOP    				NOP
+	ADD VF21, VF23, VF20 		NOP
+	NOP    				NOP
+	NOP				DIV Q, VF00w, VF05w
+	NOP 				NOP
+	MULAx.xyzw ACC, VF01, VF21x 	NOP
+	MADDAy.xyzw ACC, VF02, VF21y   	NOP
+	MADDAz.xyzw ACC, VF03, VF21z	IADDI VI09, VI09, -1	
+	NOP				NOP
+	NOP				NOP
+	MULq VF28, VF28, Q		NOP	
+	MADDw.xyzw VF05, VF04, VF21w	IADDIU VI01, VI00, 10 ; nb of motion blur
+	NOP				NOP
+	NOP				NOP
+LOOP:
+	ADDx VF06, VF28, VF00x		NOP
+	ADDx VF07, VF28, VF00x 		NOP
+	ADD VF21, VF26, VF20		IADDI VI01, VI01, -1
+	SUB VF13, VF31, VF28		DIV Q, VF00w, VF05w
+	FTOI4 VF18, VF31		SQ.xyzw VF22, 0(VI11)
+	NOP				IADDIU VI11, VI11, 9
+	MULAx.xyzw ACC, VF01, VF21x	SQ.xyzw VF09, 0(VI12)
+	MADDAy.xyzw ACC, VF02, VF21y	SQ.xyzw VF10, 2(VI12)
+	MADDAz.xyzw ACC, VF03, VF21z	SQ.xyzw VF11, 4(VI12)
+	MADDw.xyzw VF08, VF04, VF21w	SQ.xyzw VF12, 6(VI12)
+	ADDx.x VF06x, VF06x, VF13x	SQ.xyzw VF18, 6(VI13)
+	ADDy.y VF07y, VF07y, VF13y 	IADDIU VI12, VI12, 9
+	MULq VF05, VF05, Q		NOP
+	MULi.w VF28w, VF28w, I		MOVE VF31, VF08
+	SUB VF20, VF20, VF14		NOP
+	FTOI4 VF17, VF07		NOP
+	MULi.w VF06w, VF06w, I		DIV Q, VF00w, VF08w
+	FTOI4 VF15, VF28		NOP
+	ADD VF21, VF23, VF20	 	NOP
+	NOP				SQ.xyzw VF17, 4(VI13)
+	FTOI4 VF16, VF06	 	NOP
+	NOP				MOVE VF28, VF05
+	MULAx.xyzw ACC, VF01, VF21x	SQ.xyzw VF15, 0(VI13)  
+	MADDAy.xyzw ACC, VF02, VF21y	NOP
+	MADDAz.xyzw ACC, VF03, VF21z	SQ.xyzw VF16, 2(VI13)
+	MULq VF31, VF31, Q		IADDIU VI13, VI13, 9
+	MADDw.xyzw VF05, VF04, VF21w	IBNE VI01, VI00, LOOP
+	NOP				NOP
+	NOP				LQI.xyzw VF20, (VI07++) ; load position
+	NOP				IBNE VI09, VI00, LOOPA
+	NOP				NOP
+	NOP				XGKICK VI10
+	NOP[E]				NOP
+	NOP				NOP
+	NOP				B START0
+	NOP				NOP
+
+
+
+
+
+
+
+
+
+

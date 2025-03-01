@@ -7,16 +7,15 @@ END-INFO-DIR-ENTRY
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).                  The GNU C compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU compiler.
 
-   Published by the Free Software Foundation
-59 Temple Place - Suite 330
+   Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,1082 +36,1118 @@ may be included in translations approved by the Free Software Foundation
 instead of in the original English.
 
 
-File: gcc.info,  Node: Configurations,  Next: Other Dir,  Prev: Configuration Files,  Up: Installation
-
-Configurations Supported by GNU CC
-==================================
-
-   Here are the possible CPU types:
-
-     1750a, a29k, alpha, arm, avr, cN, clipper, dsp16xx, elxsi, fr30,
-     h8300, hppa1.0, hppa1.1, i370, i386, i486, i586, i686, i786, i860,
-     i960, m32r, m68000, m68k, m88k, mcore, mips, mipsel, mips64,
-     mips64el, mn10200, mn10300, ns32k, pdp11, powerpc, powerpcle,
-     romp, rs6000, sh, sparc, sparclite, sparc64, v850, vax, we32k.
-
-   Here are the recognized company names.  As you can see, customary
-abbreviations are used rather than the longer official names.
-
-     acorn, alliant, altos, apollo, apple, att, bull, cbm, convergent,
-     convex, crds, dec, dg, dolphin, elxsi, encore, harris, hitachi,
-     hp, ibm, intergraph, isi, mips, motorola, ncr, next, ns, omron,
-     plexus, sequent, sgi, sony, sun, tti, unicom, wrs.
-
-   The company name is meaningful only to disambiguate when the rest of
-the information supplied is insufficient.  You can omit it, writing
-just `CPU-SYSTEM', if it is not needed.  For example, `vax-ultrix4.2'
-is equivalent to `vax-dec-ultrix4.2'.
-
-   Here is a list of system types:
-
-     386bsd, aix, acis, amigaos, aos, aout, aux, bosx, bsd, clix, coff,
-     ctix, cxux, dgux, dynix, ebmon, ecoff, elf, esix, freebsd, hms,
-     genix, gnu, linux, linux-gnu, hiux, hpux, iris, irix, isc, luna,
-     lynxos, mach, minix, msdos, mvs, netbsd, newsos, nindy, ns, osf,
-     osfrose, ptx, riscix, riscos, rtu, sco, sim, solaris, sunos, sym,
-     sysv, udi, ultrix, unicos, uniplus, unos, vms, vsta, vxworks,
-     winnt, xenix.
-
-You can omit the system type; then `configure' guesses the operating
-system from the CPU and company.
-
-   You can add a version number to the system type; this may or may not
-make a difference.  For example, you can write `bsd4.3' or `bsd4.4' to
-distinguish versions of BSD.  In practice, the version number is most
-needed for `sysv3' and `sysv4', which are often treated differently.
-
-   `linux-gnu' is the canonical name for the GNU/Linux target; however
-GNU CC will also accept `linux'.  The version of the kernel in use is
-not relevant on these systems.  A suffix such as `libc1' or `aout'
-distinguishes major versions of the C library; all of the suffixed
-versions are obsolete.
-
-   If you specify an impossible combination such as `i860-dg-vms', then
-you may get an error message from `configure', or it may ignore part of
-the information and do the best it can with the rest.  `configure'
-always prints the canonical name for the alternative that it used.  GNU
-CC does not support all possible alternatives.
-
-   Often a particular model of machine has a name.  Many machine names
-are recognized as aliases for CPU/company combinations.  Thus, the
-machine name `sun3', mentioned above, is an alias for `m68k-sun'.
-Sometimes we accept a company name as a machine name, when the name is
-popularly used for a particular machine.  Here is a table of the known
-machine names:
-
-     3300, 3b1, 3bN, 7300, altos3068, altos, apollo68, att-7300,
-     balance, convex-cN, crds, decstation-3100, decstation, delta,
-     encore, fx2800, gmicro, hp7NN, hp8NN, hp9k2NN, hp9k3NN, hp9k7NN,
-     hp9k8NN, iris4d, iris, isi68, m3230, magnum, merlin, miniframe,
-     mmax, news-3600, news800, news, next, pbd, pc532, pmax, powerpc,
-     powerpcle, ps2, risc-news, rtpc, sun2, sun386i, sun386, sun3,
-     sun4, symmetry, tower-32, tower.
-
-Remember that a machine name specifies both the cpu type and the company
-name.  If you want to install your own homemade configuration files,
-you can use `local' as the company name to access them.  If you use
-configuration `CPU-local', the configuration name without the cpu prefix
-is used to form the configuration file names.
-
-   Thus, if you specify `m68k-local', configuration uses files
-`m68k.md', `local.h', `m68k.c', `xm-local.h', `t-local', and `x-local',
-all in the directory `config/m68k'.
-
-   Here is a list of configurations that have special treatment or
-special things you must know:
-
-`1750a-*-*'
-     MIL-STD-1750A processors.
-
-     The MIL-STD-1750A cross configuration produces output for
-     `as1750', an assembler/linker available under the GNU Public
-     License for the 1750A. `as1750' can be obtained at
-     *ftp://ftp.fta-berlin.de/pub/crossgcc/1750gals/*.  A similarly
-     licensed simulator for the 1750A is available from same address.
-
-     You should ignore a fatal error during the building of libgcc
-     (libgcc is not yet implemented for the 1750A.)
-
-     The `as1750' assembler requires the file `ms1750.inc', which is
-     found in the directory `config/1750a'.
-
-     GNU CC produced the same sections as the Fairchild F9450 C
-     Compiler, namely:
-
-    `Normal'
-          The program code section.
-
-    `Static'
-          The read/write (RAM) data section.
-
-    `Konst'
-          The read-only (ROM) constants section.
-
-    `Init'
-          Initialization section (code to copy KREL to SREL).
-
-     The smallest addressable unit is 16 bits (BITS_PER_UNIT is 16).
-     This means that type `char' is represented with a 16-bit word per
-     character.  The 1750A's "Load/Store Upper/Lower Byte" instructions
-     are not used by GNU CC.
-
-`alpha-*-osf1'
-     Systems using processors that implement the DEC Alpha architecture
-     and are running the DEC Unix (OSF/1) operating system, for example
-     the DEC Alpha AXP systems.CC.)
-
-     GNU CC writes a `.verstamp' directive to the assembler output file
-     unless it is built as a cross-compiler.  It gets the version to
-     use from the system header file `/usr/include/stamp.h'.  If you
-     install a new version of DEC Unix, you should rebuild GCC to pick
-     up the new version stamp.
-
-     Note that since the Alpha is a 64-bit architecture,
-     cross-compilers from 32-bit machines will not generate code as
-     efficient as that generated when the compiler is running on a
-     64-bit machine because many optimizations that depend on being
-     able to represent a word on the target in an integral value on the
-     host cannot be performed.  Building cross-compilers on the Alpha
-     for 32-bit machines has only been tested in a few cases and may
-     not work properly.
-
-     `make compare' may fail on old versions of DEC Unix unless you add
-     `-save-temps' to `CFLAGS'.  On these systems, the name of the
-     assembler input file is stored in the object file, and that makes
-     comparison fail if it differs between the `stage1' and `stage2'
-     compilations.  The option `-save-temps' forces a fixed name to be
-     used for the assembler input file, instead of a randomly chosen
-     name in `/tmp'.  Do not add `-save-temps' unless the comparisons
-     fail without that option.  If you add `-save-temps', you will have
-     to manually delete the `.i' and `.s' files after each series of
-     compilations.
-
-     GNU CC now supports both the native (ECOFF) debugging format used
-     by DBX and GDB and an encapsulated STABS format for use only with
-     GDB.  See the discussion of the `--with-stabs' option of
-     `configure' above for more information on these formats and how to
-     select them.
-
-     There is a bug in DEC's assembler that produces incorrect line
-     numbers for ECOFF format when the `.align' directive is used.  To
-     work around this problem, GNU CC will not emit such alignment
-     directives while writing ECOFF format debugging information even
-     if optimization is being performed.  Unfortunately, this has the
-     very undesirable side-effect that code addresses when `-O' is
-     specified are different depending on whether or not `-g' is also
-     specified.
-
-     To avoid this behavior, specify `-gstabs+' and use GDB instead of
-     DBX.  DEC is now aware of this problem with the assembler and
-     hopes to provide a fix shortly.
-
-`arc-*-elf'
-     Argonaut ARC processor.  This configuration is intended for
-     embedded systems.
-
-`arm-*-aout'
-     Advanced RISC Machines ARM-family processors.  These are often
-     used in embedded applications.  There are no standard Unix
-     configurations.  This configuration corresponds to the basic
-     instruction sequences and will produce `a.out' format object
-     modules.
-
-     You may need to make a variant of the file `arm.h' for your
-     particular configuration.
-
-`arm-*-elf'
-     This configuration is intended for embedded systems.
-
-`arm-*-linux*aout'
-     Any of the ARM-family processors running the Linux-based GNU
-     system with the `a.out' binary format.  This is an obsolete
-     configuration.
-
-`arm-*-linux'
-`arm-*-linux-gnu'
-`arm-*-linux*oldld'
-     Any of the ARM-family processors running the Linux-based GNU
-     system with the `ELF' binary format.  You must use version
-     2.9.1.0.22 or later of the GNU/Linux binutils, which you can
-     download from `ftp.varesearch.com:/pub/support/hjl/binutils'.
-
-     These two configurations differ only in the required version of GNU
-     binutils.  For binutils 2.9.1.0.x, use `arm-*-linux-gnuoldld'.  For
-     newer versions of binutils, use `arm-*-linux-gnu'.
-
-`arm-*-riscix'
-     The ARM2 or ARM3 processor running RISC iX, Acorn's port of BSD
-     Unix.  If you are running a version of RISC iX prior to 1.2 then
-     you must specify the version number during configuration.  Note
-     that the assembler shipped with RISC iX does not support stabs
-     debugging information; a new version of the assembler, with stabs
-     support included, is now available from Acorn and via ftp
-     `ftp.acorn.com:/pub/riscix/as+xterm.tar.Z'.  To enable stabs
-     debugging, pass `--with-gnu-as' to configure.
-
-     You will need to install GNU `sed' before you can run configure.
-
-`a29k'
-     AMD Am29k-family processors.  These are normally used in embedded
-     applications.  There are no standard Unix configurations.  This
-     configuration corresponds to AMD's standard calling sequence and
-     binary interface and is compatible with other 29k tools.
-
-     You may need to make a variant of the file `a29k.h' for your
-     particular configuration.
-
-`a29k-*-bsd'
-     AMD Am29050 used in a system running a variant of BSD Unix.
-
-`avr'
-     ATMEL AVR-family micro controllers.  These are used in embedded
-     applications.  There are no standard Unix configurations.
-     Supports following MCU's:  - AT90S23xx  - ATtiny22  - AT90S44xx  -
-     AT90S85xx  - ATmega603/603L  - ATmega103/103L
-
-`decstation-*'
-     MIPS-based DECstations can support three different personalities:
-     Ultrix, DEC OSF/1, and OSF/rose.  (Alpha-based DECstation products
-     have a configuration name beginning with `alpha-dec'.)  To
-     configure GCC for these platforms use the following configurations:
-
-    `decstation-ultrix'
-          Ultrix configuration.
-
-    `decstation-osf1'
-          Dec's version of OSF/1.
-
-    `decstation-osfrose'
-          Open Software Foundation reference port of OSF/1 which uses
-          the OSF/rose object file format instead of ECOFF.  Normally,
-          you would not select this configuration.
-
-     The MIPS C compiler needs to be told to increase its table size
-     for switch statements with the `-Wf,-XNg1500' option in order to
-     compile `cp/parse.c'.  If you use the `-O2' optimization option,
-     you also need to use `-Olimit 3000'.  Both of these options are
-     automatically generated in the `Makefile' that the shell script
-     `configure' builds.  If you override the `CC' make variable and
-     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
-     3000'.
-
-`elxsi-elxsi-bsd'
-     The Elxsi's C compiler has known limitations that prevent it from
-     compiling GNU C.  Please contact `mrs@cygnus.com' for more details.
-
-`dsp16xx'
-     A port to the AT&T DSP1610 family of processors.
-
-`h8300-*-*'
-     Hitachi H8/300 series of processors.
-
-     The calling convention and structure layout has changed in release
-     2.6.  All code must be recompiled.  The calling convention now
-     passes the first three arguments in function calls in registers.
-     Structures are no longer a multiple of 2 bytes.
-
-`hppa*-*-*'
-     There are several variants of the HP-PA processor which run a
-     variety of operating systems.  GNU CC must be configured to use
-     the correct processor type and operating system, or GNU CC will
-     not function correctly.  The easiest way to handle this problem is
-     to *not* specify a target when configuring GNU CC, the `configure'
-     script will try to automatically determine the right processor
-     type and operating system.
-
-     `-g' does not work on HP-UX, since that system uses a peculiar
-     debugging format which GNU CC does not know about.  However, `-g'
-     will work if you also use GAS and GDB in conjunction with GCC.  We
-     highly recommend using GAS for all HP-PA configurations.
-
-     You should be using GAS-2.6 (or later) along with GDB-4.16 (or
-     later).  These can be retrieved from all the traditional GNU ftp
-     archive sites.
-
-     On some versions of HP-UX, you will need to install GNU `sed'.
-
-     You will need to be install GAS into a directory before `/bin',
-     `/usr/bin', and `/usr/ccs/bin' in your search path.  You should
-     install GAS before you build GNU CC.
-
-     To enable debugging, you must configure GNU CC with the
-     `--with-gnu-as' option before building.
-
-`i370-*-*'
-     This port is very preliminary and has many known bugs.  We hope to
-     have a higher-quality port for this machine soon.
-
-`i386-*-linux*oldld'
-     Use this configuration to generate `a.out' binaries on Linux-based
-     GNU systems if you do not have gas/binutils version 2.5.2 or later
-     installed. This is an obsolete configuration.
-
-`i386-*-linux*aout'
-     Use this configuration to generate `a.out' binaries on Linux-based
-     GNU systems. This configuration is being superseded. You must use
-     gas/binutils version 2.5.2 or later.
-
-`i386-*-linux'
-`i386-*-linux-gnu'
-     Use this configuration to generate ELF binaries on Linux-based GNU
-     systems.  You must use gas/binutils version 2.5.2 or later.
-
-`i386-*-sco'
-     Compilation with RCC is recommended.  Also, it may be a good idea
-     to link with GNU malloc instead of the malloc that comes with the
-     system.
-
-`i386-*-sco3.2v4'
-     Use this configuration for SCO release 3.2 version 4.
-
-`i386-*-sco3.2v5*'
-     Use this for the SCO OpenServer Release family including 5.0.0,
-     5.0.2, 5.0.4, 5.0.5, Internet FastStart 1.0, and Internet
-     FastStart 1.1.
-
-     GNU CC can generate COFF binaries if you specify `-mcoff' or ELF
-     binaries, the default.    A full `make bootstrap' is recommended
-     so that an ELF compiler that builds ELF is generated.
-
-     You must have TLS597 from `ftp://ftp.sco.com/TLS' installed for ELF
-     C++ binaries to work correctly on releases before 5.0.4.
-
-     The native SCO assembler that is provided with the OS at no charge
-     is normally required.  If, however, you must be able to use the GNU
-     assembler (perhaps you have complex asms) you must configure this
-     package `--with-gnu-as'.  To do this, install (cp or symlink)
-     gcc/as to your copy of the GNU assembler.  You must use a recent
-     version of GNU binutils; version 2.9.1 seems to work well.  If you
-     select this option, you will be unable to build COFF images.
-     Trying to do so will result in non-obvious failures.  In general,
-     the "-with-gnu-as" option isn't as well tested as the native
-     assembler.
-
-     *NOTE:* If you are building C++, you must follow the instructions
-     about invoking `make bootstrap' because the native OpenServer
-     compiler may build a `cc1plus' that will not correctly parse many
-     valid C++ programs.  You must do a `make bootstrap' if you are
-     building with the native compiler.
-
-`i386-*-isc'
-     It may be a good idea to link with GNU malloc instead of the
-     malloc that comes with the system.
-
-     In ISC version 4.1, `sed' core dumps when building `deduced.h'.
-     Use the version of `sed' from version 4.0.
-
-`i386-*-esix'
-     It may be good idea to link with GNU malloc instead of the malloc
-     that comes with the system.
-
-`i386-ibm-aix'
-     You need to use GAS version 2.1 or later, and LD from GNU binutils
-     version 2.2 or later.
-
-`i386-sequent-bsd'
-     Go to the Berkeley universe before compiling.
-
-`i386-sequent-ptx1*'
-`i386-sequent-ptx2*'
-     You must install GNU `sed' before running `configure'.
-
-`i386-sun-sunos4'
-     You may find that you need another version of GNU CC to begin
-     bootstrapping with, since the current version when built with the
-     system's own compiler seems to get an infinite loop compiling part
-     of `libgcc2.c'.  GNU CC version 2 compiled with GNU CC (any
-     version) seems not to have this problem.
-
-     See *Note Sun Install::, for information on installing GNU CC on
-     Sun systems.
-
-`i[345]86-*-winnt3.5'
-     This version requires a GAS that has not yet been released.  Until
-     it is, you can get a prebuilt binary version via anonymous ftp from
-     `cs.washington.edu:pub/gnat' or `cs.nyu.edu:pub/gnat'. You must
-     also use the Microsoft header files from the Windows NT 3.5 SDK.
-     Find these on the CDROM in the `/mstools/h' directory dated
-     9/4/94.  You must use a fixed version of Microsoft linker made
-     especially for NT 3.5, which is also is available on the NT 3.5
-     SDK CDROM.  If you do not have this linker, can you also use the
-     linker from Visual C/C++ 1.0 or 2.0.
-
-     Installing GNU CC for NT builds a wrapper linker, called `ld.exe',
-     which mimics the behaviour of Unix `ld' in the specification of
-     libraries (`-L' and `-l').  `ld.exe' looks for both Unix and
-     Microsoft named libraries.  For example, if you specify `-lfoo',
-     `ld.exe' will look first for `libfoo.a' and then for `foo.lib'.
-
-     You may install GNU CC for Windows NT in one of two ways,
-     depending on whether or not you have a Unix-like shell and various
-     Unix-like utilities.
-
-       1. If you do not have a Unix-like shell and few Unix-like
-          utilities, you will use a DOS style batch script called
-          `configure.bat'.  Invoke it as `configure winnt' from an
-          MSDOS console window or from the program manager dialog box.
-          `configure.bat' assumes you have already installed and have
-          in your path a Unix-like `sed' program which is used to
-          create a working `Makefile' from `Makefile.in'.
-
-          `Makefile' uses the Microsoft Nmake program maintenance
-          utility and the Visual C/C++ V8.00 compiler to build GNU CC.
-          You need only have the utilities `sed' and `touch' to use
-          this installation method, which only automatically builds the
-          compiler itself.  You must then examine what `fixinc.winnt'
-          does, edit the header files by hand and build `libgcc.a'
-          manually.
-
-       2. The second type of installation assumes you are running a
-          Unix-like shell, have a complete suite of Unix-like utilities
-          in your path, and have a previous version of GNU CC already
-          installed, either through building it via the above
-          installation method or acquiring a pre-built binary.  In this
-          case, use the `configure' script in the normal fashion.
-
-`i860-intel-osf1'
-     This is the Paragon.  If you have version 1.0 of the operating
-     system, see *Note Installation Problems::, for special things you
-     need to do to compensate for peculiarities in the system.
-
-`*-lynx-lynxos'
-     LynxOS 2.2 and earlier comes with GNU CC 1.x already installed as
-     `/bin/gcc'.  You should compile with this instead of `/bin/cc'.
-     You can tell GNU CC to use the GNU assembler and linker, by
-     specifying `--with-gnu-as --with-gnu-ld' when configuring.  These
-     will produce COFF format object files and executables;  otherwise
-     GNU CC will use the installed tools, which produce `a.out' format
-     executables.
-
-`m32r-*-elf'
-     Mitsubishi M32R processor.  This configuration is intended for
-     embedded systems.
-
-`m68000-hp-bsd'
-     HP 9000 series 200 running BSD.  Note that the C compiler that
-     comes with this system cannot compile GNU CC; contact
-     `law@cygnus.com' to get binaries of GNU CC for bootstrapping.
-
-`m68k-altos'
-     Altos 3068.  You must use the GNU assembler, linker and debugger.
-     Also, you must fix a kernel bug.  Details in the file
-     `README.ALTOS'.
-
-`m68k-apple-aux'
-     Apple Macintosh running A/UX.  You may configure GCC  to use
-     either the system assembler and linker or the GNU assembler and
-     linker.  You should use the GNU configuration if you can,
-     especially if you also want to use GNU C++.  You enabled that
-     configuration with + the `--with-gnu-as' and `--with-gnu-ld'
-     options to `configure'.
-
-     Note the C compiler that comes with this system cannot compile GNU
-     CC.  You can find binaries of GNU CC for bootstrapping on
-     `jagubox.gsfc.nasa.gov'.  You will also a patched version of
-     `/bin/ld' there that raises some of the arbitrary limits found in
-     the original.
-
-`m68k-att-sysv'
-     AT&T 3b1, a.k.a. 7300 PC.  This version of GNU CC cannot be
-     compiled with the system C compiler, which is too buggy.  You will
-     need to get a previous version of GCC and use it to bootstrap.
-     Binaries are available from the OSU-CIS archive, at
-     `ftp://archive.cis.ohio-state.edu/pub/att7300/'.
-
-`m68k-bull-sysv'
-     Bull DPX/2 series 200 and 300 with BOS-2.00.45 up to BOS-2.01. GNU
-     CC works either with native assembler or GNU assembler. You can use
-     GNU assembler with native coff generation by providing
-     `--with-gnu-as' to the configure script or use GNU assembler with
-     dbx-in-coff encapsulation by providing `--with-gnu-as --stabs'.
-     For any problem with native assembler or for availability of the
-     DPX/2 port of GAS, contact `F.Pierresteguy@frcl.bull.fr'.
-
-`m68k-crds-unox'
-     Use `configure unos' for building on Unos.
-
-     The Unos assembler is named `casm' instead of `as'.  For some
-     strange reason linking `/bin/as' to `/bin/casm' changes the
-     behavior, and does not work.  So, when installing GNU CC, you
-     should install the following script as `as' in the subdirectory
-     where the passes of GCC are installed:
-
-          #!/bin/sh
-          casm $*
-
-     The default Unos library is named `libunos.a' instead of `libc.a'.
-     To allow GNU CC to function, either change all references to
-     `-lc' in `gcc.c' to `-lunos' or link `/lib/libc.a' to
-     `/lib/libunos.a'.
-
-     When compiling GNU CC with the standard compiler, to overcome bugs
-     in the support of `alloca', do not use `-O' when making stage 2.
-     Then use the stage 2 compiler with `-O' to make the stage 3
-     compiler.  This compiler will have the same characteristics as the
-     usual stage 2 compiler on other systems.  Use it to make a stage 4
-     compiler and compare that with stage 3 to verify proper
-     compilation.
-
-     (Perhaps simply defining `ALLOCA' in `x-crds' as described in the
-     comments there will make the above paragraph superfluous.  Please
-     inform us of whether this works.)
-
-     Unos uses memory segmentation instead of demand paging, so you
-     will need a lot of memory.  5 Mb is barely enough if no other
-     tasks are running.  If linking `cc1' fails, try putting the object
-     files into a library and linking from that library.
-
-`m68k-hp-hpux'
-     HP 9000 series 300 or 400 running HP-UX.  HP-UX version 8.0 has a
-     bug in the assembler that prevents compilation of GNU CC.  To fix
-     it, get patch PHCO_4484 from HP.
-
-     In addition, if you wish to use gas `--with-gnu-as' you must use
-     gas version 2.1 or later, and you must use the GNU linker version
-     2.1 or later.  Earlier versions of gas relied upon a program which
-     converted the gas output into the native HP-UX format, but that
-     program has not been kept up to date.  gdb does not understand
-     that native HP-UX format, so you must use gas if you wish to use
-     gdb.
-
-`m68k-sun'
-     Sun 3.  We do not provide a configuration file to use the Sun FPA
-     by default, because programs that establish signal handlers for
-     floating point traps inherently cannot work with the FPA.
-
-     See *Note Sun Install::, for information on installing GNU CC on
-     Sun systems.
-
-`m88k-*-svr3'
-     Motorola m88k running the AT&T/Unisoft/Motorola V.3 reference port.
-     These systems tend to use the Green Hills C, revision 1.8.5, as the
-     standard C compiler.  There are apparently bugs in this compiler
-     that result in object files differences between stage 2 and stage
-     3.  If this happens, make the stage 4 compiler and compare it to
-     the stage 3 compiler.  If the stage 3 and stage 4 object files are
-     identical, this suggests you encountered a problem with the
-     standard C compiler; the stage 3 and 4 compilers may be usable.
-
-     It is best, however, to use an older version of GNU CC for
-     bootstrapping if you have one.
-
-`m88k-*-dgux'
-     Motorola m88k running DG/UX.  To build 88open BCS native or cross
-     compilers on DG/UX, specify the configuration name as
-     `m88k-*-dguxbcs' and build in the 88open BCS software development
-     environment.  To build ELF native or cross compilers on DG/UX,
-     specify `m88k-*-dgux' and build in the DG/UX ELF development
-     environment.  You set the software development environment by
-     issuing `sde-target' command and specifying either `m88kbcs' or
-     `m88kdguxelf' as the operand.
-
-     If you do not specify a configuration name, `configure' guesses the
-     configuration based on the current software development
-     environment.
-
-`m88k-tektronix-sysv3'
-     Tektronix XD88 running UTekV 3.2e.  Do not turn on optimization
-     while building stage1 if you bootstrap with the buggy Green Hills
-     compiler.  Also, The bundled LAI System V NFS is buggy so if you
-     build in an NFS mounted directory, start from a fresh reboot, or
-     avoid NFS all together.  Otherwise you may have trouble getting
-     clean comparisons between stages.
-
-`mips-mips-bsd'
-     MIPS machines running the MIPS operating system in BSD mode.  It's
-     possible that some old versions of the system lack the functions
-     `memcpy', `memcmp', and `memset'.  If your system lacks these, you
-     must remove or undo the definition of `TARGET_MEM_FUNCTIONS' in
-     `mips-bsd.h'.
-
-     The MIPS C compiler needs to be told to increase its table size
-     for switch statements with the `-Wf,-XNg1500' option in order to
-     compile `cp/parse.c'.  If you use the `-O2' optimization option,
-     you also need to use `-Olimit 3000'.  Both of these options are
-     automatically generated in the `Makefile' that the shell script
-     `configure' builds.  If you override the `CC' make variable and
-     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
-     3000'.
-
-`mips-mips-riscos*'
-     The MIPS C compiler needs to be told to increase its table size
-     for switch statements with the `-Wf,-XNg1500' option in order to
-     compile `cp/parse.c'.  If you use the `-O2' optimization option,
-     you also need to use `-Olimit 3000'.  Both of these options are
-     automatically generated in the `Makefile' that the shell script
-     `configure' builds.  If you override the `CC' make variable and
-     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
-     3000'.
-
-     MIPS computers running RISC-OS can support four different
-     personalities: default, BSD 4.3, System V.3, and System V.4 (older
-     versions of RISC-OS don't support V.4).  To configure GCC for
-     these platforms use the following configurations:
-
-    `mips-mips-riscos`rev''
-          Default configuration for RISC-OS, revision `rev'.
-
-    `mips-mips-riscos`rev'bsd'
-          BSD 4.3 configuration for RISC-OS, revision `rev'.
-
-    `mips-mips-riscos`rev'sysv4'
-          System V.4 configuration for RISC-OS, revision `rev'.
-
-    `mips-mips-riscos`rev'sysv'
-          System V.3 configuration for RISC-OS, revision `rev'.
-
-     The revision `rev' mentioned above is the revision of RISC-OS to
-     use.  You must reconfigure GCC when going from a RISC-OS revision
-     4 to RISC-OS revision 5.  This has the effect of avoiding a linker
-     bug (see *Note Installation Problems::, for more details).
-
-`mips-sgi-*'
-     In order to compile GCC on an SGI running IRIX 4, the "c.hdr.lib"
-     option must be installed from the CD-ROM supplied from Silicon
-     Graphics.  This is found on the 2nd CD in release 4.0.1.
-
-     In order to compile GCC on an SGI running IRIX 5, the
-     "compiler_dev.hdr" subsystem must be installed from the IDO CD-ROM
-     supplied by Silicon Graphics.
-
-     `make compare' may fail on version 5 of IRIX unless you add
-     `-save-temps' to `CFLAGS'.  On these systems, the name of the
-     assembler input file is stored in the object file, and that makes
-     comparison fail if it differs between the `stage1' and `stage2'
-     compilations.  The option `-save-temps' forces a fixed name to be
-     used for the assembler input file, instead of a randomly chosen
-     name in `/tmp'.  Do not add `-save-temps' unless the comparisons
-     fail without that option.  If you do you `-save-temps', you will
-     have to manually delete the `.i' and `.s' files after each series
-     of compilations.
-
-     The MIPS C compiler needs to be told to increase its table size
-     for switch statements with the `-Wf,-XNg1500' option in order to
-     compile `cp/parse.c'.  If you use the `-O2' optimization option,
-     you also need to use `-Olimit 3000'.  Both of these options are
-     automatically generated in the `Makefile' that the shell script
-     `configure' builds.  If you override the `CC' make variable and
-     use the MIPS compilers, you may need to add `-Wf,-XNg1500 -Olimit
-     3000'.
-
-     On Irix version 4.0.5F, and perhaps on some other versions as well,
-     there is an assembler bug that reorders instructions incorrectly.
-     To work around it, specify the target configuration
-     `mips-sgi-irix4loser'.  This configuration inhibits assembler
-     optimization.
-
-     In a compiler configured with target `mips-sgi-irix4', you can turn
-     off assembler optimization by using the `-noasmopt' option.  This
-     compiler option passes the option `-O0' to the assembler, to
-     inhibit reordering.
-
-     The `-noasmopt' option can be useful for testing whether a problem
-     is due to erroneous assembler reordering.  Even if a problem does
-     not go away with `-noasmopt', it may still be due to assembler
-     reordering--perhaps GNU CC itself was miscompiled as a result.
-
-     To enable debugging under Irix 5, you must use GNU as 2.5 or later,
-     and use the `--with-gnu-as' configure option when configuring gcc.
-     GNU as is distributed as part of the binutils package.
-
-`mips-sony-sysv'
-     Sony MIPS NEWS.  This works in NEWSOS 5.0.1, but not in 5.0.2
-     (which uses ELF instead of COFF).  Support for 5.0.2 will probably
-     be provided soon by volunteers.  In particular, the linker does
-     not like the code generated by GCC when shared libraries are
-     linked in.
-
-`ns32k-encore'
-     Encore ns32000 system.  Encore systems are supported only under
-     BSD.
-
-`ns32k-*-genix'
-     National Semiconductor ns32000 system.  Genix has bugs in `alloca'
-     and `malloc'; you must get the compiled versions of these from GNU
-     Emacs.
-
-`ns32k-sequent'
-     Go to the Berkeley universe before compiling.
-
-`ns32k-utek'
-     UTEK ns32000 system ("merlin").  The C compiler that comes with
-     this system cannot compile GNU CC; contact `tektronix!reed!mason'
-     to get binaries of GNU CC for bootstrapping.
-
-`romp-*-aos'
-`romp-*-mach'
-     The only operating systems supported for the IBM RT PC are AOS and
-     MACH.  GNU CC does not support AIX running on the RT.  We
-     recommend you compile GNU CC with an earlier version of itself; if
-     you compile GNU CC with `hc', the Metaware compiler, it will work,
-     but you will get mismatches between the stage 2 and stage 3
-     compilers in various files.  These errors are minor differences in
-     some floating-point constants and can be safely ignored; the stage
-     3 compiler is correct.
-
-`rs6000-*-aix'
-`powerpc-*-aix'
-     Various early versions of each release of the IBM XLC compiler
-     will not bootstrap GNU CC.  Symptoms include differences between
-     the stage2 and stage3 object files, and errors when compiling
-     `libgcc.a' or `enquire'.  Known problematic releases include:
-     xlc-1.2.1.8, xlc-1.3.0.0 (distributed with AIX 3.2.5), and
-     xlc-1.3.0.19.  Both xlc-1.2.1.28 and xlc-1.3.0.24 (PTF 432238) are
-     known to produce working versions of GNU CC, but most other recent
-     releases correctly bootstrap GNU CC.
-
-     Release 4.3.0 of AIX and ones prior to AIX 3.2.4 include a version
-     of the IBM assembler which does not accept debugging directives:
-     assembler updates are available as PTFs.  Also, if you are using
-     AIX 3.2.5 or greater and the GNU assembler, you must have a
-     version modified after October 16th, 1995 in order for the GNU C
-     compiler to build.  See the file `README.RS6000' for more details
-     on any of these problems.
-
-     GNU CC does not yet support the 64-bit PowerPC instructions.
-
-     Objective C does not work on this architecture because it makes
-     assumptions that are incompatible with the calling conventions.
-
-     AIX on the RS/6000 provides support (NLS) for environments outside
-     of the United States.  Compilers and assemblers use NLS to support
-     locale-specific representations of various objects including
-     floating-point numbers ("." vs "," for separating decimal
-     fractions).  There have been problems reported where the library
-     linked with GNU CC does not produce the same floating-point
-     formats that the assembler accepts.  If you have this problem, set
-     the LANG environment variable to "C" or "En_US".
-
-     Due to changes in the way that GNU CC invokes the binder (linker)
-     for AIX 4.1, you may now receive warnings of duplicate symbols
-     from the link step that were not reported before.  The assembly
-     files generated by GNU CC for AIX have always included multiple
-     symbol definitions for certain global variable and function
-     declarations in the original program.  The warnings should not
-     prevent the linker from producing a correct library or runnable
-     executable.
-
-     By default, AIX 4.1 produces code that can be used on either Power
-     or PowerPC processors.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpc-*-elf'
-`powerpc-*-sysv4'
-     PowerPC system in big endian mode, running System V.4.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpc-*-linux'
-`powerpc-*-linux-gnu'
-     PowerPC system in big endian mode, running the Linux-based GNU
-     system.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpc-*-eabiaix'
-     Embedded PowerPC system in big endian mode with -mcall-aix
-     selected as the default.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpc-*-eabisim'
-     Embedded PowerPC system in big endian mode for use in running
-     under the PSIM simulator.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpc-*-eabi'
-     Embedded PowerPC system in big endian mode.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpcle-*-elf'
-`powerpcle-*-sysv4'
-     PowerPC system in little endian mode, running System V.4.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpcle-*-solaris2*'
-     PowerPC system in little endian mode, running Solaris 2.5.1 or
-     higher.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.  Beta
-     versions of the Sun 4.0 compiler do not seem to be able to build
-     GNU CC correctly.  There are also problems with the host assembler
-     and linker that are fixed by using the GNU versions of these tools.
-
-`powerpcle-*-eabisim'
-     Embedded PowerPC system in little endian mode for use in running
-     under the PSIM simulator.
-
-`powerpcle-*-eabi'
-     Embedded PowerPC system in little endian mode.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`powerpcle-*-winnt'
-`powerpcle-*-pe'
-     PowerPC system in little endian mode running Windows NT.
-
-     You can specify a default version for the `-mcpu='CPU_TYPE switch
-     by using the configure option `--with-cpu-'CPU_TYPE.
-
-`vax-dec-ultrix'
-     Don't try compiling with Vax C (`vcc').  It produces incorrect code
-     in some cases (for example, when `alloca' is used).
-
-     Meanwhile, compiling `cp/parse.c' with pcc does not work because of
-     an internal table size limitation in that compiler.  To avoid this
-     problem, compile just the GNU C compiler first, and use it to
-     recompile building all the languages that you want to run.
-
-`sparc-sun-*'
-     See *Note Sun Install::, for information on installing GNU CC on
-     Sun systems.
-
-`vax-dec-vms'
-     See *Note VMS Install::, for details on how to install GNU CC on
-     VMS.
-
-`we32k-*-*'
-     These computers are also known as the 3b2, 3b5, 3b20 and other
-     similar names.  (However, the 3b1 is actually a 68000; see *Note
-     Configurations::.)
-
-     Don't use `-g' when compiling with the system's compiler.  The
-     system's linker seems to be unable to handle such a large program
-     with debugging information.
-
-     The system's compiler runs out of capacity when compiling `stmt.c'
-     in GNU CC.  You can work around this by building `cpp' in GNU CC
-     first, then use that instead of the system's preprocessor with the
-     system's C compiler to compile `stmt.c'.  Here is how:
-
-          mv /lib/cpp /lib/cpp.att
-          cp cpp /lib/cpp.gnu
-          echo '/lib/cpp.gnu -traditional ${1+"$@"}' > /lib/cpp
-          chmod +x /lib/cpp
-
-     The system's compiler produces bad code for some of the GNU CC
-     optimization files.  So you must build the stage 2 compiler without
-     optimization.  Then build a stage 3 compiler with optimization.
-     That executable should work.  Here are the necessary commands:
-
-          make LANGUAGES=c CC=stage1/xgcc CFLAGS="-Bstage1/ -g"
-          make stage2
-          make CC=stage2/xgcc CFLAGS="-Bstage2/ -g -O"
-
-     You may need to raise the ULIMIT setting to build a C++ compiler,
-     as the file `cc1plus' is larger than one megabyte.
+File: gcc.info,  Node: Variable Length,  Next: Macro Varargs,  Prev: Zero Length,  Up: C Extensions
+
+Arrays of Variable Length
+=========================
+
+   Variable-length automatic arrays are allowed in GNU C.  These arrays
+are declared like any other automatic arrays, but with a length that is
+not a constant expression.  The storage is allocated at the point of
+declaration and deallocated when the brace-level is exited.  For
+example:
+
+     FILE *
+     concat_fopen (char *s1, char *s2, char *mode)
+     {
+       char str[strlen (s1) + strlen (s2) + 1];
+       strcpy (str, s1);
+       strcat (str, s2);
+       return fopen (str, mode);
+     }
+
+   Jumping or breaking out of the scope of the array name deallocates
+the storage.  Jumping into the scope is not allowed; you get an error
+message for it.
+
+   You can use the function `alloca' to get an effect much like
+variable-length arrays.  The function `alloca' is available in many
+other C implementations (but not in all).  On the other hand,
+variable-length arrays are more elegant.
+
+   There are other differences between these two methods.  Space
+allocated with `alloca' exists until the containing *function* returns.
+The space for a variable-length array is deallocated as soon as the
+array name's scope ends.  (If you use both variable-length arrays and
+`alloca' in the same function, deallocation of a variable-length array
+will also deallocate anything more recently allocated with `alloca'.)
+
+   You can also use variable-length arrays as arguments to functions:
+
+     struct entry
+     tester (int len, char data[len][len])
+     {
+       ...
+     }
+
+   The length of an array is computed once when the storage is allocated
+and is remembered for the scope of the array in case you access it with
+`sizeof'.
+
+   If you want to pass the array first and the length afterward, you can
+use a forward declaration in the parameter list--another GNU extension.
+
+     struct entry
+     tester (int len; char data[len][len], int len)
+     {
+       ...
+     }
+
+   The `int len' before the semicolon is a "parameter forward
+declaration", and it serves the purpose of making the name `len' known
+when the declaration of `data' is parsed.
+
+   You can write any number of such parameter forward declarations in
+the parameter list.  They can be separated by commas or semicolons, but
+the last one must end with a semicolon, which is followed by the "real"
+parameter declarations.  Each forward declaration must match a "real"
+declaration in parameter name and data type.
 
 
-File: gcc.info,  Node: Other Dir,  Next: Cross-Compiler,  Prev: Configurations,  Up: Installation
+File: gcc.info,  Node: Macro Varargs,  Next: Subscripting,  Prev: Variable Length,  Up: C Extensions
 
-Compilation in a Separate Directory
-===================================
+Macros with Variable Numbers of Arguments
+=========================================
 
-   If you wish to build the object files and executables in a directory
-other than the one containing the source files, here is what you must
-do differently:
+   In GNU C, a macro can accept a variable number of arguments, much as
+a function can.  The syntax for defining the macro looks much like that
+used for a function.  Here is an example:
 
-  1. Make sure you have a version of Make that supports the `VPATH'
-     feature.  (GNU Make supports it, as do Make versions on most BSD
-     systems.)
+     #define eprintf(format, args...)  \
+      fprintf (stderr, format , ## args)
 
-  2. If you have ever run `configure' in the source directory, you must
-     undo the configuration.  Do this by running:
+   Here `args' is a "rest argument": it takes in zero or more
+arguments, as many as the call contains.  All of them plus the commas
+between them form the value of `args', which is substituted into the
+macro body where `args' is used.  Thus, we have this expansion:
 
-          make distclean
+     eprintf ("%s:%d: ", input_file_name, line_number)
+     ==>
+     fprintf (stderr, "%s:%d: " , input_file_name, line_number)
 
-  3. Go to the directory in which you want to build the compiler before
-     running `configure':
+Note that the comma after the string constant comes from the definition
+of `eprintf', whereas the last comma comes from the value of `args'.
 
-          mkdir gcc-sun3
-          cd gcc-sun3
+   The reason for using `##' is to handle the case when `args' matches
+no arguments at all.  In this case, `args' has an empty value.  In this
+case, the second comma in the definition becomes an embarrassment: if
+it got through to the expansion of the macro, we would get something
+like this:
 
-     On systems that do not support symbolic links, this directory must
-     be on the same file system as the source code directory.
+     fprintf (stderr, "success!\n" , )
 
-  4. Specify where to find `configure' when you run it:
+which is invalid C syntax.  `##' gets rid of the comma, so we get the
+following instead:
 
-          ../gcc/configure ...
+     fprintf (stderr, "success!\n")
 
-     This also tells `configure' where to find the compiler sources;
-     `configure' takes the directory from the file name that was used to
-     invoke it.  But if you want to be sure, you can specify the source
-     directory with the `--srcdir' option, like this:
+   This is a special feature of the GNU C preprocessor: `##' before a
+rest argument that is empty discards the preceding sequence of
+non-whitespace characters from the macro definition.  (If another macro
+argument precedes, none of it is discarded.)
 
-          ../gcc/configure --srcdir=../gcc OTHER OPTIONS
-
-     The directory you specify with `--srcdir' need not be the same as
-     the one that `configure' is found in.
-
-   Now, you can run `make' in that directory.  You need not repeat the
-configuration steps shown above, when ordinary source files change.  You
-must, however, run `configure' again when the configuration files
-change, if your system does not support symbolic links.
+   It might be better to discard the last preprocessor token instead of
+the last preceding sequence of non-whitespace characters; in fact, we
+may someday change this feature to do so.  We advise you to write the
+macro definition so that the preceding sequence of non-whitespace
+characters is just a single token, so that the meaning will not change
+if we change the definition of this feature.
 
 
-File: gcc.info,  Node: Cross-Compiler,  Next: Sun Install,  Prev: Other Dir,  Up: Installation
+File: gcc.info,  Node: Subscripting,  Next: Pointer Arith,  Prev: Macro Varargs,  Up: C Extensions
 
-Building and Installing a Cross-Compiler
-========================================
+Non-Lvalue Arrays May Have Subscripts
+=====================================
 
-   GNU CC can function as a cross-compiler for many machines, but not
-all.
+   Subscripting is allowed on arrays that are not lvalues, even though
+the unary `&' operator is not.  For example, this is valid in GNU C
+though not valid in other C dialects:
 
-   * Cross-compilers for the Mips as target using the Mips assembler
-     currently do not work, because the auxiliary programs
-     `mips-tdump.c' and `mips-tfile.c' can't be compiled on anything
-     but a Mips.  It does work to cross compile for a Mips if you use
+     struct foo {int a[4];};
+     
+     struct foo f();
+     
+     bar (int index)
+     {
+       return f().a[index];
+     }
+
+
+File: gcc.info,  Node: Pointer Arith,  Next: Initializers,  Prev: Subscripting,  Up: C Extensions
+
+Arithmetic on `void'- and Function-Pointers
+===========================================
+
+   In GNU C, addition and subtraction operations are supported on
+pointers to `void' and on pointers to functions.  This is done by
+treating the size of a `void' or of a function as 1.
+
+   A consequence of this is that `sizeof' is also allowed on `void' and
+on function types, and returns 1.
+
+   The option `-Wpointer-arith' requests a warning if these extensions
+are used.
+
+
+File: gcc.info,  Node: Initializers,  Next: Constructors,  Prev: Pointer Arith,  Up: C Extensions
+
+Non-Constant Initializers
+=========================
+
+   As in standard C++, the elements of an aggregate initializer for an
+automatic variable are not required to be constant expressions in GNU C.
+Here is an example of an initializer with run-time varying elements:
+
+     foo (float f, float g)
+     {
+       float beat_freqs[2] = { f-g, f+g };
+       ...
+     }
+
+
+File: gcc.info,  Node: Constructors,  Next: Labeled Elements,  Prev: Initializers,  Up: C Extensions
+
+Constructor Expressions
+=======================
+
+   GNU C supports constructor expressions.  A constructor looks like a
+cast containing an initializer.  Its value is an object of the type
+specified in the cast, containing the elements specified in the
+initializer.
+
+   Usually, the specified type is a structure.  Assume that `struct
+foo' and `structure' are declared as shown:
+
+     struct foo {int a; char b[2];} structure;
+
+Here is an example of constructing a `struct foo' with a constructor:
+
+     structure = ((struct foo) {x + y, 'a', 0});
+
+This is equivalent to writing the following:
+
+     {
+       struct foo temp = {x + y, 'a', 0};
+       structure = temp;
+     }
+
+   You can also construct an array.  If all the elements of the
+constructor are (made up of) simple constant expressions, suitable for
+use in initializers, then the constructor is an lvalue and can be
+coerced to a pointer to its first element, as shown here:
+
+     char **foo = (char *[]) { "x", "y", "z" };
+
+   Array constructors whose elements are not simple constants are not
+very useful, because the constructor is not an lvalue.  There are only
+two valid ways to use it: to subscript it, or initialize an array
+variable with it.  The former is probably slower than a `switch'
+statement, while the latter does the same thing an ordinary C
+initializer would do.  Here is an example of subscripting an array
+constructor:
+
+     output = ((int[]) { 2, x, 28 }) [input];
+
+   Constructor expressions for scalar types and union types are is also
+allowed, but then the constructor expression is equivalent to a cast.
+
+
+File: gcc.info,  Node: Labeled Elements,  Next: Cast to Union,  Prev: Constructors,  Up: C Extensions
+
+Labeled Elements in Initializers
+================================
+
+   Standard C requires the elements of an initializer to appear in a
+fixed order, the same as the order of the elements in the array or
+structure being initialized.
+
+   In GNU C you can give the elements in any order, specifying the array
+indices or structure field names they apply to.  This extension is not
+implemented in GNU C++.
+
+   To specify an array index, write `[INDEX]' or `[INDEX] =' before the
+element value.  For example,
+
+     int a[6] = { [4] 29, [2] = 15 };
+
+is equivalent to
+
+     int a[6] = { 0, 0, 15, 0, 29, 0 };
+
+The index values must be constant expressions, even if the array being
+initialized is automatic.
+
+   To initialize a range of elements to the same value, write `[FIRST
+... LAST] = VALUE'.  For example,
+
+     int widths[] = { [0 ... 9] = 1, [10 ... 99] = 2, [100] = 3 };
+
+Note that the length of the array is the highest value specified plus
+one.
+
+   In a structure initializer, specify the name of a field to initialize
+with `FIELDNAME:' before the element value.  For example, given the
+following structure,
+
+     struct point { int x, y; };
+
+the following initialization
+
+     struct point p = { y: yvalue, x: xvalue };
+
+is equivalent to
+
+     struct point p = { xvalue, yvalue };
+
+   Another syntax which has the same meaning is `.FIELDNAME ='., as
+shown here:
+
+     struct point p = { .y = yvalue, .x = xvalue };
+
+   You can also use an element label (with either the colon syntax or
+the period-equal syntax) when initializing a union, to specify which
+element of the union should be used.  For example,
+
+     union foo { int i; double d; };
+     
+     union foo f = { d: 4 };
+
+will convert 4 to a `double' to store it in the union using the second
+element.  By contrast, casting 4 to type `union foo' would store it
+into the union as the integer `i', since it is an integer.  (*Note Cast
+to Union::.)
+
+   You can combine this technique of naming elements with ordinary C
+initialization of successive elements.  Each initializer element that
+does not have a label applies to the next consecutive element of the
+array or structure.  For example,
+
+     int a[6] = { [1] = v1, v2, [4] = v4 };
+
+is equivalent to
+
+     int a[6] = { 0, v1, v2, 0, v4, 0 };
+
+   Labeling the elements of an array initializer is especially useful
+when the indices are characters or belong to an `enum' type.  For
+example:
+
+     int whitespace[256]
+       = { [' '] = 1, ['\t'] = 1, ['\h'] = 1,
+           ['\f'] = 1, ['\n'] = 1, ['\r'] = 1 };
+
+
+File: gcc.info,  Node: Case Ranges,  Next: Function Attributes,  Prev: Cast to Union,  Up: C Extensions
+
+Case Ranges
+===========
+
+   You can specify a range of consecutive values in a single `case'
+label, like this:
+
+     case LOW ... HIGH:
+
+This has the same effect as the proper number of individual `case'
+labels, one for each integer value from LOW to HIGH, inclusive.
+
+   This feature is especially useful for ranges of ASCII character
+codes:
+
+     case 'A' ... 'Z':
+
+   *Be careful:* Write spaces around the `...', for otherwise it may be
+parsed wrong when you use it with integer values.  For example, write
+this:
+
+     case 1 ... 5:
+
+rather than this:
+
+     case 1...5:
+
+
+File: gcc.info,  Node: Cast to Union,  Next: Case Ranges,  Prev: Labeled Elements,  Up: C Extensions
+
+Cast to a Union Type
+====================
+
+   A cast to union type is similar to other casts, except that the type
+specified is a union type.  You can specify the type either with `union
+TAG' or with a typedef name.  A cast to union is actually a constructor
+though, not a cast, and hence does not yield an lvalue like normal
+casts.  (*Note Constructors::.)
+
+   The types that may be cast to the union type are those of the members
+of the union.  Thus, given the following union and variables:
+
+     union foo { int i; double d; };
+     int x;
+     double y;
+
+both `x' and `y' can be cast to type `union' foo.
+
+   Using the cast as the right-hand side of an assignment to a variable
+of union type is equivalent to storing in a member of the union:
+
+     union foo u;
+     ...
+     u = (union foo) x  ==  u.i = x
+     u = (union foo) y  ==  u.d = y
+
+   You can also use the union cast as a function argument:
+
+     void hack (union foo);
+     ...
+     hack ((union foo) x);
+
+
+File: gcc.info,  Node: Function Attributes,  Next: Function Prototypes,  Prev: Case Ranges,  Up: C Extensions
+
+Declaring Attributes of Functions
+=================================
+
+   In GNU C, you declare certain things about functions called in your
+program which help the compiler optimize function calls and check your
+code more carefully.
+
+   The keyword `__attribute__' allows you to specify special attributes
+when making a declaration.  This keyword is followed by an attribute
+specification inside double parentheses.  Nine attributes, `noreturn',
+`const', `format', `no_instrument_function', `section', `constructor',
+`destructor', `unused' and `weak' are currently defined for functions.
+Other attributes, including `section' are supported for variables
+declarations (*note Variable Attributes::.) and for types (*note Type
+Attributes::.).
+
+   You may also specify attributes with `__' preceding and following
+each keyword.  This allows you to use them in header files without
+being concerned about a possible macro of the same name.  For example,
+you may use `__noreturn__' instead of `noreturn'.
+
+`noreturn'
+     A few standard library functions, such as `abort' and `exit',
+     cannot return.  GNU CC knows this automatically.  Some programs
+     define their own functions that never return.  You can declare them
+     `noreturn' to tell the compiler this fact.  For example,
+
+          void fatal () __attribute__ ((noreturn));
+          
+          void
+          fatal (...)
+          {
+            ... /* Print error message. */ ...
+            exit (1);
+          }
+
+     The `noreturn' keyword tells the compiler to assume that `fatal'
+     cannot return.  It can then optimize without regard to what would
+     happen if `fatal' ever did return.  This makes slightly better
+     code.  More importantly, it helps avoid spurious warnings of
+     uninitialized variables.
+
+     Do not assume that registers saved by the calling function are
+     restored before calling the `noreturn' function.
+
+     It does not make sense for a `noreturn' function to have a return
+     type other than `void'.
+
+     The attribute `noreturn' is not implemented in GNU C versions
+     earlier than 2.5.  An alternative way to declare that a function
+     does not return, which works in the current version and in some
+     older versions, is as follows:
+
+          typedef void voidfn ();
+          
+          volatile voidfn fatal;
+
+`const'
+     Many functions do not examine any values except their arguments,
+     and have no effects except the return value.  Such a function can
+     be subject to common subexpression elimination and loop
+     optimization just as an arithmetic operator would be.  These
+     functions should be declared with the attribute `const'.  For
+     example,
+
+          int square (int) __attribute__ ((const));
+
+     says that the hypothetical function `square' is safe to call fewer
+     times than the program says.
+
+     The attribute `const' is not implemented in GNU C versions earlier
+     than 2.5.  An alternative way to declare that a function has no
+     side effects, which works in the current version and in some older
+     versions, is as follows:
+
+          typedef int intfn ();
+          
+          extern const intfn square;
+
+     This approach does not work in GNU C++ from 2.6.0 on, since the
+     language specifies that the `const' must be attached to the return
+     value.
+
+     Note that a function that has pointer arguments and examines the
+     data pointed to must *not* be declared `const'.  Likewise, a
+     function that calls a non-`const' function usually must not be
+     `const'.  It does not make sense for a `const' function to return
+     `void'.
+
+`format (ARCHETYPE, STRING-INDEX, FIRST-TO-CHECK)'
+     The `format' attribute specifies that a function takes `printf',
+     `scanf', or `strftime' style arguments which should be type-checked
+     against a format string.  For example, the declaration:
+
+          extern int
+          my_printf (void *my_object, const char *my_format, ...)
+                __attribute__ ((format (printf, 2, 3)));
+
+     causes the compiler to check the arguments in calls to `my_printf'
+     for consistency with the `printf' style format string argument
+     `my_format'.
+
+     The parameter ARCHETYPE determines how the format string is
+     interpreted, and should be either `printf', `scanf', or
+     `strftime'.  The parameter STRING-INDEX specifies which argument
+     is the format string argument (starting from 1), while
+     FIRST-TO-CHECK is the number of the first argument to check
+     against the format string.  For functions where the arguments are
+     not available to be checked (such as `vprintf'), specify the third
+     parameter as zero.  In this case the compiler only checks the
+     format string for consistency.
+
+     In the example above, the format string (`my_format') is the second
+     argument of the function `my_print', and the arguments to check
+     start with the third argument, so the correct parameters for the
+     format attribute are 2 and 3.
+
+     The `format' attribute allows you to identify your own functions
+     which take format strings as arguments, so that GNU CC can check
+     the calls to these functions for errors.  The compiler always
+     checks formats for the ANSI library functions `printf', `fprintf',
+     `sprintf', `scanf', `fscanf', `sscanf', `strftime', `vprintf',
+     `vfprintf' and `vsprintf' whenever such warnings are requested
+     (using `-Wformat'), so there is no need to modify the header file
+     `stdio.h'.
+
+`format_arg (STRING-INDEX)'
+     The `format_arg' attribute specifies that a function takes
+     `printf' or `scanf' style arguments, modifies it (for example, to
+     translate it into another language), and passes it to a `printf'
+     or `scanf' style function.  For example, the declaration:
+
+          extern char *
+          my_dgettext (char *my_domain, const char *my_format)
+                __attribute__ ((format_arg (2)));
+
+     causes the compiler to check the arguments in calls to
+     `my_dgettext' whose result is passed to a `printf', `scanf', or
+     `strftime' type function for consistency with the `printf' style
+     format string argument `my_format'.
+
+     The parameter STRING-INDEX specifies which argument is the format
+     string argument (starting from 1).
+
+     The `format-arg' attribute allows you to identify your own
+     functions which modify format strings, so that GNU CC can check the
+     calls to `printf', `scanf', or `strftime' function whose operands
+     are a call to one of your own function.  The compiler always
+     treats `gettext', `dgettext', and `dcgettext' in this manner.
+
+`no_instrument_function'
+     If `-finstrument-functions' is given, profiling function calls will
+     be generated at entry and exit of most user-compiled functions.
+     Functions with this attribute will not be so instrumented.
+
+`section ("section-name")'
+     Normally, the compiler places the code it generates in the `text'
+     section.  Sometimes, however, you need additional sections, or you
+     need certain particular functions to appear in special sections.
+     The `section' attribute specifies that a function lives in a
+     particular section.  For example, the declaration:
+
+          extern void foobar (void) __attribute__ ((section ("bar")));
+
+     puts the function `foobar' in the `bar' section.
+
+     Some file formats do not support arbitrary sections so the
+     `section' attribute is not available on all platforms.  If you
+     need to map the entire contents of a module to a particular
+     section, consider using the facilities of the linker instead.
+
+`constructor'
+`destructor'
+     The `constructor' attribute causes the function to be called
+     automatically before execution enters `main ()'.  Similarly, the
+     `destructor' attribute causes the function to be called
+     automatically after `main ()' has completed or `exit ()' has been
+     called.  Functions with these attributes are useful for
+     initializing data that will be used implicitly during the
+     execution of the program.
+
+     These attributes are not currently implemented for Objective C.
+
+`unused'
+     This attribute, attached to a function, means that the function is
+     meant to be possibly unused.  GNU CC will not produce a warning
+     for this function.  GNU C++ does not currently support this
+     attribute as definitions without parameters are valid in C++.
+
+`weak'
+     The `weak' attribute causes the declaration to be emitted as a weak
+     symbol rather than a global.  This is primarily useful in defining
+     library functions which can be overridden in user code, though it
+     can also be used with non-function declarations.  Weak symbols are
+     supported for ELF targets, and also for a.out targets when using
      the GNU assembler and linker.
 
-   * Cross-compilers between machines with different floating point
-     formats have not all been made to work.  GNU CC now has a floating
-     point emulator with which these can work, but each target machine
-     description needs to be updated to take advantage of it.
+`alias ("target")'
+     The `alias' attribute causes the declaration to be emitted as an
+     alias for another symbol, which must be specified.  For instance,
 
-   * Cross-compilation between machines of different word sizes is
-     somewhat problematic and sometimes does not work.
+          void __f () { /* do something */; }
+          void f () __attribute__ ((weak, alias ("__f")));
 
-   Since GNU CC generates assembler code, you probably need a
-cross-assembler that GNU CC can run, in order to produce object files.
-If you want to link on other than the target machine, you need a
-cross-linker as well.  You also need header files and libraries suitable
-for the target machine that you can install on the host machine.
+     declares `f' to be a weak alias for `__f'.  In C++, the mangled
+     name for the target must be used.
 
-* Menu:
+     Not all target machines support this attribute.
 
-* Steps of Cross::      Using a cross-compiler involves several steps
-                          that may be carried out on different machines.
-* Configure Cross::     Configuring a cross-compiler.
-* Tools and Libraries:: Where to put the linker and assembler, and the C library.
-* Cross Headers::       Finding and installing header files
-                          for a cross-compiler.
-* Cross Runtime::       Supplying arithmetic runtime routines (`libgcc1.a').
-* Build Cross::         Actually compiling the cross-compiler.
+`no_check_memory_usage'
+     If `-fcheck-memory-usage' is given, calls to support routines will
+     be generated before most memory accesses, to permit support code to
+     record usage and detect uses of uninitialized or unallocated
+     storage.  Since the compiler cannot handle them properly, `asm'
+     statements are not allowed.  Declaring a function with this
+     attribute disables the memory checking code for that function,
+     permitting the use of `asm' statements without requiring separate
+     compilation with different options, and allowing you to write
+     support routines of your own if you wish, without getting infinite
+     recursion if they get compiled with this option.
+
+`regparm (NUMBER)'
+     On the Intel 386, the `regparm' attribute causes the compiler to
+     pass up to NUMBER integer arguments in registers EAX, EDX, and ECX
+     instead of on the stack.  Functions that take a variable number of
+     arguments will continue to be passed all of their arguments on the
+     stack.
+
+`stdcall'
+     On the Intel 386, the `stdcall' attribute causes the compiler to
+     assume that the called function will pop off the stack space used
+     to pass arguments, unless it takes a variable number of arguments.
+
+     The PowerPC compiler for Windows NT currently ignores the `stdcall'
+     attribute.
+
+`cdecl'
+     On the Intel 386, the `cdecl' attribute causes the compiler to
+     assume that the calling function will pop off the stack space used
+     to pass arguments.  This is useful to override the effects of the
+     `-mrtd' switch.
+
+     The PowerPC compiler for Windows NT currently ignores the `cdecl'
+     attribute.
+
+`longcall'
+     On the RS/6000 and PowerPC, the `longcall' attribute causes the
+     compiler to always call the function via a pointer, so that
+     functions which reside further than 64 megabytes (67,108,864
+     bytes) from the current location can be called.
+
+`dllimport'
+     On the PowerPC running Windows NT, the `dllimport' attribute causes
+     the compiler to call the function via a global pointer to the
+     function pointer that is set up by the Windows NT dll library.
+     The pointer name is formed by combining `__imp_' and the function
+     name.
+
+`dllexport'
+     On the PowerPC running Windows NT, the `dllexport' attribute causes
+     the compiler to provide a global pointer to the function pointer,
+     so that it can be called with the `dllimport' attribute.  The
+     pointer name is formed by combining `__imp_' and the function name.
+
+`exception (EXCEPT-FUNC [, EXCEPT-ARG])'
+     On the PowerPC running Windows NT, the `exception' attribute causes
+     the compiler to modify the structured exception table entry it
+     emits for the declared function.  The string or identifier
+     EXCEPT-FUNC is placed in the third entry of the structured
+     exception table.  It represents a function, which is called by the
+     exception handling mechanism if an exception occurs.  If it was
+     specified, the string or identifier EXCEPT-ARG is placed in the
+     fourth entry of the structured exception table.
+
+`function_vector'
+     Use this option on the H8/300 and H8/300H to indicate that the
+     specified function should be called through the function vector.
+     Calling a function through the function vector will reduce code
+     size, however; the function vector has a limited size (maximum 128
+     entries on the H8/300 and 64 entries on the H8/300H) and shares
+     space with the interrupt vector.
+
+     You must use GAS and GLD from GNU binutils version 2.7 or later for
+     this option to work correctly.
+
+`interrupt_handler'
+     Use this option on the H8/300 and H8/300H to indicate that the
+     specified function is an interrupt handler.  The compiler will
+     generate function entry and exit sequences suitable for use in an
+     interrupt handler when this attribute is present.
+
+`eightbit_data'
+     Use this option on the H8/300 and H8/300H to indicate that the
+     specified variable should be placed into the eight bit data
+     section.  The compiler will generate more efficient code for
+     certain operations on data in the eight bit data area.  Note the
+     eight bit data area is limited to 256 bytes of data.
+
+     You must use GAS and GLD from GNU binutils version 2.7 or later for
+     this option to work correctly.
+
+`tiny_data'
+     Use this option on the H8/300H to indicate that the specified
+     variable should be placed into the tiny data section.  The
+     compiler will generate more efficient code for loads and stores on
+     data in the tiny data section.  Note the tiny data area is limited
+     to slightly under 32kbytes of data.
+
+`interrupt'
+     Use this option on the M32R/D to indicate that the specified
+     function is an interrupt handler.  The compiler will generate
+     function entry and exit sequences suitable for use in an interrupt
+     handler when this attribute is present.
+
+`model (MODEL-NAME)'
+     Use this attribute on the M32R/D to set the addressability of an
+     object, and the code generated for a function.  The identifier
+     MODEL-NAME is one of `small', `medium', or `large', representing
+     each of the code models.
+
+     Small model objects live in the lower 16MB of memory (so that their
+     addresses can be loaded with the `ld24' instruction), and are
+     callable with the `bl' instruction.
+
+     Medium model objects may live anywhere in the 32 bit address space
+     (the compiler will generate `seth/add3' instructions to load their
+     addresses), and are callable with the `bl' instruction.
+
+     Large model objects may live anywhere in the 32 bit address space
+     (the compiler will generate `seth/add3' instructions to load their
+     addresses), and may not be reachable with the `bl' instruction
+     (the compiler will generate the much slower `seth/add3/jl'
+     instruction sequence).
+
+`register_precision(REGISTER, PRECISION)'
+     Use this attribute on the mips 5900 to specify the mode PRECISION
+     for a particular register REGISTER. This lets you request the
+     width in bits of the register to be saved to the stack.
+
+     Multiple `register_precision' attributes may be specified in a
+     single attribute clause.
+
+          int
+          gamma (char *alpha, char *beta)
+                __attribute__ ((register_precision ($s7, 128),
+                                register_precision ($s6, 128)));
+
+`naked'
+     This attribute specifies that the indicated function should have
+     neither a funciton entry sequence nor a funciton exit sequence
+     built for it by the compiler.  It is then the programmer's
+     responsibility to provide any necessary prologue and epilogue code.
+
+`interfacearm'
+     The presence of this attribute atteched to a function indicates
+     that the compiler should generate an ARM mode entry sequence for
+     the function (despite the fact that the rest of the function is
+     encoded using Thumb instructions) and that the function must
+     return using the BX instruction, to ensure that the caller is
+     returned to in the correct mode.
+
+`sda'
+     Use this option on the V850 to indicate that the specified variable
+     should be placed into the small data area.  The compiler will
+     generate more efficient code for loads and stores on data in this
+     area section.  Note the small data area is limited to 64kbytes of
+     data.  The area is pointed to by the GP register (register 4):
+
+          int __attribute__((sda)) variable;
+
+`tda'
+     Use this option on the V850 to indicate that the specified variable
+     should be placed into the tiny data area.  The compiler will
+     generate more efficient code for loads and stores on data in this
+     area section.  Note the tiny data area is limited to slightly
+     under 256 bytes of data.  The area is pointed to by the EP
+     register (register 30) and typically points to fast, internal RAM:
+
+          int __attribute__((tda)) variable;
+
+`zda'
+     Use this option on the V850 to indicate that the specified variable
+     should be placed into the zero data area.  The compiler will
+     generate more efficient code for loads and stores on data in this
+     area section.  Note the zero data area is limited to slightly
+     under 64kbytes of data, and is located starting at address 0.
+     Typically this area includes some of the V850's Special Function
+     Registers:
+
+          int __attribute__((zda)) variable;
+
+   You can specify multiple attributes in a declaration by separating
+them by commas within the double parentheses or by immediately
+following an attribute declaration with another attribute declaration.
+
+   Some people object to the `__attribute__' feature, suggesting that
+ANSI C's `#pragma' should be used instead.  There are two reasons for
+not doing this.
+
+  1. It is impossible to generate `#pragma' commands from a macro.
+
+  2. There is no telling what the same `#pragma' might mean in another
+     compiler.
+
+   These two reasons apply to almost any application that might be
+proposed for `#pragma'.  It is basically a mistake to use `#pragma' for
+*anything*.
 
 
-File: gcc.info,  Node: Steps of Cross,  Next: Configure Cross,  Up: Cross-Compiler
+File: gcc.info,  Node: Function Prototypes,  Next: Interrupt Functions,  Prev: Function Attributes,  Up: C Extensions
 
-Steps of Cross-Compilation
---------------------------
+Prototypes and Old-Style Function Definitions
+=============================================
 
-   To compile and run a program using a cross-compiler involves several
-steps:
+   GNU C extends ANSI C to allow a function prototype to override a
+later old-style non-prototype definition.  Consider the following
+example:
 
-   * Run the cross-compiler on the host machine to produce assembler
-     files for the target machine.  This requires header files for the
-     target machine.
+     /* Use prototypes unless the compiler is old-fashioned.  */
+     #ifdef __STDC__
+     #define P(x) x
+     #else
+     #define P(x) ()
+     #endif
+     
+     /* Prototype function declaration.  */
+     int isroot P((uid_t));
+     
+     /* Old-style function definition.  */
+     int
+     isroot (x)   /* ??? lossage here ??? */
+          uid_t x;
+     {
+       return x == 0;
+     }
 
-   * Assemble the files produced by the cross-compiler.  You can do this
-     either with an assembler on the target machine, or with a
-     cross-assembler on the host machine.
+   Suppose the type `uid_t' happens to be `short'.  ANSI C does not
+allow this example, because subword arguments in old-style
+non-prototype definitions are promoted.  Therefore in this example the
+function definition's argument is really an `int', which does not match
+the prototype argument type of `short'.
 
-   * Link those files to make an executable.  You can do this either
-     with a linker on the target machine, or with a cross-linker on the
-     host machine.  Whichever machine you use, you need libraries and
-     certain startup files (typically `crt....o') for the target
-     machine.
+   This restriction of ANSI C makes it hard to write code that is
+portable to traditional C compilers, because the programmer does not
+know whether the `uid_t' type is `short', `int', or `long'.  Therefore,
+in cases like these GNU C allows a prototype to override a later
+old-style definition.  More precisely, in GNU C, a function prototype
+argument type overrides the argument type specified by a later
+old-style definition if the former type is the same as the latter type
+before promotion.  Thus in GNU C the above example is equivalent to the
+following:
 
-   It is most convenient to do all of these steps on the same host
-machine, since then you can do it all with a single invocation of GNU
-CC.  This requires a suitable cross-assembler and cross-linker.  For
-some targets, the GNU assembler and linker are available.
+     int isroot (uid_t);
+     
+     int
+     isroot (uid_t x)
+     {
+       return x == 0;
+     }
+
+   GNU C++ does not support old-style function definitions, so this
+extension is irrelevant.
 
 
-File: gcc.info,  Node: Configure Cross,  Next: Tools and Libraries,  Prev: Steps of Cross,  Up: Cross-Compiler
+File: gcc.info,  Node: Interrupt Functions,  Next: C++ Comments,  Prev: Function Prototypes,  Up: C Extensions
 
-Configuring a Cross-Compiler
-----------------------------
+Compiling Functions for Interrupt Calls
+=======================================
 
-   To build GNU CC as a cross-compiler, you start out by running
-`configure'.  Use the `--target=TARGET' to specify the target type.  If
-`configure' was unable to correctly identify the system you are running
-on, also specify the `--build=BUILD' option.  For example, here is how
-to configure for a cross-compiler that produces code for an HP 68030
-system running BSD on a system that `configure' can correctly identify:
+   When compiling code for certain platforms (currently the Hitachi
+H8/300 and the Tandem ST-2000), you can instruct `{No Value For "GCC"}'
+that certain functions are meant to be called from hardware interrupts.
 
-     ./configure --target=m68k-hp-bsd4.3
+   To mark a function as callable from interrupt, include the line
+`#pragma interrupt' somewhere before the beginning of the function's
+definition.  (For maximum readability, you might place it immediately
+before the definition of the appropriate function.)  `#pragma
+interrupt' will affect only the next function defined; if you want to
+define more than one function with this property, include `#pragma
+interrupt' before each of them.
+
+   When you define a function with `#pragma interrupt', `{No Value For
+"GCC"}' alters its usual calling convention, to provide the right
+environment when the function is called from an interrupt.  *Such
+functions cannot be called in the usual way from your program*.
+
+   You must use other facilities to actually associate these functions
+with particular interrupts; `{No Value For "GCC"}' can only compile
+them in the appropriate way.
 
 
-File: gcc.info,  Node: Tools and Libraries,  Next: Cross Headers,  Prev: Configure Cross,  Up: Cross-Compiler
+File: gcc.info,  Node: C++ Comments,  Next: Dollar Signs,  Prev: Interrupt Functions,  Up: C Extensions
 
-Tools and Libraries for a Cross-Compiler
-----------------------------------------
+C++ Style Comments
+==================
 
-   If you have a cross-assembler and cross-linker available, you should
-install them now.  Put them in the directory `/usr/local/TARGET/bin'.
-Here is a table of the tools you should put in this directory:
+   In GNU C, you may use C++ style comments, which start with `//' and
+continue until the end of the line.  Many other C implementations allow
+such comments, and they are likely to be in a future C standard.
+However, C++ style comments are not recognized if you specify `-ansi'
+or `-traditional', since they are incompatible with traditional
+constructs like `dividend//*comment*/divisor'.
 
-`as'
-     This should be the cross-assembler.
+
+File: gcc.info,  Node: Dollar Signs,  Next: Character Escapes,  Prev: C++ Comments,  Up: C Extensions
 
-`ld'
-     This should be the cross-linker.
+Dollar Signs in Identifier Names
+================================
 
-`ar'
-     This should be the cross-archiver: a program which can manipulate
-     archive files (linker libraries) in the target machine's format.
+   In GNU C, you may normally use dollar signs in identifier names.
+This is because many traditional C implementations allow such
+identifiers.  However, dollar signs in identifiers are not supported on
+a few target machines, typically because the target assembler does not
+allow them.
 
-`ranlib'
-     This should be a program to construct a symbol table in an archive
-     file.
+
+File: gcc.info,  Node: Character Escapes,  Next: Variable Attributes,  Prev: Dollar Signs,  Up: C Extensions
 
-   The installation of GNU CC will find these programs in that
-directory, and copy or link them to the proper place to for the
-cross-compiler to find them when run later.
+The Character <ESC> in Constants
+================================
 
-   The easiest way to provide these files is to build the Binutils
-package and GAS.  Configure them with the same `--host' and `--target'
-options that you use for configuring GNU CC, then build and install
-them.  They install their executables automatically into the proper
-directory.  Alas, they do not support all the targets that GNU CC
-supports.
+   You can use the sequence `\e' in a string or character constant to
+stand for the ASCII character <ESC>.
 
-   If you want to install libraries to use with the cross-compiler,
-such as a standard C library, put them in the directory
-`/usr/local/TARGET/lib'; installation of GNU CC copies all the files in
-that subdirectory into the proper place for GNU CC to find them and
-link with them.  Here's an example of copying some libraries from a
-target machine:
+
+File: gcc.info,  Node: Alignment,  Next: Inline,  Prev: Type Attributes,  Up: C Extensions
 
-     ftp TARGET-MACHINE
-     lcd /usr/local/TARGET/lib
-     cd /lib
-     get libc.a
-     cd /usr/lib
-     get libg.a
-     get libm.a
-     quit
+Inquiring on Alignment of Types or Variables
+============================================
 
-The precise set of libraries you'll need, and their locations on the
-target machine, vary depending on its operating system.
+   The keyword `__alignof__' allows you to inquire about how an object
+is aligned, or the minimum alignment usually required by a type.  Its
+syntax is just like `sizeof'.
 
-   Many targets require "start files" such as `crt0.o' and `crtn.o'
-which are linked into each executable; these too should be placed in
-`/usr/local/TARGET/lib'.  There may be several alternatives for
-`crt0.o', for use with profiling or other compilation options.  Check
-your target's definition of `STARTFILE_SPEC' to find out what start
-files it uses.  Here's an example of copying these files from a target
-machine:
+   For example, if the target machine requires a `double' value to be
+aligned on an 8-byte boundary, then `__alignof__ (double)' is 8.  This
+is true on many RISC machines.  On more traditional machine designs,
+`__alignof__ (double)' is 4 or even 2.
 
-     ftp TARGET-MACHINE
-     lcd /usr/local/TARGET/lib
-     prompt
-     cd /lib
-     mget *crt*.o
-     cd /usr/lib
-     mget *crt*.o
-     quit
+   Some machines never actually require alignment; they allow reference
+to any data type even at an odd addresses.  For these machines,
+`__alignof__' reports the *recommended* alignment of a type.
+
+   When the operand of `__alignof__' is an lvalue rather than a type,
+the value is the largest alignment that the lvalue is known to have.
+It may have this alignment as a result of its data type, or because it
+is part of a structure and inherits alignment from that structure.  For
+example, after this declaration:
+
+     struct foo { int x; char y; } foo1;
+
+the value of `__alignof__ (foo1.y)' is probably 2 or 4, the same as
+`__alignof__ (int)', even though the data type of `foo1.y' does not
+itself demand any alignment.
+
+   A related feature which lets you specify the alignment of an object
+is `__attribute__ ((aligned (ALIGNMENT)))'; see the following section.
+
+
+File: gcc.info,  Node: Variable Attributes,  Next: Type Attributes,  Prev: Character Escapes,  Up: C Extensions
+
+Specifying Attributes of Variables
+==================================
+
+   The keyword `__attribute__' allows you to specify special attributes
+of variables or structure fields.  This keyword is followed by an
+attribute specification inside double parentheses.  Eight attributes
+are currently defined for variables: `aligned', `mode', `nocommon',
+`packed', `section', `transparent_union', `unused', and `weak'.  Other
+attributes are available for functions (*note Function Attributes::.)
+and for types (*note Type Attributes::.).
+
+   You may also specify attributes with `__' preceding and following
+each keyword.  This allows you to use them in header files without
+being concerned about a possible macro of the same name.  For example,
+you may use `__aligned__' instead of `aligned'.
+
+`aligned (ALIGNMENT)'
+     This attribute specifies a minimum alignment for the variable or
+     structure field, measured in bytes.  For example, the declaration:
+
+          int x __attribute__ ((aligned (16))) = 0;
+
+     causes the compiler to allocate the global variable `x' on a
+     16-byte boundary.  On a 68040, this could be used in conjunction
+     with an `asm' expression to access the `move16' instruction which
+     requires 16-byte aligned operands.
+
+     You can also specify the alignment of structure fields.  For
+     example, to create a double-word aligned `int' pair, you could
+     write:
+
+          struct foo { int x[2] __attribute__ ((aligned (8))); };
+
+     This is an alternative to creating a union with a `double' member
+     that forces the union to be double-word aligned.
+
+     It is not possible to specify the alignment of functions; the
+     alignment of functions is determined by the machine's requirements
+     and cannot be changed.  You cannot specify alignment for a typedef
+     name because such a name is just an alias, not a distinct type.
+
+     As in the preceding examples, you can explicitly specify the
+     alignment (in bytes) that you wish the compiler to use for a given
+     variable or structure field.  Alternatively, you can leave out the
+     alignment factor and just ask the compiler to align a variable or
+     field to the maximum useful alignment for the target machine you
+     are compiling for.  For example, you could write:
+
+          short array[3] __attribute__ ((aligned));
+
+     Whenever you leave out the alignment factor in an `aligned'
+     attribute specification, the compiler automatically sets the
+     alignment for the declared variable or field to the largest
+     alignment which is ever used for any data type on the target
+     machine you are compiling for.  Doing this can often make copy
+     operations more efficient, because the compiler can use whatever
+     instructions copy the biggest chunks of memory when performing
+     copies to or from the variables or fields that you have aligned
+     this way.
+
+     The `aligned' attribute can only increase the alignment; but you
+     can decrease it by specifying `packed' as well.  See below.
+
+     Note that the effectiveness of `aligned' attributes may be limited
+     by inherent limitations in your linker.  On many systems, the
+     linker is only able to arrange for variables to be aligned up to a
+     certain maximum alignment.  (For some linkers, the maximum
+     supported alignment may be very very small.)  If your linker is
+     only able to align variables up to a maximum of 8 byte alignment,
+     then specifying `aligned(16)' in an `__attribute__' will still
+     only provide you with 8 byte alignment.  See your linker
+     documentation for further information.
+
+`mode (MODE)'
+     This attribute specifies the data type for the
+     declaration--whichever type corresponds to the mode MODE.  This in
+     effect lets you request an integer or floating point type
+     according to its width.
+
+     You may also specify a mode of `byte' or `__byte__' to indicate
+     the mode corresponding to a one-byte integer, `word' or `__word__'
+     for the mode of a one-word integer, and `pointer' or `__pointer__'
+     for the mode used to represent pointers.
+
+`nocommon'
+     This attribute specifies requests GNU CC not to place a variable
+     "common" but instead to allocate space for it directly.  If you
+     specify the `-fno-common' flag, GNU CC will do this for all
+     variables.
+
+     Specifying the `nocommon' attribute for a variable provides an
+     initialization of zeros.  A variable may only be initialized in one
+     source file.
+
+`packed'
+     The `packed' attribute specifies that a variable or structure field
+     should have the smallest possible alignment--one byte for a
+     variable, and one bit for a field, unless you specify a larger
+     value with the `aligned' attribute.
+
+     Here is a structure in which the field `x' is packed, so that it
+     immediately follows `a':
+
+          struct foo
+          {
+            char a;
+            int x[2] __attribute__ ((packed));
+          };
+
+`section ("section-name")'
+     Normally, the compiler places the objects it generates in sections
+     like `data' and `bss'.  Sometimes, however, you need additional
+     sections, or you need certain particular variables to appear in
+     special sections, for example to map to special hardware.  The
+     `section' attribute specifies that a variable (or function) lives
+     in a particular section.  For example, this small program uses
+     several specific section names:
+
+          struct duart a __attribute__ ((section ("DUART_A"))) = { 0 };
+          struct duart b __attribute__ ((section ("DUART_B"))) = { 0 };
+          char stack[10000] __attribute__ ((section ("STACK"))) = { 0 };
+          int init_data __attribute__ ((section ("INITDATA"))) = 0;
+          
+          main()
+          {
+            /* Initialize stack pointer */
+            init_sp (stack + sizeof (stack));
+          
+            /* Initialize initialized data */
+            memcpy (&init_data, &data, &edata - &data);
+          
+            /* Turn on the serial ports */
+            init_duart (&a);
+            init_duart (&b);
+          }
+
+     Use the `section' attribute with an *initialized* definition of a
+     *global* variable, as shown in the example.  GNU CC issues a
+     warning and otherwise ignores the `section' attribute in
+     uninitialized variable declarations.
+
+     You may only use the `section' attribute with a fully initialized
+     global definition because of the way linkers work.  The linker
+     requires each object be defined once, with the exception that
+     uninitialized variables tentatively go in the `common' (or `bss')
+     section and can be multiply "defined".  You can force a variable
+     to be initialized with the `-fno-common' flag or the `nocommon'
+     attribute.
+
+     Some file formats do not support arbitrary sections so the
+     `section' attribute is not available on all platforms.  If you
+     need to map the entire contents of a module to a particular
+     section, consider using the facilities of the linker instead.
+
+`transparent_union'
+     This attribute, attached to a function parameter which is a union,
+     means that the corresponding argument may have the type of any
+     union member, but the argument is passed as if its type were that
+     of the first union member.  For more details see *Note Type
+     Attributes::.  You can also use this attribute on a `typedef' for
+     a union data type; then it applies to all function parameters with
+     that type.
+
+`unused'
+     This attribute, attached to a variable, means that the variable is
+     meant to be possibly unused.  GNU CC will not produce a warning
+     for this variable.
+
+`weak'
+     The `weak' attribute is described in *Note Function Attributes::.
+
+`model (MODEL-NAME)'
+     Use this attribute on the M32R/D to set the addressability of an
+     object.  The identifier MODEL-NAME is one of `small', `medium', or
+     `large', representing each of the code models.
+
+     Small model objects live in the lower 16MB of memory (so that their
+     addresses can be loaded with the `ld24' instruction).
+
+     Medium and large model objects may live anywhere in the 32 bit
+     address space (the compiler will generate `seth/add3' instructions
+     to load their addresses).
+
+   To specify multiple attributes, separate them by commas within the
+double parentheses: for example, `__attribute__ ((aligned (16),
+packed))'.
 
